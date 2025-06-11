@@ -77,7 +77,7 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'Docux Blog',
+        title: 'Docux',
         style: 'dark',
         logo: {
           alt: 'Docux Blog Logo',
