@@ -10,14 +10,14 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'DOCUX',
+  tagline: 'Content Management System for Docusaurus',
   favicon: 'img/favicon.ico',
   
   organizationName: 'Juniors017', // Usually your GitHub org/user name.
-  projectName: 'my-website', // Usually your repo name.
+  projectName: 'docux-blog', // Usually your repo name.
   url: 'https://Juniors017.github.io',
-  baseUrl: '/my-website/',
+  baseUrl: '/',
 
 
 
@@ -77,21 +77,22 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'My Site',
+        title: 'Docux Blog',
+        style: 'dark',
         logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          alt: 'Docux Blog Logo',
+          src: 'img/docux.png',
         },
         items: [
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Content',
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://juniors017.github.io/docux-blog/',
             label: 'GitHub',
             position: 'right',
           },
@@ -104,7 +105,7 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Tutorial',
+                label: 'content',
                 to: '/docs/intro',
               },
             ],
@@ -135,12 +136,12 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/Juniors017/docux-blog',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Docux Blog, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
