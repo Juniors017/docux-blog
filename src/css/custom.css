@@ -1,0 +1,111 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+ 
+  --ifm-color-primary: #4e9a06;
+  --ifm-color-primary-dark: #468b05;
+  --ifm-color-primary-darker: #428305;
+  --ifm-color-primary-darkest: #376c04;
+  --ifm-color-primary-light: #56a907;
+  --ifm-color-primary-lighter: #5ab107;
+  --ifm-color-primary-lightest: #65c808;
+
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+--ifm-color-primary: #d7de4d;
+--ifm-color-primary-dark: #d1d934;
+--ifm-color-primary-darker: #ced628;
+--ifm-color-primary-darkest: #aab121;
+--ifm-color-primary-light: #dde366;
+--ifm-color-primary-lighter: #e0e573;
+--ifm-color-primary-lightest: #e8ec99;
+}
+
+
+
+.alert--jira {
+--ifm-alert-background-color: rgba(43, 117, 253, 0.5);
+--ifm-alert-background-color-highlight: rgba(6, 40, 133, 0.15);
+--ifm-alert-foreground-color: rgb(65, 63, 63);
+--ifm-alert-border-color: #1f1cd4;
+}
+
+html[data-theme='dark'] .alert--jira {
+--ifm-alert-background-color:  rgba(43, 117, 253, 0.5);
+--ifm-alert-background-color-highlight:rgba(6, 40, 133, 0.15);
+--ifm-alert-foreground-color: rgb(255,255,255);
+--ifm-alert-border-color:#1f1cd4;
+}
+
+
+
+
+.alert--bug {
+--ifm-alert-background-color: rgba(253, 50, 43, 0.5);
+--ifm-alert-background-color-highlight: rgba(133, 10, 6, 0.15);
+--ifm-alert-foreground-color: rgb(65, 63, 63);
+--ifm-alert-border-color: #d41c1c;
+}
+
+html[data-theme='dark'] .alert--bug {
+--ifm-alert-background-color: rgba(253, 50, 43, 0.5);
+--ifm-alert-background-color-highlight: rgba(133, 10, 6, 0.15);
+--ifm-alert-foreground-color: rgb(255,255,255);
+--ifm-alert-border-color: #d41c1c;
+}
+
+/*** docu admonition ****/
+.alert--docu {
+--ifm-alert-background-color: rgba(43, 253, 71, 0.5);
+--ifm-alert-background-color-highlight: rgba(10, 133, 6, 0.15);
+--ifm-alert-foreground-color: rgb(65, 63, 63);
+--ifm-alert-border-color: #e5ff00;
+}
+
+html[data-theme='dark'] .alert--docu {
+--ifm-alert-background-color: rgba(43, 253, 71, 0.5);
+--ifm-alert-background-color-highlight: rgba(10, 133, 6, 0.15);
+--ifm-alert-foreground-color: rgb(255,255,255);
+--ifm-alert-border-color: #e5ff00;
+}
+
+.markdown h2 {
+padding: 15px;
+background-color: #aab121;
+text-align: center;
+}
+
+.markdown .card h2 {
+padding: initial;
+background-color: initial;
+text-align: initial;
+}
+
+.homehero {
+background-color : rgb(215 222 77);}
+
+html[data-theme='dark'] .homehero {
+background-color : rgb(215 222 77);
+color:rgba(0, 0, 0, 0.747);
+}
+
+
+.homebody {
+background-color : rgb(142 198 83);
+
+}
+
+
+html[data-theme='dark'] .homebody {
+  background-color : rgb(142 198 83);
+  color:rgba(0, 0, 0, 0.747);
+  
+}
+  
