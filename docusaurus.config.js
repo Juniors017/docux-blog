@@ -17,7 +17,8 @@ const config = {
   organizationName: 'Juniors017', // Usually your GitHub org/user name.
   projectName: 'docux-blog', // Usually your repo name.
   url: 'https://Juniors017.github.io',
-  baseUrl: '/',
+  baseUrl: '/docux-blog/',
+  
 
 
 
