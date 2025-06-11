@@ -10,16 +10,29 @@ export default function Home() {
       description="Un blog flashy et décalé !"
     >
       <header className={styles.heroBanner}>
-        <div className="container">
-          <h1 className={styles.title}>🎃 NeonBlog</h1>
-          <p className={styles.subtitle}>
-            Des articles tech, design & pop culture aux couleurs qui piquent les yeux !
-          </p>
-          <div className={styles.buttons}>
-            <Link className="button button--primary button--lg" to="/blog">
-              Voir les articles
-            </Link>
-          </div>
+        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+          <img
+  src={require('@site/static/img/docux.png').default}
+  alt="Docux Blog Logo"
+  style={{
+    width: 220,
+    height: 220,
+    borderRadius: '50%',
+    objectFit: 'cover',
+    boxShadow: '0 0 16px rgb(118, 255, 5)',
+    border: '10px solid rgba(74, 8, 94, 0.88)',
+    transition: 'transform 0.3s ease',
+  }}
+/>
+          <h1 className={styles.title}>Docux Blog</h1>
+        </div>
+        <p className={styles.subtitle}>
+          Des articles tech, design & pop culture aux couleurs qui piquent les yeux !
+        </p>
+        <div className={styles.buttons}>
+          <Link className="button button--primary button--lg" to="/blog">
+            Voir les articles
+          </Link>
         </div>
       </header>
 
