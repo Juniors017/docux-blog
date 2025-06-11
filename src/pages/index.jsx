@@ -6,7 +6,7 @@ import styles from './index.module.css';
 export default function Home() {
   return (
     <Layout
-      title="NeonBlog"
+      title="Docux"
       description="Un blog flashy et décalé !"
     >
       <header className={styles.heroBanner}>
