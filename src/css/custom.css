@@ -134,6 +134,19 @@ h1, .markdown h1 {
 /* =========================
    Inline code
    ========================= */
+
+[data-theme='dark'] {
+  .markdown code, code {
+    color: #39FF14 !important;
+    background-color: #1A0626 !important;
+    border-radius: 0.3em;
+    padding: 0.2em 0.4em;
+  }
+}   
 .markdown code, code {
   color: #222 !important;
+  background-color: #eb8e416e !important;
+  border-radius: 0.3em;
+  padding: 0.2em 0.4em;
 }
+ 

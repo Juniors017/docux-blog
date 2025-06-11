@@ -26,7 +26,7 @@ const config = {
   onBrokenMarkdownLinks: 'ignore',
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
-    v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    v4: true, // Active la compatibilité avec Docusaurus v4 (option recommandée)
   },
 
 
