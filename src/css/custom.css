@@ -82,6 +82,16 @@
 .blog-wrapper .footer a:hover {
   color: var(--ifm-link-hover-color);
 }
+.home .footer {
+  background-color: #12041c !important; /* encore plus foncé */
+  color: #fff !important;
+}
+.home .footer a {
+  color: #39FF14;
+}
+.home .footer a:hover {
+  color: #FF6F00;
+}
 
 /* =========================
    Tags (bordure retirée)
@@ -152,4 +162,3 @@ h1, .markdown h1 {
   border-radius: 0.3em;
   padding: 0.2em 0.4em;
 }
- 
