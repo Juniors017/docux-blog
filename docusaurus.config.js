@@ -12,7 +12,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 const config = {
   title: 'DOCUX',
   tagline: 'Content Management System for Docusaurus',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/docux.png',
   
   organizationName: 'Juniors017', // Usually your GitHub org/user name.
   projectName: 'docux-blog', // Usually your repo name.
