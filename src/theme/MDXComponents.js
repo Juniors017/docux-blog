@@ -7,6 +7,7 @@ import TabItem from '@theme/TabItem';
 import DocusaurusButton from '@site/src/components/DocusaurusButton';
 import Timeline from '@site/src/components/Timeline';
 import TimelineItem from '@site/src/components/Timeline/TimelineItem';
+import LatestBlogPosts from '@site/src/components/LatestBlogPosts';
 
 export default {
   // Réutilise la correspondance par défaut
@@ -20,6 +21,6 @@ export default {
   Tabs,
   DocusaurusButton,
   Timeline,
-  TimelineItem
-  
+  TimelineItem,
+  LatestBlogPosts
 };

@@ -29,7 +29,7 @@ docux:
   name: Docux
   title: Docusaurus Contributor
   url: https://docux.org
-  image_url: /img/docux2.png
+  image_url: /img/docux4.png
   page:
     # customize the url of the author page at /blog/authors/<permalink>
     permalink: '/docux'
