@@ -23,3 +23,16 @@ slorber:
     linkedin: sebastienlorber
     github: slorber
     newsletter: https://thisweekinreact.com
+
+
+docux:
+  name: Docux
+  title: Docusaurus Contributor
+  url: https://docux.org
+  image_url: /img/docux2.png
+  page:
+    # customize the url of the author page at /blog/authors/<permalink>
+    permalink: '/docux'
+  socials:
+    github: https://github.com/Juniors017
+

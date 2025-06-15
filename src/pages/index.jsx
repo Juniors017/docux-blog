@@ -12,11 +12,11 @@ export default function Home() {
       <header className={styles.heroBanner}>
         <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
           <img
-  src={require('@site/static/img/docux.png').default}
+  src={require('@site/static/img/docux4.png').default}
   alt="Docux Blog Logo"
   style={{
-    width: 220,
-    height: 220,
+    width: 250,
+    height: 250,
     borderRadius: '50%',
     objectFit: 'cover',
     boxShadow: '0 0 16px rgb(118, 255, 5)',
