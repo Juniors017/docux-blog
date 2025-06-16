@@ -1,7 +1,7 @@
 ---
 title: Lancement
 authors:
-  - docux
+  - kiki
 date: 2021-08-26
 tags:
   - actu
