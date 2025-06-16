@@ -10,3 +10,15 @@ docux:
   socials:
     github: https://github.com/Juniors017
 
+
+kiki:
+  name: kiki
+  title: Docusaurus Contributor
+  url: https://docux.org
+  image_url: /img/docux4.png
+  page:
+    # customize the url of the author page at /blog/authors/<permalink>
+    permalink: '/kiki'
+  socials:
+    github: https://github.com/Juniors017
+
