@@ -1,14 +1,22 @@
 docux:
   name: Docux
   title: Docusaurus Contributor
-  image_url: /img/docux4.png
   url: https://docux.org
+  image_url: /img/docusaurus.png
+  page:
+    # customize the url of the author page at /blog/authors/<permalink>
+    permalink: '/docux'
+  socials:
+    github: https://github.com/Juniors017
+
+
 kiki:
-  name: KIKI
+  name: kiki
   title: Docusaurus Contributor
   url: https://docux.org
-docus:
-  name: Docus
-  title: Docusaurus Contributor
   image_url: /img/docux4.png
-  url: https://docux.org
+  page:
+    # customize the url of the author page at /blog/authors/<permalink>
+    permalink: '/kiki'
+  socials:
+    github: https://github.com/Juniors017
