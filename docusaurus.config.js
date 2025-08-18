@@ -97,6 +97,10 @@ const config = {
             label: 'GitHub',
             position: 'right',
           },
+             {
+            href: '/series',
+            label: 'Series',
+          },
         ],
       },
       footer: {

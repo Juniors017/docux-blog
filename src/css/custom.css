@@ -167,3 +167,15 @@ h1, .markdown h1 {
 .blog-wrapper h1, .blog-wrapper .markdown h1 {
     border-bottom: none !important;
  }
+
+
+.avatar__name {
+  font-size: 1rem!important;
+  font-weight: bold!important;
+  color: #ff6600!important;
+}
+
+.avatar__subtitle {
+  font-size: 0.7rem!important;
+  color: #797979!important;
+}
