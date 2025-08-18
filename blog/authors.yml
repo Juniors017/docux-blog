@@ -1,8 +1,14 @@
-christophe:
-  name: Valentin
-  title: Jeune padawan
-  description: |
-    Je suis un jeune padawan de la programmation, passionné par le développement web et toujours prêt à apprendre de nouvelles technologies.
-  url: https://bsky.app/profile/avonture.be
-  image_url: https://avatars.githubusercontent.com/u/355999?v=4
-  
+docux:
+  name: Docux
+  title: Docusaurus Contributor
+  image_url: /img/docux4.png
+  url: https://docux.org
+kiki:
+  name: KIKI
+  title: Docusaurus Contributor
+  url: https://docux.org
+docus:
+  name: Docus
+  title: Docusaurus Contributor
+  image_url: /img/docux4.png
+  url: https://docux.org

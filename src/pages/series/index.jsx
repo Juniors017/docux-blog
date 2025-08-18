@@ -1,15 +1,20 @@
+/**
+ * Page d’index des séries d’articles du blog.
+ * Affiche une carte pour chaque série, avec le nombre d’articles et une image.
+ * Chaque carte redirige vers la page des articles de la série correspondante.
+ */
 import Layout from "@theme/Layout";
 import { getBlogMetadata } from "@site/src/components/utils/blogPosts";
 import Link from "@docusaurus/Link";
-
 import Card from "@site/src/components/Card";
 import CardImage from '@site/src/components/Card/CardImage';
 import CardBody from '@site/src/components/Card/CardBody';
 
 export default function SeriesPage() {
+  // Récupère les métadonnées de tous les articles du blog
   const blogPosts = getBlogMetadata();
+  // Regroupe les articles par nom de série
   const seriesMap = {};
-
   blogPosts.forEach((post) => {
     const seriesName = post.serie;
     if (seriesName) {
@@ -19,13 +24,14 @@ export default function SeriesPage() {
       seriesMap[seriesName].push(post);
     }
   });
-
+  // Trie les noms de séries par ordre alphabétique
   const sortedSeriesNames = Object.keys(seriesMap).sort();
 
   return (
     <Layout title="Article series">
       <div className="container margin-top--lg margin-bottom--lg">
         <h1>All article series</h1>
+        {/* Affiche les cartes de séries si au moins une série existe */}
         {sortedSeriesNames.length > 0 ? (
           <div className="row">
             {sortedSeriesNames.map((seriesName) => {
@@ -33,18 +39,19 @@ export default function SeriesPage() {
               const sortedPosts = seriesPosts.sort(
                 (a, b) => new Date(a.date) - new Date(b.date)
               );
-
               const firstPost = sortedPosts[0];
-              const image = firstPost.image || "default.jpg"; // fallback image
-              const description = `${seriesPosts.length} article(s) dans cette série`;
+              const image = firstPost ? (firstPost.image || "default.jpg") : "default.jpg";
+              // Compteur d’articles publiés et en cours de rédaction
+              const publishedCount = seriesPosts.filter(post => !post.draft).length;
+              const draftCount = seriesPosts.filter(post => post.draft).length;
+              const description = `${publishedCount} article(s) publiés` + (draftCount > 0 ? ` • ${draftCount} en cours de rédaction` : "");
 
               return (
                 <div key={seriesName} className="col col--4 margin-bottom--lg">
-                  <Link href={`/series/series-articles?name=${encodeURIComponent(seriesName)}`}>
+                  {/* Lien vers la page des articles de la série */}
+                  <Link href={`series/series-articles?name=${encodeURIComponent(seriesName)}`}>
                     <Card>
-                      <CardImage
-                        cardImageUrl={`${image}`}
-                      />
+                      <CardImage cardImageUrl={`${image}`} />
                       <CardBody
                         className="padding-vert--md text--center"
                         textAlign="center"
