@@ -49,6 +49,10 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          admonitions: {
+            keywords: ['note', 'tip', 'info', 'warning', 'danger','docu','jira','bug'],
+            
+          },
         },
         blog: {
           showReadingTime: true,
@@ -91,6 +95,8 @@ const config = {
             position: 'left',
             label: 'Content',
           },
+       
+
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://juniors017.github.io/docux-blog/',

@@ -78,12 +78,14 @@ export default function LatestBlogPosts({ tag, author, count = 3, description = 
                 {post.authors && post.authors.length > 0 && (
                   <div className={styles.cardAuthorBlock}>
                     {(() => {
-                      // Récupère l'objet auteur depuis authors.yml
+                      // Récupère l'objet auteur principal à partir des données centralisées
                       const authorKey = typeof post.authors[0] === "object" ? post.authors[0].name.toLowerCase() : post.authors[0].toLowerCase();
                       const authorObj = authorsData[authorKey];
                       return (
                         <>
+                          {/* Bloc auteur vertical Infima */}
                           <div className={styles.cardAuthorRow + " avatar avatar--vertical"}>
+                            {/* Avatar de l'auteur */}
                             <img
                               className={"avatar__photo " + styles.cardAvatar}
                               src={useBaseUrl(authorObj && authorObj.image_url ? authorObj.image_url : "/img/docux.png")}
@@ -91,14 +93,17 @@ export default function LatestBlogPosts({ tag, author, count = 3, description = 
                               title={authorObj && authorObj.name ? authorObj.name : post.authors[0]}
                             />
                             <div className={"avatar__intro " + styles.cardAuthorMeta}>
+                              {/* Nom de l'auteur, cliquable si URL présente */}
                               {authorObj && authorObj.url ? (
                                 <a href={authorObj.url} className={"avatar__name " + styles.cardAuthor} target="_blank" rel="noopener noreferrer">{authorObj.name}</a>
                               ) : (
                                 <span className={"avatar__name " + styles.cardAuthor}>{authorObj && authorObj.name ? authorObj.name : post.authors[0]}</span>
                               )}
+                              {/* Titre de l'auteur */}
                               {authorObj && authorObj.title && (
                                 <span className={"avatar__subtitle " + styles.cardAuthorSubtitle}>{authorObj.title}</span>
                               )}
+                              {/* Icône GitHub si présente dans les réseaux sociaux */}
                               {authorObj && authorObj.socials && authorObj.socials.github && (
                                 <a href={authorObj.socials.github} className={"avatar__social " + styles.cardAuthorGithub} target="_blank" rel="noopener noreferrer" title="GitHub">
                                   <svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor" style={{verticalAlign: 'middle', marginTop: '6px'}}>

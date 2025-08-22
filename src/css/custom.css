@@ -1,181 +1,143 @@
-@import url('https://fonts.googleapis.com/css2?family=Nosifer&display=swap');
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
 
-/* =========================
-   Variables principales (Light)
-   ========================= */
+/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #9B59B6;
-  --ifm-color-primary-dark: #803a9b;
-  --ifm-color-primary-darker: #6b2f82;
-  --ifm-color-primary-light: #b97bcc;
-  --ifm-color-primary-lighter: #d1a1de;
-  --ifm-background-color: #fff;
-  --ifm-font-color-base: #222;
-  --ifm-font-color-secondary: #555;
-  --ifm-link-color: #9B59B6;
-  --ifm-link-hover-color: #FF6F00;
+ 
+  --ifm-color-primary: #4e9a06;
+  --ifm-color-primary-dark: #468b05;
+  --ifm-color-primary-darker: #428305;
+  --ifm-color-primary-darkest: #376c04;
+  --ifm-color-primary-light: #56a907;
+  --ifm-color-primary-lighter: #5ab107;
+  --ifm-color-primary-lightest: #65c808;
+
 }
 
-/* =========================
-   Variables principales (Dark)
-   ========================= */
+/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-background-color: #2B0A3D;
-  --ifm-font-color-base: #FFFFFF;
-  --ifm-font-color-secondary: #CCCCCC;
-  --ifm-link-color: #39FF14;
-  --ifm-link-hover-color: #FF6F00;
+--ifm-color-primary: #d7de4d;
+--ifm-color-primary-dark: #d1d934;
+--ifm-color-primary-darker: #ced628;
+--ifm-color-primary-darkest: #aab121;
+--ifm-color-primary-light: #dde366;
+--ifm-color-primary-lighter: #e0e573;
+--ifm-color-primary-lightest: #e8ec99;
 }
 
-/* =========================
-   Boutons
-   ========================= */
-.button.button--primary {
-  box-shadow: 0 0 8px var(--ifm-link-hover-color);
-  transition: all 0.3s ease;
-}
-.button.button--primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 12px var(--ifm-link-hover-color);
+
+
+.alert--jira {
+--ifm-alert-background-color: rgba(43, 117, 253, 0.5);
+--ifm-alert-background-color-highlight: rgba(6, 40, 133, 0.15);
+--ifm-alert-foreground-color: rgb(65, 63, 63);
+--ifm-alert-border-color: #1f1cd4;
 }
 
-/* =========================
-   Logo
-   ========================= */
-.navbar__logo img {
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 16px rgb(118, 255, 5);
-  border: 1px solid rgba(74, 8, 94, 0.88);
-  transition: transform 0.3s ease;
+html[data-theme='dark'] .alert--jira {
+--ifm-alert-background-color:  rgba(43, 117, 253, 0.5);
+--ifm-alert-background-color-highlight:rgba(6, 40, 133, 0.15);
+--ifm-alert-foreground-color: rgb(255,255,255);
+--ifm-alert-border-color:#1f1cd4;
+}
+
+
+
+
+.alert--bug {
+--ifm-alert-background-color: rgba(253, 50, 43, 0.5);
+--ifm-alert-background-color-highlight: rgba(133, 10, 6, 0.15);
+--ifm-alert-foreground-color: rgb(65, 63, 63);
+--ifm-alert-border-color: #d41c1c;
+}
+
+html[data-theme='dark'] .alert--bug {
+--ifm-alert-background-color: rgba(253, 50, 43, 0.5);
+--ifm-alert-background-color-highlight: rgba(133, 10, 6, 0.15);
+--ifm-alert-foreground-color: rgb(255,255,255);
+--ifm-alert-border-color: #d41c1c;
+}
+
+/*** docu admonition ****/
+.alert--docu {
+--ifm-alert-background-color: rgba(43, 253, 71, 0.5);
+--ifm-alert-background-color-highlight: rgba(10, 133, 6, 0.15);
+--ifm-alert-foreground-color: rgb(65, 63, 63);
+--ifm-alert-border-color: #e5ff00;
+}
+
+html[data-theme='dark'] .alert--docu {
+--ifm-alert-background-color: rgba(43, 253, 71, 0.5);
+--ifm-alert-background-color-highlight: rgba(10, 133, 6, 0.15);
+--ifm-alert-foreground-color: rgb(255,255,255);
+--ifm-alert-border-color: #e5ff00;
+}
+
+.markdown h2 {
+padding: 15px;
+background-color: #aab121;
+text-align: center;
+}
+
+.markdown .card h2 {
+padding: initial;
+background-color: initial;
+text-align: initial;
 }
 
 /* =========================
    Footer
    ========================= */
 .footer {
-  background-color: #1a0628 !important; /* violet foncé fixe */
+  background-color:rgb(31, 31, 31) !important; /* vert foncé fixe */
   color: #fff !important;
-}
+}s
+
 .footer a {
-  color: #39FF14;
+  color: #d7de4d;
+  transition: color 0.2s ease;
 }
+
 .footer a:hover {
-  color: #FF6F00;
+  color: #e8ec99;
+  text-decoration: none;
 }
+
 .footer__title {
   color: #CCCCCC;
 }
+
 .footer__bottom {
-  border-top: 1px solid #803a9b;
+  border-top: 1px solid rgba(78, 154, 6, 0.3);
+  padding-top: 1rem;
 }
+
+.footer__copyright {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Versions spécifiques pour les différents contextes */
 .docs-wrapper .footer,
 .blog-wrapper .footer {
-  background-color: #1a0628 !important;
-  color: var(--ifm-font-color-base) !important;
+  background-color:rgb(34, 34, 34) !important;
 }
-.docs-wrapper .footer a,
-.blog-wrapper .footer a {
-  color: var(--ifm-link-color);
-}
-.docs-wrapper .footer a:hover,
-.blog-wrapper .footer a:hover {
-  color: var(--ifm-link-hover-color);
-}
+
 .home .footer {
-  background-color: #12041c !important; /* encore plus foncé */
-  color: #fff !important;
-}
-.home .footer a {
-  color: #39FF14;
-}
-.home .footer a:hover {
-  color: #FF6F00;
+  background-color: #0c1c00 !important; /* encore plus foncé */
 }
 
-/* =========================
-   Tags (bordure retirée)
-   ========================= */
-.theme-doc-tag,
-.docusaurus-tag,
-.badge,
-.tag,
-a[class*="tag"],
-.badge--secondary {
-  border: none !important;
-  color: var(--ifm-link-hover-color) !important;
-  background: transparent !important;
-  box-shadow: none !important;
+/* Dark mode - pas besoin de modifications majeures car déjà sombre */
+html[data-theme='dark'] .footer {
+  box-shadow: 0 -1px 6px rgba(215, 222, 77, 0.1);
 }
 
-/* =========================
-   Titres H1
-   ========================= */
-h1, .markdown h1 {
-  color: var(--ifm-link-hover-color) !important;
-  text-align: center;
-  border-bottom: none;
-  font-family: var(--ifm-heading-font-family), 'Montserrat', 'Poppins', Arial, sans-serif;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-.docs-wrapper h1,
-.docs-wrapper .markdown h1,
-.blog-wrapper h1,
-.blog-wrapper .markdown h1 {
-  font-family: 'Nosifer', var(--ifm-heading-font-family), 'Montserrat', 'Poppins', Arial, sans-serif;
-  border-bottom: 2px solid var(--ifm-link-color);
-  padding-bottom: 0.2em;
-  margin-bottom: 0.7em;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+html[data-theme='dark'] .footer__bottom {
+  border-top-color: rgba(215, 222, 77, 0.2);
 }
 
-/* =========================
-   H2 Blog (Nosifer, taille réduite)
-   ========================= */
-.blog-wrapper h2,
-.blog-wrapper .blog-post-title {
-  font-family: 'Nosifer', var(--ifm-heading-font-family), 'Montserrat', 'Poppins', Arial, sans-serif;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-size: 1.1em;
-  margin-bottom: 0.7em;
-}
-
-/* =========================
-   Inline code
-   ========================= */
-
-[data-theme='dark'] {
-  .markdown code, code {
-    color: #39FF14 !important;
-    background-color: #1A0626 !important;
-    border-radius: 0.3em;
-    padding: 0.2em 0.4em;
-  }
-}   
-.markdown code, code {
-  color: #222 !important;
-  background-color: #eb8e416e !important;
-  border-radius: 0.3em;
-  padding: 0.2em 0.4em;
-}
+/* Styles spécifiques à la page d'accueil déplacés vers src/pages/index.module.css */
 
 
-.blog-wrapper h1, .blog-wrapper .markdown h1 {
-    border-bottom: none !important;
- }
-
-
-.avatar__name {
-  font-size: 1rem!important;
-  font-weight: bold!important;
-  color: #ff6600!important;
-}
-
-.avatar__subtitle {
-  font-size: 0.7rem!important;
-  color: #797979!important;
-}
