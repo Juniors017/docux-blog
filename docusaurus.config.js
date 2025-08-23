@@ -98,6 +98,7 @@ const config = {
        
 
           {to: '/blog', label: 'Blog', position: 'left'},
+          {to: '/thanks', label: 'Remerciements', position: 'left'},
           {
             href: 'https://juniors017.github.io/docux-blog/',
             label: 'GitHub',
@@ -148,6 +149,10 @@ const config = {
               {
                 label: 'GitHub',
                 href: 'https://github.com/Juniors017/docux-blog',
+              },
+              {
+                label: 'Remerciements',
+                to: '/thanks',
               },
             ],
           },

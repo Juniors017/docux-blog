@@ -54,29 +54,278 @@
 .homebody {
   background-color: rgb(142, 198, 83);
   padding: 2rem 0;
+  position: relative;
+  overflow: hidden;
+  border-top: 2px solid rgba(215, 222, 77, 0.8);
+}
+
+/* Effet graphique subtil */
+.homebody::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(215, 222, 77, 0.5) 0%, rgba(215, 222, 77, 0) 50%);
+  pointer-events: none;
 }
 
 /* Dark mode for homebody */
 [data-theme='dark'] .homebody {
   background-color: rgb(142, 198, 83);
-  color: rgba(0, 0, 0, 0.747);
+  color: rgba(0, 0, 0, 0.85);
+  border-top: 2px solid rgba(170, 177, 33, 0.8);
 }
 
 /* Animation pour la hero section */
 .homehero::before {
   content: '';
   position: absolute;
-  top: -10px;
+  top: -5px;
   left: 0;
   width: 100%;
-  height: 10px;
+  height: 5px;
   box-shadow: 0 0 20px rgba(78, 154, 6, 0.5);
   animation: glow 3s infinite alternate;
+}
+
+/* Animation pour le contenu */
+.animatedContent {
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Animation pour l'image circulaire - Nouvelle méthode avec div imbriquées */
+.circleImage {
+  position: relative;
+  display: inline-block;
+  width: 250px; /* Définir une taille fixe */
+  height: 250px; /* Définir une taille fixe */
+  margin: 10px auto;
+}
+
+/* Bordure rotative extérieure - Même pour les deux modes */
+.circleImage::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 50%;
+  background: conic-gradient(
+rgb(229, 240, 20), /* On utilise les couleurs fixes au lieu des variables pour garantir la cohérence */
+rgb(132, 175, 15),
+rgb(152, 204, 10),
+rgb(185, 245, 21),
+rgb(226, 238, 8)
+  );
+  animation: spin 4s linear infinite;
+  z-index: 1;
+}
+
+/* Effet de halo - Même pour les deux modes */
+.circleImage::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(215, 222, 77, 0.4),
+    transparent 70%
+  );
+  filter: blur(5px);
+  animation: pulse 3s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+.circleImage img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid white;
+  z-index: 2;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Mode sombre - exactement les mêmes styles que le mode clair */
+[data-theme='dark'] .circleImage::before {
+  background: conic-gradient(
+    #aab121,
+    #4e9a06,
+    #d7de4d,
+    #4e9a06,
+    #aab121
+  );
+}
+
+[data-theme='dark'] .circleImage::after {
+  background: radial-gradient(
+    circle at center,
+    rgba(215, 222, 77, 0.4),
+    transparent 70%
+  );
+}
+
+[data-theme='dark'] .circleImage img {
+  border: 4px solid white;
 }
 
 @keyframes glow {
   from { opacity: 0.5; }
   to { opacity: 1; }
+}
+
+@keyframes border-flow {
+  0% { width: 0; left: 0; }
+  50% { width: 100%; }
+  100% { width: 0; left: 100%; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.05); opacity: 1; }
+}
+
+/* Bouton caractéristique */
+.featureButton {
+  transition: all 0.3s ease;
+  border: 2px solid var(--ifm-color-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.featureButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: var(--ifm-color-primary-lightest);
+  opacity: 0.2;
+  transition: height 0.3s ease;
+  z-index: -1;
+}
+
+.featureButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(78, 154, 6, 0.3);
+}
+
+.featureButton:hover::after {
+  height: 100%;
+}
+
+/* Style de bouton cohérent entre mode clair et sombre */
+.docsButton {
+  background-color: rgb(132, 175, 15) !important;
+  color: white !important;
+  border: none !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.docsButton:hover {
+  transform: translateY(-3px);
+  background-color: rgb(152, 204, 10) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.docsButton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.docsButton:hover::after {
+  left: 100%;
+}
+
+/* Style pour le bouton blog - Version outline du bouton Documentation */
+.blogButton {
+  background-color: transparent !important;
+  color: rgb(132, 175, 15) !important;
+  border: 2px solid rgb(132, 175, 15) !important;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.blogButton:hover {
+  transform: translateY(-3px);
+  color: rgb(152, 204, 10) !important;
+  border-color: rgb(152, 204, 10) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.blogButton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(132, 175, 15, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.blogButton:hover::after {
+  left: 100%;
+}
+
+/* Même style en mode sombre */
+[data-theme='dark'] .docsButton {
+  background-color: rgb(132, 175, 15) !important;
+  color: white !important;
+}
+
+[data-theme='dark'] .docsButton:hover {
+  background-color: rgb(152, 204, 10) !important;
+}
+
+[data-theme='dark'] .blogButton {
+  background-color: transparent !important;
+  color: rgb(132, 175, 15) !important;
+  border: 2px solid rgb(132, 175, 15) !important;
+}
+
+[data-theme='dark'] .blogButton:hover {
+  color: rgb(152, 204, 10) !important;
+  border-color: rgb(152, 204, 10) !important;
 }
 
 

@@ -80,12 +80,24 @@ html[data-theme='dark'] .alert--docu {
 padding: 15px;
 background-color: #aab121;
 text-align: center;
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+color: rgba(0, 0, 0, 0.8);
+}
+
+/* Dark mode for h2 */
+[data-theme='dark'] .markdown h2 {
+  background-color: var(--ifm-color-primary-darkest);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(215, 222, 77, 0.3);
 }
 
 .markdown .card h2 {
 padding: initial;
 background-color: initial;
 text-align: initial;
+box-shadow: none;
+color: inherit;
 }
 
 /* =========================
@@ -94,7 +106,7 @@ text-align: initial;
 .footer {
   background-color:rgb(31, 31, 31) !important; /* vert foncé fixe */
   color: #fff !important;
-}s
+}
 
 .footer a {
   color: #d7de4d;

@@ -1,0 +1,249 @@
+.github_projects_container {
+  margin-top: var(--ifm-spacing-lg);
+  margin-bottom: var(--ifm-spacing-lg);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.github_projects_container h3 {
+  text-align: center;
+  margin-bottom: var(--ifm-spacing-md);
+  font-size: 1.5rem;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeIn {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Card styling */
+.github_projects_card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: rgba(245, 245, 245, 0.98);
+  backdrop-filter: blur(8px);
+  border: 1px solid #eaeaea;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Image de fond avec le logo GitHub */
+.github_projects_card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100%;
+  background-image: url('/img/icon/github-logo.svg');
+  background-size: 80px;
+  background-position: 90% 10%;
+  background-repeat: no-repeat;
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.github_projects_card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Hover icon overlay */
+.github_projects_card::before {
+  content: "🔗";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.github_projects_card:hover::before {
+  opacity: 1;
+}
+
+/* Link styling */
+.repo_link {
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #2d2d2d;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.repo_link:hover {
+  color: var(--ifm-color-primary);
+}
+
+.repo_link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--ifm-color-primary);
+  transition: width 0.3s ease;
+}
+
+.repo_link:hover::after {
+  width: 100%;
+}
+
+/* Archived label */
+.archived_label {
+  color: gray;
+  font-weight: normal;
+}
+
+/* Footer styling */
+.github_projects_card .card__footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #ddd;
+  font-size: 0.85rem;
+  color: #555;
+  position: relative;
+  z-index: 2;
+}
+
+.github_projects_card .card__footer svg {
+  margin-right: 4px;
+}
+
+/* Language dot */
+.language_dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.filters_panel {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: rgba(177, 177, 175, 0.15);
+  border: 1px solid rgba(78, 154, 6, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(137, 138, 136, 0.1);
+}
+
+.filters_panel label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.filters_panel select,
+.filters_panel input {
+  margin-top: 0.25rem;
+  padding: 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.filters_panel input[type="text"] {
+  margin-top: 0.25rem;
+  padding: 0.4rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Dark mode styles pour les cartes et éléments */
+
+/* Dark mode - Card styling */
+[data-theme='dark'] .github_projects_card {
+  background-color: rgba(40, 40, 40, 0.95);
+  border: 1px solid #333;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+  position: relative;
+  opacity: 0.9;
+}
+
+/* Logo GitHub en mode sombre */
+[data-theme='dark'] .github_projects_card::after {
+  opacity: 0.15;
+  filter: invert(1);
+}
+
+[data-theme='dark'] .github_projects_card:hover {
+  box-shadow: 0 12px 24px rgba(78, 154, 6, 0.25);
+}
+
+/* Dark mode - Link styling */
+[data-theme='dark'] .repo_link {
+  color: rgb(215, 222, 77);
+  position: relative;
+  z-index: 2;
+}
+
+[data-theme='dark'] .repo_link:hover {
+  color: rgb(152, 204, 10);
+}
+
+[data-theme='dark'] .repo_link::after {
+  background-color: rgb(152, 204, 10);
+}
+
+/* Dark mode - Archived label */
+[data-theme='dark'] .archived_label {
+  color: #aaa;
+}
+
+/* Dark mode - Footer styling */
+[data-theme='dark'] .github_projects_card .card__footer {
+  border-top: 1px solid #444;
+  color: #bbb;
+}
+
+/* Dark mode - Filters panel */
+[data-theme='dark'] .filters_panel {
+  background-color: rgba(63, 63, 63, 0.3);
+  border: 1px solid rgba(60, 119, 58, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .filters_panel label {
+  color: #ddd;
+}
+
+[data-theme='dark'] .filters_panel select,
+[data-theme='dark'] .filters_panel input,
+[data-theme='dark'] .filters_panel input[type="text"] {
+  background-color: #333;
+  color: #eee;
+  border: 1px solid #555;
+}

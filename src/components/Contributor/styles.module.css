@@ -1,0 +1,125 @@
+/**
+ * Styles du composant Contributor
+ */
+
+.contributorCard {
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.contributorCard:hover {
+  transform: translateY(-5px);
+}
+
+/* Ajuster le style pour mieux correspondre au design original */
+:global(.card).contributorCard {
+  border-radius: 8px;
+}
+
+.contributorHeader {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: var(--ifm-color-emphasis-100);
+}
+
+/* Ajuster le style pour le composant CardHeader */
+:global(.card__header).contributorHeader {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.avatarContainer {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--ifm-color-primary);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nameAndLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.contributorName {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-900);
+}
+
+.contributorLinks {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.plainLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--ifm-color-primary);
+  background-color: var(--ifm-color-emphasis-100);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.plainLink:hover {
+  color: var(--ifm-color-primary-darker);
+  background-color: var(--ifm-color-emphasis-200);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.socialIcon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.plainLink:hover .socialIcon {
+  opacity: 1;
+}
+
+[data-theme='dark'] .socialIcon {
+  filter: invert(1);
+}
+
+/* Ajuster le style pour le composant CardBody */
+:global(.card__body).contributorBody {
+  padding: 1.5rem;
+}
+
+.componentsList {
+  margin-top: 1.5rem;
+}
+
+.componentsList h4 {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.componentItem {
+  display: inline-block;
+  margin-right: 0.7rem;
+  margin-bottom: 0.7rem;
+  padding: 0.3rem 0.7rem;
+  background-color: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
