@@ -43,17 +43,7 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: {
-          sidebarPath: './sidebars.js',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          admonitions: {
-            keywords: ['note', 'tip', 'info', 'warning', 'danger','docu','jira','bug'],
-            
-          },
-        },
+        docs: false,
         blog: {
           showReadingTime: true,
           feedOptions: {
@@ -67,12 +57,33 @@ const config = {
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
+          onUntruncatedBlogPosts: 'ignore',
         },
         theme: {
           customCss: './src/css/custom.css',
         },
+        sitemap: {
+          changefreq: 'weekly',
+          priority: 0.5,
+          ignorePatterns: ['/tags/**'],
+          filename: 'sitemap.xml',
+        },
       }),
+    ],
+  ],
+  
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          // Ajoutez vos redirections ici, par exemple:
+          // {
+          //   from: '/ancienne-page',
+          //   to: '/nouvelle-page',
+          // },
+        ],
+      },
     ],
   ],
 
@@ -89,12 +100,6 @@ const config = {
           src: 'img/docux.png',
         },
         items: [
-          {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Content',
-          },
        
 
           {to: '/blog', label: 'Blog', position: 'left'},
@@ -113,15 +118,6 @@ const config = {
       footer: {
         style: 'dark',
         links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'content',
-                to: '/docs/intro',
-              },
-            ],
-          },
           {
             title: 'Community',
             items: [
