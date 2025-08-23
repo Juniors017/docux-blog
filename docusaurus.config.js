@@ -19,14 +19,29 @@ const config = {
   url: 'https://Juniors017.github.io',
   baseUrl: '/docux-blog/',
   
-
-
-
-  onBrokenLinks: 'ignore',
-  onBrokenMarkdownLinks: 'ignore',
-  // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
+  trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
+  
+  // Configuration des URLs canoniques
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
+  
+  // Future flags pour préparer Docusaurus v4
   future: {
-    v4: true, // Active la compatibilité avec Docusaurus v4 (option recommandée)
+    v4: {
+      removeLegacyPostBuildHeadAttribute: true,
+      useCssCascadeLayers: true,
+    },
+    experimental_faster: {
+      swcJsLoader: true,
+      swcJsMinimizer: true,
+      swcHtmlMinimizer: true,
+      lightningCssMinimizer: true,
+      mdxCrossCompilerCache: true,
+    },
+    experimental_storage: {
+      type: 'localStorage',
+      namespace: true,
+    },
   },
 
 
@@ -34,9 +49,48 @@ const config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'fr',
+    locales: ['fr'],
   },
+  
+  headTags: [
+    // Données structurées du site web
+    {
+      tagName: 'script',
+      attributes: {
+        type: 'application/ld+json',
+      },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        'name': 'DOCUX',
+        'url': 'https://Juniors017.github.io/docux-blog/',
+        'description': 'Un système de gestion de contenu basé sur Docusaurus',
+        'potentialAction': {
+          '@type': 'SearchAction',
+          'target': 'https://Juniors017.github.io/docux-blog/search?q={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      }),
+    },
+    // Données structurées pour l'organisation
+    {
+      tagName: 'script',
+      attributes: {
+        type: 'application/ld+json',
+      },
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        'name': 'DOCUX',
+        'url': 'https://Juniors017.github.io/docux-blog/',
+        'logo': 'https://Juniors017.github.io/docux-blog/img/docux.png',
+        'sameAs': [
+          'https://github.com/Juniors017/docux-blog'
+        ]
+      }),
+    },
+  ],
 
   presets: [
     [
@@ -53,7 +107,7 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/Juniors017/docux-blog/tree/main/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -65,7 +119,7 @@ const config = {
         sitemap: {
           changefreq: 'weekly',
           priority: 0.5,
-          ignorePatterns: ['/tags/**'],
+          ignorePatterns: ['/tags/**', '/search/**', '/404', '/404.html'],
           filename: 'sitemap.xml',
         },
       }),
@@ -83,8 +137,20 @@ const config = {
           //   to: '/nouvelle-page',
           // },
         ],
+        // Redirections automatiques basées sur une taxonomie courante
+        createRedirects: (existingPath) => {
+          // Redirection des URLs anciennes vers nouvelles
+          if (existingPath.includes('/blog/')) {
+            return [
+              existingPath.replace('/blog/', '/articles/'),
+              existingPath.replace('/blog/', '/posts/')
+            ].filter(redirect => redirect !== existingPath);
+          }
+          return undefined;
+        }
       },
     ],
+
   ],
 
   themeConfig:
@@ -92,6 +158,29 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
+      metadata: [
+        // Métadonnées générales
+        {name: 'keywords', content: 'docusaurus, blog, documentation, cms, react, gestion de contenu, markdown'},
+        {name: 'description', content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la création de blogs et de documentation technique'},
+        {name: 'author', content: 'Juniors017'},
+        {name: 'robots', content: 'index, follow'},
+        
+        // Twitter Card data
+        {name: 'twitter:card', content: 'summary_large_image'},
+        {name: 'twitter:site', content: '@votre_compte_twitter'},
+        {name: 'twitter:title', content: 'DOCUX - CMS pour Docusaurus'},
+        {name: 'twitter:description', content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la création de blogs et de documentation technique'},
+        {name: 'twitter:image', content: 'https://Juniors017.github.io/docux-blog/img/docusaurus-social-card.jpg'},
+        
+        // Open Graph data
+        {property: 'og:title', content: 'DOCUX - CMS pour Docusaurus'},
+        {property: 'og:type', content: 'website'},
+        {property: 'og:url', content: 'https://Juniors017.github.io/docux-blog/'},
+        {property: 'og:image', content: 'https://Juniors017.github.io/docux-blog/img/docusaurus-social-card.jpg'},
+        {property: 'og:description', content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la création de blogs et de documentation technique'},
+        {property: 'og:site_name', content: 'DOCUX'},
+        {property: 'og:locale', content: 'fr_FR'},
+      ],
       navbar: {
         title: 'Docux',
         style: 'dark',
@@ -105,7 +194,7 @@ const config = {
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/thanks', label: 'Remerciements', position: 'left'},
           {
-            href: 'https://juniors017.github.io/docux-blog/',
+            href: 'https://github.com/Juniors017/docux-blog',
             label: 'GitHub',
             position: 'right',
           },
@@ -129,10 +218,7 @@ const config = {
                 label: 'Discord',
                 href: 'https://discordapp.com/invite/docusaurus',
               },
-              {
-                label: 'X',
-                href: 'https://x.com/docusaurus',
-              },
+             
             ],
           },
           {
