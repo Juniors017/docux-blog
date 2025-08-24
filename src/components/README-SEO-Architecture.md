@@ -1,11 +1,16 @@
 # Architecture SEO - Docux Blog
 
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![AI Assisted](https://img.shields.io/badge/AI%20Assisted-GitHub%20Copilot-purple.svg)](https://copilot.github.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Vue d'ensemble
 
-L'architecture SEO de Docux Blog est maintenant séparée en deux composants distincts pour une meilleure maintenabilité et séparation des responsabilités :
+L'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagnement de **GitHub Copilot**, est maintenant séparée en deux composants distincts pour une meilleure maintenabilité et séparation des responsabilités :
 
 ### 🎯 Composant SEO Principal (`src/components/Seo/index.jsx`)
 
+**🧑‍💻 Développeur** : Docux avec assistance IA  
 **Responsabilité** : Gestion des métadonnées et du référencement naturel
 
 **Fonctionnalités** :
@@ -27,6 +32,7 @@ L'architecture SEO de Docux Blog est maintenant séparée en deux composants dis
 
 ### 🔍 Composant Debug SEO (`src/components/SeoDebugPanel/index.jsx`)
 
+**🧑‍💻 Développeur** : Docux avec assistance GitHub Copilot  
 **Responsabilité** : Outils de développement et validation SEO
 
 **Fonctionnalités** :
@@ -40,7 +46,7 @@ L'architecture SEO de Docux Blog est maintenant séparée en deux composants dis
 - ✅ Actions rapides (rapport, export, test Google)
 - 🆕 **Algorithme de validation avancé** avec score intelligent
 - 🆕 **Interface type Google Rich Results Test** intégrée
-- 🆕 **Documentation complète** dans `SeoDebugPanel/README.md`
+- 🆕 **Documentation technique complète** dans `SeoDebugPanel/README.md`
 - 🆕 **Troubleshooting automatique** avec diagnostics détaillés
 
 **Interface utilisateur** :
@@ -247,7 +253,7 @@ Si vous aviez l'ancienne version intégrée, la nouvelle architecture :
 - Troubleshooting automatique intégré
 
 **📚 Documentation Exhaustive**
-- `SeoDebugPanel/README.md` : Guide complet de 400+ lignes
+- `SeoDebugPanel/README.md` : Guide technique complet développé par Docux
 - Exemples d'usage pour tous les cas de figure
 - Troubleshooting avec solutions détaillées
 - API complète avec props et méthodes
@@ -256,6 +262,43 @@ Si vous aviez l'ancienne version intégrée, la nouvelle architecture :
 - Mode développement uniquement pour le debug panel
 - Hooks conditionnels pour éviter les erreurs
 - Validation à la demande sans impact performance
+
+---
+
+## 📄 Licence et Crédits
+
+### 🧑‍💻 Développement
+
+**Développeur Principal** : [Docux](https://github.com/Juniors017)
+- Conception et architecture complète des composants SEO
+- Développement de l'algorithme de validation avancé
+- Interface utilisateur et expérience développeur
+- Intégration optimisée avec Docusaurus
+
+**Assistant IA** : GitHub Copilot
+- Accompagnement dans le développement et l'optimisation
+- Suggestions d'amélioration et debugging
+- Génération de documentation technique
+- Optimisation des performances et bonnes pratiques
+
+### 📋 Licence
+
+Ce code est distribué sous **licence MIT**. Libre d'utilisation, modification et distribution.
+
+```text
+MIT License - Copyright (c) 2025 Docux (Juniors017)
+```
+
+### 🤝 Contribution
+
+- **Repository** : [docux-blog](https://github.com/Juniors017/docux-blog)
+- **Issues** : Signalez les bugs via GitHub Issues
+- **Contributions** : Pull requests et suggestions bienvenues
+- **Support** : Documentation complète dans chaque composant
+
+---
+
+*Architecture SEO développée avec ❤️ par **Docux**, accompagné par l'intelligence artificielle **GitHub Copilot***
 - Gestion d'erreurs robuste avec fallbacks
 
 ---

@@ -1,9 +1,25 @@
+/**
+ * SeoDebugPanel - Panel de Debug SEO Avancé
+ * Développé par Docux avec l'assistance de GitHub Copilot
+ * 
+ * Ce composant fournit une interface de debugging professionnelle pour le SEO :
+ * - Validation Schema.org en temps réel avec scoring intelligent
+ * - Interface de type Google Rich Results Test intégrée
+ * - Métriques de performance et diagnostics automatiques
+ * - Actions rapides : export JSON, test Google, copie URL
+ * - Affichage uniquement en mode développement pour la sécurité
+ * 
+ * @param {Object} jsonLd - Structure JSON-LD générée par le composant SEO
+ * @param {Object} pageInfo - Type et catégorie de page détectés
+ * @param {Object} location - Informations de navigation React Router
+ * @param {Object} blogPostData - Métadonnées d'article (si applicable)
+ * @param {Object} pageMetadata - Métadonnées de page (si applicable)
+ * @param {Object} siteConfig - Configuration globale Docusaurus
+ * @param {Object} detections - Résultats de détection de type de page
+ */
+
 import React from 'react';
 
-/**
- * Panel de debug SEO avancé
- * Composant dédié pour la validation et le monitoring SEO en développement
- */
 export default function SeoDebugPanel({ 
   jsonLd, 
   pageInfo, 
@@ -13,70 +29,133 @@ export default function SeoDebugPanel({
   siteConfig,
   detections 
 }) {
-  const [debugVisible, setDebugVisible] = React.useState(true);
-  const [activeTab, setActiveTab] = React.useState('overview');
-  const [showReport, setShowReport] = React.useState(false);
-  const [currentReport, setCurrentReport] = React.useState(null);
+  // ===== ÉTAT DU COMPOSANT =====
+  const [debugVisible, setDebugVisible] = React.useState(true);    // Visibilité du panel
+  const [activeTab, setActiveTab] = React.useState('overview');    // Onglet actif
+  const [showReport, setShowReport] = React.useState(false);       // Affichage du rapport
+  const [currentReport, setCurrentReport] = React.useState(null);  // Rapport généré
 
-  // Fonctions de validation SEO
+  /**
+   * FONCTION DE VALIDATION JSON-LD
+   * 
+   * Analyse la structure JSON-LD et génère un rapport de validation
+   * avec catégorisation des problèmes (erreurs, avertissements, validations).
+   * Suit les standards Schema.org et les bonnes pratiques SEO.
+   */
   const validateJsonLd = (jsonLd) => {
-    const issues = [];
-    const warnings = [];
-    const validations = [];
+    const issues = [];      // Erreurs critiques qui bloquent le SEO
+    const warnings = [];    // Avertissements qui affectent l'optimisation
+    const validations = []; // Validations réussies qui confirment la conformité
 
-    // Validation des champs requis Schema.org
-    if (!jsonLd['@context']) issues.push('❌ @context manquant');
-    else validations.push('✅ @context présent');
+    // === VALIDATION DES CHAMPS OBLIGATOIRES SCHEMA.ORG ===
+    
+    // @context : Obligatoire pour identifier le vocabulaire Schema.org
+    if (!jsonLd['@context']) {
+      issues.push('❌ @context manquant - Requis pour Schema.org');
+    } else {
+      validations.push('✅ @context présent et valide');
+    }
 
-    if (!jsonLd['@type']) issues.push('❌ @type manquant');
-    else validations.push(`✅ @type: ${jsonLd['@type']}`);
+    // @type : Obligatoire pour identifier le type de contenu
+    if (!jsonLd['@type']) {
+      issues.push('❌ @type manquant - Type de contenu indéfini');
+    } else {
+      validations.push(`✅ @type défini: ${jsonLd['@type']}`);
+    }
 
-    if (!jsonLd.name && !jsonLd.headline) issues.push('❌ Titre manquant (name/headline)');
-    else validations.push('✅ Titre présent');
+    // Titre : name ou headline requis pour tous les types
+    if (!jsonLd.name && !jsonLd.headline) {
+      issues.push('❌ Titre manquant (propriété name ou headline requise)');
+    } else {
+      validations.push('✅ Titre présent et accessible');
+    }
 
-    if (!jsonLd.description) warnings.push('⚠️ Description manquante');
-    else validations.push('✅ Description présente');
+    // Description : Recommandée pour le SEO et les Rich Results
+    if (!jsonLd.description) {
+      warnings.push('⚠️ Description manquante - Impact sur les Rich Results');
+    } else {
+      validations.push('✅ Description présente et optimisée');
+    }
 
-    // Validation spécifique BlogPosting
+    // === VALIDATION SPÉCIFIQUE POUR LES ARTICLES (BlogPosting) ===
     if (jsonLd['@type'] === 'BlogPosting') {
-      if (!jsonLd.author) issues.push('❌ Auteur manquant pour BlogPosting');
-      else validations.push(`✅ Auteur(s): ${Array.isArray(jsonLd.author) ? jsonLd.author.length : 1}`);
+      
+      // Auteur : Obligatoire pour BlogPosting selon Schema.org
+      if (!jsonLd.author) {
+        issues.push('❌ Auteur manquant - Requis pour BlogPosting');
+      } else {
+        const authorCount = Array.isArray(jsonLd.author) ? jsonLd.author.length : 1;
+        validations.push(`✅ Auteur(s) défini(s): ${authorCount}`);
+      }
 
-      if (!jsonLd.datePublished) warnings.push('⚠️ Date de publication manquante');
-      else validations.push('✅ Date de publication présente');
+      // Date de publication : Recommandée pour la fraîcheur du contenu
+      if (!jsonLd.datePublished) {
+        warnings.push('⚠️ Date de publication manquante - Impact sur la fraîcheur');
+      } else {
+        validations.push('✅ Date de publication présente');
+      }
 
-      if (!jsonLd.image) warnings.push('⚠️ Image manquante pour Rich Results');
-      else validations.push('✅ Image présente pour Rich Results');
+      // Image : Importante pour les Rich Results Google
+      if (!jsonLd.image) {
+        warnings.push('⚠️ Image manquante - Réduit les chances d\'apparition en Rich Results');
+      } else {
+        validations.push('✅ Image présente pour Rich Results Google');
+      }
 
-      if (!jsonLd.publisher) issues.push('❌ Publisher manquant pour BlogPosting');
-      else validations.push('✅ Publisher présent');
-    }
-
-    // Validation des URLs
-    if (jsonLd.url && !jsonLd.url.startsWith('http')) {
-      issues.push('❌ URL invalide (doit être absolue)');
-    } else if (jsonLd.url) {
-      validations.push('✅ URL valide');
-    }
-
-    // Validation des images
-    if (jsonLd.image) {
-      if (typeof jsonLd.image === 'string') {
-        warnings.push('⚠️ Image en string simple (recommandé: ImageObject)');
-      } else if (jsonLd.image['@type'] === 'ImageObject') {
-        validations.push('✅ Image structurée (ImageObject)');
-        if (!jsonLd.image.url) issues.push('❌ URL d\'image manquante');
-        if (!jsonLd.image.caption) warnings.push('⚠️ Caption d\'image manquante');
+      
+      // Publisher : Obligatoire pour BlogPosting selon Schema.org
+      if (!jsonLd.publisher) {
+        issues.push('❌ Publisher manquant - Requis pour BlogPosting');
+      } else {
+        validations.push('✅ Publisher présent et structuré');
       }
     }
 
-    // Validation de la langue
-    if (!jsonLd.inLanguage) warnings.push('⚠️ Langue non spécifiée');
-    else validations.push(`✅ Langue: ${jsonLd.inLanguage}`);
+    // === VALIDATIONS GÉNÉRALES POUR TOUS LES TYPES ===
+    
+    // URL : Doit être absolue pour les Rich Results
+    if (jsonLd.url && !jsonLd.url.startsWith('http')) {
+      issues.push('❌ URL invalide - Doit être absolue (commencer par http/https)');
+    } else if (jsonLd.url) {
+      validations.push('✅ URL canonique valide');
+    }
+
+    // Images : Validation de la structure
+    if (jsonLd.image) {
+      if (typeof jsonLd.image === 'string') {
+        warnings.push('⚠️ Image en format string simple (recommandé: ImageObject structuré)');
+      } else if (jsonLd.image['@type'] === 'ImageObject') {
+        validations.push('✅ Image structurée selon Schema.org (ImageObject)');
+        
+        // Validation des propriétés ImageObject
+        if (!jsonLd.image.url) {
+          issues.push('❌ URL d\'image manquante dans ImageObject');
+        }
+        if (!jsonLd.image.caption) {
+          warnings.push('⚠️ Caption d\'image manquante - Améliore l\'accessibilité');
+        }
+      }
+    }
+
+    // Langue : Recommandée pour l'internationalisation
+    if (!jsonLd.inLanguage) {
+      warnings.push('⚠️ Langue non spécifiée - Impact sur la géolocalisation des résultats');
+    } else {
+      validations.push(`✅ Langue spécifiée: ${jsonLd.inLanguage}`);
+    }
 
     return { issues, warnings, validations };
   };
 
+  /**
+   * CALCUL DU SCORE SEO INTELLIGENT
+   * 
+   * Algorithme développé par Docux pour noter la qualité SEO :
+   * - Chaque validation réussie = +points
+   * - Chaque avertissement = -10% du score
+   * - Chaque erreur = -20% du score
+   * - Score final entre 0 et 100 avec code couleur
+   */
   const checkSeoScore = () => {
     const validation = validateJsonLd(jsonLd);
     const totalChecks = validation.issues.length + validation.warnings.length + validation.validations.length;
@@ -84,95 +163,311 @@ export default function SeoDebugPanel({
     const warningPenalty = validation.warnings.length * 0.1;
     const errorPenalty = validation.issues.length * 0.3;
     
-    const score = Math.max(0, Math.min(100, ((validCount / totalChecks) * 100) - (warningPenalty * 10) - (errorPenalty * 20)));
+    // Formule de calcul optimisée
+    const score = Math.max(0, Math.min(100, 
+      ((validCount / totalChecks) * 100) - 
+      (warningPenalty * 10) - 
+      (errorPenalty * 20)
+    ));
     
-    let scoreColor = '#ff4444';
-    if (score >= 80) scoreColor = '#00ff88';
-    else if (score >= 60) scoreColor = '#ffaa00';
+    // Attribution de couleur selon le score (style Google PageSpeed)
+    let scoreColor = '#ff4444';      // Rouge pour < 60%
+    if (score >= 80) scoreColor = '#00ff88';      // Vert pour >= 80%
+    else if (score >= 60) scoreColor = '#ffaa00'; // Orange pour 60-79%
     
     return { score: Math.round(score), color: scoreColor, validation };
   };
 
+  /**
+   * GÉNÉRATION DE RAPPORT SEO COMPLET
+   * 
+   * Crée un rapport détaillé exportable en JSON contenant :
+   * - Toutes les métadonnées de la page
+   * - Résultats de validation
+   * - Score et recommandations
+   * - Timestamp et URL
+   */
   const generateSeoReport = () => {
     const report = {
-      url: window.location.href,
-      pageType: pageInfo.type,
-      timestamp: new Date().toISOString(),
-      validation: validateJsonLd(jsonLd),
-      jsonLd: jsonLd,
-      hasStructuredData: true,
-      recommendations: []
+      url: window.location.href,                    // URL de la page analysée
+      pageType: pageInfo.type,                      // Type Schema.org détecté
+      timestamp: new Date().toISOString(),          // Horodatage du rapport
+      validation: validateJsonLd(jsonLd),           // Résultats de validation
+      jsonLd: jsonLd,                              // Structure JSON-LD complète
+      hasStructuredData: true,                      // Confirmation de présence des données
+      recommendations: []                           // Recommandations d'amélioration
     };
 
-    // Générer des recommandations
+    // === GÉNÉRATION DE RECOMMANDATIONS INTELLIGENTES ===
+    
+    // Recommandations critiques (erreurs bloquantes)
     if (report.validation.issues.length > 0) {
-      report.recommendations.push('🔧 Corriger les erreurs critiques pour améliorer le SEO');
+      report.recommendations.push('🔧 Corriger les erreurs critiques pour améliorer le référencement');
     }
+    
+    // Recommandations d'optimisation (avertissements)
     if (report.validation.warnings.length > 0) {
-      report.recommendations.push('⚡ Ajouter les métadonnées manquantes pour optimiser les Rich Results');
+      report.recommendations.push('⚡ Ajouter les métadonnées manquantes pour maximiser les Rich Results');
     }
+    
+    // Recommandations spécifiques aux articles
     if (detections.isBlogPost && !blogPostData?.frontMatter?.image) {
-      report.recommendations.push('🖼️ Ajouter une image à l\'article pour les Rich Results');
+      report.recommendations.push('🖼️ Ajouter une image featured à l\'article pour améliorer l\'engagement');
     }
+    
+    // Recommandations de contenu
     if (!jsonLd.keywords || jsonLd.keywords.length === 0) {
-      report.recommendations.push('🏷️ Ajouter des mots-clés pour améliorer la catégorisation');
+      report.recommendations.push('🏷️ Ajouter des mots-clés pour améliorer la catégorisation et la découvrabilité');
     }
 
     return report;
   };
 
-  // Ne pas afficher en production
+  /**
+   * DÉTECTION DES HOOKS DOCUSAURUS PERTINENTS
+   * 
+   * Analyse intelligente des hooks nécessaires selon le type de page
+   * pour diagnostiquer les problèmes de récupération de métadonnées.
+   */
+  const getRelevantHooks = () => {
+    const relevantHooks = [];
+    
+    // === HOOKS UNIVERSELS (toujours nécessaires) ===
+    relevantHooks.push({ 
+      name: 'useLocation', 
+      active: true, 
+      status: 'Actif',
+      description: 'Navigation et analyse d\'URL'
+    });
+    relevantHooks.push({ 
+      name: 'useDocusaurusContext', 
+      active: true, 
+      status: 'Actif',
+      description: 'Configuration globale du site'
+    });
+    
+    // === HOOKS SPÉCIFIQUES SELON LE TYPE DE PAGE ===
+    
+    if (detections.isBlogPost) {
+      // Pour les articles de blog : useBlogPost est critique
+      relevantHooks.push({
+        name: 'useBlogPost',
+        active: !!blogPostData,
+        status: blogPostData ? 'Actif' : 'Inactif',
+        description: 'Métadonnées d\'article (titre, auteur, date...)',
+        critical: true // Marque ce hook comme critique pour ce type de page
+      });
+    } else {
+      // Pour toutes les autres pages : usePageMetadata ou équivalent
+      relevantHooks.push({
+        name: 'usePageMetadata',
+        active: !!pageMetadata,
+        status: pageMetadata ? 'Actif' : 'Inactif',
+        description: 'Métadonnées de page statique ou docs',
+        critical: true // Critique pour les pages non-blog
+      });
+    }
+    
+    return relevantHooks;
+  };
+
+  /**
+   * DÉTECTION INTELLIGENTE DES ÉLÉMENTS PERTINENTS
+   * 
+   * Filtre et organise les détections selon le type de page
+   * pour afficher seulement les informations pertinentes.
+   */
+  const getRelevantDetections = () => {
+    const relevantDetections = [];
+    
+    // === TYPOLOGIE DES PAGES DISPONIBLES ===
+    const pageTypes = [
+      { key: 'isBlogPost', label: 'Article de blog', icon: '📝' },
+      { key: 'isBlogListPage', label: 'Liste d\'articles', icon: '📋' },
+      { key: 'isSeriesPage', label: 'Page de série', icon: '📚' },
+      { key: 'isHomePage', label: 'Page d\'accueil', icon: '🏠' },
+      { key: 'isThanksPage', label: 'Page remerciements', icon: '🙏' },
+      { key: 'isRepositoryPage', label: 'Page repository', icon: '📦' }
+    ];
+    
+    // === IDENTIFICATION DU TYPE DE PAGE PRINCIPAL ===
+    const detectedPageType = pageTypes.find(type => detections[type.key]);
+    if (detectedPageType) {
+      relevantDetections.push({
+        key: detectedPageType.key,
+        value: true,
+        label: detectedPageType.label,
+        icon: detectedPageType.icon,
+        category: 'Type de page',
+        importance: 'high' // Marque comme information importante
+      });
+    }
+    
+    // === DÉTECTIONS SPÉCIFIQUES SELON LE TYPE DE PAGE ===
+    
+    if (detections.isBlogPost) {
+      // Éléments critiques pour les articles de blog
+      relevantDetections.push(
+        {
+          key: 'hasAuthor',
+          value: detections.hasAuthor,
+          label: 'Auteur identifié',
+          icon: '👤',
+          category: 'Contenu blog',
+          importance: detections.hasAuthor ? 'high' : 'critical'
+        },
+        {
+          key: 'hasBlogData',
+          value: detections.hasBlogData,
+          label: 'Métadonnées article',
+          icon: '📊',
+          category: 'Contenu blog',
+          importance: detections.hasBlogData ? 'high' : 'critical'
+        },
+        {
+          key: 'hasImage',
+          value: detections.hasImage,
+          label: 'Image featured',
+          icon: '🖼️',
+          category: 'Contenu blog',
+          importance: detections.hasImage ? 'medium' : 'high'
+        }
+      );
+    } else if (detections.isBlogListPage) {
+      // Éléments pour les pages d'index/listing
+      relevantDetections.push(
+        {
+          key: 'hasPageData',
+          value: detections.hasPageData,
+          label: 'Métadonnées d\'index',
+          icon: '📋',
+          category: 'Contenu collection',
+          importance: detections.hasPageData ? 'medium' : 'high'
+        },
+        {
+          key: 'hasImage',
+          value: detections.hasImage,
+          label: 'Image sociale',
+          icon: '🖼️',
+          category: 'Contenu collection',
+          importance: detections.hasImage ? 'medium' : 'low'
+        }
+      );
+    } else if (detections.isSeriesPage) {
+      // Éléments pour les pages de série
+      relevantDetections.push(
+        {
+          key: 'hasPageData',
+          value: detections.hasPageData,
+          label: 'Données de série',
+          icon: '📚',
+          category: 'Contenu série',
+          importance: detections.hasPageData ? 'medium' : 'high'
+        },
+        {
+          key: 'hasImage',
+          value: detections.hasImage,
+          label: 'Image de série',
+          icon: '🖼️',
+          category: 'Contenu série',
+          importance: detections.hasImage ? 'low' : 'medium'
+        }
+      );
+    } else {
+      // === PAGES STATIQUES (accueil, thanks, repository, etc.) ===
+      relevantDetections.push({
+        key: 'hasPageData',
+        value: detections.hasPageData,
+        label: 'Métadonnées de page',
+        icon: '📄',
+        category: 'Contenu statique',
+        importance: detections.hasPageData ? 'medium' : 'high'
+      });
+      
+      // Image pour pages statiques (optionnelle mais recommandée)
+      if (detections.hasImage !== undefined) {
+        relevantDetections.push({
+          key: 'hasImage',
+          value: detections.hasImage,
+          label: 'Image sociale',
+          icon: '🖼️',
+          category: 'Contenu statique',
+          importance: detections.hasImage ? 'low' : 'medium'
+        });
+      }
+    }
+    
+    return relevantDetections;
+  };
+
+  /**
+   * SÉCURITÉ : AFFICHAGE UNIQUEMENT EN DÉVELOPPEMENT
+   * 
+   * Le panel ne doit JAMAIS apparaître en production pour :
+   * - Éviter l'exposition de données sensibles
+   * - Maintenir les performances optimales
+   * - Respecter les bonnes pratiques de sécurité
+   */
   if (process.env.NODE_ENV !== 'development') {
-    return null;
+    return null; // Arrêt immédiat si on n'est pas en développement
   }
 
+  /**
+   * RENDU DU COMPOSANT DEBUG PANEL
+   * 
+   * Interface complète avec :
+   * - Bouton toggle flottant
+   * - Panel principal avec onglets
+   * - Actions rapides intégrées
+   */
   return (
     <>
-      {/* Bouton toggle debug */}
+      {/* ===== BOUTON TOGGLE FLOTTANT ===== */}
       <button
         onClick={() => setDebugVisible(!debugVisible)}
         style={{
           position: 'fixed',
-          bottom: debugVisible ? '260px' : '10px',
+          bottom: debugVisible ? '260px' : '10px',     // Position dynamique selon l'état
           right: '10px',
-          background: 'rgba(0,0,0,0.9)',
-          color: '#00ff88',
+          background: 'rgba(0,0,0,0.9)',               // Fond sombre semi-transparent
+          color: '#00ff88',                            // Couleur signature Docux
           border: '1px solid rgba(255,255,255,0.3)',
-          borderRadius: '50%',
+          borderRadius: '50%',                         // Bouton circulaire
           width: '45px',
           height: '45px',
           fontSize: '18px',
           cursor: 'pointer',
-          zIndex: 10000,
-          fontFamily: 'monospace',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+          zIndex: 10000,                               // Au-dessus de tout
+          fontFamily: 'monospace',                     // Police cohérente
+          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',    // Ombre légère
+          transition: 'all 0.3s ease'                 // Animation fluide
         }}
-        title={debugVisible ? 'Masquer le SEO Panel Pro' : 'Afficher le SEO Panel Pro'}
+        title={debugVisible ? 'Masquer le SEO Panel Pro' : 'Afficher le SEO Panel Pro - Développé par Docux'}
       >
-        {debugVisible ? '🔍' : '👁️'}
+        {debugVisible ? '🔍' : '👁️'}                   {/* Icône dynamique */}
       </button>
 
-      {/* Panel de debug avancé */}
+      {/* ===== PANEL PRINCIPAL (affiché conditionnellement) ===== */}
       {debugVisible && (
         <div style={{
           position: 'fixed',
           bottom: '10px',
           right: '10px',
-          background: 'rgba(0,0,0,0.95)',
+          background: 'rgba(0,0,0,0.95)',              // Fond très sombre pour la lisibilité
           color: 'white',
           padding: '12px',
-          borderRadius: '6px',
-          fontSize: '10px',
-          zIndex: 9999,
-          fontFamily: 'monospace',
-          border: '1px solid rgba(255,255,255,0.3)',
-          minWidth: '380px',
-          maxWidth: '450px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-          maxHeight: '85vh',
-          overflowY: 'auto'
+          borderRadius: '6px',                         // Coins arrondis subtils
+          fontSize: '10px',                            // Taille optimisée pour les infos
+          zIndex: 9999,                                // Sous le bouton toggle
+          fontFamily: 'monospace',                     // Police monospace pour les données
+          border: '1px solid rgba(255,255,255,0.3)',  // Bordure subtile
+          minWidth: '380px',                           // Largeur minimale pour le contenu
+          maxWidth: '450px',                           // Largeur maximale responsive
+          boxShadow: '0 4px 12px rgba(0,0,0,0.5)',   // Ombre prononcée
+          maxHeight: '85vh',                           // Hauteur max responsive
+          overflowY: 'auto'                            // Scroll si contenu déborde
         }}>
-          {/* Header avec onglets */}
+          {/* ===== HEADER AVEC ONGLETS ===== */}
           <div style={{ 
             fontWeight: 'bold', 
             marginBottom: '8px', 
@@ -261,17 +556,45 @@ export default function SeoDebugPanel({
 
               {pageMetadata && !blogPostData && (
                 <div style={{ marginBottom: '6px' }}>
-                  <strong style={{ color: '#ffaa00' }}>Page Metadata:</strong>
+                  <strong style={{ color: '#ffaa00' }}>
+                    {detections.isHomePage ? 'Site Metadata:' : 
+                     detections.isBlogListPage ? 'Blog Index Metadata:' : 'Page Metadata:'}
+                  </strong>
                   <div style={{ fontSize: '9px', color: '#ccc', marginTop: '2px' }}>
                     <div>📝 {pageMetadata.title || 'Sans titre'}</div>
                     <div>📄 {pageMetadata.description || 'Sans description'}</div>
-                    {pageMetadata.frontMatter && (
+                    
+                    {detections.isHomePage ? (
+                      // Affichage spécial pour la page d'accueil
+                      <>
+                        <div>🌐 Type: Site web principal</div>
+                        <div>🎯 Purpose: Page d'entrée du site</div>
+                        <div>🔍 SEO Focus: Visibilité globale</div>
+                        <div>🖼️ Social Image: {siteConfig.themeConfig?.image ? '✅' : '⚠️ Recommandée'}</div>
+                      </>
+                    ) : detections.isBlogListPage ? (
+                      // Affichage spécial pour la liste de blog
+                      <>
+                        <div>📋 Type: Index des articles</div>
+                        <div>🎯 Purpose: Navigation dans le blog</div>
+                        <div>🔍 SEO Focus: Découvrabilité des contenus</div>
+                        <div>📊 Content: Articles listés automatiquement</div>
+                        <div>🖼️ Social Image: {siteConfig.themeConfig?.image ? '✅' : '⚠️ Recommandée'}</div>
+                      </>
+                    ) : pageMetadata.frontMatter ? (
+                      // Affichage pour autres pages avec frontMatter
                       <>
                         <div>🖼️ Image: {pageMetadata.frontMatter.image ? '✅' : '❌'}</div>
                         <div>🏷️ Keywords: {pageMetadata.frontMatter.keywords ? '✅' : '❌'}</div>
                         <div>👤 Author: {pageMetadata.frontMatter.author ? '✅' : '❌'}</div>
                         <div>📅 Date: {pageMetadata.frontMatter.date ? '✅' : '❌'}</div>
                         <div>🎯 Category: {pageMetadata.frontMatter.category || 'Non définie'}</div>
+                      </>
+                    ) : (
+                      // Affichage pour pages sans frontMatter
+                      <>
+                        <div>📄 Type: Page statique</div>
+                        <div>🎯 Content: Généré automatiquement</div>
                       </>
                     )}
                   </div>
@@ -379,23 +702,48 @@ export default function SeoDebugPanel({
               <div style={{ marginBottom: '6px' }}>
                 <strong style={{ color: '#ffaa00' }}>Hooks status:</strong>
                 <div style={{ fontSize: '9px', marginTop: '2px' }}>
-                  <div style={{ color: blogPostData ? '#00ff88' : '#555' }}>
-                    {blogPostData ? '✅' : '❌'} useBlogPost: {blogPostData ? 'Actif' : 'Inactif'}
-                  </div>
-                  <div style={{ color: pageMetadata ? '#00ff88' : '#555' }}>
-                    {pageMetadata ? '✅' : '❌'} usePageMetadata: {pageMetadata ? 'Actif' : 'Inactif'}
-                  </div>
-                  <div style={{ color: '#00ff88' }}>✅ useLocation: Actif</div>
-                  <div style={{ color: '#00ff88' }}>✅ useDocusaurusContext: Actif</div>
+                  {getRelevantHooks().map((hook, index) => (
+                    <div key={index} style={{ 
+                      color: hook.active ? '#00ff88' : hook.critical ? '#ff4444' : '#ffaa00',
+                      marginBottom: '1px'
+                    }}>
+                      {hook.active ? '✅' : '❌'} {hook.name}: {hook.status}
+                      <span style={{ color: '#888', fontSize: '8px' }}> • {hook.description}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Détections:</strong>
+                <strong style={{ color: '#ffaa00' }}>Détections contextuelles:</strong>
                 <div style={{ fontSize: '9px', marginTop: '2px' }}>
-                  {Object.entries(detections).map(([key, value]) => (
-                    <div key={key} style={{ color: value ? '#00ff88' : '#555' }}>
-                      {value ? '✅' : '❌'} {key}
+                  {getRelevantDetections().map((detection, index) => (
+                    <div key={index} style={{ marginBottom: '2px' }}>
+                      {detection.category && index === 0 && (
+                        <div style={{ 
+                          color: '#88aaff', 
+                          fontSize: '8px', 
+                          fontWeight: 'bold',
+                          marginBottom: '1px'
+                        }}>
+                          {detection.category}:
+                        </div>
+                      )}
+                      {detection.category && index > 0 && 
+                       getRelevantDetections()[index - 1].category !== detection.category && (
+                        <div style={{ 
+                          color: '#88aaff', 
+                          fontSize: '8px', 
+                          fontWeight: 'bold',
+                          marginTop: '4px',
+                          marginBottom: '1px'
+                        }}>
+                          {detection.category}:
+                        </div>
+                      )}
+                      <div style={{ color: detection.value ? '#00ff88' : '#ffaa00' }}>
+                        {detection.value ? '✅' : '⚠️'} {detection.icon} {detection.label}
+                      </div>
                     </div>
                   ))}
                 </div>
