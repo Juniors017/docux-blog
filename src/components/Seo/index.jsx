@@ -2,11 +2,57 @@ import React from 'react';
 import { useLocation } from '@docusaurus/router';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import authorsData from '@site/src/data/authors';
+import SeoDebugPanel from '../SeoDebugPanel';
 
 export default function Seo() {
   const location = useLocation();
   const { siteConfig } = useDocusaurusContext();
-  const [debugVisible, setDebugVisible] = React.useState(true);
+  
+  // Hook pour récupérer les métadonnées du blog post (si disponible)
+  let blogPostData = null;
+  let pageMetadata = null;
+  
+  try {
+    // Importer dynamiquement le hook useBlogPost seulement si on est sur une page de blog
+    const { useBlogPost } = require('@docusaurus/plugin-content-blog/client');
+    if (typeof useBlogPost === 'function') {
+      const blogPost = useBlogPost?.();
+      if (blogPost?.metadata) {
+        blogPostData = blogPost.metadata;
+      }
+    }
+  } catch (error) {
+    // Hook useBlogPost non disponible sur cette page (normal pour les pages non-blog)
+    // Le composant SEO continue de fonctionner avec des métadonnées génériques
+  }
+
+  // Essayer de récupérer les métadonnées génériques de page (docs, pages custom, etc.)
+  try {
+    const { useDoc } = require('@docusaurus/plugin-content-docs/client');
+    if (typeof useDoc === 'function') {
+      const doc = useDoc?.();
+      if (doc?.metadata) {
+        pageMetadata = doc.metadata;
+      }
+    }
+  } catch (error) {
+    // Hook useDoc non disponible ou pas sur une page docs
+  }
+
+  // Alternative: essayer de récupérer via le hook global de Docusaurus
+  try {
+    const { usePageMetadata } = require('@docusaurus/core/lib/client/exports/router');
+    if (typeof usePageMetadata === 'function') {
+      const metadata = usePageMetadata?.();
+      if (metadata && !pageMetadata) {
+        pageMetadata = metadata;
+      }
+    }
+  } catch (error) {
+    // Hook non disponible
+  }
   
   // Détecter le type de page (adapté à votre site sans docs)
   const isBlogPost = location.pathname.includes('/blog/') && 
@@ -39,371 +85,218 @@ export default function Seo() {
 
   const pageInfo = getPageType();
 
-  // Debug console en développement
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.group('🔍 SEO Debug - ' + pageInfo.category);
-      console.log('📍 URL:', location.pathname);
-      console.log('🔍 Query params:', location.search);
-      console.log('🏷️ Type de page:', pageInfo.category);
-      console.log('📊 Schema.org:', pageInfo.type);
-      console.log('📋 JSON-LD généré:', additionalJsonLd);
-      console.log('🌐 Site config:', {
-        title: siteConfig.title,
-        tagline: siteConfig.tagline,
-        url: siteConfig.url,
-        baseUrl: siteConfig.baseUrl
-      });
-      console.log('🔍 Détections:', {
-        isBlogPost,
-        isBlogListPage,
-        isSeriesPage,
-        isRepositoryPage,
-        isHomePage,
-        isThanksPage
-      });
-      console.groupEnd();
-    }
-  }, [location.pathname]);
+  // Construire les métadonnées de base avec système de fallback
+  const title = blogPostData?.title || 
+                pageMetadata?.title || 
+                'Page'; // Fallback par défaut
 
-  // Données structurées additionnelles selon le type de page
-  const additionalJsonLd = {
-    "@context": "https://schema.org",
-    "@type": pageInfo.type,
-    "publisher": {
-      "@type": "Organization", 
-      "name": "DOCUX",
-      "logo": {
-        "@type": "ImageObject",
-        "url": `${siteConfig.url}${siteConfig.baseUrl}img/docux.png`
+  const description = blogPostData?.description || 
+                     pageMetadata?.description || 
+                     siteConfig?.tagline || 
+                     'Documentation et tutoriels sur Docusaurus';
+
+  const canonicalUrl = siteConfig.url + useBaseUrl(location.pathname);
+
+  // Image de base - priorité aux frontmatter puis au site
+  let imageUrl;
+  
+  if (blogPostData?.frontMatter?.image) {
+    // Image spécifiée dans l'article
+    imageUrl = blogPostData.frontMatter.image.startsWith('http') 
+      ? blogPostData.frontMatter.image 
+      : siteConfig.url + useBaseUrl(blogPostData.frontMatter.image);
+  } else if (pageMetadata?.frontMatter?.image) {
+    // Image spécifiée dans une page docs/personnalisée
+    imageUrl = pageMetadata.frontMatter.image.startsWith('http')
+      ? pageMetadata.frontMatter.image
+      : siteConfig.url + useBaseUrl(pageMetadata.frontMatter.image);
+  } else {
+    // Image par défaut du site
+    imageUrl = siteConfig.url + useBaseUrl('/img/docux.png');
+  }
+
+  // Récupérer l'auteur principal du blog post si disponible
+  let primaryAuthor = null;
+  
+  if (blogPostData?.frontMatter?.authors) {
+    // Gérer les différents formats d'auteurs
+    let authorKey;
+    if (Array.isArray(blogPostData.frontMatter.authors)) {
+      authorKey = blogPostData.frontMatter.authors[0];
+    } else if (typeof blogPostData.frontMatter.authors === 'string') {
+      authorKey = blogPostData.frontMatter.authors;
+    }
+    
+    if (authorKey && authorsData[authorKey]) {
+      primaryAuthor = authorsData[authorKey];
+    }
+  }
+
+  // Si pas d'auteur dans le frontmatter, vérifier s'il y en a un générique
+  if (!primaryAuthor && pageMetadata?.frontMatter?.author) {
+    const authorKey = pageMetadata.frontMatter.author;
+    if (authorsData[authorKey]) {
+      primaryAuthor = authorsData[authorKey];
+    }
+  }
+
+  // Construire le JSON-LD structuré avec tous les champs pour Google Rich Results
+  const additionalJsonLd = (() => {
+    const baseStructure = {
+      '@context': 'https://schema.org',
+      '@type': pageInfo.type,
+      name: title,
+      headline: title,
+      description: description,
+      url: canonicalUrl,
+      image: {
+        '@type': 'ImageObject',
+        url: imageUrl,
+        caption: `Image pour: ${title}`
+      },
+      inLanguage: 'fr-FR',
+      isPartOf: {
+        '@type': 'WebSite',
+        name: siteConfig.title,
+        url: siteConfig.url
       }
-    },
-    "inLanguage": "fr-FR",
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": `${siteConfig.url}${location.pathname}`
-    },
-    // Métadonnées spécifiques selon le type
-    ...(isBlogPost && {
-      "genre": "Blog",
-      "articleSection": "Technology"
-    }),
-    ...(isSeriesPage && {
-      "genre": "Educational Series",
-      "learningResourceType": "tutorial series"
-    }),
-    ...(isRepositoryPage && {
-      "genre": "Repository",
-      "about": "Code repositories and projects"
-    })
+    };
+
+    // Enrichir selon le type de page
+    if (pageInfo.type === 'BlogPosting' && blogPostData) {
+      return {
+        ...baseStructure,
+        '@type': 'BlogPosting',
+        author: primaryAuthor ? {
+          '@type': 'Person',
+          name: primaryAuthor.name,
+          url: primaryAuthor.url || primaryAuthor.github,
+          description: primaryAuthor.title || 'Contributeur Docux',
+          image: primaryAuthor.imageUrl
+        } : {
+          '@type': 'Person',
+          name: 'Équipe Docux',
+          url: siteConfig.url
+        },
+        datePublished: blogPostData.date || new Date().toISOString(),
+        dateModified: blogPostData.lastUpdatedAt || blogPostData.date || new Date().toISOString(),
+        publisher: {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+          logo: {
+            '@type': 'ImageObject',
+            url: siteConfig.url + useBaseUrl('/img/docux.png')
+          }
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalUrl
+        },
+        keywords: blogPostData.frontMatter?.keywords?.join(', ') || 
+                 blogPostData.frontMatter?.tags?.join(', ') || 
+                 'docusaurus, documentation, tutoriel',
+        articleSection: blogPostData.frontMatter?.category || 'Tutoriels',
+        wordCount: blogPostData.frontMatter?.wordCount || 500
+      };
+    }
+
+    if (pageInfo.type === 'WebSite' && isHomePage) {
+      return {
+        ...baseStructure,
+        '@type': 'WebSite',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${siteConfig.url}/search?q={search_term_string}`
+          },
+          'query-input': 'required name=search_term_string'
+        },
+        sameAs: [
+          'https://github.com/Juniors017/docux-blog',
+          // Ajoutez ici d'autres liens de réseaux sociaux si disponibles
+        ]
+      };
+    }
+
+    return baseStructure;
+  })();
+
+  // Détections pour le panel de debug
+  const detections = {
+    isBlogPost,
+    isBlogListPage,
+    isSeriesPage,
+    isHomePage,
+    isThanksPage,
+    isRepositoryPage,
+    hasAuthor: !!primaryAuthor,
+    hasBlogData: !!blogPostData,
+    hasPageData: !!pageMetadata,
+    hasImage: !!imageUrl
   };
 
   return (
     <>
-      {/* Métadonnées supplémentaires selon le type de page */}
       <Head>
-        <script type="application/ld+json">{JSON.stringify(additionalJsonLd)}</script>
+        {/* Balises META de base */}
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalUrl} />
         
-        {/* Métadonnées spécifiques par type de page */}
-        {isBlogPost && (
+        {/* Open Graph */}
+        <meta property="og:type" content={pageInfo.type === 'BlogPosting' ? 'article' : 'website'} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:image:alt" content={`Image pour: ${title}`} />
+        <meta property="og:site_name" content={siteConfig.title} />
+        <meta property="og:locale" content="fr_FR" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={imageUrl} />
+        <meta name="twitter:image:alt" content={`Image pour: ${title}`} />
+        
+        {/* Métadonnées spécifiques aux articles */}
+        {pageInfo.type === 'BlogPosting' && blogPostData && (
           <>
-            <meta name="twitter:label1" content="Type" />
-            <meta name="twitter:data1" content="Article de blog" />
-            <meta name="article:section" content="Blog" />
+            <meta property="article:published_time" content={blogPostData.date} />
+            <meta property="article:modified_time" content={blogPostData.lastUpdatedAt || blogPostData.date} />
+            {primaryAuthor && <meta property="article:author" content={primaryAuthor.name} />}
+            {blogPostData.frontMatter?.category && (
+              <meta property="article:section" content={blogPostData.frontMatter.category} />
+            )}
+            {blogPostData.frontMatter?.keywords?.map((keyword) => (
+              <meta key={keyword} property="article:tag" content={keyword} />
+            ))}
           </>
         )}
         
-        {isSeriesPage && (
-          <>
-            <meta name="twitter:label1" content="Type" />
-            <meta name="twitter:data1" content="Série d'articles" />
-            <meta name="article:section" content="Series" />
-          </>
-        )}
-
-        {isRepositoryPage && (
-          <>
-            <meta name="twitter:label1" content="Type" />
-            <meta name="twitter:data1" content="Repository" />
-            <meta name="article:section" content="Code" />
-          </>
-        )}
+        {/* Métadonnées supplémentaires */}
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
         
-        {/* Métadonnées génériques d'amélioration */}
-        <meta name="referrer" content="strict-origin-when-cross-origin" />
-        <meta name="format-detection" content="telephone=no" />
+        {/* JSON-LD pour les Rich Results */}
+        <script type="application/ld+json">
+          {JSON.stringify(additionalJsonLd)}
+        </script>
       </Head>
-
-      {/* Panneau de debug SEO avancé en mode développement */}
-      {process.env.NODE_ENV === 'development' && (
-        <>
-          {/* Bouton toggle debug */}
-          <button
-            onClick={() => setDebugVisible(!debugVisible)}
-            style={{
-              position: 'fixed',
-              bottom: debugVisible ? '240px' : '10px',
-              right: '10px',
-              background: 'rgba(0,0,0,0.9)',
-              color: '#00ff88',
-              border: '1px solid rgba(255,255,255,0.3)',
-              borderRadius: '50%',
-              width: '40px',
-              height: '40px',
-              fontSize: '16px',
-              cursor: 'pointer',
-              zIndex: 10000,
-              fontFamily: 'monospace'
-            }}
-            title={debugVisible ? 'Masquer le debug SEO' : 'Afficher le debug SEO'}
-          >
-            {debugVisible ? '🔍' : '👁️'}
-          </button>
-
-          {/* Panneau de debug */}
-          {debugVisible && (
-            <div style={{
-              position: 'fixed',
-              bottom: '10px',
-              right: '10px',
-              background: 'rgba(0,0,0,0.95)',
-              color: 'white',
-              padding: '12px',
-              borderRadius: '6px',
-              fontSize: '10px',
-              zIndex: 9999,
-              fontFamily: 'monospace',
-              border: '1px solid rgba(255,255,255,0.3)',
-              minWidth: '320px',
-              maxWidth: '400px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-              maxHeight: '80vh',
-              overflowY: 'auto'
-            }}>
-              <div style={{ 
-                fontWeight: 'bold', 
-                marginBottom: '8px', 
-                fontSize: '12px',
-                color: '#00ff88',
-                borderBottom: '1px solid rgba(255,255,255,0.2)',
-                paddingBottom: '4px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                🔍 SEO Debug Panel
-                <div style={{ fontSize: '8px', color: '#ccc' }}>
-                  v{React.version}
-                </div>
-              </div>
-              
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Page:</strong> 
-                <span style={{ color: '#00ff88' }}> {pageInfo.category}</span>
-              </div>
-              
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Schema:</strong> 
-                <span style={{ color: '#88aaff' }}> {pageInfo.type}</span>
-              </div>
-              
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>URL:</strong> 
-                <div style={{ 
-                  fontSize: '9px', 
-                  color: '#ccc', 
-                  wordBreak: 'break-all',
-                  marginTop: '2px',
-                  background: 'rgba(255,255,255,0.1)',
-                  padding: '2px 4px',
-                  borderRadius: '2px'
-                }}>
-                  {location.pathname}
-                  {location.search && <div style={{ color: '#ffaa00' }}>Query: {location.search}</div>}
-                  {location.hash && <div style={{ color: '#88aaff' }}>Hash: {location.hash}</div>}
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Site Info:</strong>
-                <div style={{ fontSize: '9px', color: '#ccc', marginTop: '2px' }}>
-                  <div>📄 {siteConfig.title}</div>
-                  <div>🏷️ {siteConfig.tagline}</div>
-                  <div>🌐 {siteConfig.url + siteConfig.baseUrl}</div>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Détections:</strong>
-                <div style={{ fontSize: '9px', marginTop: '2px' }}>
-                  <div style={{ color: isBlogPost ? '#00ff88' : '#555' }}>
-                    {isBlogPost ? '✅' : '❌'} Article de blog
-                  </div>
-                  <div style={{ color: isBlogListPage ? '#00ff88' : '#555' }}>
-                    {isBlogListPage ? '✅' : '❌'} Liste de blog
-                  </div>
-                  <div style={{ color: isSeriesPage ? '#00ff88' : '#555' }}>
-                    {isSeriesPage ? '✅' : '❌'} Série d'articles
-                  </div>
-                  <div style={{ color: isRepositoryPage ? '#00ff88' : '#555' }}>
-                    {isRepositoryPage ? '✅' : '❌'} Page repository
-                  </div>
-                  <div style={{ color: isHomePage ? '#00ff88' : '#555' }}>
-                    {isHomePage ? '✅' : '❌'} Page d'accueil
-                  </div>
-                  <div style={{ color: isThanksPage ? '#00ff88' : '#555' }}>
-                    {isThanksPage ? '✅' : '❌'} Page de remerciements
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Métadonnées SEO détectées:</strong>
-                <div style={{ fontSize: '9px', marginTop: '2px' }}>
-                  <div style={{ color: '#00ff88' }}>✅ JSON-LD Schema.org ({pageInfo.type})</div>
-                  <div style={{ color: '#00ff88' }}>✅ Publisher: DOCUX</div>
-                  <div style={{ color: '#00ff88' }}>✅ Language: fr-FR</div>
-                  <div style={{ color: '#00ff88' }}>✅ MainEntityOfPage</div>
-                  
-                  {isBlogPost && (
-                    <>
-                      <div style={{ color: '#88aaff' }}>📝 Article genre: Blog</div>
-                      <div style={{ color: '#88aaff' }}>📝 Article section: Technology</div>
-                      <div style={{ color: '#88aaff' }}>� Twitter label: Article de blog</div>
-                    </>
-                  )}
-                  
-                  {isSeriesPage && (
-                    <>
-                      <div style={{ color: '#88aaff' }}>📚 Series genre: Educational</div>
-                      <div style={{ color: '#88aaff' }}>📚 Learning type: Tutorial series</div>
-                      <div style={{ color: '#88aaff' }}>� Twitter label: Série d'articles</div>
-                    </>
-                  )}
-                  
-                  {isRepositoryPage && (
-                    <>
-                      <div style={{ color: '#88aaff' }}>💻 Repository genre: Code</div>
-                      <div style={{ color: '#88aaff' }}>💻 About: Code repositories</div>
-                      <div style={{ color: '#88aaff' }}>🐦 Twitter label: Repository</div>
-                    </>
-                  )}
-                  
-                  <div style={{ color: '#ffaa00' }}>🔒 Referrer: strict-origin-when-cross-origin</div>
-                  <div style={{ color: '#ffaa00' }}>📱 Format detection: telephone=no</div>
-                  
-                  {!isBlogPost && !isSeriesPage && !isRepositoryPage && (
-                    <div style={{ color: '#ccc' }}>ℹ️ Métadonnées génériques uniquement</div>
-                  )}
-                  
-                  <div style={{ 
-                    fontSize: '8px', 
-                    color: '#888', 
-                    marginTop: '4px',
-                    paddingTop: '4px',
-                    borderTop: '1px solid rgba(255,255,255,0.1)'
-                  }}>
-                    💡 Sécurité & Format:
-                    <br/>🔒 Referrer = Contrôle les infos envoyées aux liens externes
-                    <br/>📱 Format = Désactive la détection auto des numéros de téléphone
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Performance:</strong>
-                <div style={{ fontSize: '9px', color: '#ccc', marginTop: '2px' }}>
-                  <div>⚡ Render: {performance.now().toFixed(1)}ms</div>
-                  <div>🧠 Heap: {(performance.memory?.usedJSHeapSize / 1024 / 1024).toFixed(1)}MB</div>
-                  <div>📦 Bundle: Optimisé</div>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '6px' }}>
-                <strong style={{ color: '#ffaa00' }}>Actions rapides:</strong>
-                <div style={{ fontSize: '9px', marginTop: '2px', display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                  <button
-                    onClick={() => {
-                      console.log('📋 JSON-LD complet:', additionalJsonLd);
-                      alert('JSON-LD affiché dans la console');
-                    }}
-                    style={{
-                      background: '#333',
-                      color: '#fff',
-                      border: '1px solid #555',
-                      borderRadius: '3px',
-                      padding: '2px 6px',
-                      fontSize: '8px',
-                      cursor: 'pointer'
-                    }}
-                    title="Affiche le JSON-LD généré dans la console"
-                  >
-                    📋 JSON-LD
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(location.href);
-                      alert('URL copiée dans le presse-papiers');
-                    }}
-                    style={{
-                      background: '#333',
-                      color: '#fff',
-                      border: '1px solid #555',
-                      borderRadius: '3px',
-                      padding: '2px 6px',
-                      fontSize: '8px',
-                      cursor: 'pointer'
-                    }}
-                    title="Copie l'URL actuelle dans le presse-papiers"
-                  >
-                    📎 URL
-                  </button>
-                  <button
-                    onClick={() => window.open('https://search.google.com/test/rich-results?url=' + encodeURIComponent(location.href), '_blank')}
-                    style={{
-                      background: '#333',
-                      color: '#fff',
-                      border: '1px solid #555',
-                      borderRadius: '3px',
-                      padding: '2px 6px',
-                      fontSize: '8px',
-                      cursor: 'pointer'
-                    }}
-                    title="Ouvre Google Rich Results Test pour cette page"
-                  >
-                    🔍 Test SEO
-                  </button>
-                </div>
-                
-                <div style={{ 
-                  fontSize: '8px', 
-                  color: '#aaa', 
-                  marginTop: '4px',
-                  paddingTop: '4px',
-                  borderTop: '1px solid rgba(255,255,255,0.1)'
-                }}>
-                  💡 Actions utiles:
-                  <br/>📋 = Console log du JSON-LD pour debug
-                  <br/>📎 = Copie URL pour partage/test
-                  <br/>🔍 = Valide vos métadonnées avec Google
-                </div>
-              </div>
-
-              <div style={{ 
-                fontSize: '8px', 
-                color: '#888', 
-                marginTop: '8px',
-                paddingTop: '4px',
-                borderTop: '1px solid rgba(255,255,255,0.1)'
-              }}>
-                💡 Panel visible uniquement en développement
-                <br/>
-                🖥️ Ouvrez la console pour plus de détails
-              </div>
-            </div>
-          )}
-        </>
-      )}
+      
+      {/* Panel de debug SEO (uniquement en développement) */}
+      <SeoDebugPanel 
+        jsonLd={additionalJsonLd}
+        pageInfo={pageInfo}
+        location={location}
+        blogPostData={blogPostData}
+        pageMetadata={pageMetadata}
+        siteConfig={siteConfig}
+        detections={detections}
+      />
     </>
   );
 }
