@@ -6,28 +6,46 @@ Le composant SEO est un système avancé de gestion des métadonnées pour sites
 
 ## ✨ Fonctionnalités
 
-### 🔍 Détection Automatique du Type de Page
-- **Articles de blog** : Génération de métadonnées `BlogPosting` Schema.org
-- **Pages d'accueil** : Structure `WebSite` avec actions de recherche
-- **Pages de collection** : Type `CollectionPage` pour les index et listings
+### � Comparaison : Docusaurus Natif vs Composant SEO
+
+| Fonctionnalité | Docusaurus Natif | Composant SEO Docux | Avantages |
+|---|---|---|---|
+| **Balises Meta de Base** | ✅ `title`, `description` basiques | ✅ `title`, `description`, `canonical` optimisés | Cascade intelligente, fallbacks robustes |
+| **Open Graph** | ✅ Configuration statique | ✅ Génération dynamique par type de page | Métadonnées adaptées au contenu |
+| **Twitter Cards** | ✅ Configuration basique | ✅ Cards enrichies avec images optimisées | Support summary_large_image automatique |
+| **Schema.org JSON-LD** | ❌ Non supporté | ✅ Génération complète par type | Rich Results Google, SEO avancé |
+| **Détection Type de Page** | ❌ Générique pour tout | ✅ Détection intelligente automatique | BlogPosting, WebSite, CollectionPage |
+| **Gestion des Auteurs** | ✅ Simple (frontMatter) | ✅ Base centralisée + normalisation | Cohérence, réutilisabilité |
+| **Gestion des Images** | ✅ Image par défaut | ✅ Cascade intelligente + validation | Fallbacks, dimensions optimales |
+| **URL Canoniques** | ✅ Basique | ✅ Normalisation avancée | Évite duplicate content |
+| **Métadonnées Articles** | ✅ Date, auteur basique | ✅ Publisher, wordCount, timeRequired | Rich Results compatibles |
+| **Fallback/Erreurs** | ⚠️ Peut planter si données manquantes | ✅ Système défensif complet | Robustesse, pas d'erreurs |
+| **Validation SEO** | ❌ Aucune | ✅ Panel debug + score SEO | Développement facilité |
+| **Performance** | ✅ Optimisé de base | ✅ Cache + memoization | Évite recalculs inutiles |
+| **Extensibilité** | ⚠️ Configuration limitée | ✅ Système de plugins | Personnalisation avancée |
+
+### �🔍 Détection Automatique du Type de Page
+- **Articles de blog** : Génération de métadonnées `BlogPosting` Schema.org complètes
+- **Pages d'accueil** : Structure `WebSite` avec actions de recherche et réseaux sociaux
+- **Pages de collection** : Type `CollectionPage` pour les index et listings avec breadcrumbs
 - **Pages générales** : Structure `WebPage` générique avec fallbacks intelligents
 
 ### 📊 Génération de Métadonnées Complètes
-- **Balises HTML de base** : `title`, `description`, `canonical`
-- **Open Graph** : Optimisation pour Facebook, LinkedIn et autres réseaux
-- **Twitter Cards** : Cartes enrichies pour Twitter
-- **Schema.org JSON-LD** : Données structurées pour Google Rich Results
-- **Métadonnées d'articles** : Dates, auteurs, catégories pour les blogs
+- **Balises HTML de base** : `title`, `description`, `canonical` avec optimisation longueur
+- **Open Graph** : Optimisation pour Facebook, LinkedIn et autres réseaux sociaux
+- **Twitter Cards** : Cartes enrichies avec support `summary_large_image`
+- **Schema.org JSON-LD** : Données structurées complètes pour Google Rich Results
+- **Métadonnées d'articles** : Dates ISO, auteurs structurés, publisher, wordCount
 
 ### 🛡️ Système de Fallback Robuste
-- Cascade de priorités pour éviter les erreurs
-- Récupération gracieuse des métadonnées indisponibles
-- Métadonnées par défaut si aucune donnée spécifique n'est trouvée
+- Cascade de priorités pour éviter les erreurs (frontMatter → page → site → défaut)
+- Récupération gracieuse des métadonnées avec try-catch défensif
+- Métadonnées par défaut garanties même en cas d'échec total
 
 ### 👥 Gestion Centralisée des Auteurs
-- Base de données d'auteurs dans `src/data/authors.js`
-- Normalisation automatique des noms
-- Support des auteurs multiples et uniques
+- Base de données d'auteurs centralisée dans `src/data/authors.js`
+- Normalisation automatique des noms et URLs
+- Support des auteurs multiples avec structures Schema.org Person
 
 ## 🚀 Installation
 
@@ -107,26 +125,215 @@ category: "Catégorie"
 
 ### Architecture du Composant
 
-1. **Détection du contexte** : Utilisation des hooks Docusaurus pour identifier le type de page
-2. **Récupération des métadonnées** : Extraction depuis le frontMatter ou les configurations
-3. **Construction des métadonnées** : Génération des structures optimisées pour chaque plateforme
-4. **Rendu des balises** : Injection dans le `<head>` via le composant `Head` de Docusaurus
-
-### Système de Priorité des Métadonnées
-
+#### 1. **Phase de Détection Contextuelle** 🔍
+```javascript
+// Utilisation de try-catch pour la détection gracieuse des hooks
+try {
+  const { useBlogPost } = require('@docusaurus/plugin-content-blog/client');
+  const blogPost = useBlogPost?.();
+  // Récupération des métadonnées spécifiques aux blogs
+} catch (error) {
+  // Hook non disponible - page non-blog détectée
+  console.debug('Hook useBlogPost non disponible');
+}
 ```
-1. Métadonnées spécifiques (frontMatter de l'article/page)
-2. Métadonnées génériques (configuration de la page)
-3. Configuration du site (docusaurus.config.js)
-4. Valeurs par défaut (fallback de sécurité)
+
+Le composant utilise une approche **défensive** avec try-catch pour détecter le type de page sans provoquer d'erreurs. Cette méthode permet une compatibilité universelle avec tous les types de pages Docusaurus.
+
+#### 2. **Algorithme de Détection de Type de Page** 🎯
+```javascript
+// Détection basée sur l'analyse d'URL avec regex optimisées
+const isBlogPost = location.pathname.includes('/blog/') && 
+                  !location.pathname.endsWith('/blog/') &&
+                  !location.pathname.includes('/blog/tags/') &&
+                  !location.pathname.includes('/blog/authors/');
+
+// Utilisation de conditions booléennes pour performance optimale
+const isHomePage = location.pathname === '/' || 
+                   location.pathname === '/docux-blog/';
 ```
 
-### Types Schema.org Supportés
+#### 3. **Système de Cascade de Métadonnées** 📊
+```javascript
+// Implémentation du pattern Cascade avec opérateur OR
+const title = blogPostData?.title ||           // Priorité 1
+              pageMetadata?.title ||           // Priorité 2  
+              siteConfig?.title ||             // Priorité 3
+              'Page';                          // Fallback final
 
-- `BlogPosting` : Articles de blog avec auteur, dates, publisher
-- `WebSite` : Page d'accueil avec actions de recherche
-- `CollectionPage` : Pages d'index avec breadcrumbs
-- `WebPage` : Pages générales avec structure de base
+// Utilisation de l'optional chaining (?.) pour éviter les erreurs null
+```
+
+#### 4. **Construction Dynamique d'URL Canonique** 🔗
+```javascript
+const getCanonicalUrl = () => {
+  const baseUrl = siteConfig.url + siteConfig.baseUrl;
+  // Normalisation avec regex pour éviter les doubles slashes
+  const cleanPath = location.pathname.replace(/\/$/, '') || '';
+  return `${baseUrl}${cleanPath}/`.replace(/([^:]\/)\/+/g, '$1');
+};
+```
+
+### Système de Priorité des Métadonnées (Cascade Pattern)
+
+```mermaid
+graph TD
+    A[FrontMatter Article] --> B{Disponible?}
+    B -->|Oui| C[Utiliser FrontMatter]
+    B -->|Non| D[FrontMatter Page]
+    D --> E{Disponible?}
+    E -->|Oui| F[Utiliser Page Meta]
+    E -->|Non| G[Site Config]
+    G --> H{Disponible?}
+    H -->|Oui| I[Utiliser Site Config]
+    H -->|Non| J[Fallback Default]
+```
+
+### Types Schema.org Supportés avec Spécifications Techniques
+
+#### `BlogPosting` (Articles de Blog)
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Titre optimisé (60 chars max)",
+  "description": "Meta description (155-160 chars)",
+  "author": {
+    "@type": "Person",
+    "name": "Nom normalisé",
+    "url": "URL profil auteur",
+    "sameAs": ["URL réseaux sociaux"]
+  },
+  "datePublished": "ISO 8601 format",
+  "dateModified": "ISO 8601 format", 
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nom organisation",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "URL logo (format WebP recommandé)"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "URL canonique"
+  },
+  "image": {
+    "@type": "ImageObject",
+    "url": "URL image (min 1200x630px)",
+    "width": 1200,
+    "height": 630,
+    "caption": "Alt text optimisé"
+  },
+  "wordCount": "Nombre de mots calculé",
+  "timeRequired": "PT5M (format ISO 8601 duration)",
+  "inLanguage": "fr-FR",
+  "isPartOf": {
+    "@type": "Blog",
+    "name": "Nom du blog"
+  }
+}
+```
+
+#### `WebSite` (Page d'Accueil)
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Nom du site",
+  "alternateName": "Nom alternatif/acronyme",
+  "url": "URL racine",
+  "description": "Description du site",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://site.com/search?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  },
+  "sameAs": [
+    "https://github.com/username",
+    "https://twitter.com/username",
+    "https://linkedin.com/in/username"
+  ],
+  "copyrightYear": 2025,
+  "copyrightHolder": {
+    "@type": "Organization",
+    "name": "Nom organisation"
+  }
+}
+```
+
+#### `CollectionPage` (Pages d'Index)
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Titre de la collection",
+  "description": "Description de la collection",
+  "url": "URL de la page collection",
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": "Nombre d'éléments",
+    "itemListOrder": "https://schema.org/ItemListOrderDescending"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "URL accueil"
+      }
+    ]
+  }
+}
+```
+
+### Optimisations de Performance
+
+#### Lazy Loading des Hooks
+```javascript
+// Import conditionnel pour éviter les erreurs de bundle
+const loadBlogHook = () => {
+  try {
+    return require('@docusaurus/plugin-content-blog/client');
+  } catch {
+    return null;
+  }
+};
+```
+
+#### Memoization des Calculs Coûteux
+```javascript
+// Utilisation de useMemo pour éviter les recalculs
+const canonicalUrl = useMemo(() => {
+  return getCanonicalUrl(location, siteConfig);
+}, [location.pathname, siteConfig.url, siteConfig.baseUrl]);
+
+const imageUrl = useMemo(() => {
+  return resolveImageUrl(blogPostData, pageMetadata, siteConfig);
+}, [blogPostData?.frontMatter?.image, pageMetadata?.frontMatter?.image]);
+```
+
+#### Validation des Données avec Type Guards
+```javascript
+// Type guards pour validation runtime
+const isValidBlogPost = (data) => {
+  return data && 
+         typeof data.title === 'string' && 
+         data.title.length > 0 &&
+         typeof data.date === 'string';
+};
+
+const isValidAuthor = (author) => {
+  return author && 
+         typeof author.name === 'string' &&
+         author.name.trim().length > 0;
+};
+```
 
 ## 🧪 Debug et Développement
 
@@ -137,31 +344,380 @@ Le composant inclut un panel de debug avancé (`SeoDebugPanel`) qui s'affiche au
 - Calculer un score SEO
 - Tester les Rich Results Google
 
-## 🔧 Personnalisation
+## 🔧 Personnalisation Avancée
 
-### Ajouter un nouveau type de page
+### Extension du Système de Détection de Page
 
-```jsx
-// Dans le composant Seo
-const isCustomPage = location.pathname.includes('/custom/');
+#### Ajouter un nouveau type de page avec validation
+```javascript
+// 1. Créer la fonction de détection
+const isCustomPage = (pathname) => {
+  return /^\/custom\/[^\/]+\/?$/.test(pathname); // Regex pour /custom/slug
+};
 
+// 2. Étendre le mapping de types
 const getPageType = () => {
-  if (isCustomPage) return { type: 'CustomType', category: 'Page personnalisée' };
-  // ... autres types
+  const typeMap = new Map([
+    [() => isBlogPost, { type: 'BlogPosting', category: 'Article de blog' }],
+    [() => isCustomPage(location.pathname), { type: 'Course', category: 'Page de cours' }],
+    [() => isHomePage, { type: 'WebSite', category: 'Page d\'accueil' }]
+  ]);
+  
+  for (const [condition, result] of typeMap) {
+    if (condition()) return result;
+  }
+  
+  return { type: 'WebPage', category: 'Page générale' };
+};
+
+// 3. Implémenter la logique Schema.org spécifique
+if (pageInfo.type === 'Course') {
+  return {
+    ...baseStructure,
+    '@type': 'Course',
+    'courseMode': 'online',
+    'educationalLevel': 'intermediate',
+    'provider': {
+      '@type': 'Organization',
+      'name': siteConfig.title
+    },
+    'hasCourseInstance': {
+      '@type': 'CourseInstance',
+      'courseMode': 'online',
+      'instructor': primaryAuthor
+    }
+  };
+}
+```
+
+### Système d'Hooks Personnalisés
+
+#### Hook de Récupération de Métadonnées Avancées
+```javascript
+// hooks/useAdvancedMetadata.js
+import { useState, useEffect, useMemo } from 'react';
+
+export const useAdvancedMetadata = (location, siteConfig) => {
+  const [metadata, setMetadata] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  // Détection intelligente avec cache
+  const pageType = useMemo(() => {
+    const cache = sessionStorage.getItem(`pageType_${location.pathname}`);
+    if (cache) return JSON.parse(cache);
+    
+    const detected = detectPageType(location.pathname);
+    sessionStorage.setItem(`pageType_${location.pathname}`, JSON.stringify(detected));
+    return detected;
+  }, [location.pathname]);
+  
+  // Récupération asynchrone des métadonnées
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      try {
+        setLoading(true);
+        const data = await loadMetadataForPageType(pageType, location);
+        setMetadata(data);
+      } catch (error) {
+        console.error('Erreur récupération métadonnées:', error);
+        setMetadata(getDefaultMetadata(siteConfig));
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchMetadata();
+  }, [pageType, location, siteConfig]);
+  
+  return { metadata, loading, pageType };
 };
 ```
 
-### Modifier les métadonnées Schema.org
+### Système de Validation de Métadonnées
 
-```jsx
-// Enrichir la structure JSON-LD
-if (pageInfo.type === 'CustomType') {
-  return {
-    ...baseStructure,
-    '@type': 'CustomType',
-    customProperty: 'valeur personnalisée'
-  };
+#### Validateur Schema.org avec TypeScript
+```typescript
+// types/schema.ts
+interface SchemaOrgBase {
+  '@context': 'https://schema.org';
+  '@type': string;
+  name: string;
+  description?: string;
+  url: string;
+  image?: ImageObject | string;
 }
+
+interface BlogPostingSchema extends SchemaOrgBase {
+  '@type': 'BlogPosting';
+  author: Person | Organization;
+  datePublished: string;
+  dateModified?: string;
+  publisher: Organization;
+  mainEntityOfPage: WebPage;
+  wordCount?: number;
+  timeRequired?: string;
+}
+
+// validators/schemaValidator.js
+export class SchemaValidator {
+  static validateBlogPosting(schema: BlogPostingSchema): ValidationResult {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+    
+    // Validation obligatoire
+    if (!schema.author) {
+      errors.push('BlogPosting.author est requis');
+    }
+    
+    if (!schema.datePublished || !this.isValidISO8601(schema.datePublished)) {
+      errors.push('BlogPosting.datePublished doit être au format ISO 8601');
+    }
+    
+    // Validations recommandées
+    if (!schema.wordCount || schema.wordCount < 300) {
+      warnings.push('WordCount recommandé: minimum 300 mots');
+    }
+    
+    if (!schema.image) {
+      warnings.push('Image recommandée pour les Rich Results');
+    }
+    
+    return { errors, warnings, isValid: errors.length === 0 };
+  }
+  
+  private static isValidISO8601(dateString: string): boolean {
+    const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+    return iso8601Regex.test(dateString) && !isNaN(Date.parse(dateString));
+  }
+}
+```
+
+### Plugin Système pour Extensions
+
+#### Architecture Plugin-Based
+```javascript
+// plugins/seoPluginSystem.js
+export class SeoPluginSystem {
+  constructor() {
+    this.plugins = new Map();
+    this.hooks = new Map();
+  }
+  
+  // Enregistrement de plugins
+  registerPlugin(name, plugin) {
+    if (!this.validatePlugin(plugin)) {
+      throw new Error(`Plugin ${name} invalide`);
+    }
+    
+    this.plugins.set(name, plugin);
+    
+    // Enregistrement des hooks du plugin
+    if (plugin.hooks) {
+      Object.entries(plugin.hooks).forEach(([hookName, hookFn]) => {
+        if (!this.hooks.has(hookName)) {
+          this.hooks.set(hookName, []);
+        }
+        this.hooks.get(hookName).push(hookFn);
+      });
+    }
+  }
+  
+  // Exécution des hooks
+  async executeHook(hookName, context) {
+    const hooks = this.hooks.get(hookName) || [];
+    let result = context;
+    
+    for (const hook of hooks) {
+      try {
+        result = await hook(result);
+      } catch (error) {
+        console.error(`Erreur hook ${hookName}:`, error);
+      }
+    }
+    
+    return result;
+  }
+  
+  // Validation des plugins
+  validatePlugin(plugin) {
+    return (
+      typeof plugin === 'object' &&
+      typeof plugin.name === 'string' &&
+      typeof plugin.version === 'string' &&
+      (plugin.hooks === undefined || typeof plugin.hooks === 'object')
+    );
+  }
+}
+
+// Exemple de plugin
+export const analyticsPlugin = {
+  name: 'analytics-seo',
+  version: '1.0.0',
+  hooks: {
+    beforeMetadataGeneration: async (context) => {
+      // Ajout de tracking analytics
+      return {
+        ...context,
+        analytics: {
+          pageViews: await getPageViews(context.url),
+          avgTimeOnPage: await getAvgTimeOnPage(context.url)
+        }
+      };
+    },
+    afterSchemaGeneration: async (schema) => {
+      // Enrichissement du schema avec données analytics
+      if (schema['@type'] === 'BlogPosting') {
+        return {
+          ...schema,
+          interactionStatistic: {
+            '@type': 'InteractionCounter',
+            'interactionType': 'https://schema.org/ReadAction',
+            'userInteractionCount': schema.analytics?.pageViews || 0
+          }
+        };
+      }
+      return schema;
+    }
+  }
+};
+```
+
+### Optimisations de Performance Avancées
+
+#### Système de Cache Intelligent
+```javascript
+// cache/metadataCache.js
+export class MetadataCache {
+  constructor(maxSize = 100, ttl = 300000) { // 5 minutes TTL
+    this.cache = new Map();
+    this.timestamps = new Map();
+    this.maxSize = maxSize;
+    this.ttl = ttl;
+  }
+  
+  set(key, value) {
+    // LRU éviction si cache plein
+    if (this.cache.size >= this.maxSize) {
+      const firstKey = this.cache.keys().next().value;
+      this.delete(firstKey);
+    }
+    
+    this.cache.set(key, value);
+    this.timestamps.set(key, Date.now());
+  }
+  
+  get(key) {
+    const timestamp = this.timestamps.get(key);
+    
+    // Vérification TTL
+    if (!timestamp || (Date.now() - timestamp) > this.ttl) {
+      this.delete(key);
+      return null;
+    }
+    
+    // LRU: déplacer à la fin
+    const value = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, value);
+    
+    return value;
+  }
+  
+  delete(key) {
+    this.cache.delete(key);
+    this.timestamps.delete(key);
+  }
+  
+  clear() {
+    this.cache.clear();
+    this.timestamps.clear();
+  }
+}
+
+// Utilisation avec React
+const metadataCache = new MetadataCache();
+
+export const useCachedMetadata = (cacheKey, metadataGenerator) => {
+  return useMemo(() => {
+    const cached = metadataCache.get(cacheKey);
+    if (cached) return cached;
+    
+    const generated = metadataGenerator();
+    metadataCache.set(cacheKey, generated);
+    return generated;
+  }, [cacheKey]);
+};
+```
+
+#### Web Workers pour Génération Asynchrone
+```javascript
+// workers/schemaWorker.js
+self.addEventListener('message', async (event) => {
+  const { type, data } = event.data;
+  
+  switch (type) {
+    case 'GENERATE_SCHEMA':
+      try {
+        const schema = await generateComplexSchema(data);
+        self.postMessage({
+          type: 'SCHEMA_GENERATED',
+          payload: schema
+        });
+      } catch (error) {
+        self.postMessage({
+          type: 'SCHEMA_ERROR',
+          payload: error.message
+        });
+      }
+      break;
+  }
+});
+
+async function generateComplexSchema(data) {
+  // Génération intensive de schema avec calculs complexes
+  const enrichedData = await enrichWithExternalData(data);
+  return buildSchemaStructure(enrichedData);
+}
+
+// hooks/useSchemaWorker.js
+export const useSchemaWorker = () => {
+  const [worker, setWorker] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    const schemaWorker = new Worker('/workers/schemaWorker.js');
+    setWorker(schemaWorker);
+    
+    return () => schemaWorker.terminate();
+  }, []);
+  
+  const generateSchema = useCallback((data) => {
+    return new Promise((resolve, reject) => {
+      if (!worker) return reject(new Error('Worker non disponible'));
+      
+      setLoading(true);
+      
+      const handleMessage = (event) => {
+        const { type, payload } = event.data;
+        
+        if (type === 'SCHEMA_GENERATED') {
+          worker.removeEventListener('message', handleMessage);
+          setLoading(false);
+          resolve(payload);
+        } else if (type === 'SCHEMA_ERROR') {
+          worker.removeEventListener('message', handleMessage);
+          setLoading(false);
+          reject(new Error(payload));
+        }
+      };
+      
+      worker.addEventListener('message', handleMessage);
+      worker.postMessage({ type: 'GENERATE_SCHEMA', data });
+    });
+  }, [worker]);
+  
+  return { generateSchema, loading };
+};
 ```
 
 ## 🤝 Contribution au Projet
