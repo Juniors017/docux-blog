@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocux_blog=self.webpackChunkdocux_blog||[]).push([[5755],{2285:o=>{o.exports=JSON.parse('{"metadata":{"permalink":"/docux-blog/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":5,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
