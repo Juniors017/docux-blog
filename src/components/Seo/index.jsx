@@ -1960,35 +1960,42 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     if (isTechnical) {
       const techArticleSchema = {
         '@context': 'https://schema.org',
-        '@id': canonicalId,                    // ✅ Même ID que BlogPosting
+        '@id': `${canonicalId}#techarticle`, // ID unique pour TechArticle
         '@type': 'TechArticle',
-        url: canonicalUrl,                     // ✅ Même URL que BlogPosting
-        name: additionalJsonLd.name,
-        headline: additionalJsonLd.headline,
-        description: additionalJsonLd.description,
-        author: additionalJsonLd.author,
-        datePublished: additionalJsonLd.datePublished,
-        dateModified: additionalJsonLd.dateModified,
-        image: additionalJsonLd.image,
-        
-        // Informations sur l'éditeur (organisation)
+        url: canonicalUrl,
+        name: title,
+        headline: title,
+        description: description,
+        image: {
+          '@type': 'ImageObject',
+          url: imageUrl,
+          caption: `Image pour: ${title}`
+        },
+        author: primaryAuthor
+          ? {
+              '@type': 'Person',
+              name: normalizeAuthorName(primaryAuthor.name),
+              url: primaryAuthor.url || primaryAuthor.github,
+            }
+          : {
+              '@type': 'Organization',
+              name: siteConfig.title,
+              url: siteConfig.url,
+            },
+        datePublished: blogPostData?.date || new Date().toISOString(),
+        dateModified: blogPostData?.lastUpdatedAt || blogPostData?.date || new Date().toISOString(),
         publisher: {
           '@type': 'Organization',
           name: siteConfig.title,
           url: siteConfig.url,
           logo: {
             '@type': 'ImageObject',
-            url: siteConfig.url + useBaseUrl('/img/docux.png')
-          }
+            url: siteConfig.url + useBaseUrl('/img/docux.png'),
+          },
         },
-        
-        mainEntityOfPage: {
-          '@type': 'WebPage',
-          '@id': canonicalId
-        },
-        proficiencyLevel: blogPostData.frontMatter?.proficiencyLevel || 'Beginner',
-        programmingLanguage: blogPostData.frontMatter?.programmingLanguage || 'JavaScript',
-        keywords: additionalJsonLd.keywords
+        proficiencyLevel: blogPostData?.frontMatter?.proficiencyLevel || 'Beginner',
+        programmingLanguage: blogPostData?.frontMatter?.programmingLanguage || 'JavaScript',
+        keywords: keywords.join(', '),
       };
       
       allSchemas.push(techArticleSchema);
@@ -2003,7 +2010,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     ? allSchemas 
     : fixAllSchemaUrls(allSchemas, canonicalId, canonicalUrl);
   
-  // Sélectionne le schéma principal pour l'affichage (le premier)
+  // Sélectionne le schéma primaire pour l'affichage (le premier)
   const primarySchema = finalSchemas[0] || additionalJsonLd;
 
   /**
@@ -2023,7 +2030,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     isRepositoryPage,             // Page repository/projets
     hasAuthor: !!primaryAuthor,   // Auteur détecté
     hasBlogData: !!blogPostData,  // Métadonnées blog disponibles
-    hasPageData: !!pageMetadata,  // Métadonnées page disponibles
+    hasPageData: !!pageMetadata,  // Métadonnées de page disponibles
     hasImage: !!(blogPostData?.frontMatter?.image || 
                  pageMetadata?.frontMatter?.image || 
                  siteConfig.themeConfig?.image) // Image détectée
