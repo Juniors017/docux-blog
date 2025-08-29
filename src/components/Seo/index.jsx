@@ -811,13 +811,139 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
 
       // Configuration spécifique pour les pages de séries
       if (isSeriesPage) {
+        // Calculer le nombre de séries disponibles pour enrichir les métadonnées
+        let seriesCount = 0;
+        let seriesItems = [];
+        
+        try {
+          // Tentative de récupération des séries depuis les métadonnées du blog
+          if (ExecutionEnvironment.canUseDOM && window.docusaurus) {
+            const globalData = window.docusaurus.globalData;
+            if (globalData && globalData['docusaurus-plugin-content-blog']) {
+              const blogData = globalData['docusaurus-plugin-content-blog'];
+              if (blogData && blogData.default && blogData.default.blogPosts) {
+                const seriesSet = new Set();
+                const seriesInfo = new Map();
+                
+                // Collecter toutes les séries et leurs informations
+                blogData.default.blogPosts.forEach(post => {
+                  if (post.metadata?.frontMatter?.serie) {
+                    const serieName = post.metadata.frontMatter.serie;
+                    seriesSet.add(serieName);
+                    
+                    if (!seriesInfo.has(serieName)) {
+                      seriesInfo.set(serieName, {
+                        name: serieName,
+                        articles: [],
+                        url: `${siteConfig.url}/docux-blog/series/series-articles/?name=${encodeURIComponent(serieName)}`
+                      });
+                    }
+                    
+                    seriesInfo.get(serieName).articles.push({
+                      title: post.metadata.title,
+                      url: `${siteConfig.url}${post.metadata.permalink}`,
+                      date: post.metadata.date
+                    });
+                  }
+                });
+                
+                seriesCount = seriesSet.size;
+                
+                // Créer les éléments de liste pour le Schema.org
+                seriesItems = Array.from(seriesInfo.values()).map((serie, index) => ({
+                  '@type': 'ListItem',
+                  position: index + 1,
+                  name: serie.name,
+                  description: `Série de ${serie.articles.length} article(s) sur ${serie.name}`,
+                  url: serie.url,
+                  item: {
+                    '@type': 'CreativeWorkSeries',
+                    name: serie.name,
+                    url: serie.url,
+                    numberOfEpisodes: serie.articles.length,
+                    genre: 'Educational Content',
+                    inLanguage: 'fr-FR',
+                    publisher: {
+                      '@type': 'Organization',
+                      name: siteConfig.title,
+                      url: siteConfig.url
+                    }
+                  }
+                }));
+              }
+            }
+          }
+        } catch (error) {
+          // En cas d'erreur, on utilise des valeurs par défaut
+          seriesCount = 2; // Valeur par défaut basée sur les séries existantes
+          seriesItems = [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Genèse Docux',
+              description: 'Série sur la création et l\'évolution du blog Docux',
+              url: `${siteConfig.url}/docux-blog/series/series-articles/?name=genese-docux`,
+              item: {
+                '@type': 'CreativeWorkSeries',
+                name: 'Genèse Docux',
+                url: `${siteConfig.url}/docux-blog/series/series-articles/?name=genese-docux`,
+                numberOfEpisodes: 1,
+                genre: 'Educational Content',
+                inLanguage: 'fr-FR',
+                publisher: {
+                  '@type': 'Organization',
+                  name: siteConfig.title,
+                  url: siteConfig.url
+                }
+              }
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: 'SEO Docusaurus',
+              description: 'Série sur l\'optimisation SEO avec Docusaurus',
+              url: `${siteConfig.url}/docux-blog/series/series-articles/?name=seo-docusaurus`,
+              item: {
+                '@type': 'CreativeWorkSeries',
+                name: 'SEO Docusaurus',
+                url: `${siteConfig.url}/docux-blog/series/series-articles/?name=seo-docusaurus`,
+                numberOfEpisodes: 1,
+                genre: 'Educational Content',
+                inLanguage: 'fr-FR',
+                publisher: {
+                  '@type': 'Organization',
+                  name: siteConfig.title,
+                  url: siteConfig.url
+                }
+              }
+            }
+          ];
+        }
+
         return {
           ...baseStructure,
           '@type': 'CollectionPage',
+          
+          // Enrichir la description avec le nombre de séries
+          description: `Découvrez nos ${seriesCount} séries d'articles organisées par thématique : développement web, Docusaurus, React, SEO et bien plus. Collections d'articles approfondis pour progresser étape par étape.`,
+          
+          // Sujet principal de la collection
           about: {
             '@type': 'CreativeWorkSeries',
             name: `Séries d'articles - ${siteConfig.title}`,
-            description: 'Collection de séries d\'articles organisées par thématique'
+            description: 'Collection de séries d\'articles organisées par thématique',
+            genre: 'Educational Content',
+            inLanguage: 'fr-FR',
+            numberOfSeries: seriesCount,
+            publisher: {
+              '@type': 'Organization',
+              name: siteConfig.title,
+              url: siteConfig.url,
+              logo: {
+                '@type': 'ImageObject',
+                url: siteConfig.url + useBaseUrl('/img/docux.png')
+              }
+            }
           },
           
           // Fil d'Ariane optimisé pour les pages de séries
@@ -832,14 +958,89 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
             }
           ], `Navigation - Séries ${siteConfig.title}`),
           
-          // Entité principale de la collection de séries
+          // Entité principale de la collection de séries avec éléments détaillés
           mainEntity: {
             '@type': 'ItemList',
             name: 'Séries d\'articles',
             description: 'Collection de séries d\'articles organisées par thématique et domaine d\'expertise',
             url: canonicalUrl,
-            itemListOrder: 'Unordered'
-          }
+            numberOfItems: seriesCount,
+            itemListOrder: 'Unordered',
+            itemListElement: seriesItems.length > 0 ? seriesItems : undefined,
+            
+            // Métadonnées supplémentaires pour améliorer la compréhension par Google
+            genre: 'Educational Content',
+            audience: {
+              '@type': 'Audience',
+              audienceType: 'Developers and Web Enthusiasts',
+              geographicArea: {
+                '@type': 'Country',
+                name: 'France'
+              }
+            },
+            
+            // Catégorisation thématique
+            keywords: [
+              'séries d\'articles',
+              'collections thématiques',
+              'tutoriels progressifs',
+              'développement web',
+              'docusaurus',
+              'react',
+              'javascript',
+              'apprentissage',
+              'formation'
+            ].join(', '),
+            
+            // Informations sur l'organisation
+            provider: {
+              '@type': 'Organization',
+              name: siteConfig.title,
+              url: siteConfig.url,
+              logo: {
+                '@type': 'ImageObject',
+                url: siteConfig.url + useBaseUrl('/img/docux.png')
+              },
+              sameAs: [
+                'https://github.com/Juniors017/docux-blog'
+              ]
+            }
+          },
+          
+          // Informations supplémentaires pour le contexte éducatif
+          educationalUse: 'Professional Development',
+          learningResourceType: 'Article Series',
+          typicalAgeRange: '18-99',
+          
+          // Éditeur de la collection
+          publisher: {
+            '@type': 'Organization',
+            name: siteConfig.title,
+            url: siteConfig.url,
+            logo: {
+              '@type': 'ImageObject',
+              url: siteConfig.url + useBaseUrl('/img/docux.png')
+            }
+          },
+          
+          // Date de création/mise à jour
+          datePublished: pageMetadata?.frontMatter?.date || '2025-08-29',
+          dateModified: new Date().toISOString().split('T')[0],
+          
+          // Mots-clés enrichis
+          keywords: [
+            'séries d\'articles',
+            'collections thématiques',
+            'tutoriels progressifs',
+            'développement web',
+            'docusaurus',
+            'react',
+            'javascript',
+            'apprentissage',
+            'formation',
+            'éducation',
+            'programmation'
+          ].join(', ')
         };
       }
       
