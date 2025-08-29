@@ -25,6 +25,9 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - ✅ URLs canoniques automatiques avec normalisation avancée
 - ✅ Support des images personnalisées
 - ✅ Gestion des auteurs avec données centralisées
+- 🆕 **Pages MDX personnalisées** : Support complet du front matter pour les pages `/src/pages/`
+- 🆕 **Récupération intelligente des tags** : Depuis front matter des pages custom
+- 🆕 **Auteurs multiples** : Support array et string pour `authors` et `author`
 - 🆕 **Schémas multiples cohérents** : BlogPosting + TechArticle automatique
 - 🆕 **Normalisation intelligente des URLs** : Suppression doubles slashes
 - 🆕 **Validation proactive** des schémas JSON-LD
@@ -32,7 +35,8 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 
 **Points clés** :
 - 🔄 Détection automatique du type de page
-- 📊 Récupération multi-hook des métadonnées (useBlogPost, useDoc, usePageMetadata)
+- 📊 Récupération multi-hook des métadonnées (useBlogPost, useDoc, fallback pages MDX)
+- 🏷️ Support tags et keywords depuis front matter pages personnalisées
 - 🖼️ Gestion intelligente des images (frontmatter → défaut site)
 - 👥 Support des auteurs multiples via `src/data/authors.js`
 - 🌐 Optimisé pour Google Rich Results
@@ -294,6 +298,57 @@ export default function PageMetaCustom() {
 ```
 
 ### 🎯 Cas d'usage spécifiques
+
+#### 🆕 Pages MDX personnalisées (src/pages/)
+
+Le composant SEO supporte maintenant parfaitement les pages MDX personnalisées avec récupération automatique du front matter :
+
+```mdx
+---
+title: "Ma Page Repository"
+description: "Page de présentation de mes projets open source"
+schemaType: "CollectionPage"
+image: "/img/projects.png"
+authors: ["docux"]
+tags:
+  - "open source"
+  - "github"
+  - "projects"
+  - "portfolio"
+keywords:
+  - "repositories"
+  - "projets open source"
+  - "développement"
+category: "Portfolio"
+date: 2025-08-29
+---
+
+import MyComponent from "@site/src/components/MyComponent";
+
+<MyComponent />
+```
+
+**Points clés pour les pages MDX :**
+- ✅ **Front matter automatique** : Récupération directe des métadonnées
+- ✅ **Tags et keywords** : Support array et string
+- ✅ **Auteurs multiples** : Via `authors: ["author1", "author2"]` ou `author: "single"`
+- ✅ **Schema.org intelligent** : Détection automatique du type basé sur `schemaType`
+- ✅ **Fallback robuste** : Métadonnées par défaut si front matter manquant
+
+**Exemple de récupération automatique :**
+```javascript
+// Le composant SEO récupère automatiquement :
+pageMetadata = {
+  title: "Ma Page Repository",
+  description: "Page de présentation...",
+  frontMatter: {
+    schemaType: "CollectionPage",
+    tags: ["open source", "github", "projects"],
+    authors: ["docux"],
+    keywords: ["repositories", "projets open source"]
+  }
+}
+```
 
 #### E-commerce / Landing pages
 

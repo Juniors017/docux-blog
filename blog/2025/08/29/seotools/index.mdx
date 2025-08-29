@@ -14,10 +14,10 @@ dependencies:
   - "Docusaurus 3.8+"
   - "React 18+"
   - "Node.js 18+"
-version: "2.0.0"
+version: "2.1.0"
 programmingLanguage: "JavaScript"
 codeRepository: "https://github.com/Juniors017/docux-blog"
-softwareVersion: "2.0.0"
+softwareVersion: "2.1.0"
 category: "SEO Tools"
 keywords: ["SEO", "Schema.org", "Docusaurus", "métadonnées", "Rich Results", "architecture", "debug", "validation"]
 hide_table_of_contents: true
@@ -62,6 +62,9 @@ L'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagneme
 - ✅ URLs canoniques automatiques avec normalisation avancée
 - ✅ Support des images personnalisées
 - ✅ Gestion des auteurs avec données centralisées
+- 🆕 **Pages MDX personnalisées** : Support complet du front matter pour les pages `/src/pages/`
+- 🆕 **Récupération intelligente des tags** : Depuis front matter des pages custom
+- 🆕 **Auteurs multiples** : Support array et string pour `authors` et `author`
 - 🆕 **Schémas multiples cohérents** : BlogPosting + TechArticle automatique
 - 🆕 **Normalisation intelligente des URLs** : Suppression doubles slashes
 - 🆕 **Validation proactive** des schémas JSON-LD
@@ -71,7 +74,8 @@ L'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagneme
 
 **Points clés** :
 - 🔄 Détection automatique du type de page
-- 📊 Récupération multi-hook des métadonnées (useBlogPost, useDoc, usePageMetadata)
+- 📊 Récupération multi-hook des métadonnées (useBlogPost, useDoc, fallback pages MDX)
+- 🏷️ Support tags et keywords depuis front matter pages personnalisées
 - 🖼️ Gestion intelligente des images (frontmatter → défaut site)
 - 👥 Support des auteurs multiples via `src/data/authors.js`
 - 🌐 Optimisé pour Google Rich Results
@@ -245,6 +249,42 @@ export default function LandingProduit() {
   );
 }
 ```
+
+#### 🆕 3. Pages MDX personnalisées avec Front Matter automatique
+
+**Nouvelle fonctionnalité** : Support complet des pages MDX avec récupération automatique du front matter :
+
+```mdx
+---
+title: "Repositories Publics - Projets Open Source"
+description: "Découvrez tous les projets open source développés par Docux"
+schemaType: "CollectionPage"
+image: "/img/docux.png"
+authors: ["docux"]
+tags:
+  - "open source"
+  - "github"
+  - "repositories"
+  - "portfolio"
+keywords:
+  - "repositories"
+  - "projets open source"
+  - "développement web"
+category: "Portfolio"
+date: 2025-08-29
+---
+
+import MyRepositories from "@site/src/components/MyRepositories";
+
+<MyRepositories username="juniors017" />
+```
+
+**✅ Avantages des pages MDX :**
+- **Front matter automatique** : Récupération directe des métadonnées sans code supplémentaire
+- **Tags et keywords** : Support array et string dans le front matter
+- **Auteurs multiples** : Via `authors: ["author1"]` ou `author: "single"`
+- **Schema.org intelligent** : Détection automatique du type basé sur `schemaType`
+- **Simplicité maximum** : Aucun composant SEO à importer, tout est automatique via le Layout global
 
 #### 3. Pages avec SEO conditionnel
 
@@ -1040,6 +1080,14 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 ## 🆕 Nouveautés et Mises à Jour
 
 ### Version Actuelle (Août 2025)
+
+**🆕 Support Pages MDX Personnalisées (Nouvelle fonctionnalité)**
+- Récupération automatique du front matter pour les pages `/src/pages/*.mdx`
+- Support complet des tags et keywords depuis le front matter
+- Gestion intelligente des auteurs (format array et string)
+- Détection automatique du schemaType depuis le front matter
+- Fallback robuste pour les métadonnées manquantes
+- Intégration transparente avec le Layout global
 
 **🔗 Normalisation Avancée des URLs (Dernière mise à jour)**
 - Correction automatique des doubles slashes dans les URLs
