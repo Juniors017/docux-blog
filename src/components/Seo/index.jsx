@@ -945,7 +945,56 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
         // Métriques de contenu
         wordCount: blogPostData.readingTime?.words || blogPostData.frontMatter?.wordCount || 500,
         timeRequired: blogPostData.readingTime?.minutes ? 
-                     `PT${Math.ceil(blogPostData.readingTime.minutes)}M` : 'PT5M',
+                     `PT${Math.ceil(blogPostData.readingTime.minutes)}M` : 
+                     (blogPostData.frontMatter?.readingTime || 'PT5M'),
+        
+        // 🆕 v2.1.4 - Améliorations BlogPosting
+        
+        // Genre de blog
+        ...(blogPostData.frontMatter?.genre && {
+          genre: blogPostData.frontMatter.genre
+        }),
+        
+        // Audience cible
+        ...(blogPostData.frontMatter?.audience && {
+          audience: {
+            '@type': 'Audience',
+            audienceType: blogPostData.frontMatter.audience
+          }
+        }),
+        
+        // Langue du contenu
+        inLanguage: blogPostData.frontMatter?.inLanguage || 'fr-FR',
+        
+        // Accès gratuit
+        isAccessibleForFree: blogPostData.frontMatter?.isAccessibleForFree !== false,
+        
+        // Corps de l'article
+        ...(blogPostData.frontMatter?.articleBody && {
+          articleBody: blogPostData.frontMatter.articleBody
+        }),
+        
+        // URL de discussion
+        ...(blogPostData.frontMatter?.discussionUrl && {
+          discussionUrl: blogPostData.frontMatter.discussionUrl
+        }),
+        
+        // Nombre de commentaires
+        ...(blogPostData.frontMatter?.commentCount !== undefined && {
+          commentCount: blogPostData.frontMatter.commentCount
+        }),
+        
+        // Copyright
+        ...(blogPostData.frontMatter?.copyrightYear && {
+          copyrightYear: blogPostData.frontMatter.copyrightYear
+        }),
+        
+        ...(blogPostData.frontMatter?.copyrightHolder && {
+          copyrightHolder: {
+            '@type': 'Person',
+            name: blogPostData.frontMatter.copyrightHolder
+          }
+        }),
         
         // Sujet de l'article (si catégorie définie)
         about: blogPostData.frontMatter?.category ? {
@@ -1481,35 +1530,88 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
         ...baseStructure,
         '@type': 'HowTo',
         
-        // Temps estimé et difficulté
-        totalTime: frontMatter.estimatedTime || 'PT30M', // Format ISO 8601
-        difficulty: frontMatter.difficulty || 'Beginner',
+        // 🆕 v2.1.4 - Métadonnées enrichies HowTo
         
-        // Outils nécessaires
-        ...(frontMatter.tools && {
-          tool: frontMatter.tools.map(tool => ({
-            '@type': 'HowToTool',
-            name: tool
-          }))
+        // Temps total et estimations détaillées
+        totalTime: frontMatter.totalTime || frontMatter.timeRequired || 'PT30M',
+        
+        // Temps de préparation spécifique
+        ...(frontMatter.prepTime && {
+          prepTime: frontMatter.prepTime
         }),
         
-        // Matériaux requis
+        // Temps d'exécution
+        ...(frontMatter.performTime && {
+          performTime: frontMatter.performTime
+        }),
+        
+        // Niveau de difficulté
+        difficulty: frontMatter.difficulty || 'Beginner',
+        
+        // Coût estimé
+        ...(frontMatter.estimatedCost && {
+          estimatedCost: {
+            '@type': 'MonetaryAmount',
+            currency: 'EUR',
+            value: frontMatter.estimatedCost
+          }
+        }),
+        
+        // Résultat attendu
+        ...(frontMatter.yield && {
+          yield: frontMatter.yield
+        }),
+        
+        // Outils nécessaires (support array depuis frontmatter)
+        ...(frontMatter.tool && {
+          tool: Array.isArray(frontMatter.tool) 
+            ? frontMatter.tool.map(tool => ({
+                '@type': 'HowToTool',
+                name: tool
+              }))
+            : [{ '@type': 'HowToTool', name: frontMatter.tool }]
+        }),
+        
+        // Matériaux/fournitures requis
         ...(frontMatter.supply && {
-          supply: frontMatter.supply.map(item => ({
-            '@type': 'HowToSupply',
-            name: item
-          }))
+          supply: Array.isArray(frontMatter.supply)
+            ? frontMatter.supply.map(item => ({
+                '@type': 'HowToSupply',
+                name: item
+              }))
+            : [{ '@type': 'HowToSupply', name: frontMatter.supply }]
+        }),
+        
+        // Audience et niveau requis
+        ...(frontMatter.audience && {
+          audience: {
+            '@type': 'Audience',
+            audienceType: frontMatter.audience
+          }
+        }),
+        
+        // Compétences requises
+        ...(frontMatter.proficiencyLevel && {
+          proficiencyLevel: frontMatter.proficiencyLevel
         }),
         
         // Instructions (si définies dans le frontMatter)
         ...(frontMatter.steps && {
-          step: frontMatter.steps.map((step, index) => ({
-            '@type': 'HowToStep',
-            position: index + 1,
-            name: step.name || `Étape ${index + 1}`,
-            text: step.text,
-            ...(step.image && { image: step.image })
-          }))
+          step: Array.isArray(frontMatter.steps)
+            ? frontMatter.steps.map((step, index) => ({
+                '@type': 'HowToStep',
+                position: index + 1,
+                name: step.name || `Étape ${index + 1}`,
+                text: step.text,
+                ...(step.image && { image: step.image }),
+                ...(step.url && { url: step.url })
+              }))
+            : [{ 
+                '@type': 'HowToStep',
+                position: 1,
+                name: 'Instructions',
+                text: frontMatter.steps
+              }]
         })
       };
     }
@@ -1559,7 +1661,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
         },
         
         // Niveau de compétence requis
-        proficiencyLevel: frontMatter.proficiencyLevel || 'Beginner',
+        proficiencyLevel: frontMatter.proficiencyLevel || frontMatter.difficulty || 'Beginner',
         
         // Dépendances techniques
         ...(frontMatter.dependencies && {
@@ -1575,12 +1677,159 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
         
         // Langage de programmation principal
         ...(frontMatter.programmingLanguage && {
-          programmingLanguage: frontMatter.programmingLanguage
+          programmingLanguage: Array.isArray(frontMatter.programmingLanguage)
+            ? frontMatter.programmingLanguage
+            : [frontMatter.programmingLanguage]
+        }),
+        
+        // 🆕 Améliorations v2.1.4 - Métadonnées enrichies
+        
+        // Temps requis pour suivre le tutoriel
+        ...(frontMatter.timeRequired && {
+          timeRequired: frontMatter.timeRequired
+        }),
+        
+        // Catégorie d'application
+        ...(frontMatter.applicationCategory && {
+          applicationCategory: frontMatter.applicationCategory
+        }),
+        
+        // Systèmes d'exploitation supportés
+        ...(frontMatter.operatingSystem && {
+          operatingSystem: Array.isArray(frontMatter.operatingSystem)
+            ? frontMatter.operatingSystem
+            : [frontMatter.operatingSystem]
+        }),
+        
+        // Exigences navigateur
+        ...(frontMatter.browserRequirements && {
+          browserRequirements: frontMatter.browserRequirements
+        }),
+        
+        // Audience cible
+        ...(frontMatter.audience && {
+          audience: {
+            '@type': 'Audience',
+            audienceType: frontMatter.audience
+          }
+        }),
+        
+        // Type de ressource d'apprentissage
+        ...(frontMatter.learningResourceType && {
+          learningResourceType: frontMatter.learningResourceType
+        }),
+        
+        // Niveau éducationnel
+        ...(frontMatter.educationalLevel && {
+          educationalLevel: frontMatter.educationalLevel
+        }),
+        
+        // Usage éducationnel
+        ...(frontMatter.educationalUse && {
+          educationalUse: frontMatter.educationalUse
+        }),
+        
+        // Repository de code source
+        ...(frontMatter.codeRepository && {
+          codeRepository: {
+            '@type': 'SoftwareSourceCode',
+            codeRepository: frontMatter.codeRepository,
+            programmingLanguage: frontMatter.programmingLanguage
+          }
+        }),
+        
+        // Compatibilité et prérequis
+        ...(frontMatter.softwareRequirements && {
+          softwareRequirements: frontMatter.softwareRequirements
         }),
         
         // Code source associé
         ...(frontMatter.codeRepository && {
           codeRepository: frontMatter.codeRepository
+        })
+      };
+    }
+
+    /**
+     * 🆕 Enrichissement pour les pages FAQ (FAQPage)
+     * 
+     * Structure optimisée pour les questions/réponses
+     */
+    if (pageInfo.type === 'FAQPage' && (blogPostData || pageMetadata)) {
+      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+      
+      return {
+        ...baseStructure,
+        '@type': 'FAQPage',
+        
+        // Entité principale : FAQ
+        mainEntity: frontMatter.faq && Array.isArray(frontMatter.faq) 
+          ? frontMatter.faq.map((item, index) => ({
+              '@type': 'Question',
+              '@id': `${canonicalId}#faq-${index + 1}`,
+              name: item.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.answer,
+                ...(item.answerUrl && { url: item.answerUrl })
+              }
+            }))
+          : [],
+        
+        // Informations sur l'auteur
+        author: primaryAuthor ? {
+          '@type': 'Person',
+          name: normalizeAuthorName(primaryAuthor.name),
+          url: primaryAuthor.url || primaryAuthor.github,
+          description: primaryAuthor.title || 'Contributeur Docux',
+          image: primaryAuthor.imageUrl
+        } : {
+          '@type': 'Person',
+          name: 'Équipe Docux',
+          url: siteConfig.url
+        },
+        
+        // Dates de publication si disponibles
+        ...(blogPostData?.date && {
+          datePublished: blogPostData.date || new Date().toISOString()
+        }),
+        ...(blogPostData?.lastUpdatedAt && {
+          dateModified: blogPostData.lastUpdatedAt || new Date().toISOString()
+        }),
+        
+        // Informations sur l'éditeur
+        publisher: {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+          logo: {
+            '@type': 'ImageObject',
+            url: siteConfig.url + useBaseUrl('/img/docux.png')
+          }
+        },
+        
+        // Audience et langue
+        ...(frontMatter.audience && {
+          audience: {
+            '@type': 'Audience',
+            audienceType: frontMatter.audience
+          }
+        }),
+        
+        inLanguage: frontMatter.inLanguage || 'fr-FR',
+        isAccessibleForFree: frontMatter.isAccessibleForFree !== false,
+        
+        // Genre de contenu
+        ...(frontMatter.genre && {
+          genre: frontMatter.genre
+        }),
+        
+        // Sujet principal
+        ...(frontMatter.category && {
+          about: {
+            '@type': 'Thing',
+            name: frontMatter.category
+          }
         })
       };
     }

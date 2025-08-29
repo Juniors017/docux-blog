@@ -1,0 +1,217 @@
+---
+title: "Comment Optimiser le SEO de votre Site Docusaurus - Guide Complet"
+description: "Guide étape par étape pour implémenter une architecture SEO professionnelle sur Docusaurus avec schémas JSON-LD, métadonnées enrichies et composants personnalisés"
+# 🎯 Configuration Schémas Explicites v2.1.4
+schemaTypes: ["HowTo", "TechArticle"]  # Guide pratique + Article technique
+slug: comment-optimiser-seo-docusaurus-guide-complet
+image: "/img/timeline.png"
+authors: ["docux"]
+tags: ["howto", "seo", "docusaurus", "tutorial", "guide", "schema-org", "metadata"]
+date: 2025-08-29
+last_update:
+  date: 2025-08-29
+  author: docux
+# 🚀 Améliorations HowTo pour Google Rich Results
+timeRequired: "PT2H"  # 2 heures pour suivre le guide complet
+difficulty: "Intermediate"  # Niveau intermédiaire
+totalTime: "PT2H30M"  # Temps total incluant setup
+prepTime: "PT30M"  # Temps de préparation
+performTime: "PT2H"  # Temps d'exécution
+# Matériel et outils requis
+supply: 
+  - "Ordinateur avec Node.js 18+"
+  - "Éditeur de code (VS Code recommandé)"
+  - "Terminal ou invite de commande"
+  - "Navigateur web moderne"
+tool: 
+  - "Node.js 18+"
+  - "npm ou yarn"
+  - "Git"
+  - "Docusaurus 3.8+"
+  - "GitHub account"
+# Résultat attendu
+yield: "Site Docusaurus avec SEO professionnel et Rich Results Google"
+estimatedCost: "Gratuit"  # Coût estimé
+# Améliorations TechArticle
+proficiencyLevel: "Intermediate"
+programmingLanguage: ["JavaScript", "React", "JSON-LD"]
+applicationCategory: "DeveloperApplication"
+operatingSystem: ["Windows", "macOS", "Linux"]
+browserRequirements: "Navigateur moderne avec support ES2020+"
+audience: "Développeurs web, Créateurs de contenu technique"
+learningResourceType: "Step-by-step Tutorial"
+educationalLevel: "Intermediate"
+educationalUse: "Professional Development"
+# Métadonnées enrichies
+genre: "Technical Tutorial"
+inLanguage: "fr-FR"
+isAccessibleForFree: true
+wordCount: 2500
+readingTime: "12 min"
+articleSection: "Tutorial"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+category: "Tutorial"
+keywords: ["SEO Docusaurus", "Schema.org", "Tutorial", "Rich Results", "JSON-LD", "Métadonnées"]
+hide_table_of_contents: false
+toc_min_heading_level: 2
+toc_max_heading_level: 3
+---
+
+# Comment Optimiser le SEO de votre Site Docusaurus - Guide Complet
+
+:::tip Prérequis
+- ✅ Site Docusaurus existant ou nouveau
+- ✅ Connaissances de base en React/JavaScript
+- ✅ Node.js 18+ installé
+- ✅ 2 heures de temps libre
+:::
+
+## 🎯 Objectif du Guide
+
+À la fin de ce tutoriel, votre site Docusaurus aura :
+- **Schémas JSON-LD** automatiques pour tous les contenus
+- **Rich Results Google** : breadcrumbs, articles, collections
+- **Métadonnées optimisées** : OpenGraph, Twitter Cards
+- **Architecture SEO professionnelle** avec composants modulaires
+
+## 📋 Étape 1 : Installation des Composants SEO (30 min)
+
+### 1.1 Création du Composant SEO Principal
+
+Créez le fichier `src/components/Seo/index.jsx` :
+
+```jsx title="src/components/Seo/index.jsx"
+import React from 'react';
+import Head from '@docusaurus/Head';
+import { useLocation } from '@docusaurus/router';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+
+export default function Seo() {
+  const { siteConfig } = useDocusaurusContext();
+  const location = useLocation();
+  
+  // Génération automatique des métadonnées
+  const pageTitle = "Votre Site Docusaurus";
+  const pageDescription = "Description par défaut";
+  
+  return (
+    <Head>
+      <title>{pageTitle}</title>
+      <meta name="description" content={pageDescription} />
+      <meta property="og:title" content={pageTitle} />
+      <meta property="og:description" content={pageDescription} />
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": pageTitle,
+          "description": pageDescription
+        })}
+      </script>
+    </Head>
+  );
+}
+```
+
+### 1.2 Intégration Global Layout
+
+Modifiez `src/theme/Layout/index.js` :
+
+```jsx title="src/theme/Layout/index.js"
+import React from 'react';
+import Layout from '@theme-original/Layout';
+import Seo from '@site/src/components/Seo';
+
+export default function LayoutWrapper(props) {
+  return (
+    <>
+      <Seo />
+      <Layout {...props} />
+    </>
+  );
+}
+```
+
+## 📋 Étape 2 : Configuration des Schémas Multiples (45 min)
+
+### 2.1 Support des SchemaTypes Explicites
+
+Ajoutez dans vos articles :
+
+```yaml title="Frontmatter d'article"
+---
+title: "Mon Article"
+schemaTypes: ["TechArticle", "BlogPosting"]  # Schémas multiples
+proficiencyLevel: "Beginner"
+programmingLanguage: "JavaScript"
+---
+```
+
+### 2.2 Détection Automatique Intelligente
+
+Le composant détectera automatiquement :
+- **TechArticle** : Mots-clés techniques (JavaScript, React, API...)
+- **HowTo** : Titres avec "Comment", "Guide", structure étapes
+- **BlogPosting** : Contexte blog avec auteurs
+
+## 📋 Étape 3 : Optimisation Rich Results (30 min)
+
+### 3.1 Configuration BreadcrumbList
+
+Les breadcrumbs sont générés automatiquement :
+- **2 niveaux** : Pages générales
+- **3 niveaux** : Pages de séries spécifiques
+
+### 3.2 Métadonnées Enrichies
+
+Ajoutez dans vos articles techniques :
+
+```yaml
+timeRequired: "PT45M"  # 45 minutes
+difficulty: "Advanced"
+audience: "Développeurs web"
+learningResourceType: "Tutorial"
+```
+
+## 📋 Étape 4 : Test et Validation (15 min)
+
+### 4.1 Test Local
+
+```bash
+npm run start
+```
+
+### 4.2 Validation Google
+
+1. Ouvrez [Google Rich Results Test](https://search.google.com/test/rich-results)
+2. Testez vos URLs
+3. Vérifiez les schémas détectés
+
+## ✅ Résultat Final
+
+Votre site aura :
+- **SEO automatique** sur toutes les pages
+- **Rich Results Google** : articles, breadcrumbs, collections
+- **Performance optimisée** : SSG-friendly
+- **Maintenance minimale** : Configuration centralisée
+
+## 🎉 Félicitations !
+
+Vous avez maintenant une **architecture SEO professionnelle** sur Docusaurus ! 
+
+:::success Prochaines Étapes
+- Déployez votre site
+- Soumettez votre sitemap à Google Search Console
+- Surveillez les Rich Results dans les semaines suivantes
+:::
+
+## 📚 Ressources Complémentaires
+
+- [Documentation Composant SEO](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)
+- [Guide Schema.org](https://schema.org/)
+- [Google Rich Results](https://developers.google.com/search/docs/appearance/structured-data)
+
+---
+
+*Guide créé par **Docux** - Architecture SEO v2.1.4*

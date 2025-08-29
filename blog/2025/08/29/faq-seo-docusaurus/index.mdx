@@ -1,0 +1,240 @@
+---
+title: "FAQ SEO Docusaurus - Questions Fréquentes"
+description: "Réponses aux questions les plus courantes sur l'optimisation SEO avec Docusaurus : schémas JSON-LD, métadonnées, Rich Results et bonnes pratiques"
+# 🎯 Configuration Schémas Multiples v2.1.4
+schemaTypes: ["BlogPosting", "FAQPage"]  # Article + Page FAQ
+slug: faq-seo-docusaurus-questions-frequentes
+image: "/img/docux.png"
+authors: ["docux"]
+tags: ["faq", "seo", "docusaurus", "questions", "support", "aide"]
+date: 2025-08-29
+last_update:
+  date: 2025-08-29
+  author: docux
+# Métadonnées BlogPosting enrichies
+genre: "FAQ Technology"
+audience: "Développeurs web, Utilisateurs Docusaurus"
+inLanguage: "fr-FR"
+isAccessibleForFree: true
+wordCount: 1500
+readingTime: "7 min"
+articleSection: "Support"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+category: "Support"
+keywords: ["FAQ Docusaurus", "SEO questions", "Support technique", "Aide Docusaurus"]
+# Configuration FAQ Schema
+faq:
+  - question: "Comment installer le composant SEO sur Docusaurus ?"
+    answer: "Créez le fichier src/components/Seo/index.jsx et intégrez-le dans src/theme/Layout/index.js. Le composant sera automatiquement appliqué à toutes les pages."
+  - question: "Quels schémas JSON-LD sont supportés ?"
+    answer: "BlogPosting, TechArticle, HowTo, CollectionPage, BreadcrumbList, FAQPage, et WebPage. Utilisez schemaTypes dans le frontmatter pour contrôler explicitement."
+  - question: "Comment configurer des schémas multiples ?"
+    answer: "Utilisez schemaTypes: ['TechArticle', 'BlogPosting'] dans le frontmatter de votre article. La version 2.1.4 permet un contrôle total des schémas."
+  - question: "Le SEO fonctionne-t-il avec le build statique ?"
+    answer: "Oui, le composant est optimisé SSG et génère les métadonnées lors du build. Aucune JavaScript côté client n'est requis pour le SEO."
+  - question: "Comment tester les Rich Results Google ?"
+    answer: "Utilisez l'outil Google Rich Results Test avec vos URLs. Vérifiez aussi Google Search Console après indexation."
+hide_table_of_contents: false
+toc_min_heading_level: 2
+toc_max_heading_level: 3
+---
+
+# FAQ SEO Docusaurus - Questions Fréquentes
+
+:::info À propos de cette FAQ
+Cette page répond aux **questions les plus courantes** sur l'implémentation SEO avec Docusaurus. Elle utilise le **schema FAQPage** pour optimiser l'affichage dans les résultats Google.
+:::
+
+## 🚀 Installation et Configuration
+
+### Comment installer le composant SEO sur Docusaurus ?
+
+**Réponse :** L'installation se fait en 3 étapes simples :
+
+1. **Créez le composant** `src/components/Seo/index.jsx`
+2. **Intégrez globalement** dans `src/theme/Layout/index.js`
+3. **Configurez les métadonnées** via frontmatter
+
+```jsx title="src/theme/Layout/index.js"
+import React from 'react';
+import Layout from '@theme-original/Layout';
+import Seo from '@site/src/components/Seo';
+
+export default function LayoutWrapper(props) {
+  return (
+    <>
+      <Seo />
+      <Layout {...props} />
+    </>
+  );
+}
+```
+
+### Quels sont les prérequis système ?
+
+**Réponse :** 
+- **Docusaurus 3.8+** (versions antérieures non testées)
+- **React 18+** pour les hooks modernes
+- **Node.js 18+** pour le build
+- **Navigateur moderne** pour le développement
+
+## 📊 Schémas JSON-LD
+
+### Quels schémas JSON-LD sont supportés ?
+
+**Réponse :** La version 2.1.4 supporte :
+
+| Schéma | Usage | Configuration |
+|--------|--------|---------------|
+| **BlogPosting** | Articles de blog | `schemaTypes: ["BlogPosting"]` |
+| **TechArticle** | Contenu technique | `schemaTypes: ["TechArticle"]` |
+| **HowTo** | Guides pratiques | `schemaTypes: ["HowTo"]` |
+| **CollectionPage** | Listes/Collections | `schemaTypes: ["CollectionPage"]` |
+| **FAQPage** | Pages FAQ | `schemaTypes: ["FAQPage"]` |
+| **BreadcrumbList** | Navigation | Automatique |
+
+### Comment configurer des schémas multiples ?
+
+**Réponse :** Utilisez la **configuration explicite v2.1.4** :
+
+```yaml
+---
+title: "Mon Article"
+schemaTypes: ["TechArticle", "BlogPosting"]  # Double schéma
+proficiencyLevel: "Advanced"
+programmingLanguage: "JavaScript"
+---
+```
+
+**Avantages :**
+- ✅ **Contrôle total** : Vous décidez exactement
+- ✅ **Prédictibilité** : Résultats garantis
+- ✅ **Performance** : Pas de détection automatique
+- ✅ **Rich Results** : Double exposition Google
+
+## 🔧 Configuration Avancée
+
+### Comment optimiser pour les Rich Results Google ?
+
+**Réponse :** Ajoutez des **métadonnées enrichies** :
+
+```yaml
+# Pour TechArticle
+timeRequired: "PT45M"
+difficulty: "Advanced"
+audience: "Développeurs web"
+programmingLanguage: ["JavaScript", "React"]
+
+# Pour HowTo
+totalTime: "PT2H"
+prepTime: "PT30M"
+tool: ["Node.js", "npm", "Git"]
+supply: ["Ordinateur", "Éditeur de code"]
+
+# Pour BlogPosting
+genre: "Technology Blog"
+readingTime: "8 min"
+isAccessibleForFree: true
+```
+
+### Le SEO fonctionne-t-il avec le build statique ?
+
+**Réponse :** **Oui, parfaitement !** Le composant est optimisé pour la génération statique :
+
+- ✅ **SSG-friendly** : Métadonnées générées au build
+- ✅ **Pas de JavaScript client** requis pour le SEO
+- ✅ **Performance maximale** : HTML statique avec métadonnées
+- ✅ **Indexation rapide** : Google accède directement aux données
+
+## 🧪 Test et Validation
+
+### Comment tester les Rich Results Google ?
+
+**Réponse :** Utilisez les outils officiels Google :
+
+1. **[Rich Results Test](https://search.google.com/test/rich-results)** : Test immédiat
+2. **[Google Search Console](https://search.google.com/search-console)** : Suivi en production
+3. **[Schema.org Validator](https://validator.schema.org/)** : Validation technique
+
+**Workflow recommandé :**
+```bash
+# 1. Test local
+npm run start
+
+# 2. Build et déploiement
+npm run build
+npm run serve
+
+# 3. Test Google après déploiement
+```
+
+### Que faire si les schémas ne sont pas détectés ?
+
+**Réponse :** Vérifications à effectuer :
+
+1. **Frontmatter correct** : `schemaTypes: ["BlogPosting"]`
+2. **Intégration Layout** : Composant SEO dans Layout global
+3. **Build complet** : `npm run build` puis test
+4. **URLs publiques** : Google ne teste que les URLs accessibles
+5. **Patience** : 24-48h pour l'indexation Google
+
+## 🆕 Nouveautés v2.1.4
+
+### Quelles sont les nouveautés de la version 2.1.4 ?
+
+**Réponse :** **Révolution des schémas explicites !**
+
+- 🎯 **Configuration explicite** : `schemaTypes` dans frontmatter
+- 🏆 **Hiérarchie priorités** : Explicite > Auto-détection
+- 🔗 **Fragments URLs** : #blogposting, #techarticle pour éviter doublons
+- ⚡ **Performance** : Bypass détection automatique
+- 🛡️ **Prédictibilité** : Résultats 100% contrôlés
+
+### Comment migrer vers la v2.1.4 ?
+
+**Réponse :** Migration simple en 3 étapes :
+
+```yaml
+# AVANT (v2.1.3)
+---
+title: "Mon Article"
+# Détection automatique uniquement
+---
+
+# MAINTENANT (v2.1.4)
+---
+title: "Mon Article"
+schemaTypes: ["TechArticle", "BlogPosting"]  # 🎯 Explicite
+proficiencyLevel: "Advanced"
+timeRequired: "PT30M"
+---
+```
+
+## 🆘 Support et Aide
+
+### Où trouver de l'aide supplémentaire ?
+
+**Réponse :** Ressources disponibles :
+
+- 📚 **[Documentation complète](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)**
+- 🐛 **[GitHub Issues](https://github.com/Juniors017/docux-blog/issues)** pour les bugs
+- 💬 **[Discussions](https://github.com/Juniors017/docux-blog/discussions)** pour les questions
+- 📝 **[Guide complet SEO](/blog/architecture-seo-docusaurus-guide-complet/)** avec exemples
+
+### Le composant est-il compatible avec d'autres thèmes Docusaurus ?
+
+**Réponse :** **Oui !** Le composant est **agnostique du thème** :
+
+- ✅ **Classic theme** : Compatible natif
+- ✅ **Thèmes personnalisés** : Intégration via Layout
+- ✅ **Docusaurus 3.x** : Toutes versions supportées
+- ✅ **Plugins tiers** : Pas de conflit
+
+---
+
+:::success Besoin d'aide ?
+Si votre question n'est pas dans cette FAQ, créez une **[Discussion GitHub](https://github.com/Juniors017/docux-blog/discussions)** ou consultez la **[documentation technique](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)**.
+:::
+
+*FAQ mise à jour pour la version 2.1.4 - Architecture SEO Docusaurus*
