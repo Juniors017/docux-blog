@@ -1,6 +1,6 @@
 docux:
   name: Docux
-  title: Docusaurus Contributor
+  title: Développeur & Créateur d'Outils d'Automatisation
   url: https://docux.org
   image_url: /img/docusaurus.png
   page:
@@ -8,6 +8,10 @@ docux:
     permalink: '/docux'
   socials:
     github: https://github.com/Juniors017
+  bio: |
+    Développeur passionné par l'automatisation et l'optimisation SEO.
+    Créateur des scripts d'automatisation Docux Blog permettant de générer
+    des articles optimisés SEO en 30 secondes.
 
 
 kiki:

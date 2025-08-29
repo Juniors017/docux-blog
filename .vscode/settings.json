@@ -1,0 +1,29 @@
+{
+  "emmet.includeLanguages": {
+    "mdx": "html"
+  },
+  "files.associations": {
+    "*.mdx": "mdx"
+  },
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
+  "editor.snippetSuggestions": "top",
+  "[mdx]": {
+    "editor.defaultFormatter": "unifiedjs.vscode-mdx",
+    "editor.formatOnSave": true,
+    "editor.quickSuggestions": {
+      "strings": true,
+      "comments": false,
+      "other": true
+    }
+  },
+  "files.exclude": {
+    "**/build/**": true,
+    "**/node_modules/**": true,
+    "**/.docusaurus/**": true
+  },
+  "search.exclude": {
+    "**/build/**": true,
+    "**/node_modules/**": true,
+    "**/.docusaurus/**": true
+  }
+}
