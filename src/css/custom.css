@@ -152,4 +152,10 @@ html[data-theme='dark'] .footer__bottom {
 
 /* Styles spécifiques à la page d'accueil déplacés vers src/pages/index.module.css */
 
+h1 {
+  font-size: 35px;
+}
 
+h2.title_f1Hy {
+  font-size: 28px!important;
+}
