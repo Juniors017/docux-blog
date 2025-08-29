@@ -133,9 +133,23 @@ export function validateSchemaUrls(schemas) {
     }
   });
 
-  // Vérifie que tous les schémas pointent vers la même ressource
+  // Vérifie que tous les schémas pointent vers la même ressource de base
+  // ✅ Nouvelle logique : accepter les fragments pour les schémas multiples
   if (ids.size > 1) {
-    errors.push(`Incohérence d'IDs détectée entre schémas multiples: ${Array.from(ids).join(', ')}`);
+    // Extraire les URLs de base (sans fragments) pour comparaison
+    const baseIds = new Set();
+    ids.forEach(id => {
+      const baseId = id.split('#')[0]; // Supprimer le fragment s'il existe
+      baseIds.add(baseId);
+    });
+    
+    // Erreur seulement si les URLs de base sont différentes
+    if (baseIds.size > 1) {
+      errors.push(`Incohérence d'IDs de base détectée entre schémas multiples: ${Array.from(baseIds).join(', ')}`);
+    } else {
+      // Les schémas pointent vers la même ressource mais avec des fragments différents → OK
+      console.log('✅ Schémas multiples détectés avec fragments différents (comportement normal):', Array.from(ids));
+    }
   }
 
   if (urls.size > 1) {

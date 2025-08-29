@@ -12,7 +12,6 @@ import { useLocation } from "@docusaurus/router";
 import Card from "@site/src/components/Card";
 import CardImage from "@site/src/components/Card/CardImage";
 import CardBody from "@site/src/components/Card/CardBody";
-import Seo from "@site/src/components/Seo";
 
 // Fonction pour créer un slug à partir du nom de série
 function createSlug(text) {
@@ -50,24 +49,14 @@ export default function SeriesArticlesPage() {
   const sortedPosts = seriesPosts.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
-    <>
-      <Seo 
-        pageData={{
-          title: `Articles de la série: ${originalSeriesName}`,
-          description: `Découvrez tous les articles de la série ${originalSeriesName}. Collection de ${sortedPosts.length} article(s) pour un apprentissage progressif.`,
-          keywords: ['série', originalSeriesName.toLowerCase(), 'articles', 'tutoriels', 'apprentissage progressif'],
-          seriesName: originalSeriesName,
-          seriesCount: sortedPosts.length
-        }}
-      />
-      <Layout title={`Articles de la série: ${originalSeriesName}`}>
-        <div className="container margin-top--lg margin-bottom--lg">
-          <h1>Articles de la série : {originalSeriesName}</h1>
-          {/* Affiche les cartes d'articles si la série contient des articles */}
-          {sortedPosts.length > 0 ? (
-            <div className="row">
-              {sortedPosts.map(post => (
-                <div key={post.permalink} className="col col--4 margin-bottom--lg">
+    <Layout title={`Articles de la série: ${originalSeriesName}`}>
+      <div className="container margin-top--lg margin-bottom--lg">
+        <h1>Articles de la série : {originalSeriesName}</h1>
+        {/* Affiche les cartes d'articles si la série contient des articles */}
+        {sortedPosts.length > 0 ? (
+          <div className="row">
+            {sortedPosts.map(post => (
+              <div key={post.permalink} className="col col--4 margin-bottom--lg">
                   {/* Lien vers l'article */}
                   <Link href={post.permalink}>
                     <Card shadow="md">
@@ -93,6 +82,5 @@ export default function SeriesArticlesPage() {
           )}
         </div>
       </Layout>
-    </>
   );
 }

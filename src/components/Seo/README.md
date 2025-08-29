@@ -7,6 +7,85 @@
 
 > 📖 **Documentation Complémentaire** : Pour une présentation complète et accessible, consultez l'[Article de Blog sur l'Architecture SEO](/blog/architecture-seo-docusaurus-guide-complet) qui accompagne cette documentation technique.
 
+## 🆕 Version 2.1.4 - Support des Schémas Multiples via Frontmatter
+
+### Nouvelle Fonctionnalité : Configuration Explicite des Schémas
+
+Vous pouvez maintenant **spécifier explicitement les types de schémas** dans le frontmatter de vos articles pour éviter les conflits de validation et avoir un contrôle total sur vos données structurées.
+
+#### ✅ Méthode Recommandée : Frontmatter avec `schemaTypes`
+
+```yaml
+---
+title: "Architecture SEO Avancée pour Docusaurus - Guide Complet"
+description: "Découvrez notre architecture SEO complète"
+schemaTypes: ["TechArticle", "BlogPosting"]  # 🆕 Schémas multiples
+proficiencyLevel: "Advanced"  # Pour TechArticle
+programmingLanguage: "JavaScript"  # Pour TechArticle
+authors: ["docux"]
+tags: ["seo", "docusaurus", "schema-org", "javascript", "react"]
+---
+```
+
+#### 🎯 Avantages de cette Approche
+
+- **✅ Contrôle Total** : Vous choisissez exactement quels schémas générer
+- **✅ Pas de Conflits** : Les IDs sont différenciés automatiquement (canonique vs fragment)
+- **✅ Validation Intelligente** : Plus d'erreurs "Incohérence d'IDs détectée"
+- **✅ SEO Optimisé** : Combine les avantages de TechArticle et BlogPosting  
+- **✅ Rich Results** : Éligible aux résultats enrichis Google pour les deux types
+- **✅ Backward Compatible** : L'ancien système fonctionne toujours
+
+#### 🎯 Hiérarchie des Priorités de Détection
+
+Le composant applique une **hiérarchie stricte** pour déterminer le type de schéma :
+
+```javascript
+// 🥇 PRIORITÉ 1 : Configuration explicite (NOUVELLE APPROCHE RECOMMANDÉE)
+schemaTypes: ["TechArticle", "BlogPosting"]  // ← Priorité absolue
+
+// 🥈 PRIORITÉ 2 : Configuration simple (ANCIENNE APPROCHE)  
+schemaType: "TechArticle"                   // ← Utilisé si schemaTypes absent
+
+// 🥉 PRIORITÉ 3 : Détection automatique (FALLBACK)
+// Titre contient "guide" → HowTo            // ← Seulement si aucune config explicite
+// Tags techniques → TechArticle
+// Défaut → BlogPosting
+```
+
+**⚠️ Important** : La configuration explicite via `schemaTypes` **court-circuite** toute détection automatique, garantissant un contrôle total sur vos schémas.
+
+#### 🔧 Exemples d'Usage
+
+**Pour les articles techniques (RECOMMANDÉ) :**
+```yaml
+---
+title: "Guide React Avancé"
+schemaTypes: ["TechArticle", "BlogPosting"]  # Double optimisation SEO
+proficiencyLevel: "Advanced"
+programmingLanguage: "React"
+---
+```
+
+**Pour les tutoriels étape par étape :**
+```yaml
+---
+title: "Comment créer une API REST"
+schemaTypes: ["HowTo", "BlogPosting"]
+estimatedTime: "PT30M"  # 30 minutes
+---
+```
+
+**Pour les articles de blog classiques :**
+```yaml
+---
+title: "Mes réflexions sur le développement"
+# Pas de schemaTypes → Détection automatique (BlogPosting)
+---
+```
+
+---
+
 ## Vue d'ensemble
 
 Cette documentation technique détaille l'implémentation de l'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagnement de **GitHub Copilot**. L'architecture est séparée en deux composants distincts pour une meilleure maintenabilité et séparation des responsabilités :
@@ -28,6 +107,9 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - 🆕 **Pages MDX personnalisées** : Support complet du front matter pour les pages `/src/pages/`
 - 🆕 **Récupération intelligente des tags** : Depuis front matter des pages custom
 - 🆕 **Auteurs multiples** : Support array et string pour `authors` et `author`
+- 🆕 **Schémas Multiples** : Support explicite via `schemaTypes: ["TechArticle", "BlogPosting"]`
+- 🆕 **Hiérarchie des Priorités** : Configuration explicite > Détection automatique
+- 🆕 **Validation Intelligente** : Gestion des fragments d'IDs pour schémas multiples
 - 🆕 **Schémas multiples cohérents** : BlogPosting + TechArticle automatique
 - 🆕 **Normalisation intelligente des URLs** : Suppression doubles slashes
 - 🆕 **Validation proactive** des schémas JSON-LD
@@ -1363,19 +1445,21 @@ try {
 - 📊 **Compréhension sémantique** : Google comprend la hiérarchie série → articles
 - 🎓 **Contexte éducatif** : Schémas optimaux pour le contenu d'apprentissage
 
-**🔧 Intégration Component :**
+**🔧 Intégration Automatique :**
 ```jsx
-// Ajout automatique du composant SEO dans series-articles.jsx
-<Seo 
-  pageData={{
-    title: `Articles de la série: ${originalSeriesName}`,
-    description: `Découvrez tous les articles de la série ${originalSeriesName}...`,
-    keywords: ['série', originalSeriesName.toLowerCase(), 'articles', 'tutoriels'],
-    seriesName: originalSeriesName,
-    seriesCount: sortedPosts.length
-  }}
-/>
+// ✅ Le composant SEO global détecte automatiquement les pages de séries spécifiques
+// 🎯 Aucun code supplémentaire nécessaire dans series-articles.jsx
+// 📊 Métadonnées générées automatiquement depuis les paramètres URL
+
+// Le Layout global inclut déjà le composant SEO qui :
+// - Détecte isSpecificSeriesPage via location.search.includes('name=')
+// - Extrait le nom de série via getSeriesNameFromUrl()
+// - Génère le BreadcrumbList à 3 niveaux automatiquement
+// - Crée les schémas CreativeWorkSeries appropriés
 ```
+
+**⚠️ Important :**
+Ne pas ajouter `<Seo />` manuellement dans `series-articles.jsx` car cela créerait un **doublon du panel de debug**. Le composant SEO global via le Layout gère déjà automatiquement cette page.
 
 ---
 

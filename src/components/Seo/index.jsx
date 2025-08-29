@@ -352,8 +352,16 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    * 3. Détection par URL/contexte (fallback)
    */
   const getPageType = () => {
-    // � PRIORITÉ 1: Configuration explicite via frontMatter
+    // 🎯 PRIORITÉ 1: Configuration explicite via frontMatter
     const customSchemaType = (blogPostData?.frontMatter?.schemaType || pageMetadata?.frontMatter?.schemaType);
+    const customSchemaTypes = (blogPostData?.frontMatter?.schemaTypes || pageMetadata?.frontMatter?.schemaTypes);
+    
+    // 🆕 Si schemaTypes est défini, priorité absolue (nouvelle approche)
+    if (Array.isArray(customSchemaTypes) && customSchemaTypes.length > 0) {
+      return { type: customSchemaTypes[0], category: `${customSchemaTypes[0]} (schémas multiples configurés)` };
+    }
+    
+    // Ancienne approche avec schemaType (singulier)
     if (customSchemaType) {
       return { type: customSchemaType, category: `${customSchemaType} (configuré)` };
     }
@@ -432,6 +440,114 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    */
   const canonicalId = generateCanonicalId(siteConfig, location.pathname);
   const canonicalUrl = generateCanonicalUrl(siteConfig, location.pathname);
+
+  /**
+   * Fonction utilitaire pour créer des BreadcrumbList optimisés Google
+   * 
+   * Applique les bonnes pratiques :
+   * - URLs normalisées en minuscules
+   * - Items typés en WebPage
+   * - Nom global du BreadcrumbList
+   */
+  const createOptimizedBreadcrumb = (items, listName) => {
+    return {
+      '@type': 'BreadcrumbList',
+      name: listName,
+      itemListElement: items.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: {
+          '@type': 'WebPage',
+          '@id': item.url.toLowerCase(),
+          name: item.name,
+          url: item.url.toLowerCase()
+        }
+      }))
+    };
+  };
+
+  /**
+   * Fonction utilitaire pour générer des BreadcrumbList optimisés Google
+   * 
+   * @param {string} pathname - Le chemin de la page courante
+   * @param {string} pageTitle - Le titre de la page courante
+   * @param {Object} siteConfig - Configuration du site Docusaurus
+   * @returns {Object} Objet BreadcrumbList Schema.org optimisé
+   */
+  const generateGenericBreadcrumb = (pathname, pageTitle, siteConfig) => {
+    const items = [];
+    
+    // 1. Toujours commencer par l'accueil
+    items.push({
+      name: siteConfig.title,
+      url: siteConfig.url
+    });
+
+    // 2. Analyser le chemin pour construire la hiérarchie
+    const pathSegments = pathname
+      .replace('/docux-blog/', '/') // Normaliser le base path
+      .split('/')
+      .filter(segment => segment.length > 0);
+
+    let currentPath = siteConfig.url;
+    
+    // 3. Ajouter chaque segment du chemin
+    pathSegments.forEach((segment, index) => {
+      currentPath += `/docux-blog/${segment}`;
+      
+      // Ne pas ajouter la page courante comme dernier élément si c'est une page finale
+      const isLastSegment = index === pathSegments.length - 1;
+      
+      let segmentName = segment;
+      
+      // 4. Personnaliser les noms des segments selon les sections
+      switch(segment) {
+        case 'blog':
+          segmentName = 'Blog';
+          break;
+        case 'series':
+          segmentName = 'Séries d\'articles';
+          break;
+        case 'repository':
+          segmentName = 'Repositories';
+          break;
+        case 'thanks':
+          segmentName = 'Remerciements';
+          break;
+        case 'tags':
+          segmentName = 'Tags';
+          break;
+        case 'authors':
+          segmentName = 'Auteurs';
+          break;
+        default:
+          // Pour les segments dynamiques (dates, slugs), utiliser le titre de la page si c'est le dernier
+          if (isLastSegment && pageTitle && pageTitle !== siteConfig.title) {
+            segmentName = pageTitle.replace(` | ${siteConfig.title}`, '');
+          } else {
+            // Capitaliser et remplacer les tirets par des espaces
+            segmentName = segment
+              .split('-')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+          }
+      }
+      
+      // Ajouter le segment au fil d'Ariane (sauf si c'est la page courante et qu'on a déjà le titre)
+      if (!isLastSegment || !pageTitle || pageTitle === siteConfig.title) {
+        items.push({
+          name: segmentName,
+          url: currentPath.endsWith('/') ? currentPath : currentPath + '/'
+        });
+      }
+    });
+
+    // 5. Générer le nom du BreadcrumbList
+    const listName = `Navigation - ${pageTitle ? pageTitle.replace(` | ${siteConfig.title}`, '') : 'Page'}`;
+
+    return createOptimizedBreadcrumb(items, listName);
+  };
 
   /**
    * ÉTAPE 8 : Gestion intelligente des images
@@ -527,6 +643,137 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    * 
    * Création de la structure de données structurées selon le type de page.
    * Cette structure est cruciale pour les Rich Results Google.
+   * 
+   * 🆕 Version 2.1.4 : Support des schémas multiples via frontmatter
+   */
+
+  /**
+   * 🆕 NOUVELLE APPROCHE : Schémas multiples via frontmatter
+   * 
+   * Permet de spécifier explicitement plusieurs types de schémas dans le frontmatter :
+   * 
+   * ---
+   * title: "Mon Article"
+   * schemaTypes: ["TechArticle", "BlogPosting"]
+   * proficiencyLevel: "Advanced"  # Pour TechArticle
+   * programmingLanguage: "JavaScript"  # Pour TechArticle
+   * ---
+   */
+  
+  // Récupération des types de schémas depuis le frontmatter
+  const schemaTypes = blogPostData?.frontMatter?.schemaTypes || 
+                     pageMetadata?.frontMatter?.schemaTypes;
+  
+  let allSchemas = [];
+  
+  if (Array.isArray(schemaTypes) && schemaTypes.length > 0) {
+    // ✅ APPROCHE EXPLICITE : Générer tous les types demandés
+    console.log('🎯 Mode schémas multiples activé:', schemaTypes);
+    
+    schemaTypes.forEach((schemaType, index) => {
+      // Génération d'IDs différenciés pour éviter les conflits
+      const schemaId = index === 0 ? canonicalId : `${canonicalId}#${schemaType.toLowerCase()}`;
+      
+      let schemaStructure = {
+        '@context': 'https://schema.org',
+        '@id': schemaId,
+        '@type': schemaType,
+        url: canonicalUrl,
+        name: title,
+        headline: title,
+        description: description,
+        image: {
+          '@type': 'ImageObject',
+          url: imageUrl,
+          caption: `Image pour: ${title}`
+        },
+        inLanguage: 'fr-FR',
+        isPartOf: {
+          '@type': 'WebSite',
+          name: siteConfig.title,
+          url: siteConfig.url
+        }
+      };
+      
+      // Ajout des métadonnées d'auteur si disponibles
+      if (primaryAuthor) {
+        schemaStructure.author = {
+          '@type': 'Person',
+          name: primaryAuthor.name,
+          url: primaryAuthor.url
+        };
+      } else {
+        schemaStructure.author = {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url
+        };
+      }
+      
+      // Ajout des dates si disponibles (pour articles de blog)
+      if (blogPostData?.metadata?.date || pageMetadata?.date) {
+        schemaStructure.datePublished = blogPostData?.metadata?.date || pageMetadata?.date;
+        schemaStructure.dateModified = blogPostData?.metadata?.lastUpdatedAt || 
+                                      pageMetadata?.lastUpdatedAt || 
+                                      blogPostData?.metadata?.date || 
+                                      pageMetadata?.date;
+      }
+      
+      // Ajout de l'éditeur (pour articles de blog)
+      if (schemaType === 'BlogPosting' || schemaType === 'TechArticle') {
+        schemaStructure.publisher = {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+          logo: {
+            '@type': 'ImageObject',
+            url: siteConfig.url + useBaseUrl('/img/docux.png')
+          }
+        };
+        
+        schemaStructure.mainEntityOfPage = {
+          '@type': 'WebPage',
+          '@id': canonicalId
+        };
+      }
+      
+      // Ajout de propriétés spécifiques selon le type
+      if (schemaType === 'TechArticle') {
+        schemaStructure.proficiencyLevel = blogPostData?.frontMatter?.proficiencyLevel || 
+                                          pageMetadata?.frontMatter?.proficiencyLevel || 
+                                          'Beginner';
+        schemaStructure.programmingLanguage = blogPostData?.frontMatter?.programmingLanguage || 
+                                             pageMetadata?.frontMatter?.programmingLanguage || 
+                                             'JavaScript';
+      }
+      
+      // Ajout des mots-clés si disponibles
+      const keywords = blogPostData?.frontMatter?.keywords || 
+                      pageMetadata?.frontMatter?.keywords ||
+                      blogPostData?.frontMatter?.tags ||
+                      pageMetadata?.frontMatter?.tags;
+      
+      if (keywords && keywords.length > 0) {
+        schemaStructure.keywords = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+      }
+      
+      allSchemas.push(schemaStructure);
+    });
+    
+    // Ajout du breadcrumb comme schéma séparé
+    const breadcrumbJsonLd = generateGenericBreadcrumb(location.pathname, title, siteConfig);
+    if (breadcrumbJsonLd) {
+      allSchemas.push(breadcrumbJsonLd);
+    }
+    
+  } else {
+    // ✅ APPROCHE CLASSIQUE : Un seul schéma basé sur la détection automatique
+    console.log('📍 Mode schéma unique activé:', pageInfo.type);
+  }
+
+  /**
+   * ⚠️ Logique classique maintenue pour compatibilité
+   * Cette section sera utilisée seulement si schemaTypes n'est pas défini dans le frontmatter
    */
 
   /**
@@ -567,23 +814,6 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    *   ]
    * }
    */
-  const createOptimizedBreadcrumb = (items, listName) => {
-    return {
-      '@type': 'BreadcrumbList',
-      name: listName, // ✅ Nom global du BreadcrumbList
-      itemListElement: items.map((item, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        name: item.name,
-        item: {
-          '@type': 'WebPage', // ✅ Type WebPage au lieu de Thing
-          '@id': item.url.toLowerCase(), // ✅ URL normalisée en minuscules
-          name: item.name,
-          url: item.url.toLowerCase() // ✅ URL normalisée en minuscules
-        }
-      }))
-    };
-  };
 
   /**
    * Fonction utilitaire pour extraire le nom de série depuis les paramètres URL
@@ -633,91 +863,6 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     return decodeURIComponent(seriesSlug)
       .replace(/-/g, ' ')
       .replace(/\b\w/g, l => l.toUpperCase());
-  };
-
-  /**
-   * Génère un BreadcrumbList générique intelligent pour toutes les pages
-   * 
-   * Cette fonction analyse l'URL de la page pour construire automatiquement
-   * un fil d'Ariane hiérarchique conforme aux bonnes pratiques Google.
-   * 
-   * @param {string} pathname - Le chemin de la page courante
-   * @param {string} pageTitle - Le titre de la page courante
-   * @param {Object} siteConfig - Configuration du site Docusaurus
-   * @returns {Object} Objet BreadcrumbList Schema.org optimisé
-   */
-  const generateGenericBreadcrumb = (pathname, pageTitle, siteConfig) => {
-    const items = [];
-    
-    // 1. Toujours commencer par l'accueil
-    items.push({
-      name: siteConfig.title,
-      url: siteConfig.url
-    });
-
-    // 2. Analyser le chemin pour construire la hiérarchie
-    const pathSegments = pathname
-      .replace('/docux-blog/', '/') // Normaliser le base path
-      .split('/')
-      .filter(segment => segment.length > 0);
-
-    let currentPath = siteConfig.url;
-    
-    // 3. Ajouter chaque segment du chemin
-    pathSegments.forEach((segment, index) => {
-      currentPath += `/docux-blog/${segment}`;
-      
-      // Ne pas ajouter la page courante comme dernier élément si c'est une page finale
-      const isLastSegment = index === pathSegments.length - 1;
-      
-      let segmentName = segment;
-      
-      // 4. Personnaliser les noms des segments selon les sections
-      switch(segment) {
-        case 'blog':
-          segmentName = 'Blog';
-          break;
-        case 'series':
-          segmentName = 'Séries d\'articles';
-          break;
-        case 'repository':
-          segmentName = 'Repositories';
-          break;
-        case 'thanks':
-          segmentName = 'Remerciements';
-          break;
-        case 'tags':
-          segmentName = 'Tags';
-          break;
-        case 'authors':
-          segmentName = 'Auteurs';
-          break;
-        default:
-          // Pour les segments dynamiques (dates, slugs), utiliser le titre de la page si c'est le dernier
-          if (isLastSegment && pageTitle && pageTitle !== siteConfig.title) {
-            segmentName = pageTitle.replace(` | ${siteConfig.title}`, '');
-          } else {
-            // Capitaliser et remplacer les tirets par des espaces
-            segmentName = segment
-              .split('-')
-              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ');
-          }
-      }
-      
-      // Ajouter le segment au fil d'Ariane (sauf si c'est la page courante et qu'on a déjà le titre)
-      if (!isLastSegment || !pageTitle || pageTitle === siteConfig.title) {
-        items.push({
-          name: segmentName,
-          url: currentPath.endsWith('/') ? currentPath : currentPath + '/'
-        });
-      }
-    });
-
-    // 5. Générer le nom du BreadcrumbList
-    const listName = `Navigation - ${pageTitle ? pageTitle.replace(` | ${siteConfig.title}`, '') : 'Page'}`;
-
-    return createOptimizedBreadcrumb(items, listName);
   };
 
   const additionalJsonLd = (() => {
@@ -1537,17 +1682,19 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
   })();
 
   /**
-   * ÉTAPE 11.5 : Gestion des schémas multiples et validation des URLs
+   * ÉTAPE 11.5 : Gestion des schémas (approche classique ou nouvelle)
    * 
-   * Pour les articles techniques, génère à la fois un BlogPosting et un TechArticle
-   * avec des URLs cohérentes pour éviter les problèmes de duplicate schema.
+   * La nouvelle approche frontmatter a déjà construit les schémas.
+   * Cette section s'exécute seulement pour l'approche classique.
    */
-  const allSchemas = [];
   
-  // Ajoute le schéma principal
-  if (additionalJsonLd) {
-    allSchemas.push(additionalJsonLd);
-  }
+  // Si on n'utilise pas la nouvelle approche frontmatter, utiliser l'ancienne logique
+  if (!Array.isArray(schemaTypes) || schemaTypes.length === 0) {
+    
+    // Ajoute le schéma principal
+    if (additionalJsonLd) {
+      allSchemas.push(additionalJsonLd);
+    }
   
   // Ajoute un TechArticle si c'est un article de blog technique
   if (pageInfo.type === 'BlogPosting' && blogPostData?.frontMatter?.keywords) {
@@ -1597,7 +1744,9 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
       
       allSchemas.push(techArticleSchema);
     }
-  }
+  }  // Fin de l'approche classique
+  
+  } // Fermeture du if pour l'approche classique
   
   // Validation et correction automatique des URLs
   const urlValidation = validateSchemaUrls(allSchemas);
