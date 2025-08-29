@@ -34,8 +34,8 @@ function HomepageHeader() {
         <div className="margin-top--md">
           <Link
             className={`button button--lg margin-right--md ${styles.docsButton}`}
-            to="/docs/base/">
-            Documentation
+            to="/blog/">
+            Articles récents
           </Link>
           <Link
             className={`button button--lg ${styles.blogButton}`}

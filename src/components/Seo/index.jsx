@@ -795,9 +795,9 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    *       "name": "DOCUX",
    *       "item": {
    *         "@type": "WebPage",
-   *         "@id": "https://juniors017.github.io",
+   *         "@id": "https://docuxlab.com",
    *         "name": "DOCUX",
-   *         "url": "https://juniors017.github.io"
+   *         "url": "https://docuxlab.com"
    *       }
    *     },
    *     {
@@ -806,9 +806,9 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    *       "name": "Repositories Publics",
    *       "item": {
    *         "@type": "WebPage",
-   *         "@id": "https://juniors017.github.io/docux-blog/repository/",
+   *         "@id": "https://docuxlab.com/repository/",
    *         "name": "Repositories Publics",
-   *         "url": "https://juniors017.github.io/docux-blog/repository/"
+   *         "url": "https://docuxlab.com/repository/"
    *       }
    *     }
    *   ]
@@ -1134,7 +1134,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
             },
             {
               name: 'Séries d\'articles',
-              url: `${siteConfig.url}/docux-blog/series/`
+              url: `${siteConfig.url}/series/`
             },
             {
               name: seriesName || 'Série',
@@ -1204,7 +1204,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
                       seriesInfo.set(serieName, {
                         name: serieName,
                         articles: [],
-                        url: `${siteConfig.url}/docux-blog/series/series-articles/?name=${encodeURIComponent(serieName)}`
+                        url: `${siteConfig.url}/series/series-articles/?name=${encodeURIComponent(serieName)}`
                       });
                     }
                     
@@ -1251,11 +1251,11 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
               position: 1,
               name: 'Genèse Docux',
               description: 'Série sur la création et l\'évolution du blog Docux',
-              url: `${siteConfig.url}/docux-blog/series/series-articles/?name=genese-docux`,
+              url: `${siteConfig.url}/series/series-articles/?name=genese-docux`,
               item: {
                 '@type': 'CreativeWorkSeries',
                 name: 'Genèse Docux',
-                url: `${siteConfig.url}/docux-blog/series/series-articles/?name=genese-docux`,
+                url: `${siteConfig.url}/series/series-articles/?name=genese-docux`,
                 numberOfEpisodes: 1,
                 genre: 'Educational Content',
                 inLanguage: 'fr-FR',
@@ -1271,11 +1271,11 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
               position: 2,
               name: 'SEO Docusaurus',
               description: 'Série sur l\'optimisation SEO avec Docusaurus',
-              url: `${siteConfig.url}/docux-blog/series/series-articles/?name=seo-docusaurus`,
+              url: `${siteConfig.url}/series/series-articles/?name=seo-docusaurus`,
               item: {
                 '@type': 'CreativeWorkSeries',
                 name: 'SEO Docusaurus',
-                url: `${siteConfig.url}/docux-blog/series/series-articles/?name=seo-docusaurus`,
+                url: `${siteConfig.url}/series/series-articles/?name=seo-docusaurus`,
                 numberOfEpisodes: 1,
                 genre: 'Educational Content',
                 inLanguage: 'fr-FR',

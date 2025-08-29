@@ -26,7 +26,7 @@ export default function SerieBanner({ serieName }) {
         <span className={styles.serieText}>
           Cet article fait partie de la série : 
           <Link 
-            href={`/docux-blog/series/series-articles?name=${seriesSlug}`}
+            href={`/series/series-articles?name=${seriesSlug}`}
             className={styles.serieLink}
           >
             {serieName}

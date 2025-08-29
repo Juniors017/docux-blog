@@ -173,13 +173,13 @@ const config = {
         {name: 'twitter:site', content: '@votre_compte_twitter'},
         {name: 'twitter:title', content: 'DOCUX - CMS pour Docusaurus'},
         {name: 'twitter:description', content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la création de blogs et de documentation technique'},
-        {name: 'twitter:image', content: 'https://Juniors017.github.io/docux-blog/img/docusaurus-social-card.jpg'},
+        {name: 'twitter:image', content: 'https://docuxlab.com/img/docusaurus-social-card.jpg'},
         
         // Open Graph data
         {property: 'og:title', content: 'DOCUX - CMS pour Docusaurus'},
         {property: 'og:type', content: 'website'},
-        {property: 'og:url', content: 'https://Juniors017.github.io/docux-blog/'},
-        {property: 'og:image', content: 'https://Juniors017.github.io/docux-blog/img/docusaurus-social-card.jpg'},
+        {property: 'og:url', content: 'https://docuxlab.com/'},
+        {property: 'og:image', content: 'https://docuxlab.com/img/docusaurus-social-card.jpg'},
         {property: 'og:description', content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la création de blogs et de documentation technique'},
         {property: 'og:site_name', content: 'DOCUX'},
         {property: 'og:locale', content: 'fr_FR'},
