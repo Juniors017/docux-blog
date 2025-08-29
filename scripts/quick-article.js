@@ -3,8 +3,16 @@
 /**
  * 🚀 Générateur d'Articles Rapide - Mode Non-Interactif
  * 
- * Usage: node scripts/quick-article.js [type] [title]
+ * Créé rapidement des articles sans interaction utilisateur.
+ * Utilise les mêmes templates que create-article.js avec des valeurs par défaut.
+ * 
+ * Usage: node scripts/quick-article.js [type] [title] [options]
  * Exemple: node scripts/quick-article.js TechArticle "Guide React Hooks"
+ * 
+ * Types supportés: BlogPosting, TechArticle, HowTo, FAQPage, 
+ * CollectionPage, SoftwareApplication, Course, WebPage, AboutPage, ItemListPage
+ * 
+ * Développé par Docux - Version 2.1.4+
  */
 
 const { SCHEMA_TEMPLATES, generateSlug, generateArticleContent } = require('./create-article.js');
@@ -88,6 +96,7 @@ Exemples:
     console.log(`✅ Article "${title}" créé !`);
     console.log(`📁 ${result.path}`);
     console.log(`🔗 ${result.url}`);
+    process.exit(0);
   } catch (error) {
     console.error(`❌ Erreur: ${error.message}`);
     process.exit(1);

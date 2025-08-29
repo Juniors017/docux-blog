@@ -143,16 +143,68 @@ const SCHEMA_TEMPLATES = {
       educationalUse: "Professional Development"
     },
     template: "course"
+  },
+  
+  WebPage: {
+    name: "Page Web Statique",
+    description: "Page d'accueil ou page informative",
+    frontmatter: {
+      schemaTypes: ["WebPage"],
+      genre: "Informational Content",
+      audience: "Visiteurs web",
+      inLanguage: "fr-FR",
+      isAccessibleForFree: true,
+      copyrightYear: new Date().getFullYear(),
+      copyrightHolder: "Docux",
+      mainContentOfPage: true,
+      significantLink: []
+    },
+    template: "webpage"
+  },
+  
+  AboutPage: {
+    name: "Page À Propos",
+    description: "Page de présentation ou remerciements",
+    frontmatter: {
+      schemaTypes: ["AboutPage", "WebPage"],
+      genre: "About Content",
+      audience: "Visiteurs web",
+      inLanguage: "fr-FR",
+      isAccessibleForFree: true,
+      subject: "À propos de Docux",
+      copyrightYear: new Date().getFullYear(),
+      copyrightHolder: "Docux"
+    },
+    template: "about-page"
+  },
+  
+  ItemListPage: {
+    name: "Page Liste d'Éléments",
+    description: "Page listant des articles de série ou catégorie",
+    frontmatter: {
+      schemaTypes: ["ItemListPage", "CollectionPage"],
+      numberOfItems: 0,
+      itemListOrder: "ItemListOrderAscending",
+      genre: "Educational Content",
+      audience: "Développeurs web",
+      inLanguage: "fr-FR",
+      isAccessibleForFree: true,
+      specialty: "Web Development"
+    },
+    template: "itemlist-page"
   }
 };
 
-// Interface CLI
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+// Interface CLI - Créée seulement quand nécessaire
+let rl = null;
 
 function question(prompt) {
+  if (!rl) {
+    rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+  }
   return new Promise(resolve => rl.question(prompt, resolve));
 }
 
@@ -171,7 +223,7 @@ Créez automatiquement des articles avec frontmatter optimisé !
       console.log(`${index + 1}. ${template.name} - ${template.description}`);
     });
     
-    const schemaChoice = await question("\n🎯 Choisissez un type (1-7) : ");
+    const schemaChoice = await question("\n🎯 Choisissez un type (1-11) : ");
     const schemaKeys = Object.keys(SCHEMA_TEMPLATES);
     const selectedSchema = schemaKeys[parseInt(schemaChoice) - 1];
     
@@ -211,7 +263,10 @@ Créez automatiquement des articles avec frontmatter optimisé !
   } catch (error) {
     console.error("❌ Erreur :", error.message);
   } finally {
-    rl.close();
+    if (rl) {
+      rl.close();
+      rl = null;
+    }
   }
 }
 
@@ -260,6 +315,30 @@ async function askSchemaSpecificQuestions(schemaType, template) {
         custom.codeRepository = repoUrl;
         custom.downloadUrl = repoUrl;
       }
+      break;
+      
+    case 'WebPage':
+      const pageType = await question("🏷️ Type de page (informative/landing/contact) [informative] : ") || "informative";
+      const significantLinks = await question("🔗 Liens importants (séparés par des virgules) : ");
+      
+      custom.mainContentOfPage = true;
+      if (significantLinks) custom.significantLink = significantLinks.split(',').map(l => l.trim());
+      break;
+      
+    case 'AboutPage':
+      const subject = await question("📋 Sujet principal de la page : ");
+      const organization = await question("🏢 Organisation/Projet [Docux] : ") || "Docux";
+      
+      if (subject) custom.subject = subject;
+      custom.about = organization;
+      break;
+      
+    case 'ItemListPage':
+      const itemCount = await question("📊 Nombre d'éléments dans la liste : ");
+      const listOrder = await question("📋 Ordre de tri (ascending/descending) [ascending] : ") || "ascending";
+      
+      if (itemCount) custom.numberOfItems = parseInt(itemCount);
+      custom.itemListOrder = listOrder === "descending" ? "ItemListOrderDescending" : "ItemListOrderAscending";
       break;
   }
   
@@ -485,7 +564,92 @@ Si votre question n'est pas dans cette FAQ :
 
 ---
 
-*FAQ mise à jour par **${frontmatter.authors[0]}** - ${frontmatter.date}*`
+*FAQ mise à jour par **${frontmatter.authors[0]}** - ${frontmatter.date}*`,
+
+    WebPage: `# ${frontmatter.title}
+
+:::tip Navigation
+Vous êtes sur une page principale du site Docux.
+:::
+
+## 🏠 Accueil
+
+Contenu principal de la page...
+
+## 📋 Sections
+
+### Section 1
+
+Détails importants...
+
+### Section 2
+
+Informations complémentaires...
+
+## 🔗 Liens Utiles
+
+- [Blog](/blog)
+- [Séries d'articles](/series)
+- [Projets Repository](/repository)
+
+---
+
+*Page mise à jour par **${frontmatter.authors[0]}** - ${frontmatter.date}*`,
+
+    AboutPage: `# ${frontmatter.title}
+
+:::info À propos
+${frontmatter.description || 'Page de présentation du projet Docux'}
+:::
+
+## 👋 Présentation
+
+Votre contenu de présentation...
+
+## 🎯 Mission
+
+Notre objectif...
+
+## 🤝 Remerciements
+
+Nous tenons à remercier...
+
+## 📞 Contact
+
+Pour nous contacter :
+- 📧 Email : [contact@docux.com](mailto:contact@docux.com)
+- 🐙 GitHub : [Docux Project](https://github.com/Juniors017/docux-blog)
+
+---
+
+*Page **${frontmatter.authors[0]}** - Dernière mise à jour : ${frontmatter.date}*`,
+
+    ItemListPage: `# ${frontmatter.title}
+
+:::tip Collection
+Cette page présente une collection organisée d'articles sur ${frontmatter.title.toLowerCase()}.
+:::
+
+## 📋 Liste des Articles
+
+### Vue d'ensemble
+
+Découvrez tous les articles de cette collection...
+
+### Articles Disponibles
+
+1. **Article 1** - Description courte
+2. **Article 2** - Description courte
+3. **Article 3** - Description courte
+
+## 🔍 Navigation
+
+- ⬅️ [Retour aux collections](/series)
+- 📝 [Tous les articles](/blog)
+
+---
+
+*Collection gérée par **${frontmatter.authors[0]}** - ${frontmatter.numberOfItems || 'Plusieurs'} articles*`
   };
   
   const template = templates[schemaType] || templates.BlogPosting;
