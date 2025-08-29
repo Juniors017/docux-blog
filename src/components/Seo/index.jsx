@@ -212,6 +212,71 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
               author: "docux"
             }
           };
+        }
+        // Si on détecte une page series spécifiquement
+        else if (location.pathname.includes('/series')) {
+          // Calculer dynamiquement le nombre de séries
+          let numberOfSeries = 0;
+          try {
+            // Tentative de récupération du nombre de séries depuis les métadonnées du blog
+            if (ExecutionEnvironment.canUseDOM && window.docusaurus) {
+              const globalData = window.docusaurus.globalData;
+              if (globalData && globalData['docusaurus-plugin-content-blog']) {
+                const blogData = globalData['docusaurus-plugin-content-blog'];
+                if (blogData && blogData.default && blogData.default.blogPosts) {
+                  const seriesSet = new Set();
+                  blogData.default.blogPosts.forEach(post => {
+                    if (post.metadata?.frontMatter?.serie) {
+                      seriesSet.add(post.metadata.frontMatter.serie);
+                    }
+                  });
+                  numberOfSeries = seriesSet.size;
+                }
+              }
+            }
+          } catch (error) {
+            // En cas d'erreur, on utilise une valeur par défaut
+            numberOfSeries = 2; // Valeur par défaut basée sur les séries existantes
+          }
+
+          pageMetadata = {
+            title: existingTitle || "Séries d'Articles - Collections Thématiques de Docux",
+            description: existingDescription || "Découvrez nos séries d'articles organisées par thématique : développement web, Docusaurus, React, SEO et bien plus. Collections d'articles approfondis pour progresser étape par étape",
+            frontMatter: {
+              title: "Séries d'Articles - Collections Thématiques de Docux",
+              description: "Découvrez nos séries d'articles organisées par thématique : développement web, Docusaurus, React, SEO et bien plus. Collections d'articles approfondis pour progresser étape par étape",
+              schemaType: "CollectionPage",
+              image: "/img/docux.png",
+              authors: ["docux"],
+              tags: [
+                "séries",
+                "collections",
+                "articles",
+                "tutoriels",
+                "développement web",
+                "docusaurus",
+                "react",
+                "javascript",
+                "apprentissage",
+                "formation"
+              ],
+              keywords: [
+                "séries d'articles",
+                "collections thématiques", 
+                "tutoriels progressifs",
+                "développement web",
+                "docusaurus",
+                "react",
+                "javascript",
+                "apprentissage",
+                "formation"
+              ],
+              category: "Collections",
+              numberOfItems: numberOfSeries,
+              date: "2025-08-29",
+              author: "docux"
+            }
+          };
         } else {
           // Fallback générique pour autres pages
           pageMetadata = {

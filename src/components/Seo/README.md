@@ -34,6 +34,7 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - 🆕 **Correction automatique** des incohérences d'URLs
 - 🆕 **Pages de collection enrichies** : Support CollectionPage pour blog ET collections personnalisées
 - 🆕 **Repository/Portfolio** : Métadonnées spécialisées pour pages de projets
+- 🆕 **Pages de séries** : Détection et métadonnées spécialisées pour `/series/` avec calcul automatique
 - 🆕 **BreadcrumbList optimisé** : URLs normalisées, items WebPage, noms globaux (conformité Google)
 - 🔧 **Optimisation SSG** : Compatibilité Static Site Generation sans erreurs window
 - 🔕 **Logs silencieux** : Détection normale des pages sans spam console
@@ -990,6 +991,50 @@ import MyRepositories from "@site/src/components/MyRepositories";
 - 👤 **Author** : Depuis `src/data/authors.js`
 - 📅 **Dates** : `datePublished` + `dateModified`
 
+#### 📚 Pages de Séries - Collection thématique intelligente
+
+**🆕 Fonctionnalité spécialisée** : Support automatique des pages `/series/` avec calcul dynamique.
+
+##### 🎯 Configuration automatique pour `/series/`
+
+```yaml
+---
+title: "Séries d'Articles - Collections Thématiques de Docux"
+description: "Découvrez nos séries d'articles organisées par thématique : développement web, Docusaurus, React, SEO et bien plus"
+schemaType: "CollectionPage"
+image: "/img/docux.png"
+authors: ["docux"]
+tags:
+  - "séries"
+  - "collections" 
+  - "articles"
+  - "tutoriels"
+  - "développement web"
+keywords:
+  - "séries d'articles"
+  - "collections thématiques"
+  - "tutoriels progressifs"
+category: "Collections"
+numberOfItems: 0  # Calculé automatiquement
+---
+```
+
+**✨ Améliorations intelligentes automatiques :**
+- 🔢 **Calcul dynamique du numberOfItems** : Scan automatique des articles avec `serie` dans le frontmatter
+- 🎯 **Schema.org CreativeWorkSeries** : Type spécialisé pour les collections de séries
+- 🍞 **BreadcrumbList spécialisé** : Navigation "Séries d'articles" optimisée
+- 📊 **ItemList avec itemListOrder** : Structure "Unordered" pour les séries
+- 🔍 **Métadonnées enrichies** : Keywords et tags spécialisés automatiquement appliqués
+- 🎨 **Fallback intelligent** : Détection même sans frontmatter explicite
+
+##### 🛠️ Détection automatique
+
+Le composant SEO détecte automatiquement :
+1. **URL `/series/`** → Application des métadonnées spécialisées
+2. **Scan du blog** → Compte des séries uniques via `frontMatter.serie`
+3. **Fallback robuste** → Valeur par défaut si erreur de détection
+4. **Schema.org optimal** → `CollectionPage` + `CreativeWorkSeries` + `ItemList`
+
 #### 🆕 BreadcrumbList Optimisé Google
 
 **🎯 Bonnes pratiques appliquées automatiquement :**
@@ -1036,6 +1081,63 @@ import MyRepositories from "@site/src/components/MyRepositories";
 - ✅ Métadonnées auteur et dates
 - ✅ Mots-clés et catégories
 - ✅ Informations spécialisées (langages, nombre d'items)
+
+**🔍 Exemple généré pour `/series/` :**
+```json
+{
+  "@context": "https://schema.org",
+  "@id": "https://juniors017.github.io/docux-blog/series",
+  "@type": "CollectionPage",
+  "about": {
+    "@type": "CreativeWorkSeries",
+    "name": "Séries d'articles - DOCUX",
+    "description": "Collection de séries d'articles organisées par thématique"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "name": "Navigation - Séries DOCUX",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "DOCUX",
+        "item": {
+          "@type": "WebPage",
+          "@id": "https://juniors017.github.io",
+          "name": "DOCUX",
+          "url": "https://juniors017.github.io"
+        }
+      },
+      {
+        "@type": "ListItem", 
+        "position": 2,
+        "name": "Séries d'articles",
+        "item": {
+          "@type": "WebPage",
+          "@id": "https://juniors017.github.io/docux-blog/series/",
+          "name": "Séries d'articles",
+          "url": "https://juniors017.github.io/docux-blog/series/"
+        }
+      }
+    ]
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Séries d'articles",
+    "description": "Collection de séries d'articles organisées par thématique et domaine d'expertise",
+    "url": "https://juniors017.github.io/docux-blog/series/",
+    "itemListOrder": "Unordered",
+    "numberOfItems": 2
+  }
+}
+```
+
+**🎉 Avantages spécialisés pour `/series/` :**
+- ✅ **CreativeWorkSeries** : Type Schema.org optimal pour collections de séries
+- ✅ **Calcul automatique** : `numberOfItems` basé sur le scan des articles
+- ✅ **Métadonnées enrichies** : Keywords et tags spécialisés automatiques
+- ✅ **Fallback intelligent** : Fonctionne même sans frontmatter
+- ✅ **BreadcrumbList spécialisé** : Navigation "Séries d'articles" optimisée
 
 ### ⚡ Configuration Rapide
 

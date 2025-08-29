@@ -148,8 +148,11 @@ Notre architecture SEO apporte plusieurs **innovations majeures** au monde Docus
 - **📍 Positionnement Auto** : Tooltips avec détection automatique du viewport
 - **🔗 Gestion Slug** : Validation et affichage des URLs personnalisées  
 - **📚 Support Séries** : Organisation et validation du contenu par série
+- **📖 Pages Séries Automatiques** : 🆕 Détection intelligente `/series/` avec calcul dynamique
+- **🎭 CreativeWorkSeries** : Schema.org spécialisé pour collections thématiques
 - **🖼️ Aperçu Images** : Affichage des images dans les tooltips avec gestion d'erreur
 - **🆕 Pages de Collection Enrichies** : Support intelligent CollectionPage blog + personnalisées
+- **📖 Pages de Séries Automatiques** : 🆕 Détection `/series/` avec calcul dynamique numberOfItems
 - **🎯 Repository/Portfolio** : Métadonnées spécialisées pour pages de projets open source
 - **📊 Schémas Multiples** : BlogPosting + TechArticle automatique pour contenus techniques
 - **🍞 BreadcrumbList Optimisé** : URLs normalisées, items WebPage, noms globaux (conformité Google)
@@ -726,6 +729,52 @@ last_update:
 - ✅ **Specialty** : "Open Source Projects" (spécifique `/repository/`)
 - ✅ **AdditionalType** : "SoftwareSourceCode" (pour projets)
 - ✅ **Keywords** : Depuis frontMatter `keywords` + `tags`
+
+##### 📚 Collections de Séries (automatiques intelligentes)
+
+**🆕 Fonctionnalité spécialisée** : Support automatique avancé des pages `/series/`.
+
+**Exemple concret - Page Séries** :
+```yaml
+---
+title: "Séries d'Articles - Collections Thématiques"
+description: "Découvrez nos séries organisées par thématique"
+schemaType: "CollectionPage"
+category: "Collections"
+tags: ["séries", "collections", "tutoriels"]
+authors: ["docux"]
+---
+```
+
+**🔢 Calcul automatique intelligent** :
+- ✅ **Scan du blog** : Analyse automatique des articles avec `serie` dans frontmatter
+- ✅ **Décompte dynamique** : `numberOfItems` calculé en temps réel
+- ✅ **Fallback robuste** : Valeur par défaut si erreur de détection
+- ✅ **CreativeWorkSeries** : Type Schema.org optimal pour collections de séries
+
+**📊 Schema.org spécialisé généré** :
+```json
+{
+  "@type": "CollectionPage",
+  "about": {
+    "@type": "CreativeWorkSeries",
+    "name": "Séries d'articles - DOCUX",
+    "description": "Collection de séries organisées par thématique"
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Séries d'articles",
+    "itemListOrder": "Unordered",
+    "numberOfItems": 2  // ← Calculé automatiquement
+  }
+}
+```
+
+**🎯 Avantages automatiques :**
+- ✅ **Aucune configuration manuelle** : Fonctionne immédiatement
+- ✅ **Mise à jour automatique** : Le nombre se met à jour avec les nouveaux articles
+- ✅ **Métadonnées enrichies** : Keywords et tags spécialisés automatiques
+- ✅ **BreadcrumbList optimisé** : Navigation "Séries d'articles" Google-friendly
 
 ##### 🆕 BreadcrumbList "au top" pour Google
 

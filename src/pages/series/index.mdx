@@ -29,7 +29,6 @@ category: "Collections"
 numberOfItems: 0
 ---
 
-import Layout from "@theme/Layout";
 import { getBlogMetadata } from "@site/src/components/utils/blogPosts";
 import Link from "@docusaurus/Link";
 import Card from "@site/src/components/Card";
@@ -47,7 +46,7 @@ export function createSlug(text) {
     .trim('-'); // Supprime les tirets en début/fin
 }
 
-export default function SeriesPage() {
+export function SeriesCards() {
   // Récupère les métadonnées de tous les articles du blog
   const blogPosts = getBlogMetadata();
   // Regroupe les articles par nom de série
@@ -65,61 +64,62 @@ export default function SeriesPage() {
   const sortedSeriesNames = Object.keys(seriesMap).sort();
 
   return (
-    <Layout title="Séries d'articles">
-      <div className="container margin-top--lg margin-bottom--lg">
-        <h1>Toutes nos séries d'articles</h1>
-        <p>
-          Découvrez nos collections d'articles organisées par thématique. 
-          Chaque série vous propose un parcours d'apprentissage progressif 
-          pour maîtriser un domaine spécifique du développement web.
-        </p>
-        
-        {/* Affiche les cartes de séries si au moins une série existe */}
-        {sortedSeriesNames.length > 0 ? (
-          <div className="row">
-            {sortedSeriesNames.map((seriesName) => {
-              const seriesPosts = seriesMap[seriesName];
-              const sortedPosts = seriesPosts.sort(
-                (a, b) => new Date(a.date) - new Date(b.date)
-              );
-              const firstPost = sortedPosts[0];
-              const image = firstPost ? (firstPost.image || "default.jpg") : "default.jpg";
-              // Compteur d'articles publiés et en cours de rédaction
-              const publishedCount = seriesPosts.filter(post => !post.draft).length;
-              const draftCount = seriesPosts.filter(post => post.draft).length;
-              const description = `${publishedCount} article(s) publiés` + (draftCount > 0 ? ` • ${draftCount} en cours de rédaction` : "");
-              const seriesSlug = createSlug(seriesName);
+    <>
+      {/* Affiche les cartes de séries si au moins une série existe */}
+      {sortedSeriesNames.length > 0 ? (
+        <div className="row">
+          {sortedSeriesNames.map((seriesName) => {
+            const seriesPosts = seriesMap[seriesName];
+            const sortedPosts = seriesPosts.sort(
+              (a, b) => new Date(a.date) - new Date(b.date)
+            );
+            const firstPost = sortedPosts[0];
+            const image = firstPost ? (firstPost.image || "default.jpg") : "default.jpg";
+            // Compteur d'articles publiés et en cours de rédaction
+            const publishedCount = seriesPosts.filter(post => !post.draft).length;
+            const draftCount = seriesPosts.filter(post => post.draft).length;
+            const description = `${publishedCount} article(s) publiés` + (draftCount > 0 ? ` • ${draftCount} en cours de rédaction` : "");
+            const seriesSlug = createSlug(seriesName);
 
-              return (
-                <div key={seriesName} className="col col--4 margin-bottom--lg">
-                  {/* Lien vers la page des articles de la série */}
-                  <Link href={`/docux-blog/series/series-articles?name=${seriesSlug}`}>
-                    <Card>
-                      <CardImage cardImageUrl={`${image}`} />
-                      <CardBody
-                        className="padding-vert--md text--center"
-                        textAlign="center"
-                        transform="uppercase"
-                      >
-                        <h3>{seriesName}</h3>
-                        <p>{description}&nbsp;→</p>
-                      </CardBody>
-                    </Card>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="text--center margin-vert--xl">
-            <h2>Aucune série d'articles trouvée</h2>
-            <p>
-              Les séries d'articles sont en cours de création. 
-              Revenez bientôt pour découvrir nos collections thématiques !
-            </p>
-          </div>
-        )}
-      </div>
-    </Layout>
+            return (
+              <div key={seriesName} className="col col--4 margin-bottom--lg">
+                {/* Lien vers la page des articles de la série */}
+                <Link href={`/docux-blog/series/series-articles?name=${seriesSlug}`}>
+                  <Card>
+                    <CardImage cardImageUrl={`${image}`} />
+                    <CardBody
+                      className="padding-vert--md text--center"
+                      textAlign="center"
+                      transform="uppercase"
+                    >
+                      <h3>{seriesName}</h3>
+                      <p>{description}&nbsp;→</p>
+                    </CardBody>
+                  </Card>
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text--center margin-vert--xl">
+          <h2>Aucune série d'articles trouvée</h2>
+          <p>
+            Les séries d'articles sont en cours de création. 
+            Revenez bientôt pour découvrir nos collections thématiques !
+          </p>
+        </div>
+      )}
+    </>
   );
 }
+
+# Toutes nos séries d'articles
+
+Découvrez nos collections d'articles organisées par thématique. 
+Chaque série vous propose un parcours d'apprentissage progressif 
+pour maîtriser un domaine spécifique du développement web.
+
+<div className="container margin-top--lg margin-bottom--lg">
+  <SeriesCards />
+</div>
