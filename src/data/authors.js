@@ -7,14 +7,8 @@ const authors = {
   docux: {
     name: 'Docux',
     title: 'Docusaurus Contributor',
-    url: 'https://docux.org',
+    url: 'https://docuxlab.com',
     image_url: '/img/docusaurus.png'
-  },
-  kiki: {
-    name: 'Kiki', 
-    title: 'Developer',
-    url: 'https://github.com/kiki',
-    image_url: '/img/docux.png'
   }
   // Ajoutez ici d'autres auteurs selon vos besoins
 };

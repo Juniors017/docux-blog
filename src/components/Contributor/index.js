@@ -110,7 +110,7 @@ export default function Contributor({
               title={`Profil GitHub: ${contributorData.github}`}
             >
               <img 
-                src="/docux-blog/img/icon/github-logo.svg" 
+                src="/img/icon/github-logo.svg" 
                 alt="GitHub" 
                 className={styles.socialIcon} 
               />
@@ -124,7 +124,7 @@ export default function Contributor({
                 title={`Site web: ${contributorData.website}`}
               >
                 <img 
-                  src="/docux-blog/img/icon/website-icon.svg" 
+                  src="/img/icon/website-icon.svg" 
                   alt="Site web" 
                   className={styles.socialIcon} 
                 />
