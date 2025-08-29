@@ -23,12 +23,12 @@ function HomepageHeader() {
     </div>
     <div className="col col--3 text--center padding-horiz--xs">
       <div className={styles.circleImage}>
-        <img src="/docux-blog/img/docux4.png" alt="Docux Logo" />
+        <img src="/img/docux4.png" alt="Docux Logo" />
       </div>
     </div> 
     <div className="col col--6 text--center">
       <div className="padding-vert--md">
-        <h1 className="hero__title">@Docux Blog</h1>
+        <h1 className="hero__title">@DocuxLab Blog</h1>
         <p className="hero__subtitle">Explorez Docusaurus avec moi</p>
         <p>Retrouvez ici mes développements, recherches et notes sur Docusaurus</p>
         <div className="margin-top--md">
