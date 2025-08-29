@@ -16,8 +16,8 @@ const config = {
   
   organizationName: 'Juniors017', // Usually your GitHub org/user name.
   projectName: 'docux-blog', // Usually your repo name.
-  url: 'https://Juniors017.github.io',
-  baseUrl: '/docux-blog/',
+  url: 'https://docuxlab.com',
+  baseUrl: '/',
   
   trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
   
@@ -64,11 +64,11 @@ const config = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         'name': 'DOCUX',
-        'url': 'https://Juniors017.github.io/docux-blog/',
+        'url': 'https://docuxlab.com/',
         'description': 'Un système de gestion de contenu basé sur Docusaurus',
         'potentialAction': {
           '@type': 'SearchAction',
-          'target': 'https://Juniors017.github.io/docux-blog/search?q={search_term_string}',
+          'target': 'https://docuxlab.com/search?q={search_term_string}',
           'query-input': 'required name=search_term_string'
         }
       }),
@@ -83,8 +83,8 @@ const config = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
         'name': 'DOCUX',
-        'url': 'https://Juniors017.github.io/docux-blog/',
-        'logo': 'https://Juniors017.github.io/docux-blog/img/docux.png',
+        'url': 'https://docuxlab.com/',
+        'logo': 'https://docuxlab.com/img/docux.png',
         'sameAs': [
           'https://github.com/Juniors017/docux-blog'
         ]
