@@ -581,6 +581,91 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     };
   };
 
+  /**
+   * Génère un BreadcrumbList générique intelligent pour toutes les pages
+   * 
+   * Cette fonction analyse l'URL de la page pour construire automatiquement
+   * un fil d'Ariane hiérarchique conforme aux bonnes pratiques Google.
+   * 
+   * @param {string} pathname - Le chemin de la page courante
+   * @param {string} pageTitle - Le titre de la page courante
+   * @param {Object} siteConfig - Configuration du site Docusaurus
+   * @returns {Object} Objet BreadcrumbList Schema.org optimisé
+   */
+  const generateGenericBreadcrumb = (pathname, pageTitle, siteConfig) => {
+    const items = [];
+    
+    // 1. Toujours commencer par l'accueil
+    items.push({
+      name: siteConfig.title,
+      url: siteConfig.url
+    });
+
+    // 2. Analyser le chemin pour construire la hiérarchie
+    const pathSegments = pathname
+      .replace('/docux-blog/', '/') // Normaliser le base path
+      .split('/')
+      .filter(segment => segment.length > 0);
+
+    let currentPath = siteConfig.url;
+    
+    // 3. Ajouter chaque segment du chemin
+    pathSegments.forEach((segment, index) => {
+      currentPath += `/docux-blog/${segment}`;
+      
+      // Ne pas ajouter la page courante comme dernier élément si c'est une page finale
+      const isLastSegment = index === pathSegments.length - 1;
+      
+      let segmentName = segment;
+      
+      // 4. Personnaliser les noms des segments selon les sections
+      switch(segment) {
+        case 'blog':
+          segmentName = 'Blog';
+          break;
+        case 'series':
+          segmentName = 'Séries d\'articles';
+          break;
+        case 'repository':
+          segmentName = 'Repositories';
+          break;
+        case 'thanks':
+          segmentName = 'Remerciements';
+          break;
+        case 'tags':
+          segmentName = 'Tags';
+          break;
+        case 'authors':
+          segmentName = 'Auteurs';
+          break;
+        default:
+          // Pour les segments dynamiques (dates, slugs), utiliser le titre de la page si c'est le dernier
+          if (isLastSegment && pageTitle && pageTitle !== siteConfig.title) {
+            segmentName = pageTitle.replace(` | ${siteConfig.title}`, '');
+          } else {
+            // Capitaliser et remplacer les tirets par des espaces
+            segmentName = segment
+              .split('-')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+          }
+      }
+      
+      // Ajouter le segment au fil d'Ariane (sauf si c'est la page courante et qu'on a déjà le titre)
+      if (!isLastSegment || !pageTitle || pageTitle === siteConfig.title) {
+        items.push({
+          name: segmentName,
+          url: currentPath.endsWith('/') ? currentPath : currentPath + '/'
+        });
+      }
+    });
+
+    // 5. Générer le nom du BreadcrumbList
+    const listName = `Navigation - ${pageTitle ? pageTitle.replace(` | ${siteConfig.title}`, '') : 'Page'}`;
+
+    return createOptimizedBreadcrumb(items, listName);
+  };
+
   const additionalJsonLd = (() => {
     // Structure de base commune à tous les types de pages
     const baseStructure = {
@@ -601,7 +686,9 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
         '@type': 'WebSite',
         name: siteConfig.title,
         url: siteConfig.url
-      }
+      },
+      // 🆕 BreadcrumbList générique pour toutes les pages
+      breadcrumb: generateGenericBreadcrumb(location.pathname, title, siteConfig)
     };
 
     /**
