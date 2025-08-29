@@ -329,7 +329,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     // 🔧 PRIORITÉ 3: Détection par contexte/URL (fallback minimal)
     if (isBlogPost) return { type: 'BlogPosting', category: 'Article de blog (contexte)' };
     if (isBlogListPage) return { type: 'CollectionPage', category: 'Index des articles (contexte)' };
-    if (isSeriesPage) return { type: 'Series', category: 'Série d\'articles (contexte)' };
+    if (isSeriesPage) return { type: 'CollectionPage', category: 'Collection de séries (contexte)' };
     if (isHomePage) return { type: 'WebSite', category: 'Page d\'accueil (contexte)' };
     
     // 📄 Fallback ultime pour toutes les autres pages
@@ -653,6 +653,40 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
             name: `Blog - ${siteConfig.title}`,
             url: canonicalUrl,
             description: 'Articles et tutoriels sur Docusaurus et le développement web'
+          }
+        };
+      }
+
+      // Configuration spécifique pour les pages de séries
+      if (isSeriesPage) {
+        return {
+          ...baseStructure,
+          '@type': 'CollectionPage',
+          about: {
+            '@type': 'CreativeWorkSeries',
+            name: `Séries d'articles - ${siteConfig.title}`,
+            description: 'Collection de séries d\'articles organisées par thématique'
+          },
+          
+          // Fil d'Ariane optimisé pour les pages de séries
+          breadcrumb: createOptimizedBreadcrumb([
+            {
+              name: siteConfig.title,
+              url: siteConfig.url
+            },
+            {
+              name: 'Séries d\'articles',
+              url: canonicalUrl
+            }
+          ], `Navigation - Séries ${siteConfig.title}`),
+          
+          // Entité principale de la collection de séries
+          mainEntity: {
+            '@type': 'ItemList',
+            name: 'Séries d\'articles',
+            description: 'Collection de séries d\'articles organisées par thématique et domaine d\'expertise',
+            url: canonicalUrl,
+            itemListOrder: 'Unordered'
           }
         };
       }
