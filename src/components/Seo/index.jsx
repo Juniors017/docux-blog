@@ -16,6 +16,13 @@ import Head from '@docusaurus/Head';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import authorsData from '@site/src/data/authors';
 import SeoDebugPanel from '../SeoDebugPanel';
+import { 
+  normalizeUrl, 
+  generateCanonicalId, 
+  generateCanonicalUrl, 
+  validateSchemaUrls, 
+  fixAllSchemaUrls 
+} from './utils/urlNormalizer';
 
 export default function Seo() {
   // Récupération du contexte Docusaurus et de la localisation
@@ -226,19 +233,13 @@ export default function Seo() {
                      'Documentation et tutoriels sur Docusaurus'; // 4. Fallback par défaut
 
   /**
-   * ÉTAPE 7 : Génération de l'URL canonique
+   * ÉTAPE 7 : Génération de l'URL canonique avec normalisation avancée
    * 
-   * Construction d'une URL canonique propre pour éviter le contenu dupliqué.
-   * Supprime les slashes en double et assure la cohérence.
+   * Utilise les utilitaires de normalisation pour garantir des URLs cohérentes
+   * et éviter les problèmes de doubles slashes dans les schémas JSON-LD.
    */
-  const getCanonicalUrl = () => {
-    const baseUrl = siteConfig.url + siteConfig.baseUrl;
-    // Supprimer le slash final s'il existe, puis toujours en ajouter un
-    const cleanPath = location.pathname.replace(/\/$/, '') || '';
-    return `${baseUrl}${cleanPath}/`;
-  };
-
-  const canonicalUrl = getCanonicalUrl();
+  const canonicalId = generateCanonicalId(siteConfig, location.pathname);
+  const canonicalUrl = generateCanonicalUrl(siteConfig, location.pathname);
 
   /**
    * ÉTAPE 8 : Gestion intelligente des images
@@ -324,11 +325,12 @@ export default function Seo() {
     // Structure de base commune à tous les types de pages
     const baseStructure = {
       '@context': 'https://schema.org',           // Contexte Schema.org obligatoire
+      '@id': canonicalId,                         // ID canonique sans slash final
       '@type': pageInfo.type,                     // Type déterminé par l'analyse de l'URL
       name: title,                                // Nom/titre de la page
       headline: title,                            // Titre principal (alias de name)
       description: description,                   // Description SEO
-      url: canonicalUrl,                          // URL canonique propre
+      url: canonicalUrl,                          // URL canonique avec slash final
       image: {                                    // Image structurée pour Rich Results
         '@type': 'ImageObject',
         url: imageUrl,
@@ -383,7 +385,7 @@ export default function Seo() {
         // Page principale de l'article
         mainEntityOfPage: {
           '@type': 'WebPage',
-          '@id': canonicalUrl
+          '@id': canonicalId
         },
         
         // Mots-clés et catégorisation
@@ -691,10 +693,71 @@ export default function Seo() {
   })();
 
   /**
+   * ÉTAPE 11.5 : Gestion des schémas multiples et validation des URLs
+   * 
+   * Pour les articles techniques, génère à la fois un BlogPosting et un TechArticle
+   * avec des URLs cohérentes pour éviter les problèmes de duplicate schema.
+   */
+  const allSchemas = [];
+  
+  // Ajoute le schéma principal
+  if (additionalJsonLd) {
+    allSchemas.push(additionalJsonLd);
+  }
+  
+  // Ajoute un TechArticle si c'est un article de blog technique
+  if (pageInfo.type === 'BlogPosting' && blogPostData?.frontMatter?.keywords) {
+    const keywords = blogPostData.frontMatter.keywords;
+    const isTechnical = keywords.some(keyword => 
+      keyword.includes('technique') || 
+      keyword.includes('code') || 
+      keyword.includes('développement') ||
+      keyword.includes('programmation') ||
+      keyword.includes('api') ||
+      keyword.includes('framework')
+    );
+    
+    if (isTechnical) {
+      const techArticleSchema = {
+        '@context': 'https://schema.org',
+        '@id': canonicalId,                    // ✅ Même ID que BlogPosting
+        '@type': 'TechArticle',
+        url: canonicalUrl,                     // ✅ Même URL que BlogPosting
+        name: additionalJsonLd.name,
+        headline: additionalJsonLd.headline,
+        description: additionalJsonLd.description,
+        author: additionalJsonLd.author,
+        datePublished: additionalJsonLd.datePublished,
+        dateModified: additionalJsonLd.dateModified,
+        image: additionalJsonLd.image,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalId
+        },
+        proficiencyLevel: blogPostData.frontMatter?.proficiencyLevel || 'Beginner',
+        programmingLanguage: blogPostData.frontMatter?.programmingLanguage || 'JavaScript',
+        keywords: additionalJsonLd.keywords
+      };
+      
+      allSchemas.push(techArticleSchema);
+    }
+  }
+  
+  // Validation et correction automatique des URLs
+  const urlValidation = validateSchemaUrls(allSchemas);
+  const finalSchemas = urlValidation.isValid 
+    ? allSchemas 
+    : fixAllSchemaUrls(allSchemas, canonicalId, canonicalUrl);
+  
+  // Sélectionne le schéma principal pour l'affichage (le premier)
+  const primarySchema = finalSchemas[0] || additionalJsonLd;
+
+  /**
    * ÉTAPE 12 : Préparation des données pour le panel de debug
    * 
    * Collecte toutes les détections et métadonnées pour alimenter
    * le composant SeoDebugPanel en mode développement.
+   * Inclut maintenant les informations de validation des URLs.
    */
   const detections = {
     isBlogPost,                    // Page d'article individuel
@@ -770,9 +833,11 @@ export default function Seo() {
         <meta name="googlebot" content="index, follow" />   {/* Spécifique à Googlebot */}
         
         {/* ===== JSON-LD POUR LES RICH RESULTS GOOGLE ===== */}
-        <script type="application/ld+json">
-          {JSON.stringify(additionalJsonLd)}
-        </script>
+        {finalSchemas.map((schema, index) => (
+          <script key={index} type="application/ld+json">
+            {JSON.stringify(schema)}
+          </script>
+        ))}
       </Head>
       
       {/* 
@@ -788,7 +853,9 @@ export default function Seo() {
         Le panel ne s'affiche qu'en mode développement (NODE_ENV !== 'production')
       */}
       <SeoDebugPanel 
-        jsonLd={additionalJsonLd}          // Structure JSON-LD générée
+        jsonLd={primarySchema}             // Schéma JSON-LD principal
+        allSchemas={finalSchemas}          // Tous les schémas générés
+        urlValidation={urlValidation}      // Résultats de validation des URLs
         pageInfo={pageInfo}                // Type et catégorie de page
         location={location}                // Informations URL/navigation
         blogPostData={blogPostData}        // Métadonnées d'article (si applicable)

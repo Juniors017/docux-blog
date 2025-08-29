@@ -57,9 +57,13 @@ L'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagneme
 - ✅ Métadonnées Open Graph et Twitter Cards
 - ✅ Gestion multi-contexte (blog, docs, pages custom)
 - ✅ Système de fallback intelligent
-- ✅ URLs canoniques automatiques
+- ✅ URLs canoniques automatiques avec normalisation avancée
 - ✅ Support des images personnalisées
 - ✅ Gestion des auteurs avec données centralisées
+- 🆕 **Schémas multiples cohérents** : BlogPosting + TechArticle automatique
+- 🆕 **Normalisation intelligente des URLs** : Suppression doubles slashes
+- 🆕 **Validation proactive** des schémas JSON-LD
+- 🆕 **Correction automatique** des incohérences d'URLs
 
 {/* truncate */}
 
@@ -91,6 +95,7 @@ L'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagneme
 - 🆕 **Documentation technique complète** dans `SeoDebugPanel/README.md`
 - 🆕 **Troubleshooting automatique** avec diagnostics détaillés
 - 🆕 **Analyse Slug & Série** : Validation des URLs personnalisées et organisation par série
+- 🆕 **Validation des schémas multiples** : Cohérence automatique des URLs JSON-LD
 
 **Interface utilisateur** :
 - 🎛️ **Onglet Vue** : Aperçu des métadonnées et détections
@@ -137,6 +142,9 @@ Notre architecture SEO apporte plusieurs **innovations majeures** au monde Docus
 - **🔗 Gestion Slug** : Validation et affichage des URLs personnalisées  
 - **📚 Support Séries** : Organisation et validation du contenu par série
 - **🖼️ Aperçu Images** : Affichage des images dans les tooltips avec gestion d'erreur
+- **🔄 Schémas Multiples** : BlogPosting + TechArticle automatique avec URLs cohérentes
+- **⚙️ Normalisation URLs** : Suppression automatique des doubles slashes
+- **✅ Validation Proactive** : Correction automatique des incohérences de schémas
 
 ---
 
@@ -340,6 +348,62 @@ export default function PageMultiLangue({ langue = 'fr' }) {
   );
 }
 ```
+
+### 🆕 Schémas Multiples et Normalisation des URLs
+
+#### Problème Résolu
+
+Google accepte plusieurs blocs JSON-LD pour un même contenu, mais exige une **cohérence parfaite** des URLs. Notre composant corrige automatiquement :
+
+```json
+// ❌ AVANT : URLs incohérentes entre schémas
+{
+  "BlogPosting": {
+    "@id": "https://site.com/blog/article",
+    "url": "https://site.com/blog/article/"
+  },
+  "TechArticle": {
+    "@id": "https://site.com//site.com/blog/article/",  // Double slash !
+    "url": "https://site.com/blog/article"              // URL différente !
+  }
+}
+
+// ✅ MAINTENANT : URLs parfaitement cohérentes
+{
+  "BlogPosting": {
+    "@id": "https://site.com/blog/article",    // ✅ ID canonique
+    "url": "https://site.com/blog/article/",   // ✅ URL canonique
+    "@type": "BlogPosting"
+  },
+  "TechArticle": {
+    "@id": "https://site.com/blog/article",    // ✅ Même ID exact
+    "url": "https://site.com/blog/article/",   // ✅ Même URL exacte
+    "@type": "TechArticle",
+    "proficiencyLevel": "Advanced"
+  }
+}
+```
+
+#### Détection Automatique
+
+Un article devient **TechArticle** si ses mots-clés contiennent :
+
+```markdown
+---
+keywords: ["architecture", "javascript", "react", "développement"]
+programmingLanguage: "JavaScript"
+proficiencyLevel: "Advanced"
+---
+```
+
+Mots-clés déclencheurs : `technique`, `code`, `développement`, `programmation`, `api`, `framework`, `architecture`
+
+#### Avantages SEO
+
+- **Double visibilité** : BlogPosting + TechArticle = 2x plus de chances d'apparaître
+- **URLs cohérentes** : Pas de duplicate schema, Google comprend mieux
+- **Rich Results optimisés** : Métadonnées techniques enrichies
+- **Validation automatique** : Correction proactive des erreurs
 
 ### ⚡ Bonnes pratiques
 
@@ -974,6 +1038,18 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 ## 🆕 Nouveautés et Mises à Jour
 
 ### Version Actuelle (Août 2025)
+
+**🔗 Normalisation Avancée des URLs (Dernière mise à jour)**
+- Correction automatique des doubles slashes dans les URLs
+- Génération d'IDs canoniques cohérents pour tous les schémas
+- Validation proactive des URLs entre schémas multiples
+- Système de correction automatique des incohérences détectées
+
+**🔄 Schémas JSON-LD Multiples**
+- Génération automatique de BlogPosting + TechArticle pour articles techniques
+- URLs parfaitement cohérentes entre tous les schémas (@id, url, mainEntityOfPage)
+- Détection intelligente du contenu technique via mots-clés
+- Validation temps réel dans le panel de debug
 
 **✨ Architecture Séparée**
 - Composant SEO principal nettoyé et optimisé

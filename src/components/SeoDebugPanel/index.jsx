@@ -136,6 +136,8 @@ const Tooltip = ({ children, content, position = 'auto' }) => {
 
 export default function SeoDebugPanel({ 
   jsonLd, 
+  allSchemas,
+  urlValidation,
   pageInfo, 
   location, 
   blogPostData, 
@@ -1278,6 +1280,36 @@ export default function SeoDebugPanel({
                   </div>
                 </div>
               </div>
+              
+              {/* Section validation des URLs - Nouvelle fonctionnalité */}
+              {allSchemas && allSchemas.length > 1 && (
+                <div style={{ marginBottom: '6px', marginTop: '8px' }}>
+                  <strong style={{ color: '#ffaa00' }}>Schémas Multiples:</strong>
+                  <div style={{ fontSize: '9px', color: '#ccc', marginTop: '2px' }}>
+                    <div>📄 {allSchemas.length} schéma(s) générés</div>
+                    <div style={{ color: urlValidation?.isValid ? '#00ff88' : '#ff6b6b' }}>
+                      {urlValidation?.summary || 'Validation en cours...'}
+                    </div>
+                    {allSchemas.map((schema, index) => (
+                      <div key={index} style={{ marginTop: '2px', paddingLeft: '8px' }}>
+                        <span style={{ color: '#88aaff' }}>
+                          {schema['@type']}:
+                        </span>
+                        <span style={{ color: '#ccc', fontSize: '8px', marginLeft: '4px' }}>
+                          {schema['@id'] === schema.url?.replace(/\/$/, '') ? '✅' : '⚠️'}
+                        </span>
+                      </div>
+                    ))}
+                    {urlValidation?.errors?.length > 0 && (
+                      <div style={{ color: '#ff6b6b', marginTop: '2px', fontSize: '8px' }}>
+                        {urlValidation.errors.slice(0, 2).map((error, index) => (
+                          <div key={index}>❌ {error}</div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

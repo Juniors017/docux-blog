@@ -22,9 +22,13 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - ✅ Métadonnées Open Graph et Twitter Cards
 - ✅ Gestion multi-contexte (blog, docs, pages custom)
 - ✅ Système de fallback intelligent
-- ✅ URLs canoniques automatiques
+- ✅ URLs canoniques automatiques avec normalisation avancée
 - ✅ Support des images personnalisées
 - ✅ Gestion des auteurs avec données centralisées
+- 🆕 **Schémas multiples cohérents** : BlogPosting + TechArticle automatique
+- 🆕 **Normalisation intelligente des URLs** : Suppression doubles slashes
+- 🆕 **Validation proactive** des schémas JSON-LD
+- 🆕 **Correction automatique** des incohérences d'URLs
 
 **Points clés** :
 - 🔄 Détection automatique du type de page
@@ -54,6 +58,7 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - 🆕 **Documentation technique complète** dans `SeoDebugPanel/README.md`
 - 🆕 **Troubleshooting automatique** avec diagnostics détaillés
 - 🆕 **Analyse Slug & Série** : Validation des URLs personnalisées et organisation par série
+- 🆕 **Validation des schémas multiples** : Cohérence automatique des URLs JSON-LD
 
 **Interface utilisateur** :
 - 🎛️ **Onglet Vue** : Aperçu des métadonnées et détections
@@ -964,6 +969,18 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 
 ### Version Actuelle (Août 2025)
 
+**🔗 Normalisation Avancée des URLs (Dernière mise à jour)**
+- Correction automatique des doubles slashes dans les URLs
+- Génération d'IDs canoniques cohérents pour tous les schémas
+- Validation proactive des URLs entre schémas multiples
+- Système de correction automatique des incohérences détectées
+
+**🔄 Schémas JSON-LD Multiples**
+- Génération automatique de BlogPosting + TechArticle pour articles techniques
+- URLs parfaitement cohérentes entre tous les schémas (@id, url, mainEntityOfPage)
+- Détection intelligente du contenu technique via mots-clés
+- Validation temps réel dans le panel de debug
+
 **✨ Architecture Séparée**
 - Composant SEO principal nettoyé et optimisé
 - SeoDebugPanel déployé comme composant dédié
@@ -1130,6 +1147,68 @@ Pour surveiller et débugger l'architecture SEO :
 ---
 
 ## 📄 Licence et Crédits Techniques
+
+## 🔧 Détails Techniques Avancés
+
+### Normalisation des URLs et Schémas Multiples
+
+**Problème résolu** : Google accepte plusieurs blocs JSON-LD pour un même contenu, mais exige une cohérence parfaite des URLs. Les doubles slashes et les incohérences peuvent créer du duplicate schema.
+
+#### Utilitaires de Normalisation (`utils/urlNormalizer.js`)
+
+```javascript
+// Fonctions principales disponibles
+normalizeUrl(baseUrl, pathname)           // Supprime les doubles slashes
+generateCanonicalId(siteConfig, pathname) // ID sans slash final pour schémas
+generateCanonicalUrl(siteConfig, pathname)// URL avec slash final pour affichage
+validateSchemaUrls(schemas)               // Validation automatique des cohérences
+fixAllSchemaUrls(schemas, id, url)        // Correction automatique des erreurs
+```
+
+#### Schémas Multiples Automatiques
+
+**Articles techniques** (détectés via mots-clés) génèrent automatiquement :
+
+```json
+// BlogPosting Schema (structure d'article)
+{
+  "@id": "https://site.com/blog/article-slug",
+  "url": "https://site.com/blog/article-slug/",
+  "@type": "BlogPosting",
+  "author": {...},
+  "datePublished": "..."
+}
+
+// TechArticle Schema (contenu technique)
+{
+  "@id": "https://site.com/blog/article-slug",    // ✅ Même ID
+  "url": "https://site.com/blog/article-slug/",   // ✅ Même URL
+  "@type": "TechArticle",
+  "proficiencyLevel": "Beginner",
+  "programmingLanguage": "JavaScript"
+}
+```
+
+#### Détection Automatique
+
+Un article devient TechArticle si ses mots-clés contiennent :
+- `technique`, `code`, `développement`
+- `programmation`, `api`, `framework`
+- `docusaurus-avancé`, `architecture-technique`
+
+#### Validation dans le Debug Panel
+
+Le panel affiche maintenant :
+- 📊 Nombre de schémas générés
+- ✅ Statut de validation des URLs (cohérence automatique)
+- ⚠️ Erreurs détectées avec corrections automatiques
+- 🔧 Aperçu des URLs générées pour chaque schéma
+
+**Avantages SEO** :
+- Double visibilité (BlogPosting + TechArticle)
+- URLs parfaitement cohérentes
+- Pas de duplicate content
+- Rich Results optimisés
 
 ### 🧑‍💻 Développement
 

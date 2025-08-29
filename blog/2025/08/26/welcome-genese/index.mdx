@@ -241,7 +241,9 @@ Voici un tableau comparatif détaillé entre les capacités SEO natives de Docus
 | **Détection Type Page** | ❌ Générique | ✅ **Intelligente** (blog, docs, home, series, etc.) | 🎯 **Nouveau** |
 | **Auteurs Multi** | ✅ Basic (nom + image) | ✅ **Enrichi** (Person schema, URLs, descriptions) | 🚀 **Meilleur** |
 | **Images** | ✅ Simple référence | ✅ **ImageObject** (caption, contentUrl, @id) | 🚀 **Meilleur** |
-| **URLs Canoniques** | ✅ Automatique | ✅ **Améliorées** (baseUrl intelligent) | 🔧 **Optimisé** |
+| **URLs Canoniques** | ✅ Automatique | ✅ **Normalisées** (suppression doubles slashes) | 🚀 **Meilleur** |
+| **Schémas Multiples** | ❌ Aucun | ✅ **BlogPosting + TechArticle** (URLs cohérentes) | 🎯 **Nouveau** |
+| **Validation URLs** | ❌ Aucune | ✅ **Proactive** (correction automatique incohérences) | 🎯 **Nouveau** |
 | **Hreflang** | ✅ Basic i18n | ✅ **Étendu** (x-default, locale detection) | 🚀 **Meilleur** |
 | **Performance SEO** | ✅ Good | ✅ **Optimisé** (preload, referrer policy) | 🚀 **Meilleur** |
 | **Debug Tools** | ❌ Aucun | ✅ **Panel Avancé** (metrics, actions, validation) | 🎯 **Nouveau** |
@@ -298,6 +300,39 @@ Notre composant : Panel temps réel avec :
 ```javascript
 // Natif : title || siteConfig.title
 // Notre composant : Cascade intelligente
+const title = getOptimalTitle(blogPost, pageData, siteConfig);
+// → Priorise : frontMatter.title → metadata.title → siteConfig.title
+```
+
+#### **5. Schémas Multiples avec URLs Cohérentes** 🆕
+```json
+// Natif : Aucun schema JSON-LD
+// Notre composant : Schémas multiples parfaitement cohérents
+{
+  "BlogPosting": {
+    "@id": "https://site.com/blog/article",     // ✅ ID canonique
+    "url": "https://site.com/blog/article/",    // ✅ URL canonique
+    "@type": "BlogPosting"
+  },
+  "TechArticle": {
+    "@id": "https://site.com/blog/article",     // ✅ Même ID exact
+    "url": "https://site.com/blog/article/",    // ✅ Même URL exacte
+    "@type": "TechArticle",
+    "proficiencyLevel": "Beginner"
+  }
+}
+```
+
+#### **6. Validation Automatique des URLs** 🆕
+```javascript
+// Natif : Aucune validation
+// Notre composant : Validation proactive avec correction automatique
+const validation = validateSchemaUrls(allSchemas);
+if (!validation.isValid) {
+  const fixedSchemas = fixAllSchemaUrls(schemas, canonicalId, canonicalUrl);
+}
+// → Supprime les doubles slashes, assure la cohérence entre schémas
+```
 const finalTitle = frontmatter?.title || 
                    siteConfig.title || 
                    'Page sans titre';
@@ -328,11 +363,65 @@ const finalTitle = frontmatter?.title ||
 
 Notre composant SEO **complète et améliore** significativement les capacités natives de Docusaurus :
 
-- **+6 nouvelles fonctionnalités** totalement absentes
-- **+9 améliorations** des fonctions existantes  
+- **+8 nouvelles fonctionnalités** totalement absentes (dont schémas multiples)
+- **+10 améliorations** des fonctions existantes (dont normalisation URLs)
 - **+3 optimisations** techniques avancées
 
 Il transforme un site Docusaurus d'un **SEO correct** vers un **SEO professionnel** sans complexité d'installation ! 🏆
+
+## 🆕 **Dernière Mise à Jour : Normalisation des URLs et Schémas Multiples**
+
+### ✅ **Problème Résolu**
+
+Google accepte plusieurs blocs JSON-LD pour un même contenu, mais exige une **cohérence parfaite** des URLs. Notre composant corrige automatiquement :
+
+```json
+// ❌ AVANT : URLs incohérentes
+{
+  "BlogPosting": {
+    "@id": "https://site.com/blog/article",
+    "url": "https://site.com/blog/article/"
+  },
+  "TechArticle": {
+    "@id": "https://site.com//site.com/blog/article/",  // Double slash !
+    "url": "https://site.com/blog/article"
+  }
+}
+
+// ✅ MAINTENANT : URLs parfaitement cohérentes
+{
+  "BlogPosting": {
+    "@id": "https://site.com/blog/article",
+    "url": "https://site.com/blog/article/"
+  },
+  "TechArticle": {
+    "@id": "https://site.com/blog/article",    // ✅ Même ID
+    "url": "https://site.com/blog/article/"    // ✅ Même URL
+  }
+}
+```
+
+### 🔧 **Améliorations Techniques**
+
+1. **Normalisation automatique** des URLs (suppression doubles slashes)
+2. **Validation proactive** des schémas multiples
+3. **Correction automatique** des incohérences détectées
+4. **Debug panel enrichi** avec validation temps réel
+5. **Double typologie** : BlogPosting + TechArticle pour articles techniques
+
+### 🎯 **Détection Intelligente**
+
+Les articles deviennent automatiquement **TechArticle** si leurs mots-clés contiennent :
+- `technique`, `code`, `développement`
+- `programmation`, `api`, `framework`, `docusaurus-avancé`
+
+**Cet article** génère donc **2 schémas JSON-LD cohérents** :
+- 📄 **BlogPosting** (structure d'article)
+- 🔧 **TechArticle** (contenu technique détecté via `architecture-technique`)
+
+### 🚀 **Résultat**
+
+**Double visibilité SEO** avec des schémas parfaitement cohérents qui maximisent les chances d'apparition dans les Rich Results Google ! 🏆
 
 
 
