@@ -195,15 +195,13 @@ const config = {
        
 
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/thanks', label: 'Remerciements', position: 'left'},
+          {to: '/series', label: 'Series', position: 'left'},
+          {to: '/thanks', label: 'Remerciements', position: 'right'},
+          {to:'/repository',label: 'Repository', position: 'left',},
           {
-            href: 'https://github.com/Juniors017/docux-blog',
+            to: 'https://github.com/Juniors017/docux-blog',
             label: 'GitHub',
             position: 'right',
-          },
-             {
-            href: '/series',
-            label: 'Series',
           },
         ],
       },
