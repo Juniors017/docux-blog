@@ -709,6 +709,17 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
           dateModified: blogPostData.lastUpdatedAt || new Date().toISOString()
         }),
         
+        // Informations sur l'éditeur (organisation)
+        publisher: {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+          logo: {
+            '@type': 'ImageObject',
+            url: siteConfig.url + useBaseUrl('/img/docux.png')
+          }
+        },
+        
         // Niveau de compétence requis
         proficiencyLevel: frontMatter.proficiencyLevel || 'Beginner',
         
@@ -870,6 +881,18 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
         datePublished: additionalJsonLd.datePublished,
         dateModified: additionalJsonLd.dateModified,
         image: additionalJsonLd.image,
+        
+        // Informations sur l'éditeur (organisation)
+        publisher: {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+          logo: {
+            '@type': 'ImageObject',
+            url: siteConfig.url + useBaseUrl('/img/docux.png')
+          }
+        },
+        
         mainEntityOfPage: {
           '@type': 'WebPage',
           '@id': canonicalId
