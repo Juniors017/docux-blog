@@ -47,10 +47,13 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - ✅ Intégration Google Rich Results Test
 - ✅ Métriques de performance temps réel
 - ✅ Actions rapides (rapport, export, test Google)
+- ✅ **Tooltips intelligents** avec données réelles de la page au survol
+- ✅ **Positionnement automatique** des tooltips (viewport-aware)
 - 🆕 **Algorithme de validation avancé** avec score intelligent
 - 🆕 **Interface type Google Rich Results Test** intégrée
 - 🆕 **Documentation technique complète** dans `SeoDebugPanel/README.md`
 - 🆕 **Troubleshooting automatique** avec diagnostics détaillés
+- 🆕 **Analyse Slug & Série** : Validation des URLs personnalisées et organisation par série
 
 **Interface utilisateur** :
 - 🎛️ **Onglet Vue** : Aperçu des métadonnées et détections
@@ -1019,6 +1022,8 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - 🎯 Category: Non définis
 - 🏷️ Tags: Aucun
 - 📝 Description: Auto-générée
+- 🔗 Slug: Auto-généré
+- 📚 Série: Optionnelle
 
 **Métriques de contenu :**
 - Titres 5 chars (à ajuster)
@@ -1036,7 +1041,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - @type défini: WebSite
 - Titre présent et accessible
 - Description présente et optimisée
-- URL canonique valide
+- URL canonique valide 
 - Image structurée selon Schema.org (ImageObject)
 - Langue spécifiée: fr-FR
 

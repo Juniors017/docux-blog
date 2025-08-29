@@ -20,6 +20,120 @@
 
 import React from 'react';
 
+// Composant Tooltip intelligent pour afficher les informations SEO en temps réel
+const Tooltip = ({ children, content, position = 'auto' }) => {
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [actualPosition, setActualPosition] = React.useState(position);
+  const tooltipRef = React.useRef(null);
+  const containerRef = React.useRef(null);
+
+  // Fonction pour détecter la meilleure position selon l'espace disponible
+  const detectBestPosition = React.useCallback(() => {
+    if (!containerRef.current || !tooltipRef.current) return position;
+
+    const container = containerRef.current.getBoundingClientRect();
+    const tooltip = tooltipRef.current.getBoundingClientRect();
+    const viewport = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    };
+
+    // Vérifier l'espace disponible dans chaque direction
+    const spaceTop = container.top;
+    const spaceBottom = viewport.height - container.bottom;
+    const spaceLeft = container.left;
+    const spaceRight = viewport.width - container.right;
+
+    // Priorité : right > left > bottom > top (pour éviter de sortir du panel)
+    if (spaceRight >= 280) return 'right';
+    if (spaceLeft >= 280) return 'left';
+    if (spaceBottom >= 200) return 'bottom';
+    return 'top';
+  }, [position]);
+
+  // Mettre à jour la position quand le tooltip devient visible
+  React.useEffect(() => {
+    if (isVisible && position === 'auto') {
+      const bestPosition = detectBestPosition();
+      setActualPosition(bestPosition);
+    }
+  }, [isVisible, detectBestPosition, position]);
+
+  const positionClasses = {
+    top: { bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '8px' },
+    bottom: { top: '100%', left: '50%', transform: 'translateX(-50%)', marginTop: '8px' },
+    left: { right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: '8px' },
+    right: { left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: '8px' }
+  };
+  
+  const arrowStyles = {
+    top: { top: '100%', left: '50%', transform: 'translateX(-50%)', borderLeft: '4px solid transparent', borderRight: '4px solid transparent', borderTop: '4px solid #1a1a1a' },
+    bottom: { bottom: '100%', left: '50%', transform: 'translateX(-50%)', borderLeft: '4px solid transparent', borderRight: '4px solid transparent', borderBottom: '4px solid #1a1a1a' },
+    left: { left: '100%', top: '50%', transform: 'translateY(-50%)', borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '4px solid #1a1a1a' },
+    right: { right: '100%', top: '50%', transform: 'translateY(-50%)', borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderRight: '4px solid #1a1a1a' }
+  };
+  
+  return (
+    <div 
+      ref={containerRef}
+      style={{ position: 'relative', display: 'inline-block', cursor: 'help' }}
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      {isVisible && (
+        <div 
+          ref={tooltipRef}
+          style={{
+            position: 'fixed', // Utiliser fixed pour éviter les problèmes de débordement
+            zIndex: 9999,
+            padding: '8px 12px',
+            fontSize: '11px',
+            lineHeight: '1.4',
+            color: '#fff',
+            backgroundColor: '#1a1a1a',
+            borderRadius: '6px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            maxWidth: '280px',
+            border: '1px solid #333',
+            // Positionnement dynamique
+            ...(actualPosition === 'right' && {
+              left: containerRef.current?.getBoundingClientRect().right + 8,
+              top: containerRef.current?.getBoundingClientRect().top,
+              transform: 'translateY(-50%)'
+            }),
+            ...(actualPosition === 'left' && {
+              right: window.innerWidth - containerRef.current?.getBoundingClientRect().left + 8,
+              top: containerRef.current?.getBoundingClientRect().top,
+              transform: 'translateY(-50%)'
+            }),
+            ...(actualPosition === 'bottom' && {
+              left: containerRef.current?.getBoundingClientRect().left,
+              top: containerRef.current?.getBoundingClientRect().bottom + 8,
+              transform: 'translateX(-50%)'
+            }),
+            ...(actualPosition === 'top' && {
+              left: containerRef.current?.getBoundingClientRect().left,
+              bottom: window.innerHeight - containerRef.current?.getBoundingClientRect().top + 8,
+              transform: 'translateX(-50%)'
+            })
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            {content}
+            <div style={{
+              position: 'absolute',
+              width: 0,
+              height: 0,
+              ...arrowStyles[actualPosition]
+            }}></div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function SeoDebugPanel({ 
   jsonLd, 
   pageInfo, 
@@ -527,6 +641,14 @@ export default function SeoDebugPanel({
         hasDescription: (() => {
           const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
           return !!(fm?.description);
+        })(),
+        hasSlug: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.slug);
+        })(),
+        hasSerie: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.serie);
         })()
       },
       recommendations: []                           // Recommandations d'amélioration
@@ -577,6 +699,190 @@ export default function SeoDebugPanel({
     }
 
     return report;
+  };
+
+  /**
+   * EXTRACTION DES DONNÉES RÉELLES SEO POUR LES TOOLTIPS
+   * 
+   * Extrait les vraies données SEO de la page actuelle pour les afficher dans les tooltips
+   */
+  const getRealSeoData = () => {
+    const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata || {};
+    const authors = blogPostData?.authors || [];
+    
+    return {
+      // Données FrontMatter
+      image: fm.image || null,
+      keywords: fm.keywords || [],
+      author: authors.length > 0 ? authors : (fm.author ? [{ name: fm.author }] : []),
+      date: fm.date || null,
+      category: fm.category || null,
+      tags: fm.tags || [],
+      description: fm.description || null,
+      slug: fm.slug || null,
+      serie: fm.serie || null,
+      
+      // Données JSON-LD
+      title: jsonLd?.name || jsonLd?.headline || document.title || '',
+      jsonLdDescription: jsonLd?.description || '',
+      url: jsonLd?.url || window.location.href,
+      schemaType: jsonLd?.['@type'] || 'WebPage',
+      language: jsonLd?.inLanguage || 'fr-FR',
+      
+      // Métriques calculées
+      titleLength: (jsonLd?.name || jsonLd?.headline || document.title || '').length,
+      descriptionLength: (jsonLd?.description || '').length,
+      wordCount: contentMetrics?.wordCount || 0,
+      headingStructure: contentMetrics ? `H1(${contentMetrics.headings.h1}) H2(${contentMetrics.headings.h2}) H3(${contentMetrics.headings.h3})` : '',
+      linkCount: contentMetrics?.links || { total: 0, internal: 0, external: 0 },
+      
+      // États de validation
+      validation: validateJsonLd(jsonLd),
+      googleSearchConsole: googleSearchConsole
+    };
+  };
+
+  /**
+   * GÉNÉRATION DES TOOLTIPS AVEC DONNÉES RÉELLES
+   * 
+   * Génère le contenu des tooltips avec les vraies informations SEO
+   */
+  const generateTooltipContent = (type, data = null) => {
+    const seoData = getRealSeoData();
+    
+    switch (type) {
+      case 'image':
+        if (seoData.image) {
+          // Construire l'URL complète de l'image
+          let imageUrl = seoData.image;
+          if (imageUrl.startsWith('/')) {
+            // URL relative, ajouter le domaine et le base path
+            const basePath = window.location.pathname.includes('/docux-blog/') ? '/docux-blog' : '';
+            imageUrl = window.location.origin + basePath + imageUrl;
+          }
+          // Retourner un composant React avec l'image
+          return (
+            <div style={{ textAlign: 'center', maxWidth: '220px' }}>
+              <div style={{ color: '#00ff88', marginBottom: '8px', fontSize: '11px' }}>
+                ✅ Image définie:
+              </div>
+              <img 
+                src={imageUrl} 
+                alt="Image de l'article" 
+                style={{ 
+                  maxWidth: '200px', 
+                  maxHeight: '120px', 
+                  borderRadius: '4px',
+                  border: '1px solid #333',
+                  marginBottom: '8px',
+                  display: 'block'
+                }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentNode.querySelector('.error-fallback').style.display = 'block';
+                }}
+              />
+              <div className="error-fallback" style={{ display: 'none', color: '#ff4444', fontSize: '10px', marginBottom: '8px' }}>
+                ❌ Erreur de chargement de l'image
+              </div>
+              <div style={{ fontSize: '9px', color: '#ccc', wordBreak: 'break-all', textAlign: 'left' }}>
+                URL: {imageUrl}
+              </div>
+            </div>
+          );
+        } else {
+          return '❌ Aucune image définie dans le frontMatter';
+        }
+          
+      case 'keywords':
+        return seoData.keywords.length > 0 ? 
+          `✅ ${seoData.keywords.length} mot(s)-clé(s): ${seoData.keywords.join(', ')}` : 
+          '❌ Aucun mot-clé défini dans le frontMatter';
+          
+      case 'author':
+        return seoData.author.length > 0 ? 
+          `✅ ${seoData.author.length} auteur(s): ${seoData.author.map(a => a.name || a).join(', ')}` : 
+          '❌ Aucun auteur défini';
+          
+      case 'date':
+        return seoData.date ? 
+          `✅ Date: ${new Date(seoData.date).toLocaleDateString('fr-FR')}` : 
+          '❌ Aucune date définie dans le frontMatter';
+          
+      case 'category':
+        return seoData.category ? 
+          `✅ Catégorie: ${seoData.category}` : 
+          '⚠️ Aucune catégorie définie (optionnel)';
+          
+      case 'tags':
+        return seoData.tags.length > 0 ? 
+          `✅ ${seoData.tags.length} tag(s): ${seoData.tags.join(', ')}` : 
+          '⚠️ Aucun tag défini (optionnel)';
+          
+      case 'description':
+        return seoData.description ? 
+          `✅ Description personnalisée: "${seoData.description}"` : 
+          '⚠️ Description auto-générée par Docusaurus';
+          
+      case 'slug':
+        return seoData.slug ? 
+          `✅ Slug personnalisé: "${seoData.slug}"\nUtilisé pour l'URL de l'article` : 
+          '⚠️ Slug auto-généré à partir du titre';
+          
+      case 'serie':
+        return seoData.serie ? 
+          `✅ Série: "${seoData.serie}"\nArticle fait partie d'une série thématique` : 
+          '⚠️ Aucune série définie (optionnel)';
+          
+      case 'title':
+        return `📝 Titre: "${seoData.title}" (${seoData.titleLength} caractères)\nRecommandé: 50-60 caractères pour un SEO optimal`;
+        
+      case 'metaDescription':
+        return `📄 Description: "${seoData.jsonLdDescription}" (${seoData.descriptionLength} caractères)\nRecommandé: 150-160 caractères pour les SERP`;
+        
+      case 'wordCount':
+        const status = seoData.wordCount >= 1000 ? 'Excellent' : seoData.wordCount >= 300 ? 'Bon' : 'Trop court';
+        return `💬 ${seoData.wordCount} mots dans le contenu\nRecommandé: 300+ mots (${status})`;
+        
+      case 'structure':
+        return `📊 Structure: ${seoData.headingStructure}\nUne hiérarchie claire améliore le SEO`;
+        
+      case 'links':
+        return `🔗 ${seoData.linkCount.total} liens total\n${seoData.linkCount.internal} internes, ${seoData.linkCount.external} externes\nLes liens internes améliorent le maillage SEO`;
+        
+      case 'googleSearchConsole':
+        return seoData.googleSearchConsole?.present ? 
+          `✅ Google Search Console configuré\nCode: ${seoData.googleSearchConsole.code}` :
+          `❌ Google Search Console non configuré\nAjoutez le code de vérification dans docusaurus.config.js`;
+          
+      case 'validation':
+        // Tooltip pour les validations Schema.org
+        if (data?.includes('@context')) {
+          return '✅ @context présent et valide\nLe contexte Schema.org est défini et pointe vers https://schema.org - Requis pour identifier le vocabulaire';
+        }
+        if (data?.includes('@type')) {
+          return `✅ @type défini: ${seoData.schemaType}\nDétermine comment Google interprète le contenu`;
+        }
+        if (data?.includes('Titre')) {
+          return '✅ Titre présent et accessible\nTitre défini via name ou headline - Visible dans les résultats de recherche';
+        }
+        if (data?.includes('Description')) {
+          return '✅ Description présente et optimisée\nDescription définie - Affichée dans les SERP et améliore le taux de clic';
+        }
+        if (data?.includes('URL')) {
+          return '✅ URL canonique valide\nURL canonique définie - Évite le contenu dupliqué';
+        }
+        if (data?.includes('Image')) {
+          return '✅ Image structurée selon Schema.org\nImage définie comme ImageObject - Structure recommandée pour les Rich Results';
+        }
+        if (data?.includes('Langue')) {
+          return `✅ Langue spécifiée: ${seoData.language}\nLangue du contenu spécifiée - Améliore la géolocalisation des résultats`;
+        }
+        return 'Validation Schema.org réussie - Contribue à la qualité SEO globale';
+          
+      default:
+        return 'Information SEO non disponible';
+    }
   };
 
   /**
@@ -1568,17 +1874,21 @@ export default function SeoDebugPanel({
               <div style={{ marginBottom: '6px' }}>
                 <strong style={{ color: '#ffaa00' }}>Outils SEO externes:</strong>
                 <div style={{ fontSize: '9px', marginTop: '2px' }}>
-                  <div style={{ color: googleSearchConsole?.present ? '#00ff88' : '#ff4444' }}>
-                    🔍 Google Search Console: {googleSearchConsole?.present ? '✅' : '❌'}
-                  </div>
+                  <Tooltip content={generateTooltipContent('googleSearchConsole')}>
+                    <div style={{ color: googleSearchConsole?.present ? '#00ff88' : '#ff4444', cursor: 'help' }}>
+                      🔍 Google Search Console: {googleSearchConsole?.present ? '✅' : '❌'}
+                    </div>
+                  </Tooltip>
                   {!googleSearchConsole?.present && (
                     <div style={{ color: '#ffaa00', fontSize: '8px', marginTop: '2px' }}>
                       💡 Remplacez 'VOTRE_CODE_VERIFICATION_GOOGLE' dans docusaurus.config.js
                     </div>
                   )}
-                  <div style={{ color: '#88aaff' }}>
-                    📊 Matomo Analytics: Configuré séparément
-                  </div>
+                  <Tooltip content="📊 Matomo Analytics: Solution d'analyse alternative à Google Analytics - Configuration indépendante requise dans votre projet">
+                    <div style={{ color: '#88aaff', cursor: 'help' }}>
+                      📊 Matomo Analytics: Configuré séparément
+                    </div>
+                  </Tooltip>
                   <div style={{ color: '#ccc', fontSize: '8px', marginTop: '2px' }}>
                     💡 Utilisez le bouton "🔍 Google" pour tester les Rich Results
                   </div>
@@ -1591,27 +1901,51 @@ export default function SeoDebugPanel({
                   <h4 style={{ color: '#ffaa00', fontSize: '12px', marginBottom: '5px' }}>📄 Content Management System</h4>
                   <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '4px' }}>
                     <div style={{ fontSize: '10px' }}>
-                      <div style={{ color: currentReport.frontMatterData.hasImage ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
-                        🖼️ Image: {currentReport.frontMatterData.hasImage ? '✅ Présente' : '❌ Manquante'}
-                      </div>
-                      <div style={{ color: currentReport.frontMatterData.hasKeywords ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
-                        🏷️ Keywords: {currentReport.frontMatterData.hasKeywords ? '✅ Définis' : '❌ Manquants'}
-                      </div>
-                      <div style={{ color: currentReport.frontMatterData.hasAuthor ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
-                        👤 Author: {currentReport.frontMatterData.hasAuthor ? '✅ Défini' : '❌ Manquant'}
-                      </div>
-                      <div style={{ color: currentReport.frontMatterData.hasDate ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
-                        📅 Date: {currentReport.frontMatterData.hasDate ? '✅ Présente' : '❌ Manquante'}
-                      </div>
-                      <div style={{ color: currentReport.frontMatterData.hasCategory ? '#00ff88' : '#ffaa00', marginBottom: '2px' }}>
-                        🎯 Category: {currentReport.frontMatterData.hasCategory ? '✅ Définie' : '⚠️ Optionnelle'}
-                      </div>
-                      <div style={{ color: currentReport.frontMatterData.hasTags ? '#00ff88' : '#ffaa00', marginBottom: '2px' }}>
-                        🏷️ Tags: {currentReport.frontMatterData.hasTags ? '✅ Présents' : '⚠️ Optionnels'}
-                      </div>
-                      <div style={{ color: currentReport.frontMatterData.hasDescription ? '#00ff88' : '#ffaa00' }}>
-                        📝 Description: {currentReport.frontMatterData.hasDescription ? '✅ Personnalisée' : '⚠️ Auto-générée'}
-                      </div>
+                      <Tooltip content={generateTooltipContent('image')}>
+                        <div style={{ color: currentReport.frontMatterData.hasImage ? '#00ff88' : '#ff4444', marginBottom: '2px', cursor: 'help' }}>
+                          🖼️ Image: {currentReport.frontMatterData.hasImage ? '✅' : '❌'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('keywords')}>
+                        <div style={{ color: currentReport.frontMatterData.hasKeywords ? '#00ff88' : '#ff4444', marginBottom: '2px', cursor: 'help' }}>
+                          🏷️ Keywords: {currentReport.frontMatterData.hasKeywords ? '✅' : '❌'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('author')}>
+                        <div style={{ color: currentReport.frontMatterData.hasAuthor ? '#00ff88' : '#ff4444', marginBottom: '2px', cursor: 'help' }}>
+                          👤 Author: {currentReport.frontMatterData.hasAuthor ? '✅' : '❌'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('date')}>
+                        <div style={{ color: currentReport.frontMatterData.hasDate ? '#00ff88' : '#ff4444', marginBottom: '2px', cursor: 'help' }}>
+                          📅 Date: {currentReport.frontMatterData.hasDate ? '✅' : '❌'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('category')}>
+                        <div style={{ color: currentReport.frontMatterData.hasCategory ? '#00ff88' : '#ffaa00', marginBottom: '2px', cursor: 'help' }}>
+                          🎯 Category: {currentReport.frontMatterData.hasCategory ? '✅' : '⚠️ Optionnelle'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('tags')}>
+                        <div style={{ color: currentReport.frontMatterData.hasTags ? '#00ff88' : '#ffaa00', marginBottom: '2px', cursor: 'help' }}>
+                          🏷️ Tags: {currentReport.frontMatterData.hasTags ? '✅' : '⚠️ Optionnels'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('description')}>
+                        <div style={{ color: currentReport.frontMatterData.hasDescription ? '#00ff88' : '#ffaa00', cursor: 'help' }}>
+                          📝 Description: {currentReport.frontMatterData.hasDescription ? '✅' : '⚠️ Auto-générée'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('slug')}>
+                        <div style={{ color: currentReport.frontMatterData.hasSlug ? '#00ff88' : '#ffaa00', marginBottom: '2px', cursor: 'help' }}>
+                          🔗 Slug: {currentReport.frontMatterData.hasSlug ? '✅' : '⚠️ Auto-généré'}
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('serie')}>
+                        <div style={{ color: currentReport.frontMatterData.hasSerie ? '#00ff88' : '#ffaa00', cursor: 'help' }}>
+                          📚 Série: {currentReport.frontMatterData.hasSerie ? '✅' : '⚠️ Optionnelle'}
+                        </div>
+                      </Tooltip>
                     </div>
                   </div>
                 </div>
@@ -1622,24 +1956,40 @@ export default function SeoDebugPanel({
                 <div style={{ marginBottom: '10px' }}>
                   <h4 style={{ color: '#88aaff', fontSize: '12px', marginBottom: '5px' }}>📊 Métriques de contenu</h4>
                   <div style={{ background: 'rgba(136,170,255,0.1)', padding: '8px', borderRadius: '4px', border: '1px solid #88aaff' }}>
-                    <div style={{ fontSize: '10px' }}>
-                      <div style={{ color: '#ccc', marginBottom: '2px' }}>
-                        💬 Nombre de mots: {currentReport.contentMetrics.wordCount}
-                        <span style={{ 
-                          color: currentReport.contentMetrics.wordCount >= 1000 ? '#00ff88' : 
-                                 currentReport.contentMetrics.wordCount >= 300 ? '#ffaa00' : '#ff4444'
-                        }}>
-                          {' '}({currentReport.contentMetrics.wordCount >= 1000 ? 'Excellent' : 
-                               currentReport.contentMetrics.wordCount >= 300 ? 'Bon' : 'Trop court'})
-                        </span>
-                      </div>
-                      <div style={{ color: '#ccc', marginBottom: '2px' }}>
-                        📊 Structure: H1({currentReport.contentMetrics.headings.h1}) H2({currentReport.contentMetrics.headings.h2}) H3({currentReport.contentMetrics.headings.h3})
-                      </div>
-                      <div style={{ color: '#ccc', marginBottom: '2px' }}>
-                        🔗 Liens: {currentReport.contentMetrics.links.total} total ({currentReport.contentMetrics.links.internal} internes, {currentReport.contentMetrics.links.external} externes)
-                      </div>
-                      <div style={{ color: '#ccc', fontSize: '8px' }}>
+                    <div style={{ fontSize: '10px', display: 'flex', flexDirection: 'column' }}>
+                      <Tooltip content={generateTooltipContent('title')}>
+                        <div style={{ color: '#ccc', marginBottom: '4px', cursor: 'help', display: 'block' }}>
+                          📝 Titre: {getRealSeoData().titleLength} chars ({getRealSeoData().titleLength >= 50 && getRealSeoData().titleLength <= 60 ? 'Optimal' : getRealSeoData().titleLength < 50 ? 'Trop court' : 'Trop long'})
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('metaDescription')}>
+                        <div style={{ color: '#ccc', marginBottom: '4px', cursor: 'help', display: 'block' }}>
+                          📄 Description: {getRealSeoData().descriptionLength} chars ({getRealSeoData().descriptionLength >= 150 && getRealSeoData().descriptionLength <= 160 ? 'Optimal' : 'À ajuster'})
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('wordCount')}>
+                        <div style={{ color: '#ccc', marginBottom: '4px', cursor: 'help', display: 'block' }}>
+                          💬 Nombre de mots: {currentReport.contentMetrics.wordCount}
+                          <span style={{ 
+                            color: currentReport.contentMetrics.wordCount >= 1000 ? '#00ff88' : 
+                                   currentReport.contentMetrics.wordCount >= 300 ? '#ffaa00' : '#ff4444'
+                          }}>
+                            {' '}({currentReport.contentMetrics.wordCount >= 1000 ? 'Excellent' : 
+                                 currentReport.contentMetrics.wordCount >= 300 ? 'Bon' : 'Trop court'})
+                          </span>
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('structure')}>
+                        <div style={{ color: '#ccc', marginBottom: '4px', cursor: 'help', display: 'block' }}>
+                          📊 Structure: H1({currentReport.contentMetrics.headings.h1}) H2({currentReport.contentMetrics.headings.h2}) H3({currentReport.contentMetrics.headings.h3}) (Optimal)
+                        </div>
+                      </Tooltip>
+                      <Tooltip content={generateTooltipContent('links')}>
+                        <div style={{ color: '#ccc', marginBottom: '4px', cursor: 'help', display: 'block' }}>
+                          🔗 Liens: {currentReport.contentMetrics.links.total} total ({currentReport.contentMetrics.links.internal} internes, {currentReport.contentMetrics.links.external} externes) (Optimal)
+                        </div>
+                      </Tooltip>
+                      <div style={{ color: '#ccc', fontSize: '8px', display: 'block' }}>
                         📅 Analysé le: {new Date(currentReport.contentMetrics.lastAnalyzed).toLocaleString('fr-FR')}
                       </div>
                     </div>
@@ -1676,10 +2026,18 @@ export default function SeoDebugPanel({
               {/* Validations réussies */}
               <div style={{ marginBottom: '10px' }}>
                 <h4 style={{ color: '#00ff88', fontSize: '12px', marginBottom: '5px' }}>✅ Validations réussies ({currentReport.validation.validations.length})</h4>
-                <div style={{ background: 'rgba(0,255,136,0.1)', padding: '8px', borderRadius: '4px', border: '1px solid #00ff88', maxHeight: '150px', overflowY: 'auto' }}>
-                  {currentReport.validation.validations.map((validation, i) => (
-                    <div key={i} style={{ color: '#00ff88', marginBottom: '2px' }}>{validation}</div>
-                  ))}
+                <div style={{ background: 'rgba(0,255,136,0.1)', padding: '8px', borderRadius: '4px', border: '1px solid #00ff88' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    {currentReport.validation.validations.map((validation, i) => (
+                      <Tooltip 
+                        key={i}
+                        content={generateTooltipContent('validation', validation)}
+                        position="auto"
+                      >
+                        <div style={{ color: '#00ff88', marginBottom: '4px', cursor: 'help', lineHeight: '1.4', display: 'block' }}>{validation}</div>
+                      </Tooltip>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
