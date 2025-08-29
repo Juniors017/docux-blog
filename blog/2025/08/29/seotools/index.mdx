@@ -52,9 +52,9 @@ serie: "seo docusaurus"
 
 ## Vue d'ensemble
 
-Cet article présente l'architecture SEO avancée développée pour Docux Blog, une solution complète qui transforme la gestion du référencement sur Docusaurus. Découvrez comment nous avons créé un système intelligent qui automatise les métadonnées, valide le SEO en temps réel et optimise pour Google Rich Results.
+Cet article présente l'architecture SEO avancée développée pour DocuxLab Nlog, une solution complète qui transforme la gestion du référencement sur Docusaurus. Découvrez comment nous avons créé un système intelligent qui automatise les métadonnées, valide le SEO en temps réel et optimise pour Google Rich Results.
 
-L'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagnement de **GitHub Copilot**, est maintenant séparée en deux composants distincts pour une meilleure maintenabilité et séparation des responsabilités. Cette version 2.1.4 introduit une **révolution dans la gestion des schémas multiples** avec configuration explicite via frontmatter :
+L'architecture SEO de DocuxLab Blog, développée par **Docux** avec l'accompagnement de **GitHub Copilot**, est maintenant séparée en deux composants distincts pour une meilleure maintenabilité et séparation des responsabilités. Cette version 2.1.4 introduit une **révolution dans la gestion des schémas multiples** avec configuration explicite via frontmatter :
 
 ### 🎯 Composant SEO Principal (`src/components/Seo/index.jsx`)
 
@@ -544,9 +544,9 @@ export default function PageMultiLangue({ langue = 'fr' }) {
     <Layout>
       <Head>
         <html lang={langue} />
-        <link rel="alternate" hrefLang="fr" href="/fr/ma-page" />
+  <link rel="alternate" hrefLang="fr" href="/fr/page-exemple" />
         <link rel="alternate" hrefLang="en" href="/en/my-page" />
-        <link rel="alternate" hrefLang="x-default" href="/ma-page" />
+  <link rel="alternate" hrefLang="x-default" href="/page-exemple" />
       </Head>
       <Seo />
       
@@ -853,10 +853,10 @@ src/
 
 ```yaml
 ---
-title: "Mon Article"
+title: "Article Exemple"
 description: "Description de l'article"
 authors: [docux, kiki]  # Références vers authors.js
-image: "/img/mon-image.jpg"
+image: "/img/image-exemple.jpg"
 keywords: [docusaurus, seo, tutorial]
 category: "Tutoriels"
 ---
@@ -866,7 +866,7 @@ category: "Tutoriels"
 
 ```yaml
 ---
-title: "Ma Page"
+title: "Page Exemple"
 description: "Description de la page"
 author: docux
 image: "/img/page-image.jpg"
