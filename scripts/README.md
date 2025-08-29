@@ -424,31 +424,9 @@ const templates = {
 3. **Tester** :
 ```bash
 node scripts/create-article.js
-# Vérifier que le nouveau type apparaît dans la liste (option 12)
 ```
 
-4. **Documenter** : Ajouter dans ce README et l'article de blog
 
-### Standards de Code
-- Utiliser `const` pour les constantes
-- Validation des entrées utilisateur
-- Messages d'erreur clairs et actionnables
-- Support des chemins Windows et Unix
-
-## 📖 Documentation Complémentaire
-
-- [Guide SEO Complet](../blog/2025/08/29/seotools/index.mdx)
-- [Documentation Component SEO](../src/components/Seo/README.md)
-- [Workflow de Création](../docs/CREATION-WORKFLOW.md)
-- [Snippets VS Code](../.vscode/docusaurus-snippets.json)
-
-## 📄 Licence
-
-Ces scripts sont distribués sous la même licence que le projet Docux Blog.
-
----
-
-*Scripts développés par **Docux** - Version 2.1.4+ - Dernière mise à jour : 29 août 2025*
 
 ## 📊 Statistiques
 

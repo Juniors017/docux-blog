@@ -70,7 +70,7 @@ export default function SeriesArticlesPage() {
                         textAlign="center"
                       >
                         <h3>{post.title}</h3>
-                        <p>{post.description}</p>
+                        <p style={{ fontSize: "12px" }}>{post.description}</p>
                       </CardBody>
                     </Card>
                   </Link>

@@ -270,7 +270,7 @@ questionCount: 10
 
 ### ✅ Flexibilité Totale
 - **3 workflows** selon le contexte (interactif, rapide, snippets)
-- **7 types d'articles** supportés
+- **11 types d'articles** supportés
 - **Personnalisation** facile des templates
 
 ### ✅ Intégration Native
@@ -278,6 +278,38 @@ questionCount: 10
 - **Scripts Node.js** sans dépendances externes
 - **Compatible** avec l'écosystème Docusaurus
 
+## 🎯 Cas d'Usage Étendus
+
+- **Pages statiques** : Accueil, landing pages (WebPage)
+- **Pages institutionnelles** : À propos, remerciements (AboutPage)
+- **Collections spécialisées** : Listes d'articles de série (ItemListPage)
+- **Documentation complète** : Support de tous les types Docusaurus
+
+## 🐛 Dépannage
+
+### Erreurs Communes
+
+**"Directory already exists"**
+```bash
+# Solution : Utiliser un slug différent ou supprimer le dossier existant
+rm -rf blog/2025/08/29/mon-article/
+```
+
+**"Invalid schema type"**
+```bash
+# Types valides : BlogPosting, TechArticle, HowTo, FAQPage, CollectionPage, 
+# SoftwareApplication, Course, WebPage, AboutPage, ItemListPage
+node scripts/quick-article.js TechArticle "Mon Guide"
+```
+
+**"Permission denied"**
+```bash
+# Solution : Vérifier les permissions d'écriture
+chmod 755 blog/
+```
+
+### Debug Mode
+Décommentez les lignes `console.log` dans les scripts pour activer le mode debug détaillé.
 
 ## 🛠️ Installation et Configuration
 
@@ -353,6 +385,4 @@ node scripts/create-article.js
 # Premier article optimisé SEO en 2 minutes ! 🚀
 ```
 :::
-
----
 
