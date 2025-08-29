@@ -84,7 +84,7 @@ export function SeriesCards() {
             return (
               <div key={seriesName} className="col col--4 margin-bottom--lg">
                 {/* Lien vers la page des articles de la série */}
-                <Link href={`/docux-blog/series/series-articles?name=${seriesSlug}`}>
+                <Link href={`/series/series-articles?name=${seriesSlug}`}>
                   <Card>
                     <CardImage cardImageUrl={`${image}`} />
                     <CardBody
@@ -105,7 +105,7 @@ export function SeriesCards() {
         <div className="text--center margin-vert--xl">
           <h2>Aucune série d'articles trouvée</h2>
           <p>
-            Les séries d'articles sont en cours de création. 
+            Les séries d'articles sont en cours de création.
             Revenez bientôt pour découvrir nos collections thématiques !
           </p>
         </div>
