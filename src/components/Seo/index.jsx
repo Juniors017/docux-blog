@@ -148,17 +148,62 @@ export default function Seo() {
   /**
    * Fonction de mapping type de page → Schema.org
    * 
-   * Retourne le type Schema.org approprié et une catégorie lisible
-   * pour le debug panel.
+   * Ordre de priorité :
+   * 1. frontMatter.schemaType (explicite - priorité absolue)
+   * 2. Détection intelligente par contenu
+   * 3. Détection par URL/contexte (fallback)
    */
   const getPageType = () => {
-    if (isBlogPost) return { type: 'BlogPosting', category: 'Article de blog' };
-    if (isBlogListPage) return { type: 'CollectionPage', category: 'Index des articles' };
-    if (isSeriesPage) return { type: 'Series', category: 'Série d\'articles' };
-    if (isRepositoryPage) return { type: 'WebPage', category: 'Page repository' };
-    if (isHomePage) return { type: 'WebSite', category: 'Page d\'accueil' };
-    if (isThanksPage) return { type: 'WebPage', category: 'Page de remerciements' };
-    return { type: 'WebPage', category: 'Page générale' }; // Fallback par défaut
+    // � PRIORITÉ 1: Configuration explicite via frontMatter
+    const customSchemaType = (blogPostData?.frontMatter?.schemaType || pageMetadata?.frontMatter?.schemaType);
+    if (customSchemaType) {
+      return { type: customSchemaType, category: `${customSchemaType} (configuré)` };
+    }
+
+    // 🧠 PRIORITÉ 2: Détection intelligente par contenu
+    const title = (blogPostData?.title || pageMetadata?.title || '').toLowerCase();
+    const tags = blogPostData?.tags || pageMetadata?.tags || [];
+    const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+
+    // Détection de tutoriels/guides
+    if (title.includes('comment ') || title.includes('guide ') || title.includes('tutorial') || title.includes('tuto') || frontMatter.estimatedTime) {
+      return { type: 'HowTo', category: 'Tutoriel (auto-détecté)' };
+    }
+
+    // Détection d'articles techniques
+    const techTags = ['react', 'javascript', 'typescript', 'node', 'api', 'code', 'programming'];
+    if (tags.some(tag => techTags.includes(tag.label?.toLowerCase() || tag.toLowerCase())) || frontMatter.dependencies || frontMatter.programmingLanguage) {
+      return { type: 'TechArticle', category: 'Article technique (auto-détecté)' };
+    }
+
+    // Détection d'applications/projets
+    if (frontMatter.applicationCategory || frontMatter.operatingSystem || frontMatter.downloadUrl) {
+      return { type: 'SoftwareApplication', category: 'Application (auto-détectée)' };
+    }
+
+    // Détection de formations/cours
+    if (frontMatter.provider || frontMatter.courseMode || frontMatter.teaches) {
+      return { type: 'Course', category: 'Formation (auto-détectée)' };
+    }
+
+    // Détection de profils/personnes
+    if (frontMatter.jobTitle || frontMatter.worksFor || frontMatter.knowsAbout) {
+      return { type: 'Person', category: 'Profil (auto-détecté)' };
+    }
+
+    // Détection FAQ
+    if (frontMatter.mainEntity || title.includes('faq') || title.includes('questions')) {
+      return { type: 'FAQPage', category: 'FAQ (auto-détectée)' };
+    }
+
+    // 🔧 PRIORITÉ 3: Détection par contexte/URL (fallback minimal)
+    if (isBlogPost) return { type: 'BlogPosting', category: 'Article de blog (contexte)' };
+    if (isBlogListPage) return { type: 'CollectionPage', category: 'Index des articles (contexte)' };
+    if (isSeriesPage) return { type: 'Series', category: 'Série d\'articles (contexte)' };
+    if (isHomePage) return { type: 'WebSite', category: 'Page d\'accueil (contexte)' };
+    
+    // 📄 Fallback ultime pour toutes les autres pages
+    return { type: 'WebPage', category: 'Page générale (fallback)' };
   };
 
   const pageInfo = getPageType();
@@ -441,6 +486,182 @@ export default function Seo() {
           // 'https://twitter.com/docux',
           // 'https://linkedin.com/in/docux'
         ]
+      };
+    }
+
+    /**
+     * 🆕 Enrichissement pour les tutoriels (HowTo)
+     * 
+     * Structure adaptée aux guides étape par étape
+     */
+    if (pageInfo.type === 'HowTo' && (blogPostData || pageMetadata)) {
+      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+      
+      return {
+        ...baseStructure,
+        '@type': 'HowTo',
+        
+        // Temps estimé et difficulté
+        totalTime: frontMatter.estimatedTime || 'PT30M', // Format ISO 8601
+        difficulty: frontMatter.difficulty || 'Beginner',
+        
+        // Outils nécessaires
+        ...(frontMatter.tools && {
+          tool: frontMatter.tools.map(tool => ({
+            '@type': 'HowToTool',
+            name: tool
+          }))
+        }),
+        
+        // Matériaux requis
+        ...(frontMatter.supply && {
+          supply: frontMatter.supply.map(item => ({
+            '@type': 'HowToSupply',
+            name: item
+          }))
+        }),
+        
+        // Instructions (si définies dans le frontMatter)
+        ...(frontMatter.steps && {
+          step: frontMatter.steps.map((step, index) => ({
+            '@type': 'HowToStep',
+            position: index + 1,
+            name: step.name || `Étape ${index + 1}`,
+            text: step.text,
+            ...(step.image && { image: step.image })
+          }))
+        })
+      };
+    }
+
+    /**
+     * 🆕 Enrichissement pour les articles techniques (TechArticle)
+     * 
+     * Structure optimisée pour le contenu technique
+     */
+    if (pageInfo.type === 'TechArticle' && (blogPostData || pageMetadata)) {
+      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+      
+      return {
+        ...baseStructure,
+        '@type': 'TechArticle',
+        
+        // Niveau de compétence requis
+        proficiencyLevel: frontMatter.proficiencyLevel || 'Beginner',
+        
+        // Dépendances techniques
+        ...(frontMatter.dependencies && {
+          dependencies: Array.isArray(frontMatter.dependencies) 
+            ? frontMatter.dependencies.join(', ')
+            : frontMatter.dependencies
+        }),
+        
+        // Version du logiciel/framework
+        ...(frontMatter.version && {
+          softwareVersion: frontMatter.version
+        }),
+        
+        // Langage de programmation principal
+        ...(frontMatter.programmingLanguage && {
+          programmingLanguage: frontMatter.programmingLanguage
+        }),
+        
+        // Code source associé
+        ...(frontMatter.codeRepository && {
+          codeRepository: frontMatter.codeRepository
+        })
+      };
+    }
+
+    /**
+     * 🆕 Enrichissement pour les applications logicielles (SoftwareApplication)
+     * 
+     * Structure pour présenter des projets/applications
+     */
+    if (pageInfo.type === 'SoftwareApplication' && (blogPostData || pageMetadata)) {
+      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+      
+      return {
+        ...baseStructure,
+        '@type': 'SoftwareApplication',
+        
+        // Catégorie d'application
+        applicationCategory: frontMatter.applicationCategory || 'WebApplication',
+        
+        // Systèmes d'exploitation supportés
+        operatingSystem: frontMatter.operatingSystem || 'Web Browser',
+        
+        // Langages de programmation
+        programmingLanguage: frontMatter.programmingLanguage || 'JavaScript',
+        
+        // Version du logiciel
+        softwareVersion: frontMatter.version || '1.0.0',
+        
+        // Licence
+        ...(frontMatter.license && {
+          license: frontMatter.license
+        }),
+        
+        // URL de téléchargement/démo
+        ...(frontMatter.downloadUrl && {
+          downloadUrl: frontMatter.downloadUrl
+        }),
+        
+        // Code source
+        ...(frontMatter.codeRepository && {
+          codeRepository: frontMatter.codeRepository
+        }),
+        
+        // Captures d'écran
+        ...(frontMatter.screenshots && {
+          screenshot: frontMatter.screenshots.map(url => ({
+            '@type': 'ImageObject',
+            url: url,
+            contentUrl: url
+          }))
+        })
+      };
+    }
+
+    /**
+     * 🆕 Enrichissement pour les cours/formations (Course)
+     * 
+     * Structure pour le contenu éducatif
+     */
+    if (pageInfo.type === 'Course' && (blogPostData || pageMetadata)) {
+      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+      
+      return {
+        ...baseStructure,
+        '@type': 'Course',
+        
+        // Fournisseur du cours
+        provider: {
+          '@type': 'Organization',
+          name: frontMatter.provider || siteConfig.title,
+          url: siteConfig.url
+        },
+        
+        // Mode de diffusion
+        courseMode: frontMatter.courseMode || 'online',
+        
+        // Prérequis
+        ...(frontMatter.coursePrerequisites && {
+          coursePrerequisites: frontMatter.coursePrerequisites
+        }),
+        
+        // Durée
+        ...(frontMatter.timeRequired && {
+          timeRequired: frontMatter.timeRequired
+        }),
+        
+        // Niveau
+        educationalLevel: frontMatter.educationalLevel || 'Beginner',
+        
+        // Compétences acquises
+        ...(frontMatter.teaches && {
+          teaches: frontMatter.teaches
+        })
       };
     }
 

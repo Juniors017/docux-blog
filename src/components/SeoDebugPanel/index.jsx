@@ -34,6 +34,61 @@ export default function SeoDebugPanel({
   const [activeTab, setActiveTab] = React.useState('overview');    // Onglet actif
   const [showReport, setShowReport] = React.useState(false);       // Affichage du rapport
   const [currentReport, setCurrentReport] = React.useState(null);  // Rapport généré
+  const [contentMetrics, setContentMetrics] = React.useState(null); // Métriques de contenu
+
+  /**
+   * ANALYSE DU CONTENU DE LA PAGE
+   * 
+   * Extrait les métriques de contenu en temps réel :
+   * - Nombre de mots
+   * - Structure des titres (H1, H2, H3)
+   * - Nombre de liens
+   * - Images présentes
+   */
+  const analyzePageContent = React.useCallback(() => {
+    try {
+      const content = document.body;
+      if (!content) return null;
+
+      // Compter les mots dans le contenu principal
+      const textContent = content.innerText || content.textContent || '';
+      const wordCount = textContent.trim().split(/\s+/).filter(word => word.length > 0).length;
+
+      // Analyser la structure des titres
+      const h1Count = content.querySelectorAll('h1').length;
+      const h2Count = content.querySelectorAll('h2').length;
+      const h3Count = content.querySelectorAll('h3').length;
+
+      // Compter les liens
+      const internalLinks = content.querySelectorAll('a[href^="/"], a[href^="' + window.location.origin + '"]').length;
+      const externalLinks = content.querySelectorAll('a[href^="http"]:not([href^="' + window.location.origin + '"])').length;
+      const totalLinks = internalLinks + externalLinks;
+
+      // Compter les images
+      const images = content.querySelectorAll('img').length;
+
+      return {
+        wordCount,
+        headings: { h1: h1Count, h2: h2Count, h3: h3Count },
+        links: { internal: internalLinks, external: externalLinks, total: totalLinks },
+        images,
+        lastAnalyzed: new Date().toISOString()
+      };
+    } catch (error) {
+      console.warn('Erreur lors de l\'analyse du contenu:', error);
+      return null;
+    }
+  }, []);
+
+  // Analyser le contenu au montage et lors des changements de page
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      const metrics = analyzePageContent();
+      setContentMetrics(metrics);
+    }, 1000); // Délai pour laisser le contenu se charger
+
+    return () => clearTimeout(timer);
+  }, [location.pathname, analyzePageContent]);
 
   /**
    * FONCTION DE VALIDATION JSON-LD
@@ -148,35 +203,222 @@ export default function SeoDebugPanel({
   };
 
   /**
-   * CALCUL DU SCORE SEO INTELLIGENT
+   * CALCUL DU SCORE SEO INTELLIGENT AVANCÉ
    * 
-   * Algorithme développé par Docux pour noter la qualité SEO :
-   * - Chaque validation réussie = +points
-   * - Chaque avertissement = -10% du score
-   * - Chaque erreur = -20% du score
-   * - Score final entre 0 et 100 avec code couleur
+   * Algorithme développé par Docux pour noter la qualité SEO globale :
+   * - Validation JSON-LD Schema.org (40%)
+   * - Métadonnées frontMatter (25%)
+   * - Contenu et structure (20%)
+   * - SEO technique (10%)
+   * - Expérience utilisateur (5%)
+   * Score final entre 0 et 100 avec code couleur
    */
   const checkSeoScore = () => {
     const validation = validateJsonLd(jsonLd);
+    
+    // === 1. SCORE JSON-LD SCHEMA.ORG (40%) ===
     const totalChecks = validation.issues.length + validation.warnings.length + validation.validations.length;
     const validCount = validation.validations.length;
     const warningPenalty = validation.warnings.length * 0.1;
     const errorPenalty = validation.issues.length * 0.3;
     
-    // Formule de calcul optimisée
-    const score = Math.max(0, Math.min(100, 
-      ((validCount / totalChecks) * 100) - 
+    const jsonLdScore = Math.max(0, Math.min(100, 
+      ((validCount / Math.max(totalChecks, 1)) * 100) - 
       (warningPenalty * 10) - 
       (errorPenalty * 20)
     ));
+
+    // === 2. SCORE MÉTADONNÉES FRONTMATTER (25%) ===
+    let frontMatterScore = 0;
+    let frontMatterChecks = 0;
+    
+    // Recherche flexible du frontMatter dans différentes structures possibles
+    let fm = null;
+    if (blogPostData?.frontMatter) {
+      fm = blogPostData.frontMatter;
+    } else if (pageMetadata?.frontMatter) {
+      fm = pageMetadata.frontMatter;
+    } else if (blogPostData) {
+      // Parfois le frontMatter est directement dans blogPostData
+      fm = blogPostData;
+    } else if (pageMetadata) {
+      // Parfois le frontMatter est directement dans pageMetadata
+      fm = pageMetadata;
+    }
+    
+    if (fm) {
+      // Image présente (+20 points sur 100)
+      frontMatterChecks += 20;
+      if (fm.image) { frontMatterScore += 20; }
+      
+      // Keywords présents (+15 points sur 100)
+      frontMatterChecks += 15;
+      if (fm.keywords && fm.keywords.length > 0) { frontMatterScore += 15; }
+      
+      // Auteur défini (+15 points sur 100)  
+      frontMatterChecks += 15;
+      if (fm.author || fm.authors) { frontMatterScore += 15; }
+      
+      // Date présente (+10 points sur 100)
+      frontMatterChecks += 10;
+      if (fm.date) { frontMatterScore += 10; }
+      
+      // Catégorie définie (+10 points sur 100)
+      frontMatterChecks += 10;
+      if (fm.category || fm.categories) { frontMatterScore += 10; }
+      
+      // Tags présents (+10 points sur 100)
+      frontMatterChecks += 10;
+      if (fm.tags && fm.tags.length > 0) { frontMatterScore += 10; }
+      
+      // Description personnalisée (+20 points sur 100)
+      frontMatterChecks += 20;
+      if (fm.description) { frontMatterScore += 20; }
+    } else {
+      // Pas de frontMatter = score neutre de 50%
+      frontMatterScore = 50;
+      frontMatterChecks = 100;
+    }
+    
+    const frontMatterPercent = (frontMatterScore / Math.max(frontMatterChecks, 1)) * 100;
+
+    // === 3. SCORE CONTENU ET STRUCTURE (20%) ===
+    let contentScore = 50; // Score de base
+    
+    // Analyse du titre (priorité haute)
+    const title = jsonLd.headline || jsonLd.name || blogPostData?.title || pageMetadata?.title;
+    if (title) {
+      const titleLength = title.length;
+      if (titleLength >= 30 && titleLength <= 60) contentScore += 20; // Longueur optimale
+      else if (titleLength >= 20 && titleLength <= 80) contentScore += 10; // Acceptable
+    }
+    
+    // Analyse de la description
+    const description = jsonLd.description || blogPostData?.frontMatter?.description || pageMetadata?.description;
+    if (description) {
+      const descLength = description.length;
+      if (descLength >= 120 && descLength <= 160) contentScore += 15; // Longueur optimale
+      else if (descLength >= 80 && descLength <= 200) contentScore += 8; // Acceptable
+    }
+    
+    // Présence d'image
+    if (jsonLd.image || blogPostData?.frontMatter?.image || pageMetadata?.frontMatter?.image) {
+      contentScore += 15;
+    }
+    
+    // Analyse du contenu de la page (si disponible)
+    if (contentMetrics) {
+      // Nombre de mots approprié
+      if (contentMetrics.wordCount >= 300) {
+        if (contentMetrics.wordCount >= 1000) contentScore += 10; // Contenu riche
+        else contentScore += 5; // Contenu correct
+      }
+      
+      // Structure des titres
+      if (contentMetrics.headings.h1 === 1) contentScore += 5; // Un seul H1 (optimal)
+      if (contentMetrics.headings.h2 >= 2) contentScore += 5; // Structure H2
+      if (contentMetrics.headings.h3 >= 1) contentScore += 3; // Structure H3
+      
+      // Présence de liens
+      if (contentMetrics.links.total >= 3) {
+        if (contentMetrics.links.internal >= 2) contentScore += 5; // Liens internes
+        if (contentMetrics.links.external >= 1) contentScore += 3; // Liens externes
+      }
+    }
+    
+    // === 4. SCORE SEO TECHNIQUE (10%) ===
+    let technicalScore = 60; // Score de base
+    
+    // URL canonique
+    if (jsonLd.url) technicalScore += 20;
+    
+    // Langue spécifiée
+    if (jsonLd.inLanguage) technicalScore += 10;
+    
+    // Publisher pour articles
+    if (jsonLd['@type'] === 'BlogPosting' && jsonLd.publisher) technicalScore += 10;
+
+    // === 5. SCORE EXPÉRIENCE UTILISATEUR (5%) ===
+    let uxScore = 70; // Score de base neutre
+    
+    // Auteur identifié (crédibilité)
+    if (detections?.hasAuthor || jsonLd.author) uxScore += 15;
+    
+    // Données structurées complètes
+    if (detections?.hasBlogData || Object.keys(jsonLd).length > 5) uxScore += 15;
+
+    // === CALCUL DU SCORE FINAL PONDÉRÉ ===
+    const finalScore = Math.round(
+      (jsonLdScore * 0.40) +           // 40% JSON-LD
+      (frontMatterPercent * 0.25) +    // 25% FrontMatter  
+      (Math.min(contentScore, 100) * 0.20) +  // 20% Contenu
+      (Math.min(technicalScore, 100) * 0.10) + // 10% Technique
+      (Math.min(uxScore, 100) * 0.05)         // 5% UX
+    );
     
     // Attribution de couleur selon le score (style Google PageSpeed)
     let scoreColor = '#ff4444';      // Rouge pour < 60%
-    if (score >= 80) scoreColor = '#00ff88';      // Vert pour >= 80%
-    else if (score >= 60) scoreColor = '#ffaa00'; // Orange pour 60-79%
+    if (finalScore >= 80) scoreColor = '#00ff88';      // Vert pour >= 80%
+    else if (finalScore >= 60) scoreColor = '#ffaa00'; // Orange pour 60-79%
     
-    return { score: Math.round(score), color: scoreColor, validation };
+    return { 
+      score: Math.max(0, Math.min(100, finalScore)), 
+      color: scoreColor, 
+      validation,
+      breakdown: {
+        jsonLd: Math.round(jsonLdScore),
+        frontMatter: Math.round(frontMatterPercent),
+        content: Math.min(contentScore, 100),
+        technical: Math.min(technicalScore, 100),
+        ux: Math.min(uxScore, 100)
+      }
+    };
   };
+
+  /**
+   * CONSTRUCTION DE L'URL DE PRODUCTION
+   * 
+   * Construit l'URL de production pour les outils externes (Google Rich Results Test)
+   * en utilisant la configuration du site au lieu de localhost.
+   */
+  const getProductionUrl = React.useCallback(() => {
+    try {
+      // URL de base du site (configurée dans docusaurus.config.js)
+      const baseUrl = siteConfig?.url || '';
+      const basePath = siteConfig?.baseUrl || '/';
+      
+      // Chemin actuel (sans le domaine localhost)
+      let currentPath = location.pathname;
+      
+      // Construction de l'URL complète de production
+      if (baseUrl) {
+        // Nettoyage de l'URL de base
+        const cleanBaseUrl = baseUrl.replace(/\/$/, ''); // Retirer le slash final
+        
+        // Si basePath est différent de "/" et que le currentPath commence par basePath,
+        // alors le pathname contient déjà le bon chemin complet
+        if (basePath !== '/' && currentPath.startsWith(basePath)) {
+          // Le pathname contient déjà le baseUrl (ex: /docux-blog/blog/article)
+          return `${cleanBaseUrl}${currentPath}`;
+        } else if (basePath !== '/') {
+          // Le pathname ne contient pas le baseUrl, on l'ajoute
+          const cleanBasePath = basePath.replace(/\/$/, '');
+          const cleanPath = currentPath.startsWith('/') ? currentPath : '/' + currentPath;
+          return `${cleanBaseUrl}${cleanBasePath}${cleanPath}`;
+        } else {
+          // baseUrl est "/", utilisation directe du pathname
+          const cleanPath = currentPath.startsWith('/') ? currentPath : '/' + currentPath;
+          return `${cleanBaseUrl}${cleanPath}`;
+        }
+      }
+      
+      // Fallback sur l'URL locale si pas de configuration
+      return window.location.href;
+    } catch (error) {
+      console.warn('Erreur lors de la construction de l\'URL de production:', error);
+      return window.location.href;
+    }
+  }, [siteConfig, location.pathname]);
 
   /**
    * GÉNÉRATION DE RAPPORT SEO COMPLET
@@ -188,13 +430,48 @@ export default function SeoDebugPanel({
    * - Timestamp et URL
    */
   const generateSeoReport = () => {
+    const seoScore = checkSeoScore();
+    
     const report = {
       url: window.location.href,                    // URL de la page analysée
       pageType: pageInfo.type,                      // Type Schema.org détecté
       timestamp: new Date().toISOString(),          // Horodatage du rapport
-      validation: validateJsonLd(jsonLd),           // Résultats de validation
+      validation: seoScore.validation,              // Résultats de validation
+      seoScore: seoScore.score,                     // Score SEO global
+      scoreBreakdown: seoScore.breakdown,           // Répartition détaillée du score
       jsonLd: jsonLd,                              // Structure JSON-LD complète
       hasStructuredData: true,                      // Confirmation de présence des données
+      contentMetrics: contentMetrics,               // Métriques de contenu analysées
+      frontMatterData: {                           // Données du frontMatter
+        hasImage: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.image);
+        })(),
+        hasKeywords: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.keywords && fm.keywords.length > 0);
+        })(),
+        hasAuthor: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.author || fm?.authors);
+        })(),
+        hasDate: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.date);
+        })(),
+        hasCategory: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.category || fm?.categories);
+        })(),
+        hasTags: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.tags && fm.tags.length > 0);
+        })(),
+        hasDescription: (() => {
+          const fm = blogPostData?.frontMatter || pageMetadata?.frontMatter || blogPostData || pageMetadata;
+          return !!(fm?.description);
+        })()
+      },
       recommendations: []                           // Recommandations d'amélioration
     };
 
@@ -202,22 +479,44 @@ export default function SeoDebugPanel({
     
     // Recommandations critiques (erreurs bloquantes)
     if (report.validation.issues.length > 0) {
-      report.recommendations.push('🔧 Corriger les erreurs critiques pour améliorer le référencement');
+      report.recommendations.push('🔧 Corriger les erreurs critiques JSON-LD pour améliorer le référencement');
     }
     
     // Recommandations d'optimisation (avertissements)
     if (report.validation.warnings.length > 0) {
-      report.recommendations.push('⚡ Ajouter les métadonnées manquantes pour maximiser les Rich Results');
+      report.recommendations.push('⚡ Ajouter les métadonnées Schema.org manquantes pour maximiser les Rich Results');
     }
     
-    // Recommandations spécifiques aux articles
-    if (detections.isBlogPost && !blogPostData?.frontMatter?.image) {
-      report.recommendations.push('🖼️ Ajouter une image featured à l\'article pour améliorer l\'engagement');
+    // Recommandations FrontMatter
+    if (!report.frontMatterData.hasImage) {
+      report.recommendations.push('🖼️ Ajouter une image dans le frontMatter pour améliorer l\'engagement social');
+    }
+    
+    if (!report.frontMatterData.hasKeywords) {
+      report.recommendations.push('🏷️ Ajouter des mots-clés dans le frontMatter pour améliorer la catégorisation');
+    }
+    
+    if (!report.frontMatterData.hasAuthor && detections.isBlogPost) {
+      report.recommendations.push('👤 Définir un auteur dans le frontMatter pour renforcer la crédibilité');
+    }
+    
+    if (!report.frontMatterData.hasCategory) {
+      report.recommendations.push('🎯 Ajouter une catégorie dans le frontMatter pour organiser le contenu');
     }
     
     // Recommandations de contenu
-    if (!jsonLd.keywords || jsonLd.keywords.length === 0) {
-      report.recommendations.push('🏷️ Ajouter des mots-clés pour améliorer la catégorisation et la découvrabilité');
+    if (contentMetrics) {
+      if (contentMetrics.wordCount < 300) {
+        report.recommendations.push('💬 Enrichir le contenu (actuellement ' + contentMetrics.wordCount + ' mots, recommandé: 300+)');
+      }
+      
+      if (contentMetrics.headings.h1 !== 1) {
+        report.recommendations.push('📊 Optimiser la structure des titres (utiliser un seul H1)');
+      }
+      
+      if (contentMetrics.links.total < 3) {
+        report.recommendations.push('🔗 Ajouter plus de liens (internes et externes) pour améliorer le maillage');
+      }
     }
 
     return report;
@@ -486,9 +785,9 @@ export default function SeoDebugPanel({
             {/* Onglets de navigation */}
             <div style={{ display: 'flex', gap: '4px' }}>
               {[
-                { id: 'overview', label: '📊 Vue', icon: '📊' },
-                { id: 'validation', label: '✅ Valid', icon: '✅' },
-                { id: 'performance', label: '⚡ Perf', icon: '⚡' }
+                { id: 'overview', label: 'Vue', icon: '📊' },
+                { id: 'validation', label: 'Valid', icon: '✅' },
+                { id: 'performance', label: 'Perf', icon: '⚡' }
               ].map(tab => (
                 <button
                   key={tab.id}
@@ -609,7 +908,7 @@ export default function SeoDebugPanel({
             
             return (
               <div>
-                {/* Score SEO */}
+                {/* Score SEO Global */}
                 <div style={{ 
                   marginBottom: '8px', 
                   padding: '6px', 
@@ -617,12 +916,182 @@ export default function SeoDebugPanel({
                   borderRadius: '4px',
                   textAlign: 'center'
                 }}>
-                  <div style={{ fontSize: '11px', color: '#ffaa00', marginBottom: '2px' }}>Score SEO</div>
+                  <div style={{ fontSize: '11px', color: '#ffaa00', marginBottom: '2px' }}>Score SEO Global</div>
                   <div style={{ fontSize: '20px', color: seoScore.color, fontWeight: 'bold' }}>
                     {seoScore.score}%
                   </div>
                   <div style={{ fontSize: '8px', color: '#ccc' }}>
                     {seoScore.score >= 80 ? 'Excellent' : seoScore.score >= 60 ? 'Bon' : 'À améliorer'}
+                  </div>
+                </div>
+
+                {/* Répartition détaillée du score */}
+                {seoScore.breakdown && (
+                  <div style={{ marginBottom: '8px' }}>
+                    <strong style={{ color: '#88aaff', fontSize: '10px' }}>📊 Détail du score :</strong>
+                    <div style={{ fontSize: '8px', marginTop: '4px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '3px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1px' }}>
+                        <span style={{ color: '#ccc' }}>Schema.org (40%)</span>
+                        <span style={{ color: seoScore.breakdown.jsonLd >= 80 ? '#00ff88' : seoScore.breakdown.jsonLd >= 60 ? '#ffaa00' : '#ff4444' }}>
+                          {seoScore.breakdown.jsonLd}%
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1px' }}>
+                        <span style={{ color: '#ccc' }}>FrontMatter (25%)</span>
+                        <span style={{ color: seoScore.breakdown.frontMatter >= 80 ? '#00ff88' : seoScore.breakdown.frontMatter >= 60 ? '#ffaa00' : '#ff4444' }}>
+                          {Math.round(seoScore.breakdown.frontMatter)}%
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1px' }}>
+                        <span style={{ color: '#ccc' }}>Contenu (20%)</span>
+                        <span style={{ color: seoScore.breakdown.content >= 80 ? '#00ff88' : seoScore.breakdown.content >= 60 ? '#ffaa00' : '#ff4444' }}>
+                          {Math.round(seoScore.breakdown.content)}%
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1px' }}>
+                        <span style={{ color: '#ccc' }}>Technique (10%)</span>
+                        <span style={{ color: seoScore.breakdown.technical >= 80 ? '#00ff88' : seoScore.breakdown.technical >= 60 ? '#ffaa00' : '#ff4444' }}>
+                          {Math.round(seoScore.breakdown.technical)}%
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: '#ccc' }}>UX (5%)</span>
+                        <span style={{ color: seoScore.breakdown.ux >= 80 ? '#00ff88' : seoScore.breakdown.ux >= 60 ? '#ffaa00' : '#ff4444' }}>
+                          {Math.round(seoScore.breakdown.ux)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Analyse FrontMatter */}
+                {(() => {
+                  // Recherche flexible du frontMatter
+                  let fm = null;
+                  if (blogPostData?.frontMatter) {
+                    fm = blogPostData.frontMatter;
+                  } else if (pageMetadata?.frontMatter) {
+                    fm = pageMetadata.frontMatter;
+                  } else if (blogPostData) {
+                    fm = blogPostData;
+                  } else if (pageMetadata) {
+                    fm = pageMetadata;
+                  }
+                  
+                  if (fm) {
+                    return (
+                      <div style={{ marginBottom: '8px' }}>
+                        <strong style={{ color: '#ffaa00', fontSize: '10px' }}>📄 Content Management System :</strong>
+                        <div style={{ fontSize: '8px', marginTop: '2px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '3px' }}>
+                          <div style={{ color: fm.image ? '#00ff88' : '#ff4444' }}>🖼️ Image: {fm.image ? '✅' : '❌'}</div>
+                          <div style={{ color: (fm.keywords && fm.keywords.length > 0) ? '#00ff88' : '#ff4444' }}>
+                            🏷️ Keywords: {(fm.keywords && fm.keywords.length > 0) ? '✅' : '❌'}
+                          </div>
+                          <div style={{ color: (fm.author || fm.authors) ? '#00ff88' : '#ff4444' }}>
+                            👤 Author: {(fm.author || fm.authors) ? '✅' : '❌'}
+                          </div>
+                          <div style={{ color: fm.date ? '#00ff88' : '#ff4444' }}>📅 Date: {fm.date ? '✅' : '❌'}</div>
+                          <div style={{ color: (fm.category || fm.categories) ? '#00ff88' : '#ffaa00' }}>
+                            🎯 Category: {fm.category || fm.categories || 'Non définie'}
+                          </div>
+                          <div style={{ color: (fm.tags && fm.tags.length > 0) ? '#00ff88' : '#ffaa00' }}>
+                            🏷️ Tags: {fm.tags ? `${fm.tags.length} tag(s)` : 'Aucun'}
+                          </div>
+                          <div style={{ color: fm.description ? '#00ff88' : '#ffaa00' }}>
+                            📝 Description: {fm.description ? '✅' : 'Auto-générée'}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div style={{ marginBottom: '8px' }}>
+                        <strong style={{ color: '#ffaa00', fontSize: '10px' }}>📄 Content Management System :</strong>
+                        <div style={{ fontSize: '8px', marginTop: '2px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '3px', color: '#ffaa00' }}>
+                          Aucun frontMatter détecté pour cette page
+                        </div>
+                      </div>
+                    );
+                  }
+                })()}
+
+                {/* Métriques de contenu */}
+                <div style={{ marginBottom: '8px' }}>
+                  <strong style={{ color: '#88aaff', fontSize: '10px' }}>📊 Métriques de contenu :</strong>
+                  <div style={{ fontSize: '8px', marginTop: '2px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '3px' }}>
+                    {(() => {
+                      const title = jsonLd.headline || jsonLd.name || blogPostData?.title || pageMetadata?.title;
+                      const description = jsonLd.description || blogPostData?.frontMatter?.description || pageMetadata?.description;
+                      
+                      return (
+                        <>
+                          <div style={{ color: '#ccc' }}>
+                            📝 Titre: {title ? `${title.length} chars` : 'Non défini'}
+                            {title && (
+                              <span style={{ 
+                                color: title.length >= 30 && title.length <= 60 ? '#00ff88' : 
+                                       title.length >= 20 && title.length <= 80 ? '#ffaa00' : '#ff4444'
+                              }}>
+                                {' '}({title.length >= 30 && title.length <= 60 ? 'Optimal' : 
+                                     title.length >= 20 && title.length <= 80 ? 'OK' : 'À ajuster'})
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ color: '#ccc' }}>
+                            📄 Description: {description ? `${description.length} chars` : 'Non définie'}
+                            {description && (
+                              <span style={{ 
+                                color: description.length >= 120 && description.length <= 160 ? '#00ff88' : 
+                                       description.length >= 80 && description.length <= 200 ? '#ffaa00' : '#ff4444'
+                              }}>
+                                {' '}({description.length >= 120 && description.length <= 160 ? 'Optimal' : 
+                                     description.length >= 80 && description.length <= 200 ? 'OK' : 'À ajuster'})
+                              </span>
+                            )}
+                          </div>
+                          {contentMetrics ? (
+                            <>
+                              <div style={{ color: '#ccc' }}>
+                                💬 Nombre de mots: {contentMetrics.wordCount}
+                                <span style={{ 
+                                  color: contentMetrics.wordCount >= 1000 ? '#00ff88' : 
+                                         contentMetrics.wordCount >= 300 ? '#ffaa00' : '#ff4444'
+                                }}>
+                                  {' '}({contentMetrics.wordCount >= 1000 ? 'Excellent' : 
+                                       contentMetrics.wordCount >= 300 ? 'Bon' : 'Trop court'})
+                                </span>
+                              </div>
+                              <div style={{ color: '#ccc' }}>
+                                📊 Structure: H1({contentMetrics.headings.h1}) H2({contentMetrics.headings.h2}) H3({contentMetrics.headings.h3})
+                                <span style={{ 
+                                  color: contentMetrics.headings.h1 === 1 && contentMetrics.headings.h2 >= 2 ? '#00ff88' : 
+                                         contentMetrics.headings.h1 <= 2 && contentMetrics.headings.h2 >= 1 ? '#ffaa00' : '#ff4444'
+                                }}>
+                                  {' '}({contentMetrics.headings.h1 === 1 && contentMetrics.headings.h2 >= 2 ? 'Optimal' : 
+                                       contentMetrics.headings.h1 <= 2 && contentMetrics.headings.h2 >= 1 ? 'OK' : 'À améliorer'})
+                                </span>
+                              </div>
+                              <div style={{ color: '#ccc' }}>
+                                🔗 Liens: {contentMetrics.links.total} total ({contentMetrics.links.internal} internes, {contentMetrics.links.external} externes)
+                                <span style={{ 
+                                  color: contentMetrics.links.total >= 5 && contentMetrics.links.internal >= 2 ? '#00ff88' : 
+                                         contentMetrics.links.total >= 3 ? '#ffaa00' : '#ff4444'
+                                }}>
+                                  {' '}({contentMetrics.links.total >= 5 && contentMetrics.links.internal >= 2 ? 'Optimal' : 
+                                       contentMetrics.links.total >= 3 ? 'OK' : 'Insuffisant'})
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div style={{ color: '#ffaa00' }}>🔗 Liens: Analyse en cours...</div>
+                              <div style={{ color: '#ffaa00' }}>📊 Structure H1/H2/H3: Analyse en cours...</div>
+                              <div style={{ color: '#ffaa00' }}>💬 Nombre de mots: Analyse en cours...</div>
+                            </>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -825,7 +1294,10 @@ export default function SeoDebugPanel({
               </button>
               
               <button
-                onClick={() => window.open('https://search.google.com/test/rich-results?url=' + encodeURIComponent(window.location.href), '_blank')}
+                onClick={() => {
+                  const productionUrl = getProductionUrl();
+                  window.open('https://search.google.com/test/rich-results?url=' + encodeURIComponent(productionUrl), '_blank');
+                }}
                 style={{
                   background: '#333',
                   color: '#fff',
@@ -835,7 +1307,7 @@ export default function SeoDebugPanel({
                   fontSize: '8px',
                   cursor: 'pointer'
                 }}
-                title="Test Google Rich Results"
+                title={`Test Google Rich Results\nURL: ${getProductionUrl()}`}
               >
                 🔍 Google
               </button>
@@ -851,6 +1323,17 @@ export default function SeoDebugPanel({
             textAlign: 'center'
           }}>
             💡 SEO Panel Pro - Mode développement uniquement
+          </div>
+          
+          {/* Indication URL de test */}
+          <div style={{ 
+            fontSize: '7px', 
+            color: '#666', 
+            marginTop: '2px',
+            textAlign: 'center',
+            wordBreak: 'break-all'
+          }}>
+            🔗 Test Google: {getProductionUrl()}
           </div>
         </div>
       )}
@@ -929,7 +1412,130 @@ export default function SeoDebugPanel({
 
             {/* Score et validation */}
             <div style={{ marginBottom: '15px' }}>
-              <h3 style={{ color: '#ffaa00', fontSize: '14px', marginBottom: '8px' }}>📊 Validation SEO</h3>
+              <h3 style={{ color: '#ffaa00', fontSize: '14px', marginBottom: '8px' }}>📊 Score SEO Global</h3>
+              
+              {/* Score global */}
+              {currentReport.seoScore !== undefined && (
+                <div style={{ marginBottom: '10px' }}>
+                  <div style={{ 
+                    background: 'rgba(255,255,255,0.1)', 
+                    padding: '8px', 
+                    borderRadius: '4px',
+                    textAlign: 'center',
+                    marginBottom: '8px'
+                  }}>
+                    <div style={{ fontSize: '16px', fontWeight: 'bold', color: currentReport.seoScore >= 80 ? '#00ff88' : currentReport.seoScore >= 60 ? '#ffaa00' : '#ff4444' }}>
+                      {currentReport.seoScore}%
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#ccc' }}>
+                      {currentReport.seoScore >= 80 ? 'Excellent' : currentReport.seoScore >= 60 ? 'Bon' : 'À améliorer'}
+                    </div>
+                  </div>
+                  
+                  {/* Répartition détaillée */}
+                  {currentReport.scoreBreakdown && (
+                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '4px' }}>
+                      <h4 style={{ color: '#88aaff', fontSize: '11px', marginBottom: '5px' }}>📊 Répartition détaillée :</h4>
+                      <div style={{ fontSize: '9px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                          <span style={{ color: '#ccc' }}>Schema.org (40%)</span>
+                          <span style={{ color: currentReport.scoreBreakdown.jsonLd >= 80 ? '#00ff88' : currentReport.scoreBreakdown.jsonLd >= 60 ? '#ffaa00' : '#ff4444' }}>
+                            {currentReport.scoreBreakdown.jsonLd}%
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                          <span style={{ color: '#ccc' }}>FrontMatter (25%)</span>
+                          <span style={{ color: Math.round(currentReport.scoreBreakdown.frontMatter) >= 80 ? '#00ff88' : Math.round(currentReport.scoreBreakdown.frontMatter) >= 60 ? '#ffaa00' : '#ff4444' }}>
+                            {Math.round(currentReport.scoreBreakdown.frontMatter)}%
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                          <span style={{ color: '#ccc' }}>Contenu (20%)</span>
+                          <span style={{ color: Math.round(currentReport.scoreBreakdown.content) >= 80 ? '#00ff88' : Math.round(currentReport.scoreBreakdown.content) >= 60 ? '#ffaa00' : '#ff4444' }}>
+                            {Math.round(currentReport.scoreBreakdown.content)}%
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                          <span style={{ color: '#ccc' }}>Technique (10%)</span>
+                          <span style={{ color: Math.round(currentReport.scoreBreakdown.technical) >= 80 ? '#00ff88' : Math.round(currentReport.scoreBreakdown.technical) >= 60 ? '#ffaa00' : '#ff4444' }}>
+                            {Math.round(currentReport.scoreBreakdown.technical)}%
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ color: '#ccc' }}>UX (5%)</span>
+                          <span style={{ color: Math.round(currentReport.scoreBreakdown.ux) >= 80 ? '#00ff88' : Math.round(currentReport.scoreBreakdown.ux) >= 60 ? '#ffaa00' : '#ff4444' }}>
+                            {Math.round(currentReport.scoreBreakdown.ux)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Analyse FrontMatter */}
+              {currentReport.frontMatterData && (
+                <div style={{ marginBottom: '10px' }}>
+                  <h4 style={{ color: '#ffaa00', fontSize: '12px', marginBottom: '5px' }}>📄 Content Management System</h4>
+                  <div style={{ background: 'rgba(255,255,255,0.05)', padding: '8px', borderRadius: '4px' }}>
+                    <div style={{ fontSize: '10px' }}>
+                      <div style={{ color: currentReport.frontMatterData.hasImage ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
+                        🖼️ Image: {currentReport.frontMatterData.hasImage ? '✅ Présente' : '❌ Manquante'}
+                      </div>
+                      <div style={{ color: currentReport.frontMatterData.hasKeywords ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
+                        🏷️ Keywords: {currentReport.frontMatterData.hasKeywords ? '✅ Définis' : '❌ Manquants'}
+                      </div>
+                      <div style={{ color: currentReport.frontMatterData.hasAuthor ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
+                        👤 Author: {currentReport.frontMatterData.hasAuthor ? '✅ Défini' : '❌ Manquant'}
+                      </div>
+                      <div style={{ color: currentReport.frontMatterData.hasDate ? '#00ff88' : '#ff4444', marginBottom: '2px' }}>
+                        📅 Date: {currentReport.frontMatterData.hasDate ? '✅ Présente' : '❌ Manquante'}
+                      </div>
+                      <div style={{ color: currentReport.frontMatterData.hasCategory ? '#00ff88' : '#ffaa00', marginBottom: '2px' }}>
+                        🎯 Category: {currentReport.frontMatterData.hasCategory ? '✅ Définie' : '⚠️ Optionnelle'}
+                      </div>
+                      <div style={{ color: currentReport.frontMatterData.hasTags ? '#00ff88' : '#ffaa00', marginBottom: '2px' }}>
+                        🏷️ Tags: {currentReport.frontMatterData.hasTags ? '✅ Présents' : '⚠️ Optionnels'}
+                      </div>
+                      <div style={{ color: currentReport.frontMatterData.hasDescription ? '#00ff88' : '#ffaa00' }}>
+                        📝 Description: {currentReport.frontMatterData.hasDescription ? '✅ Personnalisée' : '⚠️ Auto-générée'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Métriques de contenu */}
+              {currentReport.contentMetrics && (
+                <div style={{ marginBottom: '10px' }}>
+                  <h4 style={{ color: '#88aaff', fontSize: '12px', marginBottom: '5px' }}>📊 Métriques de contenu</h4>
+                  <div style={{ background: 'rgba(136,170,255,0.1)', padding: '8px', borderRadius: '4px', border: '1px solid #88aaff' }}>
+                    <div style={{ fontSize: '10px' }}>
+                      <div style={{ color: '#ccc', marginBottom: '2px' }}>
+                        💬 Nombre de mots: {currentReport.contentMetrics.wordCount}
+                        <span style={{ 
+                          color: currentReport.contentMetrics.wordCount >= 1000 ? '#00ff88' : 
+                                 currentReport.contentMetrics.wordCount >= 300 ? '#ffaa00' : '#ff4444'
+                        }}>
+                          {' '}({currentReport.contentMetrics.wordCount >= 1000 ? 'Excellent' : 
+                               currentReport.contentMetrics.wordCount >= 300 ? 'Bon' : 'Trop court'})
+                        </span>
+                      </div>
+                      <div style={{ color: '#ccc', marginBottom: '2px' }}>
+                        📊 Structure: H1({currentReport.contentMetrics.headings.h1}) H2({currentReport.contentMetrics.headings.h2}) H3({currentReport.contentMetrics.headings.h3})
+                      </div>
+                      <div style={{ color: '#ccc', marginBottom: '2px' }}>
+                        🔗 Liens: {currentReport.contentMetrics.links.total} total ({currentReport.contentMetrics.links.internal} internes, {currentReport.contentMetrics.links.external} externes)
+                      </div>
+                      <div style={{ color: '#ccc', fontSize: '8px' }}>
+                        📅 Analysé le: {new Date(currentReport.contentMetrics.lastAnalyzed).toLocaleString('fr-FR')}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <h4 style={{ color: '#ffaa00', fontSize: '12px', marginBottom: '5px', marginTop: '15px' }}>🔍 Validation Schema.org</h4>
               
               {/* Erreurs critiques */}
               {currentReport.validation.issues.length > 0 && (

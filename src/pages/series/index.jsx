@@ -10,6 +10,18 @@ import Card from "@site/src/components/Card";
 import CardImage from '@site/src/components/Card/CardImage';
 import CardBody from '@site/src/components/Card/CardBody';
 
+// Fonction pour créer un slug à partir du nom de série
+function createSlug(text) {
+  return text
+    .toLowerCase()
+    .normalize('NFD') // Décompose les caractères accentués
+    .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
+    .replace(/[^a-z0-9\s-]/g, '') // Supprime les caractères spéciaux
+    .replace(/\s+/g, '-') // Remplace les espaces par des tirets
+    .replace(/-+/g, '-') // Supprime les tirets multiples
+    .trim('-'); // Supprime les tirets en début/fin
+}
+
 export default function SeriesPage() {
   // Récupère les métadonnées de tous les articles du blog
   const blogPosts = getBlogMetadata();
@@ -45,11 +57,12 @@ export default function SeriesPage() {
               const publishedCount = seriesPosts.filter(post => !post.draft).length;
               const draftCount = seriesPosts.filter(post => post.draft).length;
               const description = `${publishedCount} article(s) publiés` + (draftCount > 0 ? ` • ${draftCount} en cours de rédaction` : "");
+              const seriesSlug = createSlug(seriesName);
 
               return (
                 <div key={seriesName} className="col col--4 margin-bottom--lg">
                   {/* Lien vers la page des articles de la série */}
-                  <Link href={`series/series-articles?name=${encodeURIComponent(seriesName)}`}>
+                  <Link href={`/docux-blog/series/series-articles?name=${seriesSlug}`}>
                     <Card>
                       <CardImage cardImageUrl={`${image}`} />
                       <CardBody

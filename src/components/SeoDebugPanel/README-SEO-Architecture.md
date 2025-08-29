@@ -15,19 +15,16 @@ L'architecture SEO de Docux Blog, développée par **Docux** avec l'accompagneme
 
 **Fonctionnalités** :
 - ✅ Génération automatique des métadonnées HTML
-- ✅ Support complet Schema.org JSON-LD avec 12+ types
+- ✅ Support complet Schema.org JSON-LD 
 - ✅ Métadonnées Open Graph et Twitter Cards
 - ✅ Gestion multi-contexte (blog, docs, pages custom)
-- ✅ Système de fallback intelligent hiérarchisé
+- ✅ Système de fallback intelligent
 - ✅ URLs canoniques automatiques
 - ✅ Support des images personnalisées
 - ✅ Gestion des auteurs avec données centralisées
-- 🆕 **Détection intelligente par contenu** (mots-clés, tags, propriétés)
-- 🆕 **Configuration flexible via frontMatter** (schemaType personnalisé)
 
 **Points clés** :
-- 🎯 **Système de priorité à 3 niveaux** : Configuration explicite → Détection intelligente → Fallback contexte
-- 🔄 Détection automatique avancée du type de page (12+ types Schema.org)
+- 🔄 Détection automatique du type de page
 - 📊 Récupération multi-hook des métadonnées (useBlogPost, useDoc, usePageMetadata)
 - 🖼️ Gestion intelligente des images (frontmatter → défaut site)
 - 👥 Support des auteurs multiples via `src/data/authors.js`
@@ -329,91 +326,6 @@ Le panel s'affiche automatiquement en mode développement (`NODE_ENV=development
 - 🎯 Validation temps réel
 - 📋 Actions rapides intégrées
 
-## 🎯 Système de Détection Schema.org
-
-### Hiérarchie de Priorité (3 Niveaux)
-
-L'architecture SEO utilise un système de **priorité intelligente** pour déterminer le type Schema.org :
-
-#### 🥇 **Priorité 1 : Configuration Explicite**
-Configuration manuelle via frontMatter - **toujours respectée**
-
-```yaml
----
-title: "Mon Article"
-schemaType: "Course"  # ← Force le type Course (priorité absolue)
----
-```
-
-#### 🥈 **Priorité 2 : Détection Intelligente par Contenu**
-Analyse automatique du contenu pour détecter le type optimal
-
-**Déclencheurs automatiques :**
-- **HowTo** : Titre avec "comment", "guide", "tutorial" + propriété `estimatedTime`
-- **TechArticle** : Tags techniques (react, js, node...) + propriété `dependencies`
-- **SoftwareApplication** : Propriétés `applicationCategory`, `operatingSystem`
-- **Course** : Propriétés `provider`, `courseMode`, `teaches`
-- **Person** : Propriétés `jobTitle`, `worksFor`, `knowsAbout`
-- **FAQPage** : Propriété `mainEntity` ou titre contenant "faq"
-
-```yaml
----
-title: "Comment installer Docker"  # ← Auto-détecté comme HowTo
-tags: ["javascript", "api"]        # ← Auto-détecté comme TechArticle  
-dependencies: ["Node.js 18+"]      # ← Confirme TechArticle
-# Résultat final : TechArticle (détection la plus spécifique)
----
-```
-
-#### 🥉 **Priorité 3 : Détection par Contexte (Fallback)**
-Détection basique par URL/contexte de page
-
-- Article de blog → `BlogPosting`
-- Page d'accueil → `WebSite`
-- Index blog → `CollectionPage`
-- Autres pages → `WebPage`
-
-### Exemples de Détection
-
-#### Cas 1 : Configuration explicite (priorité absolue)
-```yaml
----
-title: "Comment créer une API REST"     # Devrait être HowTo
-tags: ["javascript", "tutorial"]       # Devrait être TechArticle
-schemaType: "Course"                    # ← FORCE Course (priorité 1)
-provider: "Docux Academy"
----
-# Résultat : Course (configuré)
-```
-
-#### Cas 2 : Détection intelligente automatique
-```yaml
----
-title: "Guide avancé React Hooks"       # Contient "Guide"
-tags: ["react", "javascript", "hooks"]  # Tags techniques
-dependencies: ["React 18+"]             # Propriété technique
-programmingLanguage: "JavaScript"      # Propriété technique
----
-# Résultat : TechArticle (auto-détecté)
-```
-
-#### Cas 3 : Fallback contexte
-```yaml
----
-title: "Mon Article Simple"  # Pas de mots-clés spéciaux
-# Pas de tags techniques, pas de propriétés spéciales
----
-# Contexte : Article dans /blog/
-# Résultat : BlogPosting (contexte)
-```
-
-### Debug des Détections
-
-Dans le **SeoDebugPanel**, la catégorie affiche le mode de détection :
-- `"(configuré)"` → Priorité 1 : Vous l'avez défini explicitement
-- `"(auto-détecté)"` → Priorité 2 : Détection intelligente par contenu
-- `"(contexte)"` → Priorité 3 : Fallback par URL/contexte
-
 ## 📁 Structure des Fichiers
 
 ```
@@ -453,9 +365,8 @@ src/
 
 #### 📊 Seo (`src/components/Seo/`)
 - **Rôle principal** : Génération de métadonnées intelligentes
-- **Fonctionnalité** : Schema.org (12+ types), Open Graph, Twitter Cards
-- **Détection** : Système à 3 niveaux de priorité (config → contenu → contexte)
-- **Types supportés** : BlogPosting, TechArticle, HowTo, Course, SoftwareApplication, Person, FAQPage, etc.
+- **Fonctionnalité** : Schema.org, Open Graph, Twitter Cards
+- **Détection** : Type de page automatique
 - **Intégration** : SeoDebugPanel inclus en développement
 
 #### 🔍 SeoDebugPanel (`src/components/SeoDebugPanel/`)
@@ -484,32 +395,6 @@ src/
 
 ## 🔧 Configuration
 
-### 🎯 Configuration Schema.org Avancée
-
-#### Configuration Explicite (Recommandée)
-```yaml
----
-title: "Guide Docker Complet"
-description: "Installation et configuration Docker"
-schemaType: "HowTo"  # ← Force le type explicitement
-estimatedTime: "PT45M"  # 45 minutes
-difficulty: "Intermediate"
-tools: ["Terminal", "Docker"]
-authors: [docux]
-image: "/img/docker-guide.jpg"
----
-```
-
-#### Configuration avec Détection Automatique
-```yaml
----
-title: "Comment créer une API REST"  # ← "Comment" → HowTo automatique
-tags: ["javascript", "node", "api"]  # ← Tags techniques → TechArticle
-dependencies: ["Node.js 18+"]        # ← Confirme TechArticle
-# Résultat final : TechArticle (plus spécifique que HowTo)
----
-```
-
 ### Métadonnées de Blog Post
 
 ```yaml
@@ -520,11 +405,6 @@ authors: [docux, kiki]  # Références vers authors.js
 image: "/img/mon-image.jpg"
 keywords: [docusaurus, seo, tutorial]
 category: "Tutoriels"
-# Nouvelles propriétés optionnelles :
-schemaType: "TechArticle"          # Force un type spécifique
-proficiencyLevel: "Beginner"       # Niveau de difficulté
-dependencies: ["React 18+"]        # Dépendances techniques
-programmingLanguage: "JavaScript"  # Langage principal
 ---
 ```
 
@@ -974,7 +854,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 ### 🔧 En cas de problème
 
 1. **Panel de debug** : Vérifiez le SeoDebugPanel en mode développement
-2. **Documentation détaillée** : Consultez `SeoDebugPanel/README.md` pour le guide complet
+2. **Documentation détaillée** : Guide complet
 3. **Console** : Utilisez le bouton "📋 Rapport" pour les logs détaillés  
 4. **Google Test** : Bouton "🔍 Google" pour validation Rich Results
 5. **Métadonnées** : Validez les frontmatter selon les exemples
@@ -984,7 +864,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - **Validation SEO** : Panel de debug avec score temps réel
 - **Export rapports** : Bouton "💾 Export" dans le panel
 - **Test Google** : Bouton "🔍 Google" intégré
-- **Documentation complète** : `SeoDebugPanel/README.md`
+
 
 ---
 
@@ -1006,7 +886,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - Troubleshooting automatique intégré
 
 **📚 Documentation Exhaustive**
-- `SeoDebugPanel/README.md` : Guide technique complet développé par Docux
+- Guide technique complet développé par Docux
 - Exemples d'usage pour tous les cas de figure
 - Troubleshooting avec solutions détaillées
 - API complète avec props et méthodes
