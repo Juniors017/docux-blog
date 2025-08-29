@@ -35,6 +35,7 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - 🆕 **Pages de collection enrichies** : Support CollectionPage pour blog ET collections personnalisées
 - 🆕 **Repository/Portfolio** : Métadonnées spécialisées pour pages de projets
 - 🆕 **Pages de séries** : Détection et métadonnées spécialisées pour `/series/` avec calcul automatique
+- 🆕 **Séries spécifiques v2.1.3** : BreadcrumbList à 3 niveaux pour `/series/series-articles/?name=` avec détection intelligente
 - 🆕 **BreadcrumbList optimisé** : URLs normalisées, items WebPage, noms globaux (conformité Google)
 - ⭐ **BreadcrumbList générique** : Système universel pour toutes les pages avec analyse intelligente des URLs
 - 🚀 **Séries enrichies v2.1.2** : `itemListElement` dynamique avec URLs réelles, métadonnées éducatives et audience
@@ -1251,6 +1252,130 @@ try {
 - 🎯 **Rich Results éligibles** : Collections éducatives dans les SERP
 - 🔍 **Crawling amélioré** : Hiérarchie et contexte clairs pour Google
 - 📊 **Métriques enrichies** : Données précises pour Search Console
+
+---
+
+#### 🎯 Pages de Séries Spécifiques (v2.1.3) - Nouvelle Fonctionnalité
+
+**🚀 Amélioration majeure** : Les pages de séries individuelles (ex: `/series/series-articles/?name=seo-docusaurus`) bénéficient maintenant d'un **BreadcrumbList à 3 niveaux** et de schémas JSON-LD ultra-spécialisés.
+
+**📋 Problème résolu :**
+```
+❌ Avant : DOCUX > Séries d'articles
+✅ Après : DOCUX > Séries d'articles > SEO Docusaurus
+```
+
+**🔍 Détection Intelligente :**
+- ✅ **`isSpecificSeriesPage`** : Détecte automatiquement les URLs avec `?name=`
+- ✅ **Extraction du nom** : Fonction `getSeriesNameFromUrl()` récupère le nom original depuis les métadonnées
+- ✅ **Fallback robuste** : Conversion intelligente des slugs si les métadonnées ne sont pas disponibles
+
+**🗂️ Hiérarchie de Navigation Enrichie :**
+```json
+{
+  "@type": "BreadcrumbList",
+  "name": "Navigation - SEO Docusaurus",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "DOCUX",
+      "item": {
+        "@type": "WebPage",
+        "@id": "https://juniors017.github.io",
+        "name": "DOCUX",
+        "url": "https://juniors017.github.io"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Séries d'articles",
+      "item": {
+        "@type": "WebPage",
+        "@id": "https://juniors017.github.io/docux-blog/series/",
+        "name": "Séries d'articles",
+        "url": "https://juniors017.github.io/docux-blog/series/"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "SEO Docusaurus",
+      "item": {
+        "@type": "WebPage",
+        "@id": "https://juniors017.github.io/docux-blog/series/series-articles/?name=seo-docusaurus",
+        "name": "SEO Docusaurus",
+        "url": "https://juniors017.github.io/docux-blog/series/series-articles/?name=seo-docusaurus"
+      }
+    }
+  ]
+}
+```
+
+**📚 Schema CreativeWorkSeries Spécialisé :**
+```json
+{
+  "@type": "CollectionPage",
+  "name": "SEO Docusaurus - Série d'articles",
+  "headline": "Articles de la série : SEO Docusaurus",
+  "description": "Série de 1 article(s) sur SEO Docusaurus. Découvrez un parcours d'apprentissage progressif pour maîtriser ce domaine.",
+  "about": {
+    "@type": "CreativeWorkSeries",
+    "name": "SEO Docusaurus",
+    "description": "Série de 1 article(s) sur SEO Docusaurus...",
+    "genre": "Educational Content",
+    "inLanguage": "fr-FR",
+    "numberOfEpisodes": 1,
+    "publisher": {
+      "@type": "Organization",
+      "name": "DOCUX",
+      "url": "https://juniors017.github.io"
+    }
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Articles de la série : SEO Docusaurus",
+    "numberOfItems": 1,
+    "itemListOrder": "ItemListOrderAscending",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Guide complet Architecture et SEO Docusaurus",
+        "url": "https://juniors017.github.io/docux-blog/blog/architecture-seo-docusaurus-guide-complet/",
+        "item": {
+          "@type": "BlogPosting",
+          "headline": "Guide complet Architecture et SEO Docusaurus",
+          "url": "https://juniors017.github.io/docux-blog/blog/architecture-seo-docusaurus-guide-complet/",
+          "datePublished": "2024-12-25T00:00:00.000Z",
+          "inLanguage": "fr-FR"
+        }
+      }
+    ]
+  }
+}
+```
+
+**🎯 Bénéfices SEO :**
+- 🍞 **Rich Snippets Breadcrumbs** : Navigation à 3 niveaux visible dans Google
+- 🔗 **Maillage interne optimisé** : Liens contextuels entre série et articles
+- 📊 **Compréhension sémantique** : Google comprend la hiérarchie série → articles
+- 🎓 **Contexte éducatif** : Schémas optimaux pour le contenu d'apprentissage
+
+**🔧 Intégration Component :**
+```jsx
+// Ajout automatique du composant SEO dans series-articles.jsx
+<Seo 
+  pageData={{
+    title: `Articles de la série: ${originalSeriesName}`,
+    description: `Découvrez tous les articles de la série ${originalSeriesName}...`,
+    keywords: ['série', originalSeriesName.toLowerCase(), 'articles', 'tutoriels'],
+    seriesName: originalSeriesName,
+    seriesCount: sortedPosts.length
+  }}
+/>
+```
 
 ---
 

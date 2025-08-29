@@ -330,6 +330,9 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
 
   // Pages de séries d'articles
   const isSeriesPage = location.pathname.includes('/series/');
+  
+  // Page de série spécifique (avec paramètre ?name=)
+  const isSpecificSeriesPage = isSeriesPage && location.search.includes('name=');
 
   // Page d'accueil principale
   const isHomePage = location.pathname === '/' || location.pathname === '/docux-blog/';
@@ -394,6 +397,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     // 🔧 PRIORITÉ 3: Détection par contexte/URL (fallback minimal)
     if (isBlogPost) return { type: 'BlogPosting', category: 'Article de blog (contexte)' };
     if (isBlogListPage) return { type: 'CollectionPage', category: 'Index des articles (contexte)' };
+    if (isSpecificSeriesPage) return { type: 'CollectionPage', category: 'Série spécifique (contexte)' };
     if (isSeriesPage) return { type: 'CollectionPage', category: 'Collection de séries (contexte)' };
     if (isHomePage) return { type: 'WebSite', category: 'Page d\'accueil (contexte)' };
     
@@ -579,6 +583,56 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
         }
       }))
     };
+  };
+
+  /**
+   * Fonction utilitaire pour extraire le nom de série depuis les paramètres URL
+   * 
+   * @param {string} search - La query string de l'URL (ex: "?name=seo-docusaurus")
+   * @returns {string|null} Le nom décodé de la série ou null
+   */
+  const getSeriesNameFromUrl = (search) => {
+    if (!search) return null;
+    const params = new URLSearchParams(search);
+    const seriesSlug = params.get('name');
+    if (!seriesSlug) return null;
+    
+    // Essayer de retrouver le nom original de la série depuis les métadonnées
+    try {
+      if (ExecutionEnvironment.canUseDOM && window.docusaurus) {
+        const globalData = window.docusaurus.globalData;
+        if (globalData && globalData['docusaurus-plugin-content-blog']) {
+          const blogData = globalData['docusaurus-plugin-content-blog'];
+          if (blogData && blogData.default && blogData.default.blogPosts) {
+            // Chercher une correspondance entre le slug et le nom original
+            for (const post of blogData.default.blogPosts) {
+              if (post.metadata?.frontMatter?.serie) {
+                const originalName = post.metadata.frontMatter.serie;
+                const postSlug = originalName
+                  .toLowerCase()
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '')
+                  .replace(/[^a-z0-9\s-]/g, '')
+                  .replace(/\s+/g, '-')
+                  .replace(/-+/g, '-')
+                  .trim('-');
+                
+                if (postSlug === seriesSlug) {
+                  return originalName;
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Erreur lors de la récupération du nom de série:', error);
+    }
+    
+    // Fallback : décoder et formater le slug
+    return decodeURIComponent(seriesSlug)
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, l => l.toUpperCase());
   };
 
   /**
@@ -805,6 +859,127 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
             name: `Blog - ${siteConfig.title}`,
             url: canonicalUrl,
             description: 'Articles et tutoriels sur Docusaurus et le développement web'
+          }
+        };
+      }
+
+      // Configuration spécifique pour les pages de série individuelle (avec ?name=)
+      if (isSpecificSeriesPage) {
+        const seriesName = getSeriesNameFromUrl(location.search);
+        let seriesArticles = [];
+        let seriesDescription = '';
+        
+        if (seriesName) {
+          try {
+            // Récupérer les articles de cette série spécifique
+            if (ExecutionEnvironment.canUseDOM && window.docusaurus) {
+              const globalData = window.docusaurus.globalData;
+              if (globalData && globalData['docusaurus-plugin-content-blog']) {
+                const blogData = globalData['docusaurus-plugin-content-blog'];
+                if (blogData && blogData.default && blogData.default.blogPosts) {
+                  seriesArticles = blogData.default.blogPosts
+                    .filter(post => post.metadata?.frontMatter?.serie === seriesName)
+                    .map((post, index) => ({
+                      '@type': 'ListItem',
+                      position: index + 1,
+                      name: post.metadata.title,
+                      url: `${siteConfig.url}${post.metadata.permalink}`,
+                      description: post.metadata.description || post.metadata.frontMatter?.description,
+                      item: {
+                        '@type': 'BlogPosting',
+                        headline: post.metadata.title,
+                        url: `${siteConfig.url}${post.metadata.permalink}`,
+                        datePublished: post.metadata.date,
+                        inLanguage: 'fr-FR'
+                      }
+                    }));
+                  
+                  seriesDescription = `Série de ${seriesArticles.length} article(s) sur ${seriesName}. Découvrez un parcours d'apprentissage progressif pour maîtriser ce domaine.`;
+                }
+              }
+            }
+          } catch (error) {
+            console.warn('Erreur lors de la récupération des articles de série:', error);
+            seriesDescription = `Articles de la série ${seriesName}`;
+          }
+        }
+
+        return {
+          ...baseStructure,
+          '@type': 'CollectionPage',
+          
+          // Titre et description spécifiques à la série
+          name: seriesName ? `${seriesName} - Série d'articles` : 'Série d\'articles',
+          headline: seriesName ? `Articles de la série : ${seriesName}` : 'Articles de série',
+          description: seriesDescription || `Découvrez tous les articles de la série ${seriesName || 'sélectionnée'}`,
+          
+          // Schema spécifique pour cette série
+          about: {
+            '@type': 'CreativeWorkSeries',
+            name: seriesName || 'Série d\'articles',
+            description: seriesDescription,
+            genre: 'Educational Content',
+            inLanguage: 'fr-FR',
+            numberOfEpisodes: seriesArticles.length,
+            publisher: {
+              '@type': 'Organization',
+              name: siteConfig.title,
+              url: siteConfig.url,
+              logo: {
+                '@type': 'ImageObject',
+                url: siteConfig.url + useBaseUrl('/img/docux.png')
+              }
+            }
+          },
+          
+          // Fil d'Ariane à 3 niveaux pour la série spécifique
+          breadcrumb: createOptimizedBreadcrumb([
+            {
+              name: siteConfig.title,
+              url: siteConfig.url
+            },
+            {
+              name: 'Séries d\'articles',
+              url: `${siteConfig.url}/docux-blog/series/`
+            },
+            {
+              name: seriesName || 'Série',
+              url: canonicalUrl
+            }
+          ], `Navigation - ${seriesName || 'Série'}`),
+          
+          // Liste des articles de la série
+          mainEntity: {
+            '@type': 'ItemList',
+            name: `Articles de la série : ${seriesName || 'Série'}`,
+            description: seriesDescription,
+            url: canonicalUrl,
+            numberOfItems: seriesArticles.length,
+            itemListOrder: 'ItemListOrderAscending', // Articles triés chronologiquement
+            itemListElement: seriesArticles.length > 0 ? seriesArticles : undefined,
+            
+            // Métadonnées éducatives
+            genre: 'Educational Content',
+            audience: {
+              '@type': 'Audience',
+              audienceType: 'Developers and Web Enthusiasts',
+              geographicArea: {
+                '@type': 'Country',
+                name: 'France'
+              }
+            },
+            inLanguage: 'fr-FR'
+          },
+          
+          // Informations de publication
+          publisher: {
+            '@type': 'Organization',
+            name: siteConfig.title,
+            url: siteConfig.url,
+            logo: {
+              '@type': 'ImageObject',
+              url: siteConfig.url + useBaseUrl('/img/docux.png')
+            }
           }
         };
       }
@@ -1444,6 +1619,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     isBlogPost,                    // Page d'article individuel
     isBlogListPage,               // Page d'index/listing
     isSeriesPage,                 // Page de série d'articles
+    isSpecificSeriesPage,         // Page de série spécifique (avec ?name=)
     isHomePage,                   // Page d'accueil
     isThanksPage,                 // Page de remerciements
     isRepositoryPage,             // Page repository/projets
