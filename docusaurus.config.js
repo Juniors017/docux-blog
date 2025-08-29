@@ -14,7 +14,7 @@ const config = {
   tagline: 'Content Management System for Docusaurus',
   favicon: 'img/docux.png',
   
-  organizationName: 'Juniors017', // Usually your GitHub org/user name.
+  organizationName: 'DocuxLab', // Usually your GitHub org/user name.
   projectName: 'docux-blog', // Usually your repo name.
   url: 'https://docuxlab.com',
   baseUrl: '/',
@@ -162,7 +162,7 @@ const config = {
         // Métadonnées générales
         {name: 'keywords', content: 'docusaurus, blog, documentation, cms, react, gestion de contenu, markdown'},
         {name: 'description', content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la création de blogs et de documentation technique'},
-        {name: 'author', content: 'Juniors017'},
+        {name: 'author', content: 'Docux'},
         {name: 'robots', content: 'index, follow'},
         
         // Google Search Console - Remplacez VOTRE_CODE_VERIFICATION_GOOGLE par votre code réel
@@ -240,7 +240,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Docux Blog, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} DocuxLab Blog, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
