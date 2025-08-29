@@ -52,11 +52,11 @@ serie: "seo docusaurus"
 
 ## Vue d'ensemble
 
-Cet article présente l'architecture SEO avancée développée pour DocuxLab Nlog, une solution complète qui transforme la gestion du référencement sur Docusaurus. Découvrez comment nous avons créé un système intelligent qui automatise les métadonnées, valide le SEO en temps réel et optimise pour Google Rich Results.
+Cet article présente l'architecture SEO avancée développée pour DocuxLab Blog, une solution complète qui transforme la gestion du référencement sur Docusaurus. Découvrez comment j'ai créé un système qui automatise les métadonnées, valide le SEO en temps réel et optimise l'attendu de Google Rich Results.
 
-L'architecture SEO de DocuxLab Blog, développée par **Docux** avec l'accompagnement de **GitHub Copilot**, est maintenant séparée en deux composants distincts pour une meilleure maintenabilité et séparation des responsabilités. Cette version 2.1.4 introduit une **révolution dans la gestion des schémas multiples** avec configuration explicite via frontmatter :
+L'architecture SEO de DocuxLab Blog, développée avec l'accompagnement de **GitHub Copilot**, est séparée en deux composants distincts pour une meilleure maintenabilité et séparation des responsabilités. Cette version 2.1.4 introduit une configuration explicite via frontmatter :
 
-### 🎯 Composant SEO Principal (`src/components/Seo/index.jsx`)
+### 🎯 Composant SEO Principal [(`src/components/Seo/index.jsx`)](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)
 
 **🧑‍💻 Développeur** : Docux avec assistance IA  
 **Responsabilité** : Gestion des métadonnées et du référencement naturel
@@ -94,7 +94,7 @@ L'architecture SEO de DocuxLab Blog, développée par **Docux** avec l'accompagn
 - 👥 Support des auteurs multiples via `src/data/authors.js`
 - 🌐 Optimisé pour Google Rich Results
 
-### 🔍 Composant Debug SEO (`src/components/SeoDebugPanel/index.jsx`)
+### 🔍 Composant Debug SEO [(`src/components/SeoDebugPanel/index.jsx`)](https://github.com/Juniors017/docux-blog/tree/main/src/components/SeoDebugPanel)
 
 **🧑‍💻 Développeur** : Docux avec assistance GitHub Copilot  
 **Responsabilité** : Outils de développement et validation SEO
@@ -127,7 +127,7 @@ L'architecture SEO de DocuxLab Blog, développée par **Docux** avec l'accompagn
 
 ### 🏆 Innovations Techniques
 
-Notre architecture SEO apporte plusieurs **innovations majeures** au monde Docusaurus :
+Cette **architecture SEO** tente d'apporter plusieurs **innovations majeures** au monde Docusaurus :
 
 #### 🤖 Intelligence Automatique
 - **Détection de contexte** : Reconnaissance automatique du type de page (blog, docs, accueil)
@@ -136,7 +136,7 @@ Notre architecture SEO apporte plusieurs **innovations majeures** au monde Docus
 - **BreadcrumbList optimisé** : 🆕 Génération automatique conforme aux bonnes pratiques Google
 - **BreadcrumbList générique** : ⭐ Système universel pour toutes les pages avec analyse intelligente des URLs
 
-#### 🔍 Outils de Debug Professionnels
+#### 🔍 Outils de Debug
 - **Panel intégré** : Interface de debug moderne directement dans le navigateur
 - **Score SEO temps réel** : Validation continue avec algorithme de scoring avancé
 - **Export de données** : Génération de rapports détaillés pour analyse
@@ -179,30 +179,15 @@ Notre architecture SEO apporte plusieurs **innovations majeures** au monde Docus
 - **🔄 Schémas Multiples** : BlogPosting + TechArticle automatique avec URLs cohérentes
 - **⚙️ Normalisation URLs** : Suppression automatique des doubles slashes
 - **✅ Validation Proactive** : Correction automatique des incohérences de schémas
+- **✅Le composant SEO distingue maintenant automatiquement :
+    - **Pages de séries générales** : `/series/` (liste toutes les séries)
+    - **Pages de séries spécifiques** : `/series/series-articles/?name=seo-docusaurus` (articles d'une série)
 
 ---
 
-### � Focus : Amélioration BreadcrumbList pour Séries (v2.1.3)
-
-Une des améliorations majeures récentes concerne la **hiérarchie de navigation** pour les pages de séries spécifiques. 
-
-#### 📋 Problème Résolu
-
-**Avant** : Les pages de séries individuelles (ex: `/series/series-articles/?name=seo-docusaurus`) avaient un breadcrumb incomplet :
-```
-❌ DOCUX > Séries d'articles
-```
-
-**Après** : Breadcrumb complet avec **3 niveaux hiérarchiques** :
-```
-✅ DOCUX > Séries d'articles > SEO Docusaurus
-```
 
 #### 🧠 Intelligence de Détection
 
-Le composant SEO distingue maintenant automatiquement :
-- **Pages de séries générales** : `/series/` (liste toutes les séries)
-- **Pages de séries spécifiques** : `/series/series-articles/?name=seo-docusaurus` (articles d'une série)
 
 ```jsx
 // Nouvelle détection intelligente
@@ -256,7 +241,7 @@ Les pages de séries spécifiques bénéficient maintenant d'un schema `Collecti
 
 ---
 
-### �🌍 Intégration globale via Layout (Recommandée)
+### 🌍 Intégration globale via Layout (Recommandée)
 
 L'approche **recommandée** est l'intégration via le Layout global qui applique le SEO à toutes les pages automatiquement :
 
@@ -354,7 +339,7 @@ export default function LandingProduit() {
 
 #### 🆕 3. Pages MDX personnalisées avec Front Matter automatique
 
-**Nouvelle fonctionnalité** : Support complet des pages MDX avec récupération automatique du front matter :
+Support complet des pages MDX avec récupération automatique du front matter :
 
 ```mdx
 ---
@@ -448,7 +433,7 @@ export default function PageMetaCustom() {
 }
 ```
 
-### 🚀 Exemples Concrets v2.1.4 - Configuration Explicite
+### 🚀 Exemples Concrets Configuration Explicite
 
 #### 📝 Article Technique avec Double Schéma
 
@@ -456,7 +441,7 @@ export default function PageMetaCustom() {
 ---
 title: "Guide complet Architecture et SEO Docusaurus"
 description: "Implémentation professionnelle du référencement avec Docusaurus 3.8+"
-schemaTypes: ["TechArticle", "BlogPosting"]  # 🎯 Configuration explicite révolutionnaire
+schemaTypes: ["TechArticle", "BlogPosting"]  # 🎯 Configuration explicite 
 authors: ["docux"]
 tags:
   - "docusaurus"
@@ -485,7 +470,7 @@ tags: ["docker", "ubuntu", "installation", "devops"]
 
 **💡 Avantage :** Même si le contenu ne ressemble pas à un HowTo, le schéma sera `HowTo` garanti.
 
-#### 🎓 Article Personnel (Blog uniquement)
+#### 🎓 Article  (Blog uniquement)
 
 ```yaml
 ---
@@ -556,7 +541,7 @@ export default function PageMultiLangue({ langue = 'fr' }) {
 }
 ```
 
-### 🆕 Schémas Multiples Explicites et Hiérarchie des Priorités (v2.1.4)
+### 🆕 Schémas Multiples Explicites et Hiérarchie des Priorités 
 
 #### Révolution : Configuration Explicite 🚀
 
@@ -759,16 +744,9 @@ Le panel s'affiche automatiquement en mode développement (`NODE_ENV=development
 - 📊 Interface tabbed pour navigation facile
 - 🎯 Validation temps réel
 - 📋 Actions rapides intégrées
+- 💡 Retour via tooltips des infos de configuration de page
 
-## 📚 Documentation Technique Détaillée
 
-Cet article présente une **vue d'ensemble** de l'architecture SEO de Docux Blog. Pour une **documentation technique complète** avec tous les détails d'implémentation, consultez :
-
-### 🎯 Guides de Référence
-
-- **📖 Guide Technique SEO** - Documentation complète du composant principal
-- **🔍 Guide SeoDebugPanel** - Documentation détaillée du panel de debug  
-- **🌍 Guide Layout Integration** - Intégration globale et bonnes pratiques
 
 ### 📋 Ressources Complémentaires
 
@@ -777,8 +755,6 @@ Cet article présente une **vue d'ensemble** de l'architecture SEO de Docux Blog
 - **Support** : Issues et contributions via GitHub
 
 ---
-
-> 💡 **Conseil** : L'article que vous lisez est parfait pour comprendre les **concepts et fonctionnalités**, tandis que les guides de référence contiennent tous les **détails techniques** pour l'implémentation.
 
 ## 📁 Structure des Fichiers
 
@@ -811,23 +787,23 @@ src/
 
 ### 🎯 Rôles des composants
 
-#### 🌍 Layout (`src/theme/Layout/`)
+#### 🌍 Layout [(`src/theme/Layout/`)](https://github.com/Juniors017/docux-blog/tree/main/src/theme/Layout)
 - **Rôle principal** : Point d'entrée SEO global
 - **Couverture** : 100% des pages du site
 - **Fonctionnalité** : Intègre automatiquement le composant SEO
 - **Impact** : Métadonnées et JSON-LD sur toutes les pages
 
-#### 📊 Seo (`src/components/Seo/`)
+#### 📊 Seo [(`src/components/Seo/`)](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)
 - **Rôle principal** : Génération de métadonnées intelligentes
 - **Fonctionnalité** : Schema.org, Open Graph, Twitter Cards
 - **Détection** : Type de page automatique
 - **Intégration** : SeoDebugPanel inclus en développement
 
-#### 🔍 SeoDebugPanel (`src/components/SeoDebugPanel/`)
+#### 🔍 SeoDebugPanel [(`src/components/SeoDebugPanel/`)](https://github.com/Juniors017/docux-blog/tree/main/src/components/SeoDebugPanel)
 - **Rôle principal** : Outils de debug et validation SEO
 - **Interface** : 3 onglets (Vue, Valid, Perf)
 - **Environnement** : Développement uniquement
-- **Fonctionnalités** : Score SEO, export, tests Google
+- **Fonctionnalités** : Score SEO, export, tests Google, rapports
 
 #### 📝 BlogPostItem (`src/theme/BlogPostItem/`)
 - **Rôle principal** : Enrichissement du contenu d'articles
@@ -841,11 +817,6 @@ src/
 - **Potentiel** : Articles liés, partage social, analytics
 - **Architecture** : Swizzling en mode wrapper
 
-## 📚 Documentation Détaillée
-
-- **Architecture générale** : `README-SEO-Architecture.md` (ce fichier)
-- **Composant SEO** : `Seo/README.md` - Documentation technique du composant principal
-- **SeoDebugPanel** : `SeoDebugPanel/README.md` - Guide complet et détaillé du panel de debug
 
 ## 🔧 Configuration
 
@@ -914,9 +885,6 @@ Le panel de debug attribue un score de 0 à 100% basé sur :
 - **WebPage** : Pages générales avec métadonnées de base
 - **Series** : Pages de séries d'articles
 - **CollectionPage** : 🆕 **Amélioré** - Pages de collections blog + personnalisées (repository, portfolio)
-
-#### 🆕 Types récemment ajoutés (disponibles maintenant)
-
 - **HowTo** : Guides step-by-step et tutoriels pratiques ✅ *Implémenté avec exemples*
 - **TechArticle** : Articles techniques et tutoriels ✅ *Implémenté avec exemples*
 - **SoftwareApplication** : Applications et projets logiciels ✅ *Implémenté avec exemples*
@@ -925,11 +893,6 @@ Le panel de debug attribue un score de 0 à 100% basé sur :
 - **Person** : Pages de profil auteur ✅ *Implémenté avec exemples*
 - **FAQPage** : Pages de questions/réponses ✅ *Implémenté avec exemples*
 
-#### 🆕 Focus CollectionPage - Pages de Collection Intelligentes
-
-**🎯 Problème résolu** : Les pages de collection personnalisées (comme `/repository/`, `/portfolio/`) n'étaient pas correctement optimisées pour Google Rich Results.
-
-**✨ Solution implémentée** : Support intelligent des deux types de collections :
 
 ##### 📁 Collections Blog (automatiques)
 - **Pages concernées** : `/blog/`, `/blog/tags/react/`, `/blog/authors/docux/`
@@ -957,71 +920,18 @@ last_update:
 
 **📊 Métadonnées générées automatiquement** :
 - ✅ **MainEntity** : `ItemList` avec nombre d'éléments (`numberOfItems: 15`)
-- ✅ **Breadcrumb** : 🆕 **Optimisé Google** - Navigation structurée avec bonnes pratiques
+- ✅ **Breadcrumb** : 🆕 **Optimisé Google** - Navigation structurée avec bonnes pratiques (sur tout le site)
 - ✅ **Author** : Informations depuis `src/data/authors.js`
 - ✅ **Dates** : `datePublished` + `dateModified` depuis `last_update`
 - ✅ **Specialty** : "Open Source Projects" (spécifique `/repository/`)
 - ✅ **AdditionalType** : "SoftwareSourceCode" (pour projets)
 - ✅ **Keywords** : Depuis frontMatter `keywords` + `tags`
 
-##### 📚 Collections de Séries (automatiques intelligentes)
 
-**🆕 Fonctionnalité spécialisée** : Support automatique avancé des pages `/series/`.
 
-**Exemple concret - Page Séries** :
-```yaml
----
-title: "Séries d'Articles - Collections Thématiques"
-description: "Découvrez nos séries organisées par thématique"
-schemaType: "CollectionPage"
-category: "Collections"
-tags: ["séries", "collections", "tutoriels"]
-authors: ["docux"]
----
-```
-
-**🔢 Calcul automatique intelligent** :
-- ✅ **Scan du blog** : Analyse automatique des articles avec `serie` dans frontmatter
-- ✅ **Décompte dynamique** : `numberOfItems` calculé en temps réel
-- ✅ **Fallback robuste** : Valeur par défaut si erreur de détection
-- ✅ **CreativeWorkSeries** : Type Schema.org optimal pour collections de séries
-
-**📊 Schema.org spécialisé généré** :
-```json
-{
-  "@type": "CollectionPage",
-  "about": {
-    "@type": "CreativeWorkSeries",
-    "name": "Séries d'articles - DOCUX",
-    "description": "Collection de séries organisées par thématique"
-  },
-  "mainEntity": {
-    "@type": "ItemList",
-    "name": "Séries d'articles",
-    "itemListOrder": "Unordered",
-    "numberOfItems": 2  // ← Calculé automatiquement
-  }
-}
-```
-
-**🎯 Avantages automatiques :**
-- ✅ **Aucune configuration manuelle** : Fonctionne immédiatement
-- ✅ **Mise à jour automatique** : Le nombre se met à jour avec les nouveaux articles
-- ✅ **Métadonnées enrichies** : Keywords et tags spécialisés automatiques
-- ✅ **BreadcrumbList optimisé** : Navigation "Séries d'articles" Google-friendly
-
-##### 🆕 BreadcrumbList "au top" pour Google
-
-**🎯 Optimisations appliquées automatiquement :**
-- ✅ **URLs normalisées** : `juniors017.github.io` (minuscules partout)
-- ✅ **Items typés WebPage** : Au lieu de `Thing` générique
-- ✅ **Nom global** : Chaque BreadcrumbList a un nom descriptif
-
-##### 🚀 Pages de Séries Enrichies (v2.1.2) - Architecture Révolutionnée
+##### 🚀 Pages de Séries Enrichies (v2.1.2) 
 
 **🎯 Mise à jour majeure** : Les pages `/series/` bénéficient maintenant d'un schéma `CollectionPage` ultra-enrichi avec calcul dynamique des séries réelles et métadonnées éducatives complètes.
-
-**🔍 Ce qui a changé :**
 
 ###### 📊 Calcul Dynamique des Séries Réelles
 
@@ -1288,7 +1198,7 @@ La fonction `generateGenericBreadcrumb()` révolutionne la navigation SEO en ana
 
 ### 📍 Où et Comment Ajouter les Nouveaux Types
 
-L'architecture SEO de Docux Blog supporte maintenant **automatiquement** de nombreux types Schema.org. Voici comment les utiliser :
+L'architecture SEO de DocuxLab supporte maintenant **automatiquement** de nombreux types Schema.org. Voici comment les utiliser :
 
 #### 🎯 Méthodes de Détection
 
@@ -1560,11 +1470,11 @@ Utilisez le **SeoDebugPanel** pour :
 
 **Panel visible en mode développement** : `npm start` puis ouvrez n'importe quelle page.
 
-#### 🆕 Test CollectionPage Repository
+#### 🆕 Test CollectionPage (exemple)
 
 **Tester la nouvelle fonctionnalité** :
 1. Démarrez le site : `npm start`
-2. Naviguez vers `/repository/`
+2. Naviguez vers `/exemple/`
 3. Observez le SeoDebugPanel :
    - ✅ **Onglet Vue** : Type détecté `CollectionPage (configuré)`
    - ✅ **Onglet Validation** : Score SEO élevé avec métadonnées enrichies
@@ -1573,7 +1483,7 @@ Utilisez le **SeoDebugPanel** pour :
 **Test Google Rich Results** :
 1. Cliquez sur le bouton 🔍 **Google** dans le panel
 2. Ou allez sur [Google Rich Results Test](https://search.google.com/test/rich-results)
-3. Testez l'URL : `https://docuxlab.com/repository/`
+3. Testez l'URL : `https://docuxlab.com/exemple/`
 4. **Résultat attendu** : Détection d'éléments enrichis CollectionPage
 
 ---
@@ -1636,81 +1546,6 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 
 
 ---
-
-## 🆕 Nouveautés et Mises à Jour
-
-### Version Actuelle (Août 2025)
-
-**🆕 Support Pages MDX Personnalisées (Nouvelle fonctionnalité)**
-- Récupération automatique du front matter pour les pages `/src/pages/*.mdx`
-- Support complet des tags et keywords depuis le front matter
-- Gestion intelligente des auteurs (format array et string)
-- Détection automatique du schemaType depuis le front matter
-- Fallback robuste pour les métadonnées manquantes
-- Intégration transparente avec le Layout global
-
-**� Pages de Séries Enrichies v2.1.2 (Dernière mise à jour)**
-- **ItemListElement dynamique** : Calcul automatique des séries depuis les articles réels
-- **CreativeWorkSeries** : Génération de schémas spécialisés pour chaque série individuelle
-- **Métadonnées éducatives** : Audience, contexte géographique, typologie d'apprentissage
-- **Contexte organisationnel** : Éditeur, logos, liens sociaux pour renforcer l'autorité
-- **Fallback intelligent** : Système robuste avec valeurs par défaut si erreur de calcul
-- **Rich Results optimisés** : Conformité maximale Google pour collections éducatives
-
-**🔗 Normalisation Avancée des URLs (Version 2.1.1)**
-- Correction automatique des doubles slashes dans les URLs
-- Génération d'IDs canoniques cohérents pour tous les schémas
-- Validation proactive des URLs entre schémas multiples
-- Système de correction automatique des incohérences détectées
-
-**🚀 Optimisations de Stabilité Production (Version 2.1.1)**
-- **Compatibilité SSG** : Élimination complète des erreurs `window is not defined`
-- **ExecutionEnvironment** : Remplacement des accès `window` par `ExecutionEnvironment.canUseDOM`
-- **Logs silencieux** : Suppression des messages de détection normaux dans les logs de build
-- **Build Production** : Validation complète pour déploiement GitHub Actions
-- **0 erreur SSG** : Compilation sans échec sur tous les chemins statiques (27 paths testés)
-- **Performance préservée** : Toutes les fonctionnalités SEO maintenues
-
-**Métriques de stabilité :**
-```mdx
-✅ npm run build        → Succès sans erreurs
-✅ 27 chemins statiques → Génération réussie
-✅ GitHub Actions       → Déploiement automatique
-✅ Fonctionnalités SEO  → 100% préservées
-⚡ Temps de build       → Optimisé (-15% vs v2.1.0)
-🔕 Logs propres        → Aucun spam de détection
-```
-
-**🔄 Schémas JSON-LD Multiples**
-- Génération automatique de BlogPosting + TechArticle pour articles techniques
-- URLs parfaitement cohérentes entre tous les schémas (@id, url, mainEntityOfPage)
-- Détection intelligente du contenu technique via mots-clés
-- Validation temps réel dans le panel de debug
-
-**✨ Architecture Séparée**
-- Composant SEO principal nettoyé et optimisé
-- SeoDebugPanel déployé comme composant dédié
-- Documentation complète pour chaque composant
-
-**🔍 SeoDebugPanel Avancé**
-- Interface professionnelle type Google Rich Results Test
-- Score SEO intelligent avec algorithme de validation
-- Validation Schema.org complète avec catégorisation
-- Actions rapides : Export JSON, Test Google, Copie URL
-- Métriques de performance temps réel
-- Troubleshooting automatique intégré
-
-**📚 Documentation Exhaustive**
-- Guide technique complet développé par Docux
-- Exemples d'usage pour tous les cas de figure
-- Troubleshooting avec solutions détaillées
-- API complète avec props et méthodes
-
-**⚡ Optimisations Performance**
-- Mode développement uniquement pour le debug panel
-- Hooks conditionnels pour éviter les erreurs
-- Validation à la demande sans impact performance
-
 
 ##  Captures d'écran du SeoDebugPanel
 
@@ -1820,35 +1655,6 @@ L'interface du SeoDebugPanel présente une **navigation par onglets** moderne av
 
 ---
 
-## 🎉 Nouveautés Version 2.1.1
-
-### ⭐ BreadcrumbList Générique Universel
-
-**Révolution de la navigation SEO** : Tous les types de pages bénéficient désormais automatiquement de breadcrumbs structurés !
-
-**🚀 Fonctionnalités automatiques :**
-- ✅ **Toutes les pages** : /thanks/, /repository/, /series/, articles, tags...
-- ✅ **Analyse intelligente** : Détection automatique de la hiérarchie URL
-- ✅ **Rich Snippets** : Breadcrumbs visibles dans les résultats Google
-- ✅ **Zéro configuration** : Fonctionne immédiatement sans paramétrage
-
-**📈 Impact immédiat sur le SEO :**
-- 🎯 **Compréhension Google améliorée** : Structure de site plus claire
-- 📊 **Rich Results enhanced** : Breadcrumbs dans les SERP
-- 🔗 **Maillage interne renforcé** : Navigation hiérarchique automatique
-- ⚡ **Performance préservée** : Génération légère sans impact build
-
-### 🔧 Améliorations Techniques
-
-- **Architecture modulaire** : Séparation claire between SEO et Debug
-- **Optimisation SSG** : Élimination complète des erreurs window
-- **Logs silencieux** : Build propre sans spam de détection
-- **Validation proactive** : Correction automatique des incohérences
-
----
-
-## � Pour Aller Plus Loin
-
 ### 📖 Ressources Complémentaires
 
 - **📚 Documentation Technique Complète** - Guide de référence pour développeurs
@@ -1864,7 +1670,7 @@ L'interface du SeoDebugPanel présente une **navigation par onglets** moderne av
 
 ---
 
-## �📄 Licence et Crédits
+## 📄 Licence et Crédits
 
 ### 🧑‍💻 Développement
 
@@ -1940,7 +1746,7 @@ schemaTypes: ["BlogPosting"]                 # Article personnel uniquement
 - 📊 **Schema CollectionPage enrichi** : `CreativeWorkSeries` avec métadonnées complètes
 - 🔍 **SEO séries optimisé** : Rich Snippets breadcrumbs dans Google
 
-### � v2.1.2 (29 août 2025) - Pages de Séries Enrichies
+###  v2.1.2 (29 août 2025) - Pages de Séries Enrichies
 **Améliorations majeures :**
 - ✨ **Pages `/series/` révolutionnées** : Calcul dynamique des séries réelles depuis les articles
 - 📊 **itemListElement avec données vraies** : Chaque série génère un `CreativeWorkSeries` avec URL fonctionnelle
@@ -1970,10 +1776,8 @@ schemaTypes: ["BlogPosting"]                 # Article personnel uniquement
 
 ---
 
-*Architecture SEO développée avec ❤️ par **Docux**, accompagné par l'intelligence artificielle **GitHub Copilot***
+*Architecture SEO développée avec ❤️ par **DocuxLab**, accompagné par l'intelligence artificielle **GitHub Copilot***
 
-**🎉 Architecture SEO v2.1.4 prête pour la production avec schémas multiples explicites révolutionnaires !**
 
 ---
 
-> 💡 **Point Clé v2.1.4** : Utilisez `schemaTypes: ["TechArticle", "BlogPosting"]` dans votre frontmatter pour un contrôle total et une prédictibilité maximale de vos schémas JSON-LD.
