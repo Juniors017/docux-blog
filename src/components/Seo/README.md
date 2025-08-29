@@ -55,6 +55,51 @@ schemaType: "TechArticle"                   // ← Utilisé si schemaTypes absen
 
 **⚠️ Important** : La configuration explicite via `schemaTypes` **court-circuite** toute détection automatique, garantissant un contrôle total sur vos schémas.
 
+#### 🎯 Schémas JSON-LD Supportés (v2.1.4)
+
+Le composant supporte **9 types de schémas** différents pour une couverture SEO complète :
+
+| SchemaType | Usage | Configuration Frontmatter |
+|------------|-------|---------------------------|
+| **BlogPosting** | Articles de blog | `schemaTypes: ["BlogPosting"]` |
+| **TechArticle** | Contenu technique | `schemaTypes: ["TechArticle"]` + `proficiencyLevel`, `programmingLanguage` |
+| **HowTo** | Guides pratiques | `schemaTypes: ["HowTo"]` + `totalTime`, `tool`, `supply` |
+| **FAQPage** | Pages FAQ | `schemaTypes: ["FAQPage"]` + `faq: [{question, answer}]` |
+| **CollectionPage** | Listes/Collections | `schemaTypes: ["CollectionPage"]` + `numberOfItems` |
+| **SoftwareApplication** | Applications/Projets | `schemaTypes: ["SoftwareApplication"]` + `softwareVersion` |
+| **Course** | Formations/Cours | `schemaTypes: ["Course"]` + `instructor`, `courseMode` |
+| **WebSite** | Page d'accueil | Automatique pour homepage |
+| **BreadcrumbList** | Navigation | Automatique sur toutes les pages |
+
+#### 🚀 Exemples de Configuration Avancée
+
+**Double schéma technique :**
+```yaml
+schemaTypes: ["TechArticle", "BlogPosting"]
+proficiencyLevel: "Advanced"
+programmingLanguage: ["JavaScript", "React", "TypeScript"]
+timeRequired: "PT45M"
+audience: "Développeurs web"
+```
+
+**Guide pratique avec FAQ :**
+```yaml
+schemaTypes: ["HowTo", "FAQPage"]
+totalTime: "PT2H"
+tool: ["Node.js", "npm", "Git"]
+faq:
+  - question: "Prérequis nécessaires ?"
+    answer: "Node.js 18+ et connaissances JavaScript"
+```
+
+**Collection de projets :**
+```yaml
+schemaTypes: ["CollectionPage", "SoftwareApplication"]
+numberOfItems: 15
+license: "MIT"
+applicationCategory: "DeveloperApplication"
+```
+
 #### 🔧 Exemples d'Usage
 
 **Pour les articles techniques (RECOMMANDÉ) :**
