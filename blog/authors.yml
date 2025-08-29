@@ -1,17 +1,16 @@
 docux:
   name: Docux
-  title: Développeur & Créateur d'Outils d'Automatisation
-  url: https://docux.org
-  image_url: /img/docusaurus.png
+  title: Explorateur curieux, expérimentateur un peu fou et un peu contributeur
+  url: https://docuxlab.com
+  image_url: https://avatars.githubusercontent.com/u/97809069?v=4
   page:
     # customize the url of the author page at /blog/authors/<permalink>
     permalink: '/docux'
   socials:
     github: https://github.com/Juniors017
   bio: |
-    Développeur passionné par l'automatisation et l'optimisation SEO.
-    Créateur des scripts d'automatisation Docux Blog permettant de générer
-    des articles optimisés SEO en 30 secondes.
+    Explorateur curieux, expérimentateur un peu fou et un peu contributeur pour Docusaurus. J'aime créer des outils pour améliorer la productivité et l'expérience utilisateur. 
+    Et partager mes découvertes avec la communauté.
 
 
 kiki:
