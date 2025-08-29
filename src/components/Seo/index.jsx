@@ -459,6 +459,63 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    * Création de la structure de données structurées selon le type de page.
    * Cette structure est cruciale pour les Rich Results Google.
    */
+
+  /**
+   * Utilitaire pour créer des BreadcrumbList optimisés Google
+   * 
+   * Applique les bonnes pratiques :
+   * - URLs normalisées en minuscules
+   * - Items typés en WebPage
+   * - Nom global du BreadcrumbList
+   * 
+   * Exemple généré pour /repository/ :
+   * {
+   *   "@type": "BreadcrumbList",
+   *   "name": "Navigation - Repositories Publics",
+   *   "itemListElement": [
+   *     {
+   *       "@type": "ListItem",
+   *       "position": 1,
+   *       "name": "DOCUX",
+   *       "item": {
+   *         "@type": "WebPage",
+   *         "@id": "https://juniors017.github.io",
+   *         "name": "DOCUX",
+   *         "url": "https://juniors017.github.io"
+   *       }
+   *     },
+   *     {
+   *       "@type": "ListItem", 
+   *       "position": 2,
+   *       "name": "Repositories Publics",
+   *       "item": {
+   *         "@type": "WebPage",
+   *         "@id": "https://juniors017.github.io/docux-blog/repository/",
+   *         "name": "Repositories Publics",
+   *         "url": "https://juniors017.github.io/docux-blog/repository/"
+   *       }
+   *     }
+   *   ]
+   * }
+   */
+  const createOptimizedBreadcrumb = (items, listName) => {
+    return {
+      '@type': 'BreadcrumbList',
+      name: listName, // ✅ Nom global du BreadcrumbList
+      itemListElement: items.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: {
+          '@type': 'WebPage', // ✅ Type WebPage au lieu de Thing
+          '@id': item.url.toLowerCase(), // ✅ URL normalisée en minuscules
+          name: item.name,
+          url: item.url.toLowerCase() // ✅ URL normalisée en minuscules
+        }
+      }))
+    };
+  };
+
   const additionalJsonLd = (() => {
     // Structure de base commune à tous les types de pages
     const baseStructure = {
@@ -578,24 +635,17 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
             description: 'Collection d\'articles et tutoriels sur Docusaurus'
           },
           
-          // Fil d'Ariane structuré pour les pages de collection blog
-          breadcrumb: {
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              {
-                '@type': 'ListItem',
-                position: 1,
-                name: siteConfig.title,
-                item: siteConfig.url
-              },
-              {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'Blog',
-                item: canonicalUrl
-              }
-            ]
-          },
+          // Fil d'Ariane optimisé pour les pages de collection blog
+          breadcrumb: createOptimizedBreadcrumb([
+            {
+              name: siteConfig.title,
+              url: siteConfig.url
+            },
+            {
+              name: 'Blog',
+              url: canonicalUrl
+            }
+          ], `Navigation - Blog ${siteConfig.title}`),
           
           // Entité principale de la collection blog
           mainEntity: {
@@ -660,24 +710,17 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
           })
         },
         
-        // Fil d'Ariane pour les collections personnalisées
-        breadcrumb: {
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: siteConfig.title,
-              item: siteConfig.url
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: title,
-              item: canonicalUrl
-            }
-          ]
-        },
+        // Fil d'Ariane optimisé pour les collections personnalisées
+        breadcrumb: createOptimizedBreadcrumb([
+          {
+            name: siteConfig.title,
+            url: siteConfig.url
+          },
+          {
+            name: title,
+            url: canonicalUrl
+          }
+        ], `Navigation - ${title}`),
         
         // Informations spécifiques aux projets/repositories si c'est une page repository
         ...(isRepositoryPage && {

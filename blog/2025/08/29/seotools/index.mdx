@@ -119,6 +119,7 @@ Notre architecture SEO apporte plusieurs **innovations majeures** au monde Docus
 - **Détection de contexte** : Reconnaissance automatique du type de page (blog, docs, accueil)
 - **Schema.org intelligent** : Sélection automatique du type Schema selon le contenu
 - **Fallbacks intelligents** : Système de secours pour garantir la qualité SEO
+- **BreadcrumbList optimisé** : 🆕 Génération automatique conforme aux bonnes pratiques Google
 
 #### 🔍 Outils de Debug Professionnels
 - **Panel intégré** : Interface de debug moderne directement dans le navigateur
@@ -148,6 +149,10 @@ Notre architecture SEO apporte plusieurs **innovations majeures** au monde Docus
 - **🔗 Gestion Slug** : Validation et affichage des URLs personnalisées  
 - **📚 Support Séries** : Organisation et validation du contenu par série
 - **🖼️ Aperçu Images** : Affichage des images dans les tooltips avec gestion d'erreur
+- **🆕 Pages de Collection Enrichies** : Support intelligent CollectionPage blog + personnalisées
+- **🎯 Repository/Portfolio** : Métadonnées spécialisées pour pages de projets open source
+- **📊 Schémas Multiples** : BlogPosting + TechArticle automatique pour contenus techniques
+- **🍞 BreadcrumbList Optimisé** : URLs normalisées, items WebPage, noms globaux (conformité Google)
 - **🔧 Compatibilité SSG** : Élimination complète des erreurs `window is not defined`
 - **🔕 Logs Silencieux** : Suppression du spam de détection dans les logs de build
 - **⚡ Build Production** : Optimisation pour GitHub Actions et déploiement continu
@@ -671,7 +676,7 @@ Le panel de debug attribue un score de 0 à 100% basé sur :
 - **WebSite** : Page d'accueil avec SearchAction
 - **WebPage** : Pages générales avec métadonnées de base
 - **Series** : Pages de séries d'articles
-- **CollectionPage** : Pages de listes (tags, catégories, archives)
+- **CollectionPage** : 🆕 **Amélioré** - Pages de collections blog + personnalisées (repository, portfolio)
 
 #### 🆕 Types récemment ajoutés (disponibles maintenant)
 
@@ -682,6 +687,84 @@ Le panel de debug attribue un score de 0 à 100% basé sur :
 - **CreativeWork** : Projets créatifs généraux ✅ *Implémenté avec exemples*
 - **Person** : Pages de profil auteur ✅ *Implémenté avec exemples*
 - **FAQPage** : Pages de questions/réponses ✅ *Implémenté avec exemples*
+
+#### 🆕 Focus CollectionPage - Pages de Collection Intelligentes
+
+**🎯 Problème résolu** : Les pages de collection personnalisées (comme `/repository/`, `/portfolio/`) n'étaient pas correctement optimisées pour Google Rich Results.
+
+**✨ Solution implémentée** : Support intelligent des deux types de collections :
+
+##### 📁 Collections Blog (automatiques)
+- **Pages concernées** : `/blog/`, `/blog/tags/react/`, `/blog/authors/docux/`
+- **Détection** : Automatique via analyse d'URL
+- **Schema.org** : `CollectionPage` + `Blog` + `BreadcrumbList`
+- **Rich Results** : Index d'articles structuré
+
+##### 🎯 Collections personnalisées (configurables)
+
+**Exemple concret - Page Repository** :
+```yaml
+---
+title: "Repositories Publics - Projets Open Source"
+schemaType: "CollectionPage"
+category: "Portfolio"
+numberOfItems: 15
+programmingLanguage: ["JavaScript", "TypeScript", "React"]
+authors: ["docux"]
+date: 2025-08-29
+last_update:
+  date: 2025-08-29
+  author: docux
+---
+```
+
+**📊 Métadonnées générées automatiquement** :
+- ✅ **MainEntity** : `ItemList` avec nombre d'éléments (`numberOfItems: 15`)
+- ✅ **Breadcrumb** : 🆕 **Optimisé Google** - Navigation structurée avec bonnes pratiques
+- ✅ **Author** : Informations depuis `src/data/authors.js`
+- ✅ **Dates** : `datePublished` + `dateModified` depuis `last_update`
+- ✅ **Specialty** : "Open Source Projects" (spécifique `/repository/`)
+- ✅ **AdditionalType** : "SoftwareSourceCode" (pour projets)
+- ✅ **Keywords** : Depuis frontMatter `keywords` + `tags`
+
+##### 🆕 BreadcrumbList "au top" pour Google
+
+**🎯 Optimisations appliquées automatiquement :**
+- ✅ **URLs normalisées** : `juniors017.github.io` (minuscules partout)
+- ✅ **Items typés WebPage** : Au lieu de `Thing` générique
+- ✅ **Nom global** : Chaque BreadcrumbList a un nom descriptif
+
+**📋 Exemple optimisé généré :**
+```json
+{
+  "@type": "BreadcrumbList",
+  "name": "Navigation - Repositories Publics",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "DOCUX",
+      "item": {
+        "@type": "WebPage",
+        "@id": "https://juniors017.github.io",
+        "name": "DOCUX",
+        "url": "https://juniors017.github.io"
+      }
+    }
+  ]
+}
+```
+
+**🎉 Résultat Google Rich Results** :
+- 🔍 **Avant** : "Aucun élément détecté" 
+- ✅ **Après** : Page de collection enrichie avec fil d'Ariane optimisé, auteur, dates, catégorie
+
+**📍 Pages applicables** :
+- `/repository/` : Projets open source
+- `/portfolio/` : Portfolio professionnel  
+- `/gallery/` : Galeries d'images
+- `/products/` : Catalogues produits
+- `/resources/` : Collections de ressources
 
 #### 🚀 Types possibles pour extensions futures
 
@@ -1018,6 +1101,22 @@ Utilisez le **SeoDebugPanel** pour :
 - 🔧 Debugger les propriétés manquantes
 
 **Panel visible en mode développement** : `npm start` puis ouvrez n'importe quelle page.
+
+#### 🆕 Test CollectionPage Repository
+
+**Tester la nouvelle fonctionnalité** :
+1. Démarrez le site : `npm start`
+2. Naviguez vers `/repository/`
+3. Observez le SeoDebugPanel :
+   - ✅ **Onglet Vue** : Type détecté `CollectionPage (configuré)`
+   - ✅ **Onglet Validation** : Score SEO élevé avec métadonnées enrichies
+   - ✅ **Schema JSON-LD** : `mainEntity: ItemList`, `specialty: "Open Source Projects"`
+
+**Test Google Rich Results** :
+1. Cliquez sur le bouton 🔍 **Google** dans le panel
+2. Ou allez sur [Google Rich Results Test](https://search.google.com/test/rich-results)
+3. Testez l'URL : `https://juniors017.github.io/docux-blog/repository/`
+4. **Résultat attendu** : Détection d'éléments enrichis CollectionPage
 
 ---
 

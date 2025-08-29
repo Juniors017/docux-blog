@@ -32,6 +32,9 @@ Cette documentation technique détaille l'implémentation de l'architecture SEO 
 - 🆕 **Normalisation intelligente des URLs** : Suppression doubles slashes
 - 🆕 **Validation proactive** des schémas JSON-LD
 - 🆕 **Correction automatique** des incohérences d'URLs
+- 🆕 **Pages de collection enrichies** : Support CollectionPage pour blog ET collections personnalisées
+- 🆕 **Repository/Portfolio** : Métadonnées spécialisées pour pages de projets
+- 🆕 **BreadcrumbList optimisé** : URLs normalisées, items WebPage, noms globaux (conformité Google)
 - 🔧 **Optimisation SSG** : Compatibilité Static Site Generation sans erreurs window
 - 🔕 **Logs silencieux** : Détection normale des pages sans spam console
 
@@ -308,7 +311,7 @@ Le composant SEO supporte maintenant parfaitement les pages MDX personnalisées 
 
 ```mdx
 ---
-title: "Ma Page Repository"
+title: "Ma Page Repository" 
 description: "Page de présentation de mes projets open source"
 schemaType: "CollectionPage"
 image: "/img/projects.png"
@@ -323,10 +326,25 @@ keywords:
   - "projets open source"
   - "développement"
 category: "Portfolio"
+numberOfItems: 15
+programmingLanguage: ["JavaScript", "TypeScript", "React"]
 date: 2025-08-29
+last_update:
+  date: 2025-08-29
+  author: docux
 ---
 
 import MyComponent from "@site/src/components/MyComponent";
+
+<MyComponent />
+```
+
+**✨ Fonctionnalités spécifiques pages de collection :**
+- ✅ **Gestion intelligente** : Blog vs. collections personnalisées (repository, portfolio)
+- ✅ **Métadonnées enrichies** : `numberOfItems`, `programmingLanguage`, `specialty`
+- ✅ **Schema.org optimisé** : `ItemList` avec `breadcrumb` personnalisé
+- ✅ **Projets/Repository** : Support spécialisé avec `additionalType: "SoftwareSourceCode"`
+- ✅ **Author + dates** : Support `datePublished`, `dateModified` depuis `last_update`
 
 <MyComponent />
 ```
@@ -614,7 +632,7 @@ Le panel de debug attribue un score de 0 à 100% basé sur :
 - **WebSite** : Page d'accueil avec SearchAction
 - **WebPage** : Pages générales avec métadonnées de base
 - **Series** : Pages de séries d'articles
-- **CollectionPage** : Pages de listes (tags, catégories, archives)
+- **CollectionPage** : 🆕 **Amélioré** - Pages de collections blog + personnalisées avec BreadcrumbList optimisé
 
 #### 🆕 Types récemment ajoutés (disponibles maintenant)
 
@@ -707,6 +725,9 @@ schemaType: "HowTo"  # Force un type spécifique
 - **BlogPosting** : Articles de blog classiques
 - **WebSite** : Page d'accueil
 - **CollectionPage** : Pages de listes et index
+  - **📁 Blog Collections** : Index blog (`/blog/`), tags (`/blog/tags/react/`), auteurs (`/blog/authors/docux/`)
+  - **🎯 Collections personnalisées** : Repository (`/repository/`), Portfolio, Galeries, Catalogues
+  - **✨ Nouveau** : Support enrichi avec `ItemList`, `breadcrumb`, métadonnées spécialisées
 
 ### 📝 Examples de FrontMatter Complets
 
@@ -921,6 +942,101 @@ mainEntity:
 Trouvez rapidement des réponses à vos questions...
 ```
 
+#### 📁 CollectionPage - Pages de collection enrichies
+
+**🆕 Fonctionnalité majeure** : Support intelligent des collections blog ET personnalisées.
+
+##### 📝 Collections Blog (automatiques)
+
+Pour les pages `/blog/`, `/blog/tags/react/`, `/blog/authors/docux/` :
+- ✅ **Détection automatique** : Pas de configuration nécessaire
+- ✅ **Schema.org optimisé** : Blog + BreadcrumbList
+- ✅ **Rich Results** : Pages de collection d'articles
+
+##### 🎯 Collections personnalisées (configurables)
+
+Pour les pages comme `/repository/`, `/portfolio/`, `/gallery/` :
+
+```yaml
+---
+title: "Repositories Publics - Projets Open Source"
+description: "Découvrez tous mes projets open source et contributions"
+schemaType: "CollectionPage"  # Force le type Collection
+image: "/img/projects-overview.jpg"
+authors: ["docux"]
+category: "Portfolio"
+numberOfItems: 15  # Nombre d'éléments dans la collection
+programmingLanguage: ["JavaScript", "TypeScript", "React", "Python"]
+tags: ["open source", "github", "projets", "portfolio"]
+keywords: ["repositories", "projets open source", "développement web"]
+date: 2025-08-29
+last_update:
+  date: 2025-08-29
+  author: docux
+---
+
+import MyRepositories from "@site/src/components/MyRepositories";
+
+# Mes Projets Open Source
+
+<MyRepositories username="juniors017" />
+```
+
+**✨ Métadonnées générées automatiquement :**
+- 🎯 **MainEntity** : `ItemList` avec nombre d'éléments
+- 🍞 **Breadcrumb** : 🆕 **Optimisé Google** - Navigation structurée avec WebPage, URLs normalisées
+- 💻 **Specialty** : "Open Source Projects" (pour `/repository/`)
+- 🏷️ **AdditionalType** : "SoftwareSourceCode" (pour projets)
+- 👤 **Author** : Depuis `src/data/authors.js`
+- 📅 **Dates** : `datePublished` + `dateModified`
+
+#### 🆕 BreadcrumbList Optimisé Google
+
+**🎯 Bonnes pratiques appliquées automatiquement :**
+- ✅ **URLs normalisées** : Toutes en minuscules (`juniors017.github.io`)
+- ✅ **Items typés WebPage** : Au lieu de `Thing` générique
+- ✅ **Nom global** : Chaque BreadcrumbList a un nom descriptif
+- ✅ **Structure complète** : `@id`, `name`, `url` pour chaque item
+
+**🔍 Exemple généré pour `/repository/` :**
+```json
+{
+  "@type": "BreadcrumbList",
+  "name": "Navigation - Repositories Publics",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "DOCUX",
+      "item": {
+        "@type": "WebPage",
+        "@id": "https://juniors017.github.io",
+        "name": "DOCUX", 
+        "url": "https://juniors017.github.io"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Repositories Publics",
+      "item": {
+        "@type": "WebPage",
+        "@id": "https://juniors017.github.io/docux-blog/repository/",
+        "name": "Repositories Publics",
+        "url": "https://juniors017.github.io/docux-blog/repository/"
+      }
+    }
+  ]
+}
+```
+
+**🎉 Résultat Google Rich Results :**
+- ✅ Page de collection structurée
+- ✅ Fil d'Ariane visible et optimisé
+- ✅ Métadonnées auteur et dates
+- ✅ Mots-clés et catégories
+- ✅ Informations spécialisées (langages, nombre d'items)
+
 ### ⚡ Configuration Rapide
 
 #### Détection automatique (recommandée)
@@ -976,6 +1092,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - 🧠 Hooks conditionnels pour éviter les erreurs
 - 📦 Import dynamique des hooks spécialisés
 - 🔄 Validation temps réel sans impact performance
+- 🆕 **BreadcrumbList optimisé** : Fonction utilitaire réutilisable pour conformité Google
 
 ### Métriques Surveillées
 
