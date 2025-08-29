@@ -560,19 +560,107 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     }
 
     /**
-     * Enrichissement pour les pages de collection/listing (index blog, tags, etc.)
+     * Enrichissement pour les pages de collection/listing
+     * 
+     * Gère deux cas :
+     * 1. Pages de blog (index, tags, auteurs)
+     * 2. Pages de collection personnalisées (comme /repository/)
      */
-    if (pageInfo.type === 'CollectionPage' && isBlogListPage) {
+    if (pageInfo.type === 'CollectionPage') {
+      // Configuration spécifique pour les pages de blog
+      if (isBlogListPage) {
+        return {
+          ...baseStructure,
+          '@type': 'CollectionPage',
+          about: {
+            '@type': 'Blog',
+            name: `Blog - ${siteConfig.title}`,
+            description: 'Collection d\'articles et tutoriels sur Docusaurus'
+          },
+          
+          // Fil d'Ariane structuré pour les pages de collection blog
+          breadcrumb: {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: siteConfig.title,
+                item: siteConfig.url
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Blog',
+                item: canonicalUrl
+              }
+            ]
+          },
+          
+          // Entité principale de la collection blog
+          mainEntity: {
+            '@type': 'Blog',
+            name: `Blog - ${siteConfig.title}`,
+            url: canonicalUrl,
+            description: 'Articles et tutoriels sur Docusaurus et le développement web'
+          }
+        };
+      }
+      
+      // Configuration pour les pages de collection personnalisées (repository, etc.)
+      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+      
       return {
         ...baseStructure,
         '@type': 'CollectionPage',
-        about: {
-          '@type': 'Blog',
-          name: `Blog - ${siteConfig.title}`,
-          description: 'Collection d\'articles et tutoriels sur Docusaurus'
+        
+        // Informations sur l'auteur si disponible
+        ...(primaryAuthor && {
+          author: {
+            '@type': 'Person',
+            name: normalizeAuthorName(primaryAuthor.name),
+            url: primaryAuthor.url || primaryAuthor.github,
+            description: primaryAuthor.title || 'Contributeur Docux',
+            image: primaryAuthor.imageUrl
+          }
+        }),
+        
+        // Date de publication/mise à jour si disponible
+        ...(frontMatter.date && {
+          datePublished: frontMatter.date
+        }),
+        ...(frontMatter.last_update?.date && {
+          dateModified: frontMatter.last_update.date
+        }),
+        
+        // Catégorie de la collection
+        ...(frontMatter.category && {
+          about: {
+            '@type': 'Thing',
+            name: frontMatter.category,
+            description: `Collection de contenus sur le thème : ${frontMatter.category}`
+          }
+        }),
+        
+        // Mots-clés spécifiques à la collection
+        ...(frontMatter.keywords && {
+          keywords: Array.isArray(frontMatter.keywords) 
+            ? frontMatter.keywords.join(', ')
+            : frontMatter.keywords
+        }),
+        
+        // Entité principale de la collection personnalisée
+        mainEntity: {
+          '@type': 'ItemList',
+          name: title,
+          description: description,
+          numberOfItems: frontMatter.numberOfItems || undefined,
+          ...(frontMatter.category && {
+            about: frontMatter.category
+          })
         },
         
-        // Fil d'Ariane structuré pour les pages de collection
+        // Fil d'Ariane pour les collections personnalisées
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [
@@ -585,19 +673,19 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
             {
               '@type': 'ListItem',
               position: 2,
-              name: 'Blog',
+              name: title,
               item: canonicalUrl
             }
           ]
         },
         
-        // Entité principale de la collection
-        mainEntity: {
-          '@type': 'Blog',
-          name: `Blog - ${siteConfig.title}`,
-          url: canonicalUrl,
-          description: 'Articles et tutoriels sur Docusaurus et le développement web'
-        }
+        // Informations spécifiques aux projets/repositories si c'est une page repository
+        ...(isRepositoryPage && {
+          specialty: 'Open Source Projects',
+          additionalType: 'SoftwareSourceCode',
+          programmingLanguage: frontMatter.programmingLanguage || ['JavaScript', 'TypeScript', 'React'],
+          codeRepository: 'https://github.com/Juniors017'
+        })
       };
     }
 
