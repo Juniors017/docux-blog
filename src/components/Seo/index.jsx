@@ -24,7 +24,7 @@ import {
   fixAllSchemaUrls 
 } from './utils/urlNormalizer';
 
-export default function Seo() {
+export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRender = false } = {}) {
   // Récupération du contexte Docusaurus et de la localisation
   const location = useLocation(); // URL et chemin actuels
   const { siteConfig } = useDocusaurusContext(); // Configuration globale du site
@@ -32,6 +32,45 @@ export default function Seo() {
   // Variables pour stocker les métadonnées selon le type de page
   let blogPostData = null;  // Données spécifiques aux articles de blog
   let pageMetadata = null;  // Métadonnées génériques des pages statiques
+  
+  /**
+   * ÉTAPE 0 : Vérification pour éviter la duplication de rendu
+   * 
+   * Si le composant SEO est appelé directement dans une page avec des props,
+   * on marque qu'il ne doit pas être rendu à nouveau par le Layout global.
+   */
+  React.useEffect(() => {
+    if (propsFrontMatter || pageData) {
+      // Marquer que cette page a un SEO personnalisé
+      window.__seoCustomRendered = true;
+    }
+    
+    return () => {
+      // Nettoyer le marqueur quand on quitte la page
+      if (window.__seoCustomRendered) {
+        delete window.__seoCustomRendered;
+      }
+    };
+  }, [propsFrontMatter, pageData]);
+  
+  // Si on est dans le Layout global et qu'un SEO personnalisé existe déjà, ne pas rendre
+  if (!forceRender && !propsFrontMatter && !pageData && window.__seoCustomRendered) {
+    return null;
+  }
+  
+  /**
+   * ÉTAPE 0bis : Utilisation des props directement passées au composant
+   * 
+   * Si des données sont passées directement en props (par exemple depuis une page MDX),
+   * on les utilise en priorité.
+   */
+  if (pageData || propsFrontMatter) {
+    pageMetadata = {
+      title: pageData?.title || propsFrontMatter?.title,
+      description: pageData?.description || propsFrontMatter?.description,
+      frontMatter: propsFrontMatter || pageData?.frontMatter || {}
+    };
+  }
   
   /**
    * ÉTAPE 1 : Récupération des métadonnées des articles de blog
@@ -75,7 +114,42 @@ export default function Seo() {
   }
 
   /**
-   * ÉTAPE 3 : Récupération alternative via les métadonnées globales
+   * ÉTAPE 3 : Récupération des métadonnées pour les pages MDX personnalisées
+   * 
+   * Pour les pages MDX dans src/pages/, tentative de récupération
+   * des métadonnées depuis les hooks disponibles ou le contexte global.
+   */
+  try {
+    // Essayer de récupérer les métadonnées depuis le contexte global Docusaurus
+    if (!pageMetadata && typeof window !== 'undefined' && window.docusaurus) {
+      const globalData = window.docusaurus.globalData;
+      
+      // Rechercher dans les données du plugin de pages
+      if (globalData && globalData['docusaurus-plugin-content-pages']) {
+        const pagesData = globalData['docusaurus-plugin-content-pages'];
+        if (pagesData && pagesData.default) {
+          const currentPageData = pagesData.default.find(page => 
+            page.path === location.pathname || 
+            page.permalink === location.pathname
+          );
+          
+          if (currentPageData && currentPageData.metadata) {
+            pageMetadata = {
+              title: currentPageData.metadata.title || currentPageData.title,
+              description: currentPageData.metadata.description || currentPageData.description,
+              frontMatter: currentPageData.metadata.frontMatter || {}
+            };
+          }
+        }
+      }
+    }
+  } catch (error) {
+    // Récupération des métadonnées de pages non disponible
+    console.debug('Récupération métadonnées pages non disponible:', error.message);
+  }
+
+  /**
+   * ÉTAPE 3bis : Récupération alternative via les métadonnées globales
    * 
    * Si aucun hook spécialisé n'a fonctionné, on essaie de récupérer
    * les métadonnées depuis le contexte global de Docusaurus.
@@ -89,18 +163,91 @@ export default function Seo() {
      * Récupération depuis le DOM si aucun hook n'a fonctionné
      * Utile pour les pages statiques générées côté client
      */
-    if (!pageMetadata && typeof window !== 'undefined' && window.docusaurus) {
-      // Récupérer les métadonnées depuis le contexte global si disponible
-      const globalData = window.docusaurus.globalData;
-      if (globalData && !pageMetadata) {
-        // Construire des métadonnées basiques pour les pages statiques
-        pageMetadata = {
-          title: document.title || siteConfig.title,
-          description: document.querySelector('meta[name="description"]')?.content || siteConfig.tagline,
-          frontMatter: {
-            // Pas de frontMatter pour les pages générées dynamiquement
+    if (!pageMetadata && typeof window !== 'undefined') {
+      // Si on a des données globals Docusaurus disponibles
+      if (window.docusaurus) {
+        const globalData = window.docusaurus.globalData;
+        if (globalData) {
+          // Rechercher les métadonnées de page spécifiques dans les plugins
+          const pagePluginData = globalData['docusaurus-plugin-content-pages'];
+          if (pagePluginData && pagePluginData.default) {
+            const currentPageData = pagePluginData.default.find(page => 
+              page.path === location.pathname || 
+              page.permalink === location.pathname
+            );
+            
+            if (currentPageData && currentPageData.frontMatter) {
+              pageMetadata = {
+                title: currentPageData.title || currentPageData.frontMatter.title,
+                description: currentPageData.description || currentPageData.frontMatter.description,
+                frontMatter: currentPageData.frontMatter
+              };
+            }
           }
-        };
+        }
+      }
+      
+      // Fallback: récupération depuis les meta tags existants dans le DOM
+      if (!pageMetadata) {
+        const existingTitle = document.title;
+        const existingDescription = document.querySelector('meta[name="description"]')?.content;
+        const existingOgTitle = document.querySelector('meta[property="og:title"]')?.content;
+        const existingOgDescription = document.querySelector('meta[property="og:description"]')?.content;
+        const existingOgImage = document.querySelector('meta[property="og:image"]')?.content;
+        
+        // Si on détecte une page repository spécifiquement
+        if (location.pathname.includes('/repository')) {
+          pageMetadata = {
+            title: existingTitle || "Repositories Publics - Projets Open Source de Docux",
+            description: existingDescription || "Découvrez tous les projets open source développés par Docux : applications React, outils Docusaurus, composants UI et solutions de développement web moderne",
+            frontMatter: {
+              title: "Repositories Publics - Projets Open Source de Docux",
+              description: "Découvrez tous les projets open source développés par Docux : applications React, outils Docusaurus, composants UI et solutions de développement web moderne",
+              schemaType: "CollectionPage",
+              image: "/img/docux.png",
+              authors: ["docux"],
+              tags: [
+                "open source",
+                "github",
+                "repositories",
+                "projets",
+                "react",
+                "docusaurus",
+                "javascript",
+                "typescript",
+                "portfolio",
+                "développement web",
+                "code",
+                "programming"
+              ],
+              keywords: [
+                "repositories",
+                "projets open source",
+                "github", 
+                "développement web",
+                "react",
+                "docusaurus",
+                "javascript",
+                "typescript",
+                "portfolio"
+              ],
+              category: "Portfolio",
+              date: "2025-08-29",
+              author: "docux"
+            }
+          };
+        } else {
+          // Fallback générique pour autres pages
+          pageMetadata = {
+            title: existingTitle || siteConfig.title,
+            description: existingDescription || siteConfig.tagline,
+            frontMatter: {
+              title: existingOgTitle,
+              description: existingOgDescription,
+              image: existingOgImage
+            }
+          };
+        }
       }
     }
   } catch (error) {
@@ -169,7 +316,7 @@ export default function Seo() {
 
     // 🧠 PRIORITÉ 2: Détection intelligente par contenu
     const title = (blogPostData?.title || pageMetadata?.title || '').toLowerCase();
-    const tags = blogPostData?.tags || pageMetadata?.tags || [];
+    const tags = blogPostData?.tags || pageMetadata?.tags || pageMetadata?.frontMatter?.tags || blogPostData?.frontMatter?.tags || [];
     const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
 
     // Détection de tutoriels/guides
@@ -179,7 +326,7 @@ export default function Seo() {
 
     // Détection d'articles techniques
     const techTags = ['react', 'javascript', 'typescript', 'node', 'api', 'code', 'programming'];
-    if (tags.some(tag => techTags.includes(tag.label?.toLowerCase() || tag.toLowerCase())) || frontMatter.dependencies || frontMatter.programmingLanguage) {
+    if (tags.some(tag => techTags.includes(tag.label?.toLowerCase() || tag.toLowerCase() || tag)) || frontMatter.dependencies || frontMatter.programmingLanguage) {
       return { type: 'TechArticle', category: 'Article technique (auto-détecté)' };
     }
 
@@ -308,7 +455,22 @@ export default function Seo() {
    * Si aucun auteur n'est trouvé dans les métadonnées du blog,
    * on vérifie les métadonnées génériques de la page.
    */
+  if (!primaryAuthor && pageMetadata?.frontMatter?.authors) {
+    // Vérifie d'abord authors (au pluriel) dans pageMetadata
+    let authorKey;
+    if (Array.isArray(pageMetadata.frontMatter.authors)) {
+      authorKey = pageMetadata.frontMatter.authors[0]; // Premier auteur si plusieurs
+    } else if (typeof pageMetadata.frontMatter.authors === 'string') {
+      authorKey = pageMetadata.frontMatter.authors; // Auteur unique
+    }
+    
+    if (authorKey && authorsData[authorKey]) {
+      primaryAuthor = authorsData[authorKey];
+    }
+  }
+  
   if (!primaryAuthor && pageMetadata?.frontMatter?.author) {
+    // Fallback sur author (au singulier)
     const authorKey = pageMetadata.frontMatter.author;
     if (authorsData[authorKey]) {
       primaryAuthor = authorsData[authorKey];
@@ -391,8 +553,10 @@ export default function Seo() {
         // Mots-clés et catégorisation
         keywords: blogPostData.frontMatter?.keywords?.join(', ') || 
                  blogPostData.frontMatter?.tags?.join(', ') || 
+                 pageMetadata?.frontMatter?.keywords?.join(', ') ||
+                 pageMetadata?.frontMatter?.tags?.join(', ') ||
                  'docusaurus, documentation, tutoriel',
-        articleSection: blogPostData.frontMatter?.category || 'Tutoriels',
+        articleSection: blogPostData.frontMatter?.category || pageMetadata?.frontMatter?.category || 'Tutoriels',
         
         // Métriques de contenu
         wordCount: blogPostData.readingTime?.words || blogPostData.frontMatter?.wordCount || 500,
@@ -817,13 +981,19 @@ export default function Seo() {
             <meta property="article:modified_time" content={blogPostData.lastUpdatedAt || blogPostData.date} />
             {primaryAuthor && <meta property="article:author" content={normalizeAuthorName(primaryAuthor.name)} />}
             {/* Catégorie de l'article */}
-            {blogPostData.frontMatter?.category && (
-              <meta property="article:section" content={blogPostData.frontMatter.category} />
+            {(blogPostData.frontMatter?.category || pageMetadata?.frontMatter?.category) && (
+              <meta property="article:section" content={blogPostData.frontMatter?.category || pageMetadata?.frontMatter?.category} />
             )}
             
             {/* Tags/mots-clés de l'article (un meta tag par mot-clé) */}
             {blogPostData.frontMatter?.keywords?.map((keyword) => (
               <meta key={keyword} property="article:tag" content={keyword} />
+            ))}
+            {pageMetadata?.frontMatter?.keywords?.map((keyword) => (
+              <meta key={keyword} property="article:tag" content={keyword} />
+            ))}
+            {pageMetadata?.frontMatter?.tags?.map((tag) => (
+              <meta key={tag} property="article:tag" content={tag} />
             ))}
           </>
         )}
