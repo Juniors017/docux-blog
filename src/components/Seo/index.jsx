@@ -14,6 +14,7 @@ import { useLocation } from '@docusaurus/router';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 import authorsData from '@site/src/data/authors';
 import SeoDebugPanel from '../SeoDebugPanel';
 import { 
@@ -32,31 +33,6 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
   // Variables pour stocker les métadonnées selon le type de page
   let blogPostData = null;  // Données spécifiques aux articles de blog
   let pageMetadata = null;  // Métadonnées génériques des pages statiques
-  
-  /**
-   * ÉTAPE 0 : Vérification pour éviter la duplication de rendu
-   * 
-   * Si le composant SEO est appelé directement dans une page avec des props,
-   * on marque qu'il ne doit pas être rendu à nouveau par le Layout global.
-   */
-  React.useEffect(() => {
-    if (propsFrontMatter || pageData) {
-      // Marquer que cette page a un SEO personnalisé
-      window.__seoCustomRendered = true;
-    }
-    
-    return () => {
-      // Nettoyer le marqueur quand on quitte la page
-      if (window.__seoCustomRendered) {
-        delete window.__seoCustomRendered;
-      }
-    };
-  }, [propsFrontMatter, pageData]);
-  
-  // Si on est dans le Layout global et qu'un SEO personnalisé existe déjà, ne pas rendre
-  if (!forceRender && !propsFrontMatter && !pageData && window.__seoCustomRendered) {
-    return null;
-  }
   
   /**
    * ÉTAPE 0bis : Utilisation des props directement passées au composant
@@ -91,7 +67,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
   } catch (error) {
     // Hook useBlogPost non disponible sur cette page (normal pour les pages non-blog)
     // Le composant SEO continue de fonctionner avec des métadonnées génériques
-    console.debug('Hook useBlogPost non disponible - Page non-blog détectée');
+    // Silencieux : détection normale d'une page non-blog
   }
 
   /**
@@ -110,7 +86,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     }
   } catch (error) {
     // Hook useDoc non disponible ou pas sur une page docs
-    console.debug('Hook useDoc non disponible - Page non-docs détectée');
+    // Silencieux : détection normale d'une page non-docs
   }
 
   /**
@@ -121,7 +97,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
    */
   try {
     // Essayer de récupérer les métadonnées depuis le contexte global Docusaurus
-    if (!pageMetadata && typeof window !== 'undefined' && window.docusaurus) {
+    if (!pageMetadata && ExecutionEnvironment.canUseDOM && window.docusaurus) {
       const globalData = window.docusaurus.globalData;
       
       // Rechercher dans les données du plugin de pages
@@ -145,7 +121,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     }
   } catch (error) {
     // Récupération des métadonnées de pages non disponible
-    console.debug('Récupération métadonnées pages non disponible:', error.message);
+    // Silencieux : situation normale pour certaines pages
   }
 
   /**
@@ -163,7 +139,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
      * Récupération depuis le DOM si aucun hook n'a fonctionné
      * Utile pour les pages statiques générées côté client
      */
-    if (!pageMetadata && typeof window !== 'undefined') {
+    if (!pageMetadata && ExecutionEnvironment.canUseDOM) {
       // Si on a des données globals Docusaurus disponibles
       if (window.docusaurus) {
         const globalData = window.docusaurus.globalData;
@@ -252,7 +228,7 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
     }
   } catch (error) {
     // Hooks alternatifs non disponibles - situation normale
-    console.debug('Hooks alternatifs non disponibles');
+    // Silencieux : détection normale des capacités disponibles
   }
 
   /**
