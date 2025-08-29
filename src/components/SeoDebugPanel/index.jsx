@@ -35,6 +35,7 @@ export default function SeoDebugPanel({
   const [showReport, setShowReport] = React.useState(false);       // Affichage du rapport
   const [currentReport, setCurrentReport] = React.useState(null);  // Rapport généré
   const [contentMetrics, setContentMetrics] = React.useState(null); // Métriques de contenu
+  const [googleSearchConsole, setGoogleSearchConsole] = React.useState(null); // État Google Search Console
 
   /**
    * ANALYSE DU CONTENU DE LA PAGE
@@ -80,15 +81,68 @@ export default function SeoDebugPanel({
     }
   }, []);
 
+  /**
+   * DÉTECTION DE GOOGLE SEARCH CONSOLE
+   * 
+   * Vérifie la présence de la balise de vérification Google Search Console
+   * dans les métadonnées de la page
+   */
+  const checkGoogleSearchConsole = React.useCallback(() => {
+    try {
+      // Recherche de la balise meta google-site-verification
+      const googleVerificationMeta = document.querySelector('meta[name="google-site-verification"]');
+      
+      if (googleVerificationMeta) {
+        const content = googleVerificationMeta.getAttribute('content');
+        
+        // Vérifier si c'est la valeur par défaut (non configuré)
+        if (!content || content === 'VOTRE_CODE_VERIFICATION_GOOGLE' || content.trim() === '') {
+          return {
+            present: false,
+            code: content,
+            status: 'Non configuré',
+            description: 'Code de vérification Google Search Console à remplacer dans docusaurus.config.js'
+          };
+        }
+        
+        return {
+          present: true,
+          code: content,
+          status: 'Configuré',
+          description: 'Google Search Console est configuré pour ce site'
+        };
+      }
+      
+      return {
+        present: false,
+        code: null,
+        status: 'Non configuré',
+        description: 'Aucune balise de vérification Google Search Console détectée'
+      };
+    } catch (error) {
+      console.warn('Erreur lors de la vérification Google Search Console:', error);
+      return {
+        present: false,
+        code: null,
+        status: 'Erreur',
+        description: 'Impossible de vérifier la configuration'
+      };
+    }
+  }, []);
+
   // Analyser le contenu au montage et lors des changements de page
   React.useEffect(() => {
     const timer = setTimeout(() => {
       const metrics = analyzePageContent();
       setContentMetrics(metrics);
+      
+      // Vérifier Google Search Console
+      const gscStatus = checkGoogleSearchConsole();
+      setGoogleSearchConsole(gscStatus);
     }, 1000); // Délai pour laisser le contenu se charger
 
     return () => clearTimeout(timer);
-  }, [location.pathname, analyzePageContent]);
+  }, [location.pathname, analyzePageContent, checkGoogleSearchConsole]);
 
   /**
    * FONCTION DE VALIDATION JSON-LD
@@ -337,6 +391,9 @@ export default function SeoDebugPanel({
     
     // Publisher pour articles
     if (jsonLd['@type'] === 'BlogPosting' && jsonLd.publisher) technicalScore += 10;
+    
+    // Google Search Console configuré (+15 points)
+    if (googleSearchConsole?.present) technicalScore += 15;
 
     // === 5. SCORE EXPÉRIENCE UTILISATEUR (5%) ===
     let uxScore = 70; // Score de base neutre
@@ -899,6 +956,22 @@ export default function SeoDebugPanel({
                   </div>
                 </div>
               )}
+
+              {/* Outils SEO externes */}
+              <div style={{ marginBottom: '6px' }}>
+                <strong style={{ color: '#ffaa00' }}>Outils SEO externes:</strong>
+                <div style={{ fontSize: '9px', marginTop: '2px' }}>
+                  <div style={{ color: googleSearchConsole?.present ? '#00ff88' : '#ff4444' }}>
+                    🔍 Google Search Console: {googleSearchConsole?.present ? '✅' : '❌'}
+                  </div>
+                  <div style={{ color: '#88aaff' }}>
+                    📊 Matomo Analytics: Configuré séparément
+                  </div>
+                  <div style={{ color: '#ccc', fontSize: '8px', marginTop: '2px' }}>
+                    💡 Utilisez le bouton "🔍 Google" pour tester les Rich Results
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -959,6 +1032,26 @@ export default function SeoDebugPanel({
                         <span style={{ color: seoScore.breakdown.ux >= 80 ? '#00ff88' : seoScore.breakdown.ux >= 60 ? '#ffaa00' : '#ff4444' }}>
                           {Math.round(seoScore.breakdown.ux)}%
                         </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Google Search Console Status */}
+                {googleSearchConsole && (
+                  <div style={{ marginBottom: '8px' }}>
+                    <strong style={{ color: '#ffaa00', fontSize: '10px' }}>🔍 Google Search Console :</strong>
+                    <div style={{ fontSize: '8px', marginTop: '2px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '3px' }}>
+                      <div style={{ color: googleSearchConsole.present ? '#00ff88' : '#ff4444' }}>
+                        {googleSearchConsole.present ? '✅' : '❌'} Status: {googleSearchConsole.status}
+                      </div>
+                      {googleSearchConsole.present && googleSearchConsole.code && (
+                        <div style={{ color: '#ccc', fontSize: '7px', marginTop: '2px' }}>
+                          Code: {googleSearchConsole.code.substring(0, 20)}...
+                        </div>
+                      )}
+                      <div style={{ color: '#888', fontSize: '7px', marginTop: '2px' }}>
+                        {googleSearchConsole.description}
                       </div>
                     </div>
                   </div>
@@ -1467,13 +1560,32 @@ export default function SeoDebugPanel({
                             {Math.round(currentReport.scoreBreakdown.ux)}%
                           </span>
                         </div>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </div>
               )}
 
-              {/* Analyse FrontMatter */}
+              {/* Outils SEO externes */}
+              <div style={{ marginBottom: '6px' }}>
+                <strong style={{ color: '#ffaa00' }}>Outils SEO externes:</strong>
+                <div style={{ fontSize: '9px', marginTop: '2px' }}>
+                  <div style={{ color: googleSearchConsole?.present ? '#00ff88' : '#ff4444' }}>
+                    🔍 Google Search Console: {googleSearchConsole?.present ? '✅' : '❌'}
+                  </div>
+                  {!googleSearchConsole?.present && (
+                    <div style={{ color: '#ffaa00', fontSize: '8px', marginTop: '2px' }}>
+                      💡 Remplacez 'VOTRE_CODE_VERIFICATION_GOOGLE' dans docusaurus.config.js
+                    </div>
+                  )}
+                  <div style={{ color: '#88aaff' }}>
+                    📊 Matomo Analytics: Configuré séparément
+                  </div>
+                  <div style={{ color: '#ccc', fontSize: '8px', marginTop: '2px' }}>
+                    💡 Utilisez le bouton "🔍 Google" pour tester les Rich Results
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}              {/* Analyse FrontMatter */}
               {currentReport.frontMatterData && (
                 <div style={{ marginBottom: '10px' }}>
                   <h4 style={{ color: '#ffaa00', fontSize: '12px', marginBottom: '5px' }}>📄 Content Management System</h4>

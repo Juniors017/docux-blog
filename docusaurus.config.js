@@ -165,6 +165,9 @@ const config = {
         {name: 'author', content: 'Juniors017'},
         {name: 'robots', content: 'index, follow'},
         
+        // Google Search Console - Remplacez VOTRE_CODE_VERIFICATION_GOOGLE par votre code réel
+        {name: 'google-site-verification', content: 'VOTRE_CODE_VERIFICATION_GOOGLE'},
+        
         // Twitter Card data
         {name: 'twitter:card', content: 'summary_large_image'},
         {name: 'twitter:site', content: '@votre_compte_twitter'},

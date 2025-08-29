@@ -546,6 +546,27 @@ export default function Seo() {
         ...baseStructure,
         '@type': 'TechArticle',
         
+        // Informations sur l'auteur (même logique que BlogPosting)
+        author: primaryAuthor ? {
+          '@type': 'Person',
+          name: normalizeAuthorName(primaryAuthor.name),
+          url: primaryAuthor.url || primaryAuthor.github,
+          description: primaryAuthor.title || 'Contributeur Docux',
+          image: primaryAuthor.imageUrl
+        } : {
+          '@type': 'Person',
+          name: 'Équipe Docux',
+          url: siteConfig.url
+        },
+        
+        // Dates de publication si disponibles
+        ...(blogPostData?.date && {
+          datePublished: blogPostData.date || new Date().toISOString()
+        }),
+        ...(blogPostData?.lastUpdatedAt && {
+          dateModified: blogPostData.lastUpdatedAt || new Date().toISOString()
+        }),
+        
         // Niveau de compétence requis
         proficiencyLevel: frontMatter.proficiencyLevel || 'Beginner',
         
