@@ -7,7 +7,6 @@ import TabItem from '@theme/TabItem';
 import DocusaurusButton from '@site/src/components/DocusaurusButton';
 import Timeline from '@site/src/components/Timeline';
 import TimelineItem from '@site/src/components/Timeline/TimelineItem';
-import LatestBlogPosts from '@site/src/components/LatestBlogPosts';
 import Columns from '@site/src/components/Columns';
 import Column from '@site/src/components/Column';
 import Card from "@site/src/components/Card";
@@ -53,7 +52,6 @@ export default {
   DocusaurusButton,
   Timeline,
   TimelineItem,
-  LatestBlogPosts,
   Columns,
   Column,
   Card,

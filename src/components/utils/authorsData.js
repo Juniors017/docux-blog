@@ -1,4 +1,4 @@
-const authors = {
+import authors from '../utils/authors';const authors = {
   docux: {
     name: "Docux",
     title: "Docusaurus Contributor",
