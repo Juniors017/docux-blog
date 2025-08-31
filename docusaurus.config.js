@@ -49,8 +49,8 @@ const config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'gr',
-    locales: ['gr'],
+    defaultLocale: 'en',
+    locales: ['en'],
   },
   
   headTags: [
@@ -234,7 +234,7 @@ const config = {
                 href: 'https://github.com/Juniors017/docux-blog',
               },
               {
-                label: 'Remerciements',
+                label: 'Thanks',
                 to: '/thanks',
               },
             ],
