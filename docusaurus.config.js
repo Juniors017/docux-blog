@@ -196,7 +196,7 @@ const config = {
 
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/series', label: 'Series', position: 'left'},
-          {to: '/thanks', label: 'Remerciements', position: 'right'},
+          {to: '/thanks', label: 'Thanks', position: 'right'},
           {to:'/repository',label: 'Repository', position: 'left',},
           {
             to: 'https://github.com/Juniors017/docux-blog',
