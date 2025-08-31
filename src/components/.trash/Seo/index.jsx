@@ -330,15 +330,21 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
 
   // Pages de séries d'articles
   const isSeriesPage = location.pathname.includes('/series/');
-  
+
   // Page de série spécifique (avec paramètre ?name=)
   const isSpecificSeriesPage = isSeriesPage && location.search.includes('name=');
 
-  // Page d'accueil principale
-  const isHomePage = location.pathname === '/' || location.pathname === '/docux-blog/';
-
   // Page de remerciements
   const isThanksPage = location.pathname.includes('/thanks/');
+
+  // Page tags
+  const isTagsPage = location.pathname.includes('/blog/tags/');
+
+  // Page authors
+  const isAuthorsPage = location.pathname.includes('/blog/authors/');
+
+  // Page d'accueil principale
+  const isHomePage = location.pathname === '/' || location.pathname === '/docux-blog/';
 
   // Page repository/projets
   const isRepositoryPage = location.pathname.includes('/repository/');
@@ -402,15 +408,17 @@ export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRend
       return { type: 'FAQPage', category: 'FAQ (auto-détectée)' };
     }
 
-    // 🔧 PRIORITÉ 3: Détection par contexte/URL (fallback minimal)
-    if (isBlogPost) return { type: 'BlogPosting', category: 'Article de blog (contexte)' };
-    if (isBlogListPage) return { type: 'CollectionPage', category: 'Index des articles (contexte)' };
-    if (isSpecificSeriesPage) return { type: 'CollectionPage', category: 'Série spécifique (contexte)' };
-    if (isSeriesPage) return { type: 'CollectionPage', category: 'Collection de séries (contexte)' };
-    if (isHomePage) return { type: 'WebSite', category: 'Page d\'accueil (contexte)' };
-    
-    // 📄 Fallback ultime pour toutes les autres pages
-    return { type: 'WebPage', category: 'Page générale (fallback)' };
+  // 🔧 PRIORITÉ 3: Détection par contexte/URL (fallback minimal)
+  if (isBlogPost) return { type: 'BlogPosting', category: 'Article de blog (contexte)' };
+  if (isBlogListPage) return { type: 'CollectionPage', category: 'Index des articles (contexte)' };
+  if (isTagsPage) return { type: 'CollectionPage', category: 'Tags (contexte)' };
+  if (isAuthorsPage) return { type: 'CollectionPage', category: 'Auteurs (contexte)' };
+  if (isSpecificSeriesPage) return { type: 'CollectionPage', category: 'Série spécifique (contexte)' };
+  if (isSeriesPage) return { type: 'CollectionPage', category: 'Collection de séries (contexte)' };
+  if (isThanksPage) return { type: 'WebPage', category: 'Remerciements (contexte)' };
+  if (isHomePage) return { type: 'WebSite', category: 'Page d\'accueil (contexte)' };
+  // 📄 Fallback ultime pour toutes les autres pages
+  return { type: 'WebPage', category: 'Page générale (fallback)' };
   };
 
   const pageInfo = getPageType();

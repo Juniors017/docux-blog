@@ -18,7 +18,6 @@ const config = {
   projectName: 'docux-blog', // Usually your repo name.
   url: 'https://docuxlab.com',
   baseUrl: '/',
-  
   trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
   
   // Configuration des URLs canoniques
