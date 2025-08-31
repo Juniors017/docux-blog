@@ -14,14 +14,14 @@ import styles from './thanks.module.css';
 export default function Thanks() {
   return (
     <Layout
-      title="Remerciements"
-      description="Remerciements aux développeurs des composants de ce site"
+  title="Thanks"
+  description="Thanks to the developers of the components used on this site"
     >
       <header className={clsx('hero hero--primary', styles.thanksHero)}>
         <div className="container">
-          <h1 className="hero__title">Remerciements</h1>
+          <h1 className="hero__title">Thanks</h1>
           <p className="hero__subtitle">
-            Un grand merci aux personnes qui ont contribué au développement des composants utilisés sur ce site
+            A big thank you to everyone who contributed to the development of the components used on this site
           </p>
         </div>
       </header>
@@ -29,8 +29,8 @@ export default function Thanks() {
         <div className="row">
           <Column className="col--8 col--offset-2">
             <p className={styles.introText}>
-              Ce site n'aurait pas été possible sans la contribution de nombreux développeurs talentueux.
-              Cette page leur est dédiée pour reconnaître leur travail et leur contribution.
+              This site would not have been possible without the contribution of many talented developers.
+              This page is dedicated to recognizing their work and contributions.
             </p>
           </Column>
         </div>
@@ -43,7 +43,7 @@ export default function Thanks() {
               website: 'https://www.avonture.be',
               avatarUrl: 'https://avatars.githubusercontent.com/u/355999?s=200&v=4',
               components: ['GithubProjects', 'MyRepositories', 'Hero'],
-              description: "A développé les composants de visualisation des projets GitHub, permettant d'afficher dynamiquement les dépôts avec filtrage et tri."
+              description: "Developed the GitHub project visualization components, allowing dynamic display of repositories with filtering and sorting."
             </Contributor>
           </Column>
           
@@ -54,7 +54,7 @@ export default function Thanks() {
               website: 'https://docusaurus.io',
               avatarUrl: 'https://docusaurus.io/img/docusaurus_keytar.svg',
               components: ['DocCard', 'Layout', 'Admonition'],
-              description: "Team Docusaurus de Meta qui a développé le framework et ses composants principaux."
+              description: "The Docusaurus team at Meta who developed the framework and its main components."
             </Contributor>
           </Column>
           
@@ -65,7 +65,7 @@ export default function Thanks() {
               website: 'https://sebastienlorber.com',
               avatarUrl: 'https://avatars.githubusercontent.com/u/749374?s=200&v=4',
               components: ['MDX Components', 'React Integration'],
-              description: "Mainteneur principal de Docusaurus, a créé de nombreuses fonctionnalités essentielles et contribue activement au développement du projet."
+              description: "Main maintainer of Docusaurus, created many essential features and actively contributes to the development of the project."
             </Contributor>
           </Column>
         </Columns>
@@ -74,10 +74,10 @@ export default function Thanks() {
           <Column className="col--8 col--offset-2">
             <Card className={styles.addYourself} shadow="lw">
               <CardBody>
-                <h3>Vous êtes un contributeur ?</h3>
+                <h3>Are you a contributor?</h3>
                 <p>
-                  Si vous avez développé un composant utilisé sur ce site et que vous n'êtes pas listé ici,
-                  n'hésitez pas à me contacter pour que j'ajoute votre nom à cette page.
+                  If you have developed a component used on this site and you are not listed here,
+                  feel free to contact me so I can add your name to this page.
                 </p>
                 <Link
                   className="button button--outline button--primary"
@@ -85,7 +85,7 @@ export default function Thanks() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Contactez-moi
+                  Contact me
                 </Link>
               </CardBody>
             </Card>

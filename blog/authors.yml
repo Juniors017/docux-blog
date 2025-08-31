@@ -1,6 +1,6 @@
 docux:
   name: Docux
-  title: Explorateur curieux, expérimentateur un peu fou et un peu contributeur
+  title: Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
   url: https://docuxlab.com
   image_url: https://avatars.githubusercontent.com/u/97809069?v=4
   page:
@@ -9,17 +9,7 @@ docux:
   socials:
     github: https://github.com/Juniors017
   bio: |
-    Explorateur curieux, expérimentateur un peu fou et un peu contributeur pour Docusaurus. J'aime créer des outils pour améliorer la productivité et l'expérience utilisateur. 
-    Et partager mes découvertes avec la communauté.
+    Curious explorer, a bit of a mad experimenter, and a bit of a contributor for Docusaurus. I love creating tools to improve productivity and user experience.
+    And sharing my discoveries with the community.
 
 
-kiki:
-  name: kiki
-  title: Docusaurus Contributor
-  url: https://docux.org
-  image_url: /img/docux4.png
-  page:
-    # customize the url of the author page at /blog/authors/<permalink>
-    permalink: '/kiki'
-  socials:
-    github: https://github.com/Juniors017

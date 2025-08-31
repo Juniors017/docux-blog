@@ -31,13 +31,11 @@ export default function MyRepositories({ username }) {
   return (
     <main className={styles.main}>
       <Hero>
-        <h1>Mes Projets GitHub</h1>
+        <h1>My GitHub Projects</h1>
         <p>
-          Ci-dessous, vous trouverez une liste de mes dépôts publics stockés sur
-          GitHub.com. Ils sont divisés en deux parties : les actifs et les inactifs.
+          Below you will find a list of my public repositories hosted on GitHub.com. They are divided into two sections: active and inactive.
           <br />
-          N'hésitez pas à récupérer le code et à le réutiliser dans votre projet s'il peut
-          vous être utile.
+          Feel free to use the code and reuse it in your own project if it can be useful to you.
         </p>
       </Hero>
       <GithubProjects username={username} />

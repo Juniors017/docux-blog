@@ -78,7 +78,7 @@ export function SeriesCards() {
             // Compteur d'articles publiés et en cours de rédaction
             const publishedCount = seriesPosts.filter(post => !post.draft).length;
             const draftCount = seriesPosts.filter(post => post.draft).length;
-            const description = `${publishedCount} article(s) publiés` + (draftCount > 0 ? ` • ${draftCount} en cours de rédaction` : "");
+            const description = `${publishedCount} published article(s)` + (draftCount > 0 ? ` • ${draftCount} in progress` : "");
             const seriesSlug = createSlug(seriesName);
 
             return (
@@ -103,10 +103,10 @@ export function SeriesCards() {
         </div>
       ) : (
         <div className="text--center margin-vert--xl">
-          <h2>Aucune série d'articles trouvée</h2>
+          <h2>No article series found</h2>
           <p>
-            Les séries d'articles sont en cours de création.
-            Revenez bientôt pour découvrir nos collections thématiques !
+            Article series are being created.
+            Come back soon to discover our thematic collections!
           </p>
         </div>
       )}
@@ -114,11 +114,10 @@ export function SeriesCards() {
   );
 }
 
-# Toutes nos séries d'articles
+# All Our Article Series
 
-Découvrez nos collections d'articles organisées par thématique. 
-Chaque série vous propose un parcours d'apprentissage progressif 
-pour maîtriser un domaine spécifique du développement web.
+Discover our collections of articles organized by theme.
+Each series offers you a progressive learning path to master a specific area of web development.
 
 <div className="container margin-top--lg margin-bottom--lg">
   <SeriesCards />

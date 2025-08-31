@@ -28,14 +28,14 @@ function HomepageHeader() {
     </div> 
     <div className="col col--6 text--center">
       <div className="padding-vert--md">
-        <h1 className="hero__title">@DocuxLab Blog</h1>
-        <p className="hero__subtitle">Explorez Docusaurus avec moi</p>
-        <p>Retrouvez ici mes développements, recherches et notes sur Docusaurus</p>
+  <h1 className="hero__title">@DocuxLab Blog</h1>
+  <p className="hero__subtitle">Explore Docusaurus with me</p>
+  <p>Find here my developments, research, and notes about Docusaurus</p>
         <div className="margin-top--md">
           <Link
             className={`button button--lg margin-right--md ${styles.docsButton}`}
             to="/blog/">
-            Articles récents
+            Recent articles
           </Link>
           <Link
             className={`button button--lg ${styles.blogButton}`}
@@ -63,7 +63,7 @@ export default function Home() {
       <HomepageHeader />
        <div className="margin-top--lg text--center">
               <Link to="/repository" className={`${styles.featureButton} button button--outline button--secondary button--lg`}>
-                Découvrez mes projets GitHub
+                Discover my GitHub projects
               </Link>
             </div>
       <main>
@@ -74,10 +74,10 @@ export default function Home() {
    
     <div className="col text--justify">
             <p className={`hero__subtitle ${styles.animatedContent}`}>
-            Docusaurus est un générateur de sites web statiques moderne développé par Facebook (Meta). Construit avec React, il excelle dans la création de sites de documentation avec des fonctionnalités comme le versionnement, la recherche et l'internationalisation.
+            Docusaurus is a modern static website generator developed by Facebook (Meta). Built with React, it excels at creating documentation sites with features like versioning, search, and internationalization.
             </p>
             <p className={styles.animatedContent}>
-            Son architecture de plugins permet une personnalisation et une extension faciles, tandis que la prise en charge de MDX combine la simplicité de Markdown avec la puissance des composants React. Avec son système de thèmes, sa conception responsive et son optimisation SEO intégrée, Docusaurus permet de créer facilement des sites web beaux, fonctionnels et rapides qui fonctionnent sur tous les appareils. Parfait pour la documentation, les blogs et les sites vitrines de projets.
+            Its plugin architecture allows easy customization and extension, while MDX support combines the simplicity of Markdown with the power of React components. With its theme system, responsive design, and built-in SEO optimization, Docusaurus makes it easy to create beautiful, functional, and fast websites that work on any device. Perfect for documentation, blogs, and project showcase sites.
             </p>
            
             <p className="text--right margin-top--lg">@Docux</p>

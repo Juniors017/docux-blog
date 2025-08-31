@@ -49,9 +49,9 @@ export default function SeriesArticlesPage() {
   const sortedPosts = seriesPosts.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
-    <Layout title={`Articles de la série: ${originalSeriesName}`}>
+    <Layout title={`Series articles: ${originalSeriesName}`}>
       <div className="container margin-top--lg margin-bottom--lg">
-        <h1>Articles de la série : {originalSeriesName}</h1>
+        <h1>Series articles: {originalSeriesName}</h1>
         {/* Affiche les cartes d'articles si la série contient des articles */}
         {sortedPosts.length > 0 ? (
           <div className="row">
@@ -78,7 +78,7 @@ export default function SeriesArticlesPage() {
               ))}
             </div>
           ) : (
-            <p>Aucun article trouvé pour cette série.</p>
+            <p>No articles found for this series.</p>
           )}
         </div>
       </Layout>

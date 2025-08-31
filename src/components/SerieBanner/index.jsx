@@ -24,7 +24,7 @@ export default function SerieBanner({ serieName }) {
       <div className={styles.serieContent}>
         <span className={styles.serieIcon}>📚</span>
         <span className={styles.serieText}>
-          Cet article fait partie de la série : 
+          This article is part of the series: 
           <Link 
             href={`/series/series-articles?name=${seriesSlug}`}
             className={styles.serieLink}
