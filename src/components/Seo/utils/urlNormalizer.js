@@ -148,7 +148,9 @@ export function validateSchemaUrls(schemas) {
       errors.push(`Incohérence d'IDs de base détectée entre schémas multiples: ${Array.from(baseIds).join(', ')}`);
     } else {
       // Les schémas pointent vers la même ressource mais avec des fragments différents → OK
-      console.log('✅ Schémas multiples détectés avec fragments différents (comportement normal):', Array.from(ids));
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ Schémas multiples détectés avec fragments différents (comportement normal):', Array.from(ids));
+      }
     }
   }
 

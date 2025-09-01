@@ -1,127 +1,38 @@
-/**
- * Composant SEO Principal - Développé par Docux avec GitHub Copilot
- * 
- * Ce composant gère intelligemment toutes les métadonnées SEO de votre site Docusaurus :
- * - Détection automatique du type de page (blog, statique, accueil...)
- * - Génération des balises meta HTML, Open Graph et Twitter Cards
- * - Création du Schema.org JSON-LD pour les Rich Results Google
- * - Système de fallback robuste pour éviter les erreurs
- * - Panel de debug intégré pour le développement
- */
-
-import React from 'react';
-import { useLocation } from '@docusaurus/router';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Head from '@docusaurus/Head';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
-import authorsData from '@site/src/data/authors';
-import SeoDebugPanel from '../SeoDebugPanel';
-import usePageMetadata from './utils/usePageMetadata';
-import  {getPageType}  from './utils/getPageType';
-import { createOptimizedBreadcrumb, generateGenericBreadcrumb } from './utils/breadcrumbUtils';
-import { getSeoImageUrl } from './utils/seoImageUtils';
-import { normalizeAuthorName, getPrimaryAuthor } from './utils/authorUtils';
-
-
-import { 
-  normalizeUrl, 
-  generateCanonicalId, 
-  generateCanonicalUrl, 
-  validateSchemaUrls, 
-  fixAllSchemaUrls 
-} from './utils/urlNormalizer';
-
-export default function Seo({ pageData, frontMatter: propsFrontMatter, forceRender = false } = {}) {
-  // Récupération du contexte Docusaurus et de la localisation
-  const location = useLocation(); // URL et chemin actuels
-  const { siteConfig } = useDocusaurusContext(); // Configuration globale du site
-  
-
- 
-
-// Récupère les métadonnées enrichies et priorisées directement depuis le hook
-// blogPostData = source la plus riche (blog > page)
-// pageMetadata = métadonnées prioritaires (page > blog)
-const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatter);
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🟣 Résultat usePageMetadata dans Seo:', { blogPostData, pageMetadata });
-  }
-
-   /* 
-   * Analyse de l'URL pour déterminer le type de contenu.
-   * Cette détection influence les métadonnées Schema.org générées.
-   */
-
-   
-  /* ============================================================================
-   * DÉTECTION ET GÉNÉRATION DES MÉTADONNÉES DE BASE
-   * ============================================================================ */
-  
-  // 1.1 Détection du type de page pour Schema.org
-  const pageInfo = getPageType({ location, blogPostData, pageMetadata });
-  
-  // 1.2 Génération des URLs canoniques (ordre des paramètres corrigé)
-  const canonicalId = generateCanonicalId(siteConfig, location.pathname);
-  const canonicalUrl = generateCanonicalUrl(siteConfig, location.pathname);
-  
-  // 1.3 Génération du titre avec système de priorité (FrontMatter en premier)
-  const title = blogPostData?.frontMatter?.title ||     // 1. Titre du frontMatter de blog (le plus riche)
-                pageMetadata?.frontMatter?.title ||     // 2. Titre du frontMatter de page
-                blogPostData?.metadata?.title ||        // 3. Titre des métadonnées de blog
-                pageMetadata?.title ||                  // 4. Titre des métadonnées de page
-                siteConfig.title;                       // 5. Titre du site (fallback)
-  
-  // 1.4 Génération de la description avec système de priorité (FrontMatter en premier)
-  const description = blogPostData?.frontMatter?.description ||    // 1. Description frontMatter blog (la plus riche)
-                     pageMetadata?.frontMatter?.description ||    // 2. Description frontMatter page
-                     blogPostData?.metadata?.description ||       // 3. Description métadonnées blog
-                     pageMetadata?.description ||                 // 4. Description métadonnées page
-                     siteConfig.tagline ||                        // 5. Tagline du site
-                     'Documentation et tutoriels sur Docusaurus'; // 6. Description par défaut
-  
-  // 1.5 Variables booléennes récupérées directement depuis la détection pageInfo
-  // (évite la duplication avec detectPageType)
-  const { 
-    isBlogPost = false, 
-    isBlogListPage = false, 
-    isSeriesPage = false, 
-    isSpecificSeriesPage = false, 
-    isHomePage = false, 
-    isThanksPage = false, 
-    isRepositoryPage = false 
-  } = pageInfo;
-  
-  
-  /* ============================================================================
-   * ÉTAPE 2 : FONCTION BREADCRUMB IMPORTÉE
-   * ============================================================================ */
-  
-  // La fonction generateGenericBreadcrumb est maintenant importée depuis :
-  // src/components/Seo/utils/breadcrumbUtils.js
-  // Plus besoin de la redéfinir localement - plus efficace et réutilisable !
-
-  /**
-   * ÉTAPE 8 : Gestion intelligente des images avec utilitaire dédié
-   * 
-   * La logique de priorité des images a été déplacée dans seoImageUtils.js
-   * pour une meilleure réutilisabilité et maintenabilité du code.
-   */
-  const imageUrl = getSeoImageUrl(blogPostData, pageMetadata, siteConfig, useBaseUrl);
-
-  /**
-   * ÉTAPE 9 : Gestion des auteurs avec utilitaire dédié
-   * 
-   * La logique de détection et normalisation des auteurs a été déplacée
-   * dans authorUtils.js pour une meilleure réutilisabilité et maintenabilité.
-   */
-  const primaryAuthor = getPrimaryAuthor(blogPostData, pageMetadata, authorsData, siteConfig);
+export function buildJsonLdSchemas({
+  blogPostData,
+  pageMetadata,
+  siteConfig,
+  canonicalId,
+  canonicalUrl,
+  title,
+  description,
+  imageUrl,
+  primaryAuthor,
+  breadcrumbJsonLd,
+  pageInfo,
+  ...otherParams
+}) {
 
   /**
    * ÉTAPE 11 : Construction du JSON-LD Schema.org
    * 
    * Création de la structure de données structurées selon le type de page.
    * Cette structure est cruciale pour les Rich Results Google.
+   * 
+   * 🆕 Version 2.1.4 : Support des schémas multiples via frontmatter
+   */
+
+  /**
+   * 🆕 NOUVELLE APPROCHE : Schémas multiples via frontmatter
+   * 
+   * Permet de spécifier explicitement plusieurs types de schémas dans le frontmatter :
+   * 
+   * ---
+   * title: "Mon Article"
+   * schemaTypes: ["TechArticle", "BlogPosting"]
+   * proficiencyLevel: "Advanced"  # Pour TechArticle
+   * programmingLanguage: "JavaScript"  # Pour TechArticle
+   * ---
    */
   
   // Récupération des types de schémas depuis le frontmatter
@@ -1601,4 +1512,181 @@ const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatte
       />
     </>
   );
+}
+
+import { normalizeAuthorName } from './authorUtils';
+import { validateSchemaUrls, fixAllSchemaUrls } from './urlNormalizer';
+import { generateGenericBreadcrumb, createOptimizedBreadcrumb } from './breadcrumbUtils';
+import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
+
+/**
+ * Valide et corrige les schémas.
+ * @param {Array} schemas - Les schémas bruts.
+ * @param {string} canonicalId - L'ID canonique.
+ * @param {string} canonicalUrl - L'URL canonique.
+ * @returns {{finalSchemas: Array, urlValidation: object}}
+ */
+export function validateAndFixSchemas(schemas, canonicalId, canonicalUrl) {
+  const urlValidation = validateSchemaUrls(schemas);
+  const finalSchemas = urlValidation.isValid
+    ? schemas
+    : fixAllSchemaUrls(schemas, canonicalId, canonicalUrl);
+  return { finalSchemas, urlValidation };
+}
+
+/**
+ * Construit un tableau de schémas JSON-LD basés sur les métadonnées de la page.
+ * @returns {Array} Un tableau d'objets de schéma JSON-LD.
+ */
+export function buildSchemas({
+  pageInfo,
+  blogPostData,
+  pageMetadata,
+  siteConfig,
+  canonicalId,
+  canonicalUrl,
+  title,
+  description,
+  imageUrl,
+  primaryAuthor,
+  breadcrumbJsonLd,
+  location,
+  useBaseUrl,
+}) {
+  const allSchemas = [];
+  const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
+  const schemaTypes = frontMatter.schemaTypes;
+
+  // --- APPROCHE 1: SCHÉMAS MULTIPLES EXPLICITES VIA FRONTMATTER ---
+  if (Array.isArray(schemaTypes) && schemaTypes.length > 0) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🎯 Mode schémas multiples activé:', schemaTypes);
+    }
+    
+    schemaTypes.forEach((schemaType, index) => {
+      const schemaId = index === 0 ? canonicalId : `${canonicalId}#${schemaType.toLowerCase()}`;
+      
+      let schemaStructure = {
+        '@context': 'https://schema.org',
+        '@id': schemaId,
+        '@type': schemaType,
+        url: canonicalUrl,
+        name: title,
+        headline: title,
+        description: description,
+        image: {
+          '@type': 'ImageObject',
+          url: imageUrl,
+        },
+        author: primaryAuthor
+          ? { '@type': 'Person', name: primaryAuthor.name, url: primaryAuthor.url }
+          : { '@type': 'Organization', name: siteConfig.title, url: siteConfig.url },
+      };
+
+      // Enrichissement spécifique par type de schéma (à compléter selon vos besoins)
+      if (schemaType === 'TechArticle' || schemaType === 'BlogPosting') {
+        schemaStructure.datePublished = blogPostData?.metadata?.date || frontMatter.date;
+        schemaStructure.dateModified = blogPostData?.metadata?.lastUpdatedAt || frontMatter.last_update?.date || schemaStructure.datePublished;
+        schemaStructure.publisher = {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+          logo: {
+            '@type': 'ImageObject',
+            url: siteConfig.url + useBaseUrl('/img/docux.png'),
+          },
+        };
+        schemaStructure.mainEntityOfPage = {
+          '@type': 'WebPage',
+          '@id': canonicalUrl,
+        };
+      }
+      
+      if (schemaType === 'TechArticle') {
+          schemaStructure.proficiencyLevel = frontMatter.proficiencyLevel || 'Beginner';
+          schemaStructure.programmingLanguage = frontMatter.programmingLanguage || 'N/A';
+      }
+      
+      allSchemas.push(schemaStructure);
+    });
+
+    // Ajoute le breadcrumb comme schéma séparé
+    if (breadcrumbJsonLd) {
+      allSchemas.push(breadcrumbJsonLd);
+    }
+    
+    return allSchemas;
+  }
+
+  // --- APPROCHE 2: DÉTECTION AUTOMATIQUE (FALLBACK) ---
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📍 Mode schéma unique activé:', pageInfo.type);
+  }
+
+  const baseStructure = {
+    '@context': 'https://schema.org',
+    '@id': canonicalId,
+    '@type': pageInfo.type,
+    name: title,
+    headline: title,
+    description: description,
+    url: canonicalUrl,
+    image: {
+      '@type': 'ImageObject',
+      url: imageUrl,
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: siteConfig.title,
+      url: siteConfig.url,
+    },
+    breadcrumb: breadcrumbJsonLd,
+  };
+
+  // Enrichissement pour BlogPosting
+  if (pageInfo.type === 'BlogPosting' && blogPostData) {
+    Object.assign(baseStructure, {
+        author: primaryAuthor ? {
+          '@type': 'Person',
+          name: normalizeAuthorName(primaryAuthor.name),
+          url: primaryAuthor.url,
+        } : {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+        },
+        datePublished: blogPostData.metadata?.date,
+        dateModified: blogPostData.metadata?.lastUpdatedAt || blogPostData.metadata?.date,
+        publisher: {
+          '@type': 'Organization',
+          name: siteConfig.title,
+          url: siteConfig.url,
+          logo: {
+            '@type': 'ImageObject',
+            url: siteConfig.url + useBaseUrl('/img/docux.png'),
+          },
+        },
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalUrl,
+        },
+    });
+  }
+
+  // Enrichissement pour WebSite (Page d'accueil)
+  if (pageInfo.type === 'WebSite') {
+    Object.assign(baseStructure, {
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: `${siteConfig.url}/search?q={search_term_string}`,
+          'query-input': 'required name=search_term_string',
+        },
+    });
+  }
+  
+  // (Ajoutez ici les autres enrichissements pour 'CollectionPage', 'HowTo', etc.)
+
+  allSchemas.push(baseStructure);
+  
+  return allSchemas;
 }

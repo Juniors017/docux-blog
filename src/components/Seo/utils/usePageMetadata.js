@@ -4,7 +4,9 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment'; // Import ajouté
 
 function usesearchPageMetadata(pageData, propsFrontMatter) {
-  console.log('🟢 Début usesearchPageMetadata', { pageData, propsFrontMatter });
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🟢 Début usesearchPageMetadata', { pageData, propsFrontMatter });
+  }
   const location = useLocation();
   const { siteConfig } = useDocusaurusContext();
   let searchPageMetadata = undefined;
@@ -322,7 +324,9 @@ function usesearchPageMetadata(pageData, propsFrontMatter) {
       };
     }
   }
-  console.log('🔴 Fin usesearchPageMetadata', { searchPageMetadata, searchBlogPostData });
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔴 Fin usesearchPageMetadata', { searchPageMetadata, searchBlogPostData });
+  }
 return {
   blogPostData: searchBlogPostData || pageData,
   pageMetadata: searchPageMetadata || searchBlogPostData,

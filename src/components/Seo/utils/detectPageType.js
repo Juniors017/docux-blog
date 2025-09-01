@@ -5,7 +5,7 @@
 
 export function detectPageType(pathname, search) {
   // HomePage : page d'accueil principale du site
-  if (pathname === '/') return 'HomePage';
+  if (pathname === '/') return 'isHomePage';
 
   // blogPostPage : page d'article de blog individuel
   if (
@@ -13,33 +13,31 @@ export function detectPageType(pathname, search) {
     !pathname.endsWith('/blog/') &&
     !pathname.includes('/blog/tags/') &&
     !pathname.includes('/blog/authors/')
-  ) return 'blogPostPage';
+  ) return 'isBlogPost';
 
   // blogListPage : page d’index du blog, de tags ou d’auteurs
   if (
     pathname.endsWith('/blog/') ||
     pathname.includes('/blog/tags/') ||
     pathname.includes('/blog/authors/')
-  ) return 'blogListPage';
+  ) return 'isBlogListPage';
 
   // specificSeriesPage : page d’une série spécifique (avec paramètre ?name=)
   if (pathname.includes('/series/')) {
     if (search.includes('name=')) {
       // specificSeriesPage : page d'une série précise
-      return 'specificSeriesPage';
+      return 'isSpecificSeriesPage';
     }
     // seriesPage : page de listing de séries
-    return 'seriesPage';
+    return 'isSeriesPage';
   }
 
   // thanksPage : page de remerciements
-  if (pathname.includes('/thanks/')) return 'thanksPage';
+  if (pathname.includes('/thanks/')) return 'isThanksPage';
 
   // repositoryPage : page liée aux repositories ou aux projets
-  if (pathname.includes('/repository/')) return 'repositoryPage';
+  if (pathname.includes('/repository/')) return 'isRepositoryPage';
 
   // other : fallback pour toutes les autres pages
-  return 'other';
+  return 'isOtherPage';
 }
-
-export default detectPageType;

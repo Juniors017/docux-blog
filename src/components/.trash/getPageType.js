@@ -1,13 +1,13 @@
 import { detectPageType } from './detectPageType';
 
 const schemaTypeMapping = {
-  HomePage: 'WebSite',
-  blogPostPage: 'BlogPosting',
-  blogListPage: 'CollectionPage',
-  seriesPage: 'CollectionPage',
-  specificSeriesPage: 'CollectionPage',
-  thanksPage: 'WebPage',
-  repositoryPage: 'CollectionPage',
+  isHomePage: 'WebSite',
+  isBlogPost: 'BlogPosting',
+  isBlogListPage: 'CollectionPage',
+  isSeriesPage: 'CollectionPage',
+  isSpecificSeriesPage: 'CollectionPage',
+  isThanksPage: 'WebPage',
+  isRepositoryPage: 'CollectionPage',
   other: 'WebPage',
 };
 
