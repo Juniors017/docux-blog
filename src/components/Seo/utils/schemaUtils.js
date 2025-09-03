@@ -1514,7 +1514,7 @@ export function buildJsonLdSchemas({
   );
 }
 
-import { normalizeAuthorName } from './authorUtils';
+import { normalizeAuthorName } from './schemaDataUtils/authorUtils';
 import { validateSchemaUrls, fixAllSchemaUrls } from './urlNormalizer';
 import { generateGenericBreadcrumb, createOptimizedBreadcrumb } from './breadcrumbUtils';
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';

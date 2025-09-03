@@ -7,6 +7,8 @@
  * - Création du Schema.org JSON-LD pour les Rich Results Google
  * - Système de fallback robuste pour éviter les erreurs
  * - Panel de debug intégré pour le développement
+ * 
+ * 🎯 ARCHITECTURE : Utilise SEULEMENT les données priorisées de usePageMetadata
  */
 
 import React from 'react';
@@ -15,13 +17,22 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Head from '@docusaurus/Head';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
-import authorsData from '@site/src/data/authors';
 import SeoDebugPanel from '../SeoDebugPanel';
 import usePageMetadata from './utils/usePageMetadata';
 import  {getPageType}  from './utils/getPageType';
 import { createOptimizedBreadcrumb, generateGenericBreadcrumb } from './utils/breadcrumbUtils';
-import { getSeoImageUrl } from './utils/seoImageUtils';
-import { normalizeAuthorName, getPrimaryAuthor } from './utils/authorUtils';
+import { getSchemaImageUrl } from './utils/seoImageUtils';
+import { normalizeAuthorName, getSchemaPrimaryAuthor } from './utils/authorUtils';
+import { 
+  getSchemaLanguage, 
+  getSchemaPublishedDate, 
+  getSchemaModifiedDate, 
+  getSchemaTitle, 
+  getSchemaDescription,
+  getSchemaKeywords,
+  getSchemaArticleSection,
+  getSchemaTechArticleProperties
+} from './utils/schemaDataUtils';
 
 
 import { 
@@ -65,20 +76,11 @@ const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatte
   const canonicalId = generateCanonicalId(siteConfig, location.pathname);
   const canonicalUrl = generateCanonicalUrl(siteConfig, location.pathname);
   
-  // 1.3 Génération du titre avec système de priorité (FrontMatter en premier)
-  const title = blogPostData?.frontMatter?.title ||     // 1. Titre du frontMatter de blog (le plus riche)
-                pageMetadata?.frontMatter?.title ||     // 2. Titre du frontMatter de page
-                blogPostData?.metadata?.title ||        // 3. Titre des métadonnées de blog
-                pageMetadata?.title ||                  // 4. Titre des métadonnées de page
-                siteConfig.title;                       // 5. Titre du site (fallback)
+  // 1.3 Génération du titre avec utilitaire de données priorisées
+  const title = getSchemaTitle(pageMetadata, siteConfig);
   
-  // 1.4 Génération de la description avec système de priorité (FrontMatter en premier)
-  const description = blogPostData?.frontMatter?.description ||    // 1. Description frontMatter blog (la plus riche)
-                     pageMetadata?.frontMatter?.description ||    // 2. Description frontMatter page
-                     blogPostData?.metadata?.description ||       // 3. Description métadonnées blog
-                     pageMetadata?.description ||                 // 4. Description métadonnées page
-                     siteConfig.tagline ||                        // 5. Tagline du site
-                     'Documentation et tutoriels sur Docusaurus'; // 6. Description par défaut
+  // 1.4 Génération de la description avec utilitaire de données priorisées
+  const description = getSchemaDescription(pageMetadata, siteConfig);
   
   // 1.5 Variables booléennes récupérées directement depuis la détection pageInfo
   // (évite la duplication avec detectPageType)
@@ -102,21 +104,23 @@ const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatte
   // Plus besoin de la redéfinir localement - plus efficace et réutilisable !
 
   /**
-   * ÉTAPE 8 : Gestion intelligente des images avec utilitaire dédié
+   * ÉTAPE 8 : Gestion intelligente des images avec données priorisées
    * 
-   * La logique de priorité des images a été déplacée dans seoImageUtils.js
-   * pour une meilleure réutilisabilité et maintenabilité du code.
+   * Utilise les données déjà priorisées par usePageMetadata au lieu de refaire la logique
    */
-  const imageUrl = getSeoImageUrl(blogPostData, pageMetadata, siteConfig, useBaseUrl);
-
+  const imageUrl = getSchemaImageUrl(pageMetadata, siteConfig, useBaseUrl);
+  if (process.env.NODE_ENV === 'development') {
+      console.log('🖼️ Schema Image Url (données priorisées):', imageUrl);
+    }
   /**
-   * ÉTAPE 9 : Gestion des auteurs avec utilitaire dédié
+   * ÉTAPE 9 : Gestion des auteurs avec données priorisées
    * 
-   * La logique de détection et normalisation des auteurs a été déplacée
-   * dans authorUtils.js pour une meilleure réutilisabilité et maintenabilité.
+   * Utilise les données déjà priorisées par usePageMetadata au lieu de refaire la logique
    */
-  const primaryAuthor = getPrimaryAuthor(blogPostData, pageMetadata, authorsData, siteConfig);
-
+  const primaryAuthor = getSchemaPrimaryAuthor(pageMetadata, siteConfig);
+if (process.env.NODE_ENV === 'development') {
+      console.log('👥 Mode auteur activé (données priorisées):', primaryAuthor);
+    }
   /**
    * ÉTAPE 11 : Construction du JSON-LD Schema.org
    * 
@@ -140,12 +144,18 @@ const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatte
       // Génération d'IDs différenciés pour éviter les conflits
       const schemaId = index === 0 ? canonicalId : `${canonicalId}#${schemaType.toLowerCase()}`;
       
+      const schemaName = blogPostData?.frontMatter?.name || 
+                        pageMetadata?.frontMatter?.name || 
+                        blogPostData?.frontMatter?.title || 
+                        pageMetadata?.frontMatter?.title || 
+                        title;
+      
       let schemaStructure = {
         '@context': 'https://schema.org',
         '@id': schemaId,
         '@type': schemaType,
         url: canonicalUrl,
-        name: title,
+        name: schemaName, // ✅ Utilise la valeur du frontMatter
         headline: title,
         description: description,
         image: {
@@ -153,7 +163,8 @@ const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatte
           url: imageUrl,
           caption: `Image pour: ${title}`
         },
-        inLanguage: 'fr-FR',
+        // ✅ UTILISE l'utilitaire pour inLanguage avec données priorisées
+        inLanguage: getSchemaLanguage(pageMetadata, siteConfig),
         isPartOf: {
           '@type': 'WebSite',
           name: siteConfig.title,
@@ -161,66 +172,52 @@ const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatte
         }
       };
       
-      // Ajout des métadonnées d'auteur si disponibles
-      if (primaryAuthor) {
-        schemaStructure.author = {
-          '@type': 'Person',
-          name: primaryAuthor.name,
-          url: primaryAuthor.url
-        };
-      } else {
-        schemaStructure.author = {
-          '@type': 'Organization',
-          name: siteConfig.title,
-          url: siteConfig.url
-        };
-      }
-      
-      // Ajout des dates si disponibles (pour articles de blog)
-      if (blogPostData?.metadata?.date || pageMetadata?.date) {
-        schemaStructure.datePublished = blogPostData?.metadata?.date || pageMetadata?.date;
-        schemaStructure.dateModified = blogPostData?.metadata?.lastUpdatedAt || 
-                                      pageMetadata?.lastUpdatedAt || 
-                                      blogPostData?.metadata?.date || 
-                                      pageMetadata?.date;
-      }
-      
-      // Ajout de l'éditeur (pour articles de blog)
+      // Enrichissement selon le type de schéma
       if (schemaType === 'BlogPosting' || schemaType === 'TechArticle') {
-        schemaStructure.publisher = {
-          '@type': 'Organization',
-          name: siteConfig.title,
-          url: siteConfig.url,
-          logo: {
-            '@type': 'ImageObject',
-            url: siteConfig.url + useBaseUrl('/img/docux.png')
-          }
+        schemaStructure = {
+          ...schemaStructure,
+          author: primaryAuthor ? {
+            '@type': 'Person',
+            name: normalizeAuthorName(primaryAuthor.name),
+            url: primaryAuthor.url || primaryAuthor.github,
+            description: primaryAuthor.title || 'Contributeur Docux',
+            // ✅ CORRECTION : Correction de l'URL image auteur
+            image: primaryAuthor.imageUrl?.startsWith('http') 
+              ? primaryAuthor.imageUrl 
+              : `${siteConfig.url}${primaryAuthor.imageUrl || '/img/docusaurus-social-card.jpg'}`
+          } : {
+            '@type': 'Person',
+            name: 'Équipe Docux',
+            url: siteConfig.url
+          },
+          datePublished: getSchemaPublishedDate(pageMetadata),
+          dateModified: getSchemaModifiedDate(pageMetadata),
+          publisher: {
+            '@type': 'Organization',
+            name: siteConfig.title,
+            url: siteConfig.url,
+            logo: {
+              '@type': 'ImageObject',
+              url: siteConfig.url + useBaseUrl('/img/docux.png')
+            }
+          },
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': canonicalId
+          },
+          keywords: getSchemaKeywords(pageMetadata),
+          articleSection: getSchemaArticleSection(pageMetadata)
         };
         
-        schemaStructure.mainEntityOfPage = {
-          '@type': 'WebPage',
-          '@id': canonicalId
-        };
-      }
-      
-      // Ajout de propriétés spécifiques selon le type
-      if (schemaType === 'TechArticle') {
-        schemaStructure.proficiencyLevel = blogPostData?.frontMatter?.proficiencyLevel || 
-                                          pageMetadata?.frontMatter?.proficiencyLevel || 
-                                          'Beginner';
-        schemaStructure.programmingLanguage = blogPostData?.frontMatter?.programmingLanguage || 
-                                             pageMetadata?.frontMatter?.programmingLanguage || 
-                                             'JavaScript';
-      }
-      
-      // Ajout des mots-clés si disponibles
-      const keywords = blogPostData?.frontMatter?.keywords || 
-                      pageMetadata?.frontMatter?.keywords ||
-                      blogPostData?.frontMatter?.tags ||
-                      pageMetadata?.frontMatter?.tags;
-      
-      if (keywords && keywords.length > 0) {
-        schemaStructure.keywords = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+        // Propriétés spécifiques à TechArticle
+        if (schemaType === 'TechArticle') {
+          const techProperties = getSchemaTechArticleProperties(pageMetadata);
+          
+          schemaStructure = {
+            ...schemaStructure,
+            ...techProperties
+          };
+        }
       }
       
       allSchemas.push(schemaStructure);
@@ -228,1280 +225,69 @@ const { blogPostData, pageMetadata } = usePageMetadata(pageData, propsFrontMatte
     
     // Ajout du breadcrumb comme schéma séparé
     const breadcrumbJsonLd = generateGenericBreadcrumb(location.pathname, title, siteConfig);
-    if (breadcrumbJsonLd) {
+    if (breadcrumbJsonLd && !allSchemas.some(schema => schema['@type'] === 'BreadcrumbList')) {
       allSchemas.push(breadcrumbJsonLd);
     }
     
   } else {
-    // ✅ APPROCHE CLASSIQUE : Un seul schéma basé sur la détection automatique
+    // ✅ MODE FALLBACK SIMPLE : Si pas de schemaTypes défini
     if (process.env.NODE_ENV === 'development') {
-      console.log('📍 Mode schéma unique activé:', pageInfo.type);
-    }
-  }
-
-  /**
-   * ⚠️ Logique classique maintenue pour compatibilité
-   * Cette section sera utilisée seulement si schemaTypes n'est pas défini dans le frontmatter
-   */
-
-  /**
-   * Utilitaire pour créer des BreadcrumbList optimisés Google
-   * 
-   * Applique les bonnes pratiques :
-   * - URLs normalisées en minuscules
-   * - Items typés en WebPage
-   * - Nom global du BreadcrumbList
-   * 
-   * Exemple généré pour /repository/ :
-   * {
-   *   "@type": "BreadcrumbList",
-   *   "name": "Navigation - Repositories Publics",
-   *   "itemListElement": [
-   *     {
-   *       "@type": "ListItem",
-   *       "position": 1,
-   *       "name": "DOCUX",
-   *       "item": {
-   *         "@type": "WebPage",
-   *         "@id": "https://docuxlab.com",
-   *         "name": "DOCUX",
-   *         "url": "https://docuxlab.com"
-   *       }
-   *     },
-   *     {
-   *       "@type": "ListItem", 
-   *       "position": 2,
-   *       "name": "Repositories Publics",
-   *       "item": {
-   *         "@type": "WebPage",
-   *         "@id": "https://docuxlab.com/repository/",
-   *         "name": "Repositories Publics",
-   *         "url": "https://docuxlab.com/repository/"
-   *       }
-   *     }
-   *   ]
-   * }
-   */
-
-  /**
-   * Fonction utilitaire pour extraire le nom de série depuis les paramètres URL
-   * 
-   * @param {string} search - La query string de l'URL (ex: "?name=seo-docusaurus")
-   * @returns {string|null} Le nom décodé de la série ou null
-   */
-  const getSeriesNameFromUrl = (search) => {
-    if (!search) return null;
-    const params = new URLSearchParams(search);
-    const seriesSlug = params.get('name');
-    if (!seriesSlug) return null;
-    
-    // Essayer de retrouver le nom original de la série depuis les métadonnées
-    try {
-      if (ExecutionEnvironment.canUseDOM && window.docusaurus) {
-        const globalData = window.docusaurus.globalData;
-        if (globalData && globalData['docusaurus-plugin-content-blog']) {
-          const blogData = globalData['docusaurus-plugin-content-blog'];
-          if (blogData && blogData.default && blogData.default.blogPosts) {
-            // Chercher une correspondance entre le slug et le nom original
-            for (const post of blogData.default.blogPosts) {
-              if (post.metadata?.frontMatter?.serie) {
-                const originalName = post.metadata.frontMatter.serie;
-                const postSlug = originalName
-                  .toLowerCase()
-                  .normalize('NFD')
-                  .replace(/[\u0300-\u036f]/g, '')
-                  .replace(/[^a-z0-9\s-]/g, '')
-                  .replace(/\s+/g, '-')
-                  .replace(/-+/g, '-')
-                  .trim('-');
-                
-                if (postSlug === seriesSlug) {
-                  return originalName;
-                }
-              }
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.warn('Erreur lors de la récupération du nom de série:', error);
+      console.log('📍 Mode fallback activé - schéma WebPage par défaut');
     }
     
-    // Fallback : décoder et formater le slug
-    return decodeURIComponent(seriesSlug)
-      .replace(/-/g, ' ')
-      .replace(/\b\w/g, l => l.toUpperCase());
-  };
-
-  const additionalJsonLd = (() => {
-    // Structure de base commune à tous les types de pages
-    const baseStructure = {
-      '@context': 'https://schema.org',           // Contexte Schema.org obligatoire
-      '@id': canonicalId,                         // ID canonique sans slash final
-      '@type': pageInfo.type,                     // Type déterminé par l'analyse de l'URL
-      name: title,                                // Nom/titre de la page
-      headline: title,                            // Titre principal (alias de name)
-      description: description,                   // Description SEO
-      url: canonicalUrl,                          // URL canonique avec slash final
-      image: {                                    // Image structurée pour Rich Results
+    const fallbackSchema = {
+      '@context': 'https://schema.org',
+      '@id': canonicalId,
+      '@type': 'WebPage',
+      url: canonicalUrl,
+      name: title,
+      description: description,
+      image: {
         '@type': 'ImageObject',
         url: imageUrl,
         caption: `Image pour: ${title}`
       },
-      inLanguage: 'fr-FR',                       // Langue du contenu
-      isPartOf: {                                // Relation avec le site parent
+      inLanguage: getSchemaLanguage(pageMetadata, siteConfig),
+      isPartOf: {
         '@type': 'WebSite',
         name: siteConfig.title,
         url: siteConfig.url
-      },
-      // 🆕 BreadcrumbList générique pour toutes les pages
-      breadcrumb: generateGenericBreadcrumb(location.pathname, title, siteConfig)
+      }
     };
-
-    /**
-     * Enrichissement spécifique pour les articles de blog (BlogPosting)
-     * 
-     * Ajoute toutes les métadonnées requises pour les Rich Results d'articles
-     */
-    if (pageInfo.type === 'BlogPosting' && blogPostData) {
-      return {
-        ...baseStructure,
-        '@type': 'BlogPosting',
-        
-        // Informations sur l'auteur (structurées selon Schema.org)
-        author: primaryAuthor ? {
-          '@type': 'Person',
-          name: normalizeAuthorName(primaryAuthor.name),
-          url: primaryAuthor.url || primaryAuthor.github,
-          description: primaryAuthor.title || 'Contributeur Docux',
-          image: primaryAuthor.imageUrl
-        } : {
-          '@type': 'Person',
-          name: 'Équipe Docux',
-          url: siteConfig.url
-        },
-        
-        // Dates de publication et modification (format ISO)
-        datePublished: blogPostData.date || new Date().toISOString(),
-        dateModified: blogPostData.lastUpdatedAt || blogPostData.date || new Date().toISOString(),
-        
-        // Informations sur l'éditeur (organisation)
-        publisher: {
-          '@type': 'Organization',
-          name: siteConfig.title,
-          url: siteConfig.url,
-          logo: {
-            '@type': 'ImageObject',
-            url: siteConfig.url + useBaseUrl('/img/docux.png')
-          }
-        },
-        
-        // Page principale de l'article
-        mainEntityOfPage: {
-          '@type': 'WebPage',
-          '@id': canonicalId
-        },
-        
-        // Mots-clés et catégorisation
-        keywords: blogPostData.frontMatter?.keywords?.join(', ') || 
-                 blogPostData.frontMatter?.tags?.join(', ') || 
-                 pageMetadata?.frontMatter?.keywords?.join(', ') ||
-                 pageMetadata?.frontMatter?.tags?.join(', ') ||
-                 'docusaurus, documentation, tutoriel',
-        articleSection: blogPostData.frontMatter?.category || pageMetadata?.frontMatter?.category || 'Tutoriels',
-        
-        // Métriques de contenu
-        wordCount: blogPostData.readingTime?.words || blogPostData.frontMatter?.wordCount || 500,
-        timeRequired: blogPostData.readingTime?.minutes ? 
-                     `PT${Math.ceil(blogPostData.readingTime.minutes)}M` : 
-                     (blogPostData.frontMatter?.readingTime || 'PT5M'),
-        
-        // 🆕 v2.1.4 - Améliorations BlogPosting
-        
-        // Genre de blog
-        ...(blogPostData.frontMatter?.genre && {
-          genre: blogPostData.frontMatter.genre
-        }),
-        
-        // Audience cible
-        ...(blogPostData.frontMatter?.audience && {
-          audience: {
-            '@type': 'Audience',
-            audienceType: blogPostData.frontMatter.audience
-          }
-        }),
-        
-        // Langue du contenu
-        inLanguage: blogPostData.frontMatter?.inLanguage || 'fr-FR',
-        
-        // Accès gratuit
-        isAccessibleForFree: blogPostData.frontMatter?.isAccessibleForFree !== false,
-        
-        // Corps de l'article
-        ...(blogPostData.frontMatter?.articleBody && {
-          articleBody: blogPostData.frontMatter.articleBody
-        }),
-        
-        // URL de discussion
-        ...(blogPostData.frontMatter?.discussionUrl && {
-          discussionUrl: blogPostData.frontMatter.discussionUrl
-        }),
-        
-        // Nombre de commentaires
-        ...(blogPostData.frontMatter?.commentCount !== undefined && {
-          commentCount: blogPostData.frontMatter.commentCount
-        }),
-        
-        // Copyright
-        ...(blogPostData.frontMatter?.copyrightYear && {
-          copyrightYear: blogPostData.frontMatter.copyrightYear
-        }),
-        
-        ...(blogPostData.frontMatter?.copyrightHolder && {
-          copyrightHolder: {
-            '@type': 'Person',
-            name: blogPostData.frontMatter.copyrightHolder
-          }
-        }),
-        
-        // Sujet de l'article (si catégorie définie)
-        about: blogPostData.frontMatter?.category ? {
-          '@type': 'Thing',
-          name: blogPostData.frontMatter.category
-        } : undefined,
-        
-        // Métriques d'interaction enrichies pour Google
-        interactionStatistic: blogPostData.readingTime ? {
-          '@type': 'InteractionCounter',
-          interactionType: 'https://schema.org/ReadAction',
-          name: 'Temps de lecture estimé',
-          result: {
-            '@type': 'QuantitativeValue',
-            value: blogPostData.readingTime.minutes,
-            unitText: 'minutes'
-          }
-        } : undefined
-      };
-    }
-
-    /**
-     * Enrichissement pour les pages de collection/listing
-     * 
-     * Gère deux cas :
-     * 1. Pages de blog (index, tags, auteurs)
-     * 2. Pages de collection personnalisées (comme /repository/)
-     */
-    if (pageInfo.type === 'CollectionPage') {
-      // Configuration spécifique pour les pages de blog
-      if (isBlogListPage) {
-        return {
-          ...baseStructure,
-          '@type': 'CollectionPage',
-          about: {
-            '@type': 'Blog',
-            name: `Blog - ${siteConfig.title}`,
-            description: 'Collection d\'articles et tutoriels sur Docusaurus'
-          },
-          
-          // Fil d'Ariane optimisé pour les pages de collection blog
-          breadcrumb: createOptimizedBreadcrumb([
-            {
-              name: siteConfig.title,
-              url: siteConfig.url
-            },
-            {
-              name: 'Blog',
-              url: canonicalUrl
-            }
-          ], `Navigation - Blog ${siteConfig.title}`),
-          
-          // Entité principale de la collection blog
-          mainEntity: {
-            '@type': 'Blog',
-            name: `Blog - ${siteConfig.title}`,
-            url: canonicalUrl,
-            description: 'Articles et tutoriels sur Docusaurus et le développement web'
-          }
-        };
-      }
-
-      // Configuration spécifique pour les pages de série individuelle (avec ?name=)
-      if (isSpecificSeriesPage) {
-        const seriesName = getSeriesNameFromUrl(location.search);
-        let seriesArticles = [];
-        let seriesDescription = '';
-        
-        if (seriesName) {
-          try {
-            // Récupérer les articles de cette série spécifique
-            if (ExecutionEnvironment.canUseDOM && window.docusaurus) {
-              const globalData = window.docusaurus.globalData;
-              if (globalData && globalData['docusaurus-plugin-content-blog']) {
-                const blogData = globalData['docusaurus-plugin-content-blog'];
-                if (blogData && blogData.default && blogData.default.blogPosts) {
-                  seriesArticles = blogData.default.blogPosts
-                    .filter(post => post.metadata?.frontMatter?.serie === seriesName)
-                    .map((post, index) => ({
-                      '@type': 'ListItem',
-                      position: index + 1,
-                      name: post.metadata.title,
-                      url: `${siteConfig.url}${post.metadata.permalink}`,
-                      description: post.metadata.description || post.metadata.frontMatter?.description,
-                      item: {
-                        '@type': 'BlogPosting',
-                        headline: post.metadata.title,
-                        url: `${siteConfig.url}${post.metadata.permalink}`,
-                        datePublished: post.metadata.date,
-                        inLanguage: 'fr-FR'
-                      }
-                    }));
-                  
-                  seriesDescription = `Série de ${seriesArticles.length} article(s) sur ${seriesName}. Découvrez un parcours d'apprentissage progressif pour maîtriser ce domaine.`;
-                }
-              }
-            }
-          } catch (error) {
-            console.warn('Erreur lors de la récupération des articles de série:', error);
-            seriesDescription = `Articles de la série ${seriesName}`;
-          }
-        }
-
-        return {
-          ...baseStructure,
-          '@type': 'CollectionPage',
-          
-          // Titre et description spécifiques à la série
-          name: seriesName ? `${seriesName} - Série d'articles` : 'Série d\'articles',
-          headline: seriesName ? `Articles de la série : ${seriesName}` : 'Articles de série',
-          description: seriesDescription || `Découvrez tous les articles de la série ${seriesName || 'sélectionnée'}`,
-          
-          // Schema spécifique pour cette série
-          about: {
-            '@type': 'CreativeWorkSeries',
-            name: seriesName || 'Série d\'articles',
-            description: seriesDescription,
-            genre: 'Educational Content',
-            inLanguage: 'fr-FR',
-            numberOfEpisodes: seriesArticles.length,
-            publisher: {
-              '@type': 'Organization',
-              name: siteConfig.title,
-              url: siteConfig.url,
-              logo: {
-                '@type': 'ImageObject',
-                url: siteConfig.url + useBaseUrl('/img/docux.png')
-              }
-            }
-          },
-          
-          // Fil d'Ariane à 3 niveaux pour la série spécifique
-          breadcrumb: createOptimizedBreadcrumb([
-            {
-              name: siteConfig.title,
-              url: siteConfig.url
-            },
-            {
-              name: 'Séries d\'articles',
-              url: `${siteConfig.url}/series/`
-            },
-            {
-              name: seriesName || 'Série',
-              url: canonicalUrl
-            }
-          ], `Navigation - ${seriesName || 'Série'}`),
-          
-          // Liste des articles de la série
-          mainEntity: {
-            '@type': 'ItemList',
-            name: `Articles de la série : ${seriesName || 'Série'}`,
-            description: seriesDescription,
-            url: canonicalUrl,
-            numberOfItems: seriesArticles.length,
-            itemListOrder: 'ItemListOrderAscending', // Articles triés chronologiquement
-            itemListElement: seriesArticles.length > 0 ? seriesArticles : undefined,
-            
-            // Métadonnées éducatives
-            genre: 'Educational Content',
-            audience: {
-              '@type': 'Audience',
-              audienceType: 'Developers and Web Enthusiasts',
-              geographicArea: {
-                '@type': 'Country',
-                name: 'France'
-              }
-            },
-            inLanguage: 'fr-FR'
-          },
-          
-          // Informations de publication
-          publisher: {
-            '@type': 'Organization',
-            name: siteConfig.title,
-            url: siteConfig.url,
-            logo: {
-              '@type': 'ImageObject',
-              url: siteConfig.url + useBaseUrl('/img/docux.png')
-            }
-          }
-        };
-      }
-
-      // Configuration spécifique pour les pages de séries
-      if (isSeriesPage) {
-        // Calculer le nombre de séries disponibles pour enrichir les métadonnées
-        let seriesCount = 0;
-        let seriesItems = [];
-        
-        try {
-          // Tentative de récupération des séries depuis les métadonnées du blog
-          if (ExecutionEnvironment.canUseDOM && window.docusaurus) {
-            const globalData = window.docusaurus.globalData;
-            if (globalData && globalData['docusaurus-plugin-content-blog']) {
-              const blogData = globalData['docusaurus-plugin-content-blog'];
-              if (blogData && blogData.default && blogData.default.blogPosts) {
-                const seriesSet = new Set();
-                const seriesInfo = new Map();
-                
-                // Collecter toutes les séries et leurs informations
-                blogData.default.blogPosts.forEach(post => {
-                  if (post.metadata?.frontMatter?.serie) {
-                    const serieName = post.metadata.frontMatter.serie;
-                    seriesSet.add(serieName);
-                    
-                    if (!seriesInfo.has(serieName)) {
-                      seriesInfo.set(serieName, {
-                        name: serieName,
-                        articles: [],
-                        url: `${siteConfig.url}/series/series-articles/?name=${encodeURIComponent(serieName)}`
-                      });
-                    }
-                    
-                    seriesInfo.get(serieName).articles.push({
-                      title: post.metadata.title,
-                      url: `${siteConfig.url}${post.metadata.permalink}`,
-                      date: post.metadata.date
-                    });
-                  }
-                });
-                
-                seriesCount = seriesSet.size;
-                
-                // Créer les éléments de liste pour le Schema.org
-                seriesItems = Array.from(seriesInfo.values()).map((serie, index) => ({
-                  '@type': 'ListItem',
-                  position: index + 1,
-                  name: serie.name,
-                  description: `Série de ${serie.articles.length} article(s) sur ${serie.name}`,
-                  url: serie.url,
-                  item: {
-                    '@type': 'CreativeWorkSeries',
-                    name: serie.name,
-                    url: serie.url,
-                    numberOfEpisodes: serie.articles.length,
-                    genre: 'Educational Content',
-                    inLanguage: 'fr-FR',
-                    publisher: {
-                      '@type': 'Organization',
-                      name: siteConfig.title,
-                      url: siteConfig.url
-                    }
-                  }
-                }));
-              }
-            }
-          }
-        } catch (error) {
-          // En cas d'erreur, on utilise des valeurs par défaut
-          seriesCount = 2; // Valeur par défaut basée sur les séries existantes
-          seriesItems = [
-            {
-              '@type': 'ListItem',
-              position: 1,
-              name: 'Genèse Docux',
-              description: 'Série sur la création et l\'évolution du blog Docux',
-              url: `${siteConfig.url}/series/series-articles/?name=genese-docux`,
-              item: {
-                '@type': 'CreativeWorkSeries',
-                name: 'Genèse Docux',
-                url: `${siteConfig.url}/series/series-articles/?name=genese-docux`,
-                numberOfEpisodes: 1,
-                genre: 'Educational Content',
-                inLanguage: 'fr-FR',
-                publisher: {
-                  '@type': 'Organization',
-                  name: siteConfig.title,
-                  url: siteConfig.url
-                }
-              }
-            },
-            {
-              '@type': 'ListItem',
-              position: 2,
-              name: 'SEO Docusaurus',
-              description: 'Série sur l\'optimisation SEO avec Docusaurus',
-              url: `${siteConfig.url}/series/series-articles/?name=seo-docusaurus`,
-              item: {
-                '@type': 'CreativeWorkSeries',
-                name: 'SEO Docusaurus',
-                url: `${siteConfig.url}/series/series-articles/?name=seo-docusaurus`,
-                numberOfEpisodes: 1,
-                genre: 'Educational Content',
-                inLanguage: 'fr-FR',
-                publisher: {
-                  '@type': 'Organization',
-                  name: siteConfig.title,
-                  url: siteConfig.url
-                }
-              }
-            }
-          ];
-        }
-
-        return {
-          ...baseStructure,
-          '@type': 'CollectionPage',
-          
-          // Enrichir la description avec le nombre de séries
-          description: `Découvrez nos ${seriesCount} séries d'articles organisées par thématique : développement web, Docusaurus, React, SEO et bien plus. Collections d'articles approfondis pour progresser étape par étape.`,
-          
-          // Sujet principal de la collection
-          about: {
-            '@type': 'CreativeWorkSeries',
-            name: `Séries d'articles - ${siteConfig.title}`,
-            description: 'Collection de séries d\'articles organisées par thématique',
-            genre: 'Educational Content',
-            inLanguage: 'fr-FR',
-            numberOfSeries: seriesCount,
-            publisher: {
-              '@type': 'Organization',
-              name: siteConfig.title,
-              url: siteConfig.url,
-              logo: {
-                '@type': 'ImageObject',
-                url: siteConfig.url + useBaseUrl('/img/docux.png')
-              }
-            }
-          },
-          
-          // Fil d'Ariane optimisé pour les pages de séries
-          breadcrumb: createOptimizedBreadcrumb([
-            {
-              name: siteConfig.title,
-              url: siteConfig.url
-            },
-            {
-              name: 'Séries d\'articles',
-              url: canonicalUrl
-            }
-          ], `Navigation - Séries ${siteConfig.title}`),
-          
-          // Entité principale de la collection de séries avec éléments détaillés
-          mainEntity: {
-            '@type': 'ItemList',
-            name: 'Séries d\'articles',
-            description: 'Collection de séries d\'articles organisées par thématique et domaine d\'expertise',
-            url: canonicalUrl,
-            numberOfItems: seriesCount,
-            itemListOrder: 'Unordered',
-            itemListElement: seriesItems.length > 0 ? seriesItems : undefined,
-            
-            // Métadonnées supplémentaires pour améliorer la compréhension par Google
-            genre: 'Educational Content',
-            audience: {
-              '@type': 'Audience',
-              audienceType: 'Developers and Web Enthusiasts',
-              geographicArea: {
-                '@type': 'Country',
-                name: 'France'
-              }
-            },
-            
-            // Catégorisation thématique
-            keywords: [
-              'séries d\'articles',
-              'collections thématiques',
-              'tutoriels progressifs',
-              'développement web',
-              'docusaurus',
-              'react',
-              'javascript',
-              'apprentissage',
-              'formation'
-            ].join(', '),
-            
-            // Informations sur l'organisation
-            provider: {
-              '@type': 'Organization',
-              name: siteConfig.title,
-              url: siteConfig.url,
-              logo: {
-                '@type': 'ImageObject',
-                url: siteConfig.url + useBaseUrl('/img/docux.png')
-              },
-              sameAs: [
-                'https://github.com/Juniors017/docux-blog'
-              ]
-            }
-          },
-          
-          // Informations supplémentaires pour le contexte éducatif
-          educationalUse: 'Professional Development',
-          learningResourceType: 'Article Series',
-          typicalAgeRange: '18-99',
-          
-          // Éditeur de la collection
-          publisher: {
-            '@type': 'Organization',
-            name: siteConfig.title,
-            url: siteConfig.url,
-            logo: {
-              '@type': 'ImageObject',
-              url: siteConfig.url + useBaseUrl('/img/docux.png')
-            }
-          },
-          
-          // Date de création/mise à jour
-          datePublished: pageMetadata?.frontMatter?.date || '2025-08-29',
-          dateModified: new Date().toISOString().split('T')[0],
-          
-          // Mots-clés enrichis
-          keywords: [
-            'séries d\'articles',
-            'collections thématiques',
-            'tutoriels progressifs',
-            'développement web',
-            'docusaurus',
-            'react',
-            'javascript',
-            'apprentissage',
-            'formation',
-            'éducation',
-            'programmation'
-          ].join(', ')
-        };
-      }
-      
-      // Configuration pour les pages de collection personnalisées (repository, etc.)
-      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
-      
-      return {
-        ...baseStructure,
-        '@type': 'CollectionPage',
-        
-        // Informations sur l'auteur si disponible
-        ...(primaryAuthor && {
-          author: {
-            '@type': 'Person',
-            name: normalizeAuthorName(primaryAuthor.name),
-            url: primaryAuthor.url || primaryAuthor.github,
-            description: primaryAuthor.title || 'Contributeur Docux',
-            image: primaryAuthor.imageUrl
-          }
-        }),
-        
-        // Date de publication/mise à jour si disponible
-        ...(frontMatter.date && {
-          datePublished: frontMatter.date
-        }),
-        ...(frontMatter.last_update?.date && {
-          dateModified: frontMatter.last_update.date
-        }),
-        
-        // Catégorie de la collection
-        ...(frontMatter.category && {
-          about: {
-            '@type': 'Thing',
-            name: frontMatter.category,
-            description: `Collection de contenus sur le thème : ${frontMatter.category}`
-          }
-        }),
-        
-        // Mots-clés spécifiques à la collection
-        ...(frontMatter.keywords && {
-          keywords: Array.isArray(frontMatter.keywords) 
-            ? frontMatter.keywords.join(', ')
-            : frontMatter.keywords
-        }),
-        
-        // Entité principale de la collection personnalisée
-        mainEntity: {
-          '@type': 'ItemList',
-          name: title,
-          description: description,
-          numberOfItems: frontMatter.numberOfItems || undefined,
-          ...(frontMatter.category && {
-            about: frontMatter.category
-          })
-        },
-        
-        // Fil d'Ariane optimisé pour les collections personnalisées
-        breadcrumb: createOptimizedBreadcrumb([
-          {
-            name: siteConfig.title,
-            url: siteConfig.url
-          },
-          {
-            name: title,
-            url: canonicalUrl
-          }
-        ], `Navigation - ${title}`),
-        
-        // Informations spécifiques aux projets/repositories si c'est une page repository
-        ...(isRepositoryPage && {
-          specialty: 'Open Source Projects',
-          additionalType: 'SoftwareSourceCode',
-          programmingLanguage: frontMatter.programmingLanguage || ['JavaScript', 'TypeScript', 'React'],
-          codeRepository: 'https://github.com/Juniors017'
-        })
-      };
-    }
-
-    /**
-     * Enrichissement pour la page d'accueil (WebSite)
-     * 
-     * Ajoute les fonctionnalités de recherche et les liens sociaux
-     */
-    if (pageInfo.type === 'WebSite' && isHomePage) {
-      return {
-        ...baseStructure,
-        '@type': 'WebSite',
-        
-        // Action de recherche structurée (si fonctionnalité de recherche disponible)
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: {
-            '@type': 'EntryPoint',
-            urlTemplate: `${siteConfig.url}/search?q={search_term_string}`
-          },
-          'query-input': 'required name=search_term_string'
-        },
-        
-        // Liens vers les profils sociaux du site
-        sameAs: [
-          'https://github.com/Juniors017/docux-blog',
-          // Ajoutez ici d'autres liens de réseaux sociaux si disponibles
-          // 'https://twitter.com/docux',
-          // 'https://linkedin.com/in/docux'
-        ]
-      };
-    }
-
-    /**
-     * 🆕 Enrichissement pour les tutoriels (HowTo)
-     * 
-     * Structure adaptée aux guides étape par étape
-     */
-    if (pageInfo.type === 'HowTo' && (blogPostData || pageMetadata)) {
-      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
-      
-      return {
-        ...baseStructure,
-        '@type': 'HowTo',
-        
-        // 🆕 v2.1.4 - Métadonnées enrichies HowTo
-        
-        // Temps total et estimations détaillées
-        totalTime: frontMatter.totalTime || frontMatter.timeRequired || 'PT30M',
-        
-        // Temps de préparation spécifique
-        ...(frontMatter.prepTime && {
-          prepTime: frontMatter.prepTime
-        }),
-        
-        // Temps d'exécution
-        ...(frontMatter.performTime && {
-          performTime: frontMatter.performTime
-        }),
-        
-        // Niveau de difficulté
-        difficulty: frontMatter.difficulty || 'Beginner',
-        
-        // Coût estimé
-        ...(frontMatter.estimatedCost && {
-          estimatedCost: {
-            '@type': 'MonetaryAmount',
-            currency: 'EUR',
-            value: frontMatter.estimatedCost
-          }
-        }),
-        
-        // Résultat attendu
-        ...(frontMatter.yield && {
-          yield: frontMatter.yield
-        }),
-        
-        // Outils nécessaires (support array depuis frontmatter)
-        ...(frontMatter.tool && {
-          tool: Array.isArray(frontMatter.tool) 
-            ? frontMatter.tool.map(tool => ({
-                '@type': 'HowToTool',
-                name: tool
-              }))
-            : [{ '@type': 'HowToTool', name: frontMatter.tool }]
-        }),
-        
-        // Matériaux/fournitures requis
-        ...(frontMatter.supply && {
-          supply: Array.isArray(frontMatter.supply)
-            ? frontMatter.supply.map(item => ({
-                '@type': 'HowToSupply',
-                name: item
-              }))
-            : [{ '@type': 'HowToSupply', name: frontMatter.supply }]
-        }),
-        
-        // Audience et niveau requis
-        ...(frontMatter.audience && {
-          audience: {
-            '@type': 'Audience',
-            audienceType: frontMatter.audience
-          }
-        }),
-        
-        // Compétences requises
-        ...(frontMatter.proficiencyLevel && {
-          proficiencyLevel: frontMatter.proficiencyLevel
-        }),
-        
-        // Instructions (si définies dans le frontMatter)
-        ...(frontMatter.steps && {
-          step: Array.isArray(frontMatter.steps)
-            ? frontMatter.steps.map((step, index) => ({
-                '@type': 'HowToStep',
-                position: index + 1,
-                name: step.name || `Étape ${index + 1}`,
-                text: step.text,
-                ...(step.image && { image: step.image }),
-                ...(step.url && { url: step.url })
-              }))
-            : [{ 
-                '@type': 'HowToStep',
-                position: 1,
-                name: 'Instructions',
-                text: frontMatter.steps
-              }]
-        })
-      };
-    }
-
-    /**
-     * 🆕 Enrichissement pour les articles techniques (TechArticle)
-     * 
-     * Structure optimisée pour le contenu technique
-     */
-    if (pageInfo.type === 'TechArticle' && (blogPostData || pageMetadata)) {
-      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
-      
-      return {
-        ...baseStructure,
-        '@type': 'TechArticle',
-        
-        // Informations sur l'auteur (même logique que BlogPosting)
-        author: primaryAuthor ? {
-          '@type': 'Person',
-          name: normalizeAuthorName(primaryAuthor.name),
-          url: primaryAuthor.url || primaryAuthor.github,
-          description: primaryAuthor.title || 'Contributeur Docux',
-          image: primaryAuthor.imageUrl
-        } : {
-          '@type': 'Person',
-          name: 'Équipe Docux',
-          url: siteConfig.url
-        },
-        
-        // Dates de publication si disponibles
-        ...(blogPostData?.date && {
-          datePublished: blogPostData.date || new Date().toISOString()
-        }),
-        ...(blogPostData?.lastUpdatedAt && {
-          dateModified: blogPostData.lastUpdatedAt || new Date().toISOString()
-        }),
-        
-        // Informations sur l'éditeur (organisation)
-        publisher: {
-          '@type': 'Organization',
-          name: siteConfig.title,
-          url: siteConfig.url,
-          logo: {
-            '@type': 'ImageObject',
-            url: siteConfig.url + useBaseUrl('/img/docux.png')
-          }
-        },
-        
-        // Niveau de compétence requis
-        proficiencyLevel: frontMatter.proficiencyLevel || frontMatter.difficulty || 'Beginner',
-        
-        // Dépendances techniques
-        ...(frontMatter.dependencies && {
-          dependencies: Array.isArray(frontMatter.dependencies) 
-            ? frontMatter.dependencies.join(', ')
-            : frontMatter.dependencies
-        }),
-        
-        // Version du logiciel/framework
-        ...(frontMatter.version && {
-          softwareVersion: frontMatter.version
-        }),
-        
-        // Langage de programmation principal
-        ...(frontMatter.programmingLanguage && {
-          programmingLanguage: Array.isArray(frontMatter.programmingLanguage)
-            ? frontMatter.programmingLanguage
-            : [frontMatter.programmingLanguage]
-        }),
-        
-        // 🆕 Améliorations v2.1.4 - Métadonnées enrichies
-        
-        // Temps requis pour suivre le tutoriel
-        ...(frontMatter.timeRequired && {
-          timeRequired: frontMatter.timeRequired
-        }),
-        
-        // Catégorie d'application
-        ...(frontMatter.applicationCategory && {
-          applicationCategory: frontMatter.applicationCategory
-        }),
-        
-        // Systèmes d'exploitation supportés
-        ...(frontMatter.operatingSystem && {
-          operatingSystem: Array.isArray(frontMatter.operatingSystem)
-            ? frontMatter.operatingSystem
-            : [frontMatter.operatingSystem]
-        }),
-        
-        // Exigences navigateur
-        ...(frontMatter.browserRequirements && {
-          browserRequirements: frontMatter.browserRequirements
-        }),
-        
-        // Audience cible
-        ...(frontMatter.audience && {
-          audience: {
-            '@type': 'Audience',
-            audienceType: frontMatter.audience
-          }
-        }),
-        
-        // Type de ressource d'apprentissage
-        ...(frontMatter.learningResourceType && {
-          learningResourceType: frontMatter.learningResourceType
-        }),
-        
-        // Niveau éducationnel
-        ...(frontMatter.educationalLevel && {
-          educationalLevel: frontMatter.educationalLevel
-        }),
-        
-        // Usage éducationnel
-        ...(frontMatter.educationalUse && {
-          educationalUse: frontMatter.educationalUse
-        }),
-        
-        // Repository de code source
-        ...(frontMatter.codeRepository && {
-          codeRepository: {
-            '@type': 'SoftwareSourceCode',
-            codeRepository: frontMatter.codeRepository,
-            programmingLanguage: frontMatter.programmingLanguage
-          }
-        }),
-        
-        // Compatibilité et prérequis
-        ...(frontMatter.softwareRequirements && {
-          softwareRequirements: frontMatter.softwareRequirements
-        }),
-        
-        // Code source associé
-        ...(frontMatter.codeRepository && {
-          codeRepository: frontMatter.codeRepository
-        })
-      };
-    }
-
-    /**
-     * 🆕 Enrichissement pour les pages FAQ (FAQPage)
-     * 
-     * Structure optimisée pour les questions/réponses
-     */
-    if (pageInfo.type === 'FAQPage' && (blogPostData || pageMetadata)) {
-      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
-      
-      return {
-        ...baseStructure,
-        '@type': 'FAQPage',
-        
-        // Entité principale : FAQ
-        mainEntity: frontMatter.faq && Array.isArray(frontMatter.faq) 
-          ? frontMatter.faq.map((item, index) => ({
-              '@type': 'Question',
-              '@id': `${canonicalId}#faq-${index + 1}`,
-              name: item.question,
-              acceptedAnswer: {
-                '@type': 'Answer',
-                text: item.answer,
-                ...(item.answerUrl && { url: item.answerUrl })
-              }
-            }))
-          : [],
-        
-        // Informations sur l'auteur
-        author: primaryAuthor ? {
-          '@type': 'Person',
-          name: normalizeAuthorName(primaryAuthor.name),
-          url: primaryAuthor.url || primaryAuthor.github,
-          description: primaryAuthor.title || 'Contributeur Docux',
-          image: primaryAuthor.imageUrl
-        } : {
-          '@type': 'Person',
-          name: 'Équipe Docux',
-          url: siteConfig.url
-        },
-        
-        // Dates de publication si disponibles
-        ...(blogPostData?.date && {
-          datePublished: blogPostData.date || new Date().toISOString()
-        }),
-        ...(blogPostData?.lastUpdatedAt && {
-          dateModified: blogPostData.lastUpdatedAt || new Date().toISOString()
-        }),
-        
-        // Informations sur l'éditeur
-        publisher: {
-          '@type': 'Organization',
-          name: siteConfig.title,
-          url: siteConfig.url,
-          logo: {
-            '@type': 'ImageObject',
-            url: siteConfig.url + useBaseUrl('/img/docux.png')
-          }
-        },
-        
-        // Audience et langue
-        ...(frontMatter.audience && {
-          audience: {
-            '@type': 'Audience',
-            audienceType: frontMatter.audience
-          }
-        }),
-        
-        inLanguage: frontMatter.inLanguage || 'fr-FR',
-        isAccessibleForFree: frontMatter.isAccessibleForFree !== false,
-        
-        // Genre de contenu
-        ...(frontMatter.genre && {
-          genre: frontMatter.genre
-        }),
-        
-        // Sujet principal
-        ...(frontMatter.category && {
-          about: {
-            '@type': 'Thing',
-            name: frontMatter.category
-          }
-        })
-      };
-    }
-
-    /**
-     * 🆕 Enrichissement pour les applications logicielles (SoftwareApplication)
-     * 
-     * Structure pour présenter des projets/applications
-     */
-    if (pageInfo.type === 'SoftwareApplication' && (blogPostData || pageMetadata)) {
-      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
-      
-      return {
-        ...baseStructure,
-        '@type': 'SoftwareApplication',
-        
-        // Catégorie d'application
-        applicationCategory: frontMatter.applicationCategory || 'WebApplication',
-        
-        // Systèmes d'exploitation supportés
-        operatingSystem: frontMatter.operatingSystem || 'Web Browser',
-        
-        // Langages de programmation
-        programmingLanguage: frontMatter.programmingLanguage || 'JavaScript',
-        
-        // Version du logiciel
-        softwareVersion: frontMatter.version || '1.0.0',
-        
-        // Licence
-        ...(frontMatter.license && {
-          license: frontMatter.license
-        }),
-        
-        // URL de téléchargement/démo
-        ...(frontMatter.downloadUrl && {
-          downloadUrl: frontMatter.downloadUrl
-        }),
-        
-        // Code source
-        ...(frontMatter.codeRepository && {
-          codeRepository: frontMatter.codeRepository
-        }),
-        
-        // Captures d'écran
-        ...(frontMatter.screenshots && {
-          screenshot: frontMatter.screenshots.map(url => ({
-            '@type': 'ImageObject',
-            url: url,
-            contentUrl: url
-          }))
-        })
-      };
-    }
-
-    /**
-     * 🆕 Enrichissement pour les cours/formations (Course)
-     * 
-     * Structure pour le contenu éducatif
-     */
-    if (pageInfo.type === 'Course' && (blogPostData || pageMetadata)) {
-      const frontMatter = blogPostData?.frontMatter || pageMetadata?.frontMatter || {};
-      
-      return {
-        ...baseStructure,
-        '@type': 'Course',
-        
-        // Fournisseur du cours
-        provider: {
-          '@type': 'Organization',
-          name: frontMatter.provider || siteConfig.title,
-          url: siteConfig.url
-        },
-        
-        // Mode de diffusion
-        courseMode: frontMatter.courseMode || 'online',
-        
-        // Prérequis
-        ...(frontMatter.coursePrerequisites && {
-          coursePrerequisites: frontMatter.coursePrerequisites
-        }),
-        
-        // Durée
-        ...(frontMatter.timeRequired && {
-          timeRequired: frontMatter.timeRequired
-        }),
-        
-        // Niveau
-        educationalLevel: frontMatter.educationalLevel || 'Beginner',
-        
-        // Compétences acquises
-        ...(frontMatter.teaches && {
-          teaches: frontMatter.teaches
-        })
-      };
-    }
-
-    // Retour de la structure de base pour tous les autres types de pages
-    return baseStructure;
-  })();
-
-  /**
-   * ÉTAPE 11.5 : Gestion des schémas (approche classique ou nouvelle)
-   * 
-   * La nouvelle approche frontmatter a déjà construit les schémas.
-   * Cette section s'exécute seulement pour l'approche classique.
-   */
-  
-  // Si on n'utilise pas la nouvelle approche frontmatter, utiliser l'ancienne logique
-  if (!Array.isArray(schemaTypes) || schemaTypes.length === 0) {
     
-    // Ajoute le schéma principal
-    if (additionalJsonLd) {
-      allSchemas.push(additionalJsonLd);
-    }
-  
-  // Ajoute un TechArticle si c'est un article de blog technique
-  if (pageInfo.type === 'BlogPosting' && blogPostData?.frontMatter?.keywords) {
-    const keywords = blogPostData.frontMatter.keywords;
-    const isTechnical = keywords.some(keyword => 
-      keyword.includes('technique') || 
-      keyword.includes('code') || 
-      keyword.includes('développement') ||
-      keyword.includes('programmation') ||
-      keyword.includes('api') ||
-      keyword.includes('framework')
-    );
+    allSchemas.push(fallbackSchema);
     
-    if (isTechnical) {
-      const techArticleSchema = {
-        '@context': 'https://schema.org',
-        '@id': `${canonicalId}#techarticle`, // ID unique pour TechArticle
-        '@type': 'TechArticle',
-        url: canonicalUrl,
-        name: title,
-        headline: title,
-        description: description,
-        image: {
-          '@type': 'ImageObject',
-          url: imageUrl,
-          caption: `Image pour: ${title}`
-        },
-        author: primaryAuthor
-          ? {
-              '@type': 'Person',
-              name: normalizeAuthorName(primaryAuthor.name),
-              url: primaryAuthor.url || primaryAuthor.github,
-            }
-          : {
-              '@type': 'Organization',
-              name: siteConfig.title,
-              url: siteConfig.url,
-            },
-        datePublished: blogPostData?.date || new Date().toISOString(),
-        dateModified: blogPostData?.lastUpdatedAt || blogPostData?.date || new Date().toISOString(),
-        publisher: {
-          '@type': 'Organization',
-          name: siteConfig.title,
-          url: siteConfig.url,
-          logo: {
-            '@type': 'ImageObject',
-            url: siteConfig.url + useBaseUrl('/img/docux.png'),
-          },
-        },
-        proficiencyLevel: blogPostData?.frontMatter?.proficiencyLevel || 'Beginner',
-        programmingLanguage: blogPostData?.frontMatter?.programmingLanguage || 'JavaScript',
-        keywords: keywords.join(', '),
-      };
-      
-      allSchemas.push(techArticleSchema);
+    // Breadcrumb pour fallback
+    const breadcrumbJsonLd = generateGenericBreadcrumb(location.pathname, title, siteConfig);
+    if (breadcrumbJsonLd) {
+      allSchemas.push(breadcrumbJsonLd);
     }
-  }  // Fin de l'approche classique
-  
-  } // Fermeture du if pour l'approche classique
-  
+  }
+
   // Validation et correction automatique des URLs
   const urlValidation = validateSchemaUrls(allSchemas);
   const finalSchemas = urlValidation.isValid 
     ? allSchemas 
     : fixAllSchemaUrls(allSchemas, canonicalId, canonicalUrl);
-  
-  // Sélectionne le schéma primaire pour l'affichage (le premier)
-  const primarySchema = finalSchemas[0] || additionalJsonLd;
 
-  /**
-   * ÉTAPE 12 : Préparation des données pour le panel de debug
-   * 
-   * Collecte toutes les détections et métadonnées pour alimenter
-   * le composant SeoDebugPanel en mode développement.
-   * Inclut maintenant les informations de validation des URLs.
-   */
+  // Sélectionne le schéma primaire pour l'affichage (le premier)
+  const primarySchema = finalSchemas[0];
+
+  // ✅ LOGIQUE DE DEBUG NETTOYÉE
   const detections = {
-    isBlogPost,                    // Page d'article individuel
-    isBlogListPage,               // Page d'index/listing
-    isSeriesPage,                 // Page de série d'articles
-    isSpecificSeriesPage,         // Page de série spécifique (avec ?name=)
-    isHomePage,                   // Page d'accueil
-    isThanksPage,                 // Page de remerciements
-    isRepositoryPage,             // Page repository/projets
-    hasAuthor: !!primaryAuthor,   // Auteur détecté
-    hasBlogData: !!blogPostData,  // Métadonnées blog disponibles
-    hasPageData: !!pageMetadata,  // Métadonnées de page disponibles
-    hasImage: !!(blogPostData?.frontMatter?.image || 
-                 pageMetadata?.frontMatter?.image || 
-                 siteConfig.themeConfig?.image) // Image détectée
+    isBlogPost,
+    isBlogListPage,
+    isSeriesPage,
+    isSpecificSeriesPage,
+    isHomePage,
+    isThanksPage,
+    isRepositoryPage,
+    hasAuthor: !!primaryAuthor,
+    hasBlogData: !!blogPostData,
+    hasPageData: !!pageMetadata,
+    hasImage: !!imageUrl,
+    schemasCount: finalSchemas.length,
+    schemaTypes: schemaTypes || ['WebPage']
   };
 
   /**
