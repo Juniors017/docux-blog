@@ -14,6 +14,9 @@
   --ifm-color-primary-light: #56a907;
   --ifm-color-primary-lighter: #5ab107;
   --ifm-color-primary-lightest: #65c808;
+ .avatar__photo {  
+    border: 2px solid rgb(79 79 79);
+  }
 
 }
 
@@ -26,6 +29,9 @@
 --ifm-color-primary-light: #dde366;
 --ifm-color-primary-lighter: #e0e573;
 --ifm-color-primary-lightest: #e8ec99;
+ .avatar__photo {  
+    border: 2px solid rgb(79 79 79);
+  }
 }
 
 
@@ -167,4 +173,10 @@ h2.title_f1Hy {
 
 .markdown h2 {
   font-size: 18px !important;
+}
+
+.navbar__logo img {
+    height: 100%;
+    border-radius: 100%;
+    border: 2px solid white;
 }

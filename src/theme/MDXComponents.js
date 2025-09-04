@@ -20,6 +20,7 @@ import AvatarImage from '@site/src/components/Avatar/AvatarImage';
 import AvatarIntro from '@site/src/components/Avatar/AvatarIntro';
 import AvatarName from '@site/src/components/Avatar/AvatarName';
 import AvatarSubtitle from '@site/src/components/Avatar/AvatarSubtitle';
+import ImageOnClick from '@site/src/components/ImageOnClick';
 
 
 export default {
@@ -70,5 +71,6 @@ export default {
   AvatarImage,
   AvatarIntro,
   AvatarName,
-  AvatarSubtitle
+  AvatarSubtitle,
+  ImageOnClick
 };
