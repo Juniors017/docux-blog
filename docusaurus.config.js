@@ -20,7 +20,12 @@ const config = {
   baseUrl: '/',
   
   trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
-  
+  customFields: {
+    blueSky: {
+      // This is the BlueSky handle as displayed in your BlueSky profile page
+      handle: "docuxlab.com",
+    },
+  },
   // Configuration des URLs canoniques
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
