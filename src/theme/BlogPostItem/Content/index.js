@@ -15,10 +15,10 @@ export default function BlogPostItemContentWrapper(props) {
            
 
       <BlogPostItemContent {...props} />
-<div className="margin-top--xl">
-  <hr></hr>
-      <BlueSky metadata={metadata} />
-      </div>
+{isBlogPostPage && <div className="margin-top--xl">
+ <hr></hr>
+     <BlueSky metadata={metadata} />
+      </div>}
     </>
   );
 }
