@@ -42,7 +42,7 @@ export default function Thanks() {
               github: 'cavo789',
               website: 'https://www.avonture.be',
               avatarUrl: 'https://avatars.githubusercontent.com/u/355999?s=200&v=4',
-              components: ['GithubProjects', 'MyRepositories', 'Hero'],
+              components: ['GithubProjects', 'MyRepositories', 'Hero', 'BlueSky'],
               description: "Developed the GitHub project visualization components, allowing dynamic display of repositories with filtering and sorting."
             </Contributor>
           </Column>
@@ -53,7 +53,7 @@ export default function Thanks() {
               github: 'facebook/docusaurus',
               website: 'https://docusaurus.io',
               avatarUrl: 'https://docusaurus.io/img/docusaurus_keytar.svg',
-              components: ['DocCard', 'Layout', 'Admonition'],
+              components: ['Docusaurus Framework', 'Blog Plugin', 'MDX Support', 'Theming System'],
               description: "The Docusaurus team at Meta who developed the framework and its main components."
             </Contributor>
           </Column>
@@ -64,7 +64,7 @@ export default function Thanks() {
               github: 'slorber',
               website: 'https://sebastienlorber.com',
               avatarUrl: 'https://avatars.githubusercontent.com/u/749374?s=200&v=4',
-              components: ['MDX Components', 'React Integration'],
+              components: ['maintainer of Docusaurus'],
               description: "Main maintainer of Docusaurus, created many essential features and actively contributes to the development of the project."
             </Contributor>
           </Column>
