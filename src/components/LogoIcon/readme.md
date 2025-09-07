@@ -81,11 +81,11 @@ Once configured, you can directly use the component without import:
 ## Usage example
 
 ```mdx
-<LogoIcon name="airbnb-icon" size={64} />
+<LogoIcon name="airbnb-icon" size='64' />
 
 <LogoIcon name="github-icon" />
 
-<LogoIcon name="gitlab" size={32} />
+<LogoIcon name="gitlab" size='32' />
 ```
 
 ## ✅ Advantages of my component
