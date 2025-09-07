@@ -21,7 +21,7 @@ import AvatarIntro from '@site/src/components/Avatar/AvatarIntro';
 import AvatarName from '@site/src/components/Avatar/AvatarName';
 import AvatarSubtitle from '@site/src/components/Avatar/AvatarSubtitle';
 import ImageOnClick from '@site/src/components/ImageOnClick';
-
+import LogoIcon from '@site/src/components/LogoIcon';
 
 export default {
   // Réutilise la correspondance par défaut
@@ -52,7 +52,6 @@ export default {
   // Ajoute la balise "highlight" à notre composant <Highlight> };
   // `Highlight` recevra tous les props qui ont été passés à `<Highlight>` dans MDX
   Highlight,
-  // ajout de la balise ImageOnClick je suit le process docu
  
   TabItem,
   Tabs,
@@ -72,5 +71,6 @@ export default {
   AvatarIntro,
   AvatarName,
   AvatarSubtitle,
-  ImageOnClick
+  ImageOnClick,
+  LogoIcon
 };
