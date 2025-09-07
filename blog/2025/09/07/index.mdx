@@ -42,13 +42,10 @@ blueSkyRecordKey:
 </div>
 </center>
 
-:::note Publication
-This article was originally published by DocuxLab on the [Docusaurus Community](https://community.docusaurus.io) and is republished here with new examples.
-:::
 
 
 
-With [Infima CSS framework](https://infima.dev/)CSS framework, I’ve created a reusable card component that you can use on your Docusaurus site. With it, you’ll be able to customize each card with different colors and sizes. This component allows you to generate all the cards available in Infima as well as “Custom” cards, and you’ll be able to create and personalize each card independently.
+With [Infima CSS framework](https://infima.dev/), I’ve created a reusable card component that you can use on your Docusaurus site. With it, you’ll be able to customize each card with different colors and sizes. This component allows you to generate all the cards available in Infima as well as “Custom” cards, and you’ll be able to create and personalize each card independently.
 
 The component is in fact a set of small components that will admit to form the cards.
 ### SimpleCard : composition of the master folder
@@ -56,10 +53,16 @@ The component is in fact a set of small components that will admit to form the c
  - CardHeader component (Header parts of cards)
  - CardBody component (Body parts of cards)
  - CardFooter component (Footer parts of cards)
-
+<!--truncate--> 
  We will discover that it pairs wonderfully with other components present in our library but this will be the subject of a dedicated page. 
 
 ## Creating the Card component 
+
+
+:::note Publication
+This article was originally published by DocuxLab on the [Docusaurus Community](https://community.docusaurus.io) and is republished here with new examples.
+:::
+
 Think of this component as the container of all card parts
 
 First we will create the master folder in:  `\src\components\SimpleCard\`. Next we will start by creating a new component called Card. It will be the container component of our different parts to come. Also this will give the possibility to manage className and style for each part.
@@ -74,28 +77,28 @@ Creating the file and adding the source code for the component.
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\SimpleCard\Card\index.js'
-import React,  { CSSProperties } from 'react'; // CSSProperties allows inline styling with better type checking.
+import React, {CSSProperties} from 'react'; // CSSProperties allows inline styling with better type checking.
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
 
-
-
 const Card = ({
-  className, // classNamees for the container card
-  style, // Custom styles for the container card
-  children,  // for include others parts in
-  shadow,  // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
+    className, // classNamees for the container card
+    style, // Custom styles for the container card
+    children, // for include others parts in
+    shadow, // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
 }) => {
-  const cardShadow = shadow ? `item shadow--${shadow}` :'';
-  return (
-    <div className="card-demo">
-    <div className={clsx("card", className, cardShadow)} style={style}>
-    {children}
-  </div></div>
-  );
+    const cardShadow = shadow
+        ? `item shadow--${shadow}`
+        : '';
+    return (
+        <div className="card-demo">
+            <div className={clsx("card", className, cardShadow)} style={style}>
+                {children}
+            </div>
+        </div>
+    );
 };
 
-
-export default  Card;
+export default Card;
 ```
 
 </TabItem>
@@ -103,32 +106,35 @@ export default  Card;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\SimpleCard\Card\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react'; // Import types for props
+import React, {CSSProperties, ReactNode} from 'react'; // Import types for props
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
 
 // Define an interface for the component props
 interface CardProps {
-  className?: string; // Optional className names for the container card
-  style?: CSSProperties; // Optional custom styles for the container card
-  children: ReactNode; // Content to be included within the card
-  shadow?: 'lw' | 'md' | 'tl'; // Optional shadow levels: low (lw), medium (md), top-level (tl)
+    className?: string; // Optional className names for the container card
+    style?: CSSProperties; // Optional custom styles for the container card
+    children: ReactNode; // Content to be included within the card
+    shadow?: 'lw' | 'md' | 'tl'; // Optional shadow levels: low (lw), medium (md), top-level (tl)
 }
 
 // Build the card component with the specified props
 const Card: React.FC<CardProps> = ({
-  className, // classNamees for the container card
-  style, // Custom styles for the container card
-  children, // Content to be included within the card
-  shadow, // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
+    className, // classNamees for the container card
+    style, // Custom styles for the container card
+    children, // Content to be included within the card
+    shadow, // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
 }) => {
-  const cardShadow = shadow ? `item shadow--${shadow}` : '';
-  return (
-    <div className="card-demo">
-      <div className={clsx("card", className, cardShadow)} style={style}>
-        {children}
-      </div>
-    </div>
-  );
+    const cardShadow = shadow
+        ? `item shadow--${shadow}`
+        : '';
+    return (< div className = "card-demo" > <div className = {
+        clsx("card", className, cardShadow)
+    }
+    style = {
+        style
+    } > {
+        children
+    }</div></div>);
 };
 
 export default Card;
@@ -138,7 +144,7 @@ export default Card;
 </Tabs>
 
 ## Creating the CardHeader component
-Think of this component as the Header of your futurs cards. Creating the file and adding the source code for the component.The component will accept the following props:
+Think of this component as the header of your future cards. Create the file and add the source code for the component. The component will accept the following props:
 
 - `textAlign`: The option for text alignment `left` `right` `center` `justify`
 - `variant`: (optional)This will be used to apply different colors to the text based on the Infima CSS utility classNamees. The default value is primary.
@@ -153,53 +159,68 @@ Think of this component as the Header of your futurs cards. Creating the file an
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\SimpleCard\CardHeader\index.js'
-import React,  { CSSProperties } from 'react'; // CSSProperties allows inline styling with better type checking.
+import React, {CSSProperties} from 'react'; // CSSProperties allows inline styling with better type checking.
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
 
-
 const CardHeader = ({
-  className, // classNamees for the container card
-  style, // Custom styles for the container card
-  children, // Content to be included within the card
-  textAlign, 
-  variant, 
-  italic = false , 
-  noDecoration = false, 
-  transform, 
-  breakWord = false, 
-  truncate = false, 
-  weight,
-}) => {   
-  const text = textAlign ? `text--${textAlign}` :'';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
-  return (
-    <div className={clsx(
-        'card__header',
-        className,
-        text,
-        textType,
-        textColor,
-        textItalic,
-        textDecoration,
-        textBreak,
-        textTruncate,
-        textWeight
-        )} 
-        style={style} >
-    
-    {children}
-  </div>
-  );
+    className, // classNamees for the container card
+    style, // Custom styles for the container card
+    children, // Content to be included within the card
+    textAlign,
+    variant,
+    italic = false,
+    noDecoration = false,
+    transform,
+    breakWord = false,
+    truncate = false,
+    weight
+}) => {
+    const text = textAlign
+        ? `text--${textAlign}`
+        : '';
+    const textColor = variant
+        ? `text--${variant}`
+        : '';
+    const textItalic = italic
+        ? 'text--italic'
+        : '';
+    const textDecoration = noDecoration
+        ? 'text-no-decoration'
+        : '';
+    const textType = transform
+        ? `text--${transform}`
+        : '';
+    const textBreak = breakWord
+        ? 'text--break'
+        : '';
+    const textTruncate = truncate
+        ? 'text--truncate'
+        : '';
+    const textWeight = weight
+        ? `text--${weight}`
+        : '';
+    return (
+        <div
+            className={clsx(
+                'card__header',
+                className,
+                text,
+                textType,
+                textColor,
+                textItalic,
+                textDecoration,
+                textBreak,
+                textTruncate,
+                textWeight
+            )}
+            style={style}>
+
+            {children}
+        </div>
+    );
 }
 
-
-export default CardHeader ;
+export default CardHeader;
 
 ```
 
@@ -208,64 +229,80 @@ export default CardHeader ;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\SimpleCard\CardHeader\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react';
+import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
 
 interface CardHeaderProps {
-  className?: string;
-  style?: CSSProperties;
-  children: ReactNode;
-  textAlign?: string;
-  variant?: string;
-  italic?: boolean;
-  noDecoration?: boolean;
-  transform?: string;
-  breakWord?: boolean;
-  truncate?: boolean;
-  weight?: string;
+    className?: string;
+    style?: CSSProperties;
+    children: ReactNode;
+    textAlign?: string;
+    variant?: string;
+    italic?: boolean;
+    noDecoration?: boolean;
+    transform?: string;
+    breakWord?: boolean;
+    truncate?: boolean;
+    weight?: string;
 }
 
 const CardHeader: React.FC<CardHeaderProps> = ({
-  className,
-  style,
-  children,
-  textAlign,
-  variant,
-  italic = false,
-  noDecoration = false,
-  transform,
-  breakWord = false,
-  truncate = false,
-  weight,
+    className,
+    style,
+    children,
+    textAlign,
+    variant,
+    italic = false,
+    noDecoration = false,
+    transform,
+    breakWord = false,
+    truncate = false,
+    weight
 }) => {
-  const text = textAlign ? `text--${textAlign}` : '';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
+    const text = textAlign
+        ? `text--${textAlign}`
+        : '';
+    const textColor = variant
+        ? `text--${variant}`
+        : '';
+    const textItalic = italic
+        ? 'text--italic'
+        : '';
+    const textDecoration = noDecoration
+        ? 'text-no-decoration'
+        : '';
+    const textType = transform
+        ? `text--${transform}`
+        : '';
+    const textBreak = breakWord
+        ? 'text--break'
+        : '';
+    const textTruncate = truncate
+        ? 'text--truncate'
+        : '';
+    const textWeight = weight
+        ? `text--${weight}`
+        : '';
 
-  return (
-    <div
-      className={clsx(
-        'card__header',
-        className,
-        text,
-        textType,
-        textColor,
-        textItalic,
-        textDecoration,
-        textBreak,
-        textTruncate,
-        textWeight
-      )}
-      style={style}
-    >
-      {children}
-    </div>
-  );
+    return (< div className = {
+        clsx(
+            'card__header',
+            className,
+            text,
+            textType,
+            textColor,
+            textItalic,
+            textDecoration,
+            textBreak,
+            textTruncate,
+            textWeight
+        )
+    }
+    style = {
+        style
+    } > {
+        children
+    }</div>);
 };
 
 export default CardHeader;
@@ -293,41 +330,67 @@ Think of this component as the body of your futurs cards. Creating the file and 
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\SimpleCard\CardBody\index.js'
-import React,  { CSSProperties } from 'react';
-import clsx from 'clsx'; 
-
-
+import React, {CSSProperties} from 'react';
+import clsx from 'clsx';
 
 const CardBody = ({
-  className, // classNamees for the container card
-  style, // Custom styles for the container card
-  children, // Content to be included within the card 
-  textAlign, 
-  variant,
-  italic = false , 
-  noDecoration = false, 
-  transform, 
-  breakWord = false, 
-  truncate = false, 
-  weight,
-}) => {   
-  const text = textAlign ? `text--${textAlign}` :'';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
-  return (
-    <div className={clsx('card__body' , className, text, textType, textColor, textItalic, textDecoration, textBreak, textTruncate, textWeight)} style={style} >
-    {children}
-  </div>
-  );
+    className, // classNamees for the container card
+    style, // Custom styles for the container card
+    children, // Content to be included within the card
+    textAlign,
+    variant,
+    italic = false,
+    noDecoration = false,
+    transform,
+    breakWord = false,
+    truncate = false,
+    weight
+}) => {
+    const text = textAlign
+        ? `text--${textAlign}`
+        : '';
+    const textColor = variant
+        ? `text--${variant}`
+        : '';
+    const textItalic = italic
+        ? 'text--italic'
+        : '';
+    const textDecoration = noDecoration
+        ? 'text-no-decoration'
+        : '';
+    const textType = transform
+        ? `text--${transform}`
+        : '';
+    const textBreak = breakWord
+        ? 'text--break'
+        : '';
+    const textTruncate = truncate
+        ? 'text--truncate'
+        : '';
+    const textWeight = weight
+        ? `text--${weight}`
+        : '';
+    return (
+        <div
+            className={clsx(
+                'card__body',
+                className,
+                text,
+                textType,
+                textColor,
+                textItalic,
+                textDecoration,
+                textBreak,
+                textTruncate,
+                textWeight
+            )}
+            style={style}>
+            {children}
+        </div>
+    );
 }
 
-
-export default CardBody ;
+export default CardBody;
 
 
 ```
@@ -337,64 +400,80 @@ export default CardBody ;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\SimpleCard\CardBody\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react';
+import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
 
 interface CardBodyProps {
-  className?: string;
-  style?: CSSProperties;
-  children: ReactNode;
-  textAlign?: string;
-  variant?: string;
-  italic?: boolean;
-  noDecoration?: boolean;
-  transform?: string;
-  breakWord?: boolean;
-  truncate?: boolean;
-  weight?: string;
+    className?: string;
+    style?: CSSProperties;
+    children: ReactNode;
+    textAlign?: string;
+    variant?: string;
+    italic?: boolean;
+    noDecoration?: boolean;
+    transform?: string;
+    breakWord?: boolean;
+    truncate?: boolean;
+    weight?: string;
 }
 
 const CardBody: React.FC<CardBodyProps> = ({
-  className,
-  style,
-  children,
-  textAlign,
-  variant,
-  italic = false,
-  noDecoration = false,
-  transform,
-  breakWord = false,
-  truncate = false,
-  weight,
+    className,
+    style,
+    children,
+    textAlign,
+    variant,
+    italic = false,
+    noDecoration = false,
+    transform,
+    breakWord = false,
+    truncate = false,
+    weight
 }) => {
-  const text = textAlign ? `text--${textAlign}` : '';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
+    const text = textAlign
+        ? `text--${textAlign}`
+        : '';
+    const textColor = variant
+        ? `text--${variant}`
+        : '';
+    const textItalic = italic
+        ? 'text--italic'
+        : '';
+    const textDecoration = noDecoration
+        ? 'text-no-decoration'
+        : '';
+    const textType = transform
+        ? `text--${transform}`
+        : '';
+    const textBreak = breakWord
+        ? 'text--break'
+        : '';
+    const textTruncate = truncate
+        ? 'text--truncate'
+        : '';
+    const textWeight = weight
+        ? `text--${weight}`
+        : '';
 
-  return (
-    <div
-      className={clsx(
-        'card__body',
-        className,
-        text,
-        textType,
-        textColor,
-        textItalic,
-        textDecoration,
-        textBreak,
-        textTruncate,
-        textWeight
-      )}
-      style={style}
-    >
-      {children}
-    </div>
-  );
+    return (< div className = {
+        clsx(
+            'card__body',
+            className,
+            text,
+            textType,
+            textColor,
+            textItalic,
+            textDecoration,
+            textBreak,
+            textTruncate,
+            textWeight
+        )
+    }
+    style = {
+        style
+    } > {
+        children
+    }</div>);
 };
 
 export default CardBody;
@@ -415,33 +494,27 @@ This component is optionnal, you can use image html and add ```className={clsx("
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\SimpleCard\CardImage\index.js'
-import React,  { CSSProperties } from 'react';
-import clsx from 'clsx'; 
+import React, {CSSProperties} from 'react';
+import clsx from 'clsx';
 import useBaseUrl from '@docusaurus/useBaseUrl'; // Import the useBaseUrl function from Docusaurus
 
+const CardImage = ({className, style, cardImageUrl, alt, title}) => {
 
-const CardImage = ({
-  className, 
-  style,
-  cardImageUrl,
-  alt,
-  title,
-}) => {   
+    const generatedCardImageUrl = useBaseUrl(cardImageUrl);
 
-  const generatedCardImageUrl = useBaseUrl(cardImageUrl);
- 
-  
-  return (
-   
-    <img
-      className={clsx("card__image", className)} style={style}
-      src={generatedCardImageUrl} alt={alt} title={title}/>
+    return (
 
-  );
+        <img
+            className={clsx("card__image", className)}
+            style={style}
+            src={generatedCardImageUrl}
+            alt={alt}
+            title={title}/>
+
+    );
 }
 
-
-export default CardImage ;
+export default CardImage;
 
 
 
@@ -452,32 +525,38 @@ export default CardImage ;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\SimpleCard\CardImage\index.tsx'
-import React, { CSSProperties } from 'react';
+import React, {CSSProperties} from 'react';
 import clsx from 'clsx';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
 interface CardImageProps {
-  className?: string;
-  style?: CSSProperties;
-  cardImageUrl: string;
-  alt: string;
-  title: string;
+    className?: string;
+    style?: CSSProperties;
+    cardImageUrl: string;
+    alt: string;
+    title: string;
 }
 
-const CardImage: React.FC<CardImageProps> = ({
-  className,
-  style,
-  cardImageUrl,
-  alt,
-  title,
-}) => {
-  const generatedCardImageUrl = useBaseUrl(cardImageUrl);
+const CardImage: React.FC<CardImageProps> = (
+    {className, style, cardImageUrl, alt, title}
+) => {
+    const generatedCardImageUrl = useBaseUrl(cardImageUrl);
 
-  return (
-      <img
-      className={clsx("card__image", className)} style={style}
-      src={generatedCardImageUrl} alt={alt} title={title}/>
-  );
+    return (< img className = {
+        clsx("card__image", className)
+    }
+    style = {
+        style
+    }
+    src = {
+        generatedCardImageUrl
+    }
+    alt = {
+        alt
+    }
+    title = {
+        title
+    } />);
 };
 
 export default CardImage;
@@ -514,51 +593,67 @@ Think of this component as the Footer of your futurs cards. Creating the file an
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\SimpleCard\CardFooter\index.js'
-import React,  { CSSProperties } from 'react';
-import clsx from 'clsx'; 
+import React, {CSSProperties} from 'react';
+import clsx from 'clsx';
 
 const CardFooter = ({
-  className, 
-  style, 
-  children, 
-  textAlign, 
-  variant,
-  italic = false , 
-  noDecoration = false, 
-  transform, 
-  breakWord = false, 
-  truncate = false, 
-  weight,
-}) => {   
-  const text = textAlign ? `text--${textAlign}` :'';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
-  return (
-    <div className={clsx(
-        'card__footer',
-        className,
-        text,
-        textType,
-        textColor,
-        textItalic,
-        textDecoration,
-        textBreak,
-        textTruncate,
-        textWeight
-        )}
-        style={style} >
-    {children}
-  </div>
-  );
+    className,
+    style,
+    children,
+    textAlign,
+    variant,
+    italic = false,
+    noDecoration = false,
+    transform,
+    breakWord = false,
+    truncate = false,
+    weight
+}) => {
+    const text = textAlign
+        ? `text--${textAlign}`
+        : '';
+    const textColor = variant
+        ? `text--${variant}`
+        : '';
+    const textItalic = italic
+        ? 'text--italic'
+        : '';
+    const textDecoration = noDecoration
+        ? 'text-no-decoration'
+        : '';
+    const textType = transform
+        ? `text--${transform}`
+        : '';
+    const textBreak = breakWord
+        ? 'text--break'
+        : '';
+    const textTruncate = truncate
+        ? 'text--truncate'
+        : '';
+    const textWeight = weight
+        ? `text--${weight}`
+        : '';
+    return (
+        <div
+            className={clsx(
+                'card__footer',
+                className,
+                text,
+                textType,
+                textColor,
+                textItalic,
+                textDecoration,
+                textBreak,
+                textTruncate,
+                textWeight
+            )}
+            style={style}>
+            {children}
+        </div>
+    );
 }
 
-
-export default CardFooter ;
+export default CardFooter;
 
 
 ```
@@ -568,64 +663,80 @@ export default CardFooter ;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\SimpleCard\CardFooter\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react';
+import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
 
 interface CardFooterProps {
-  className?: string;
-  style?: CSSProperties;
-  children: ReactNode;
-  textAlign?: string;
-  variant?: string;
-  italic?: boolean;
-  noDecoration?: boolean;
-  transform?: string;
-  breakWord?: boolean;
-  truncate?: boolean;
-  weight?: string;
+    className?: string;
+    style?: CSSProperties;
+    children: ReactNode;
+    textAlign?: string;
+    variant?: string;
+    italic?: boolean;
+    noDecoration?: boolean;
+    transform?: string;
+    breakWord?: boolean;
+    truncate?: boolean;
+    weight?: string;
 }
 
 const CardFooter: React.FC<CardFooterProps> = ({
-  className,
-  style,
-  children,
-  textAlign,
-  variant,
-  italic = false,
-  noDecoration = false,
-  transform,
-  breakWord = false,
-  truncate = false,
-  weight,
+    className,
+    style,
+    children,
+    textAlign,
+    variant,
+    italic = false,
+    noDecoration = false,
+    transform,
+    breakWord = false,
+    truncate = false,
+    weight
 }) => {
-  const text = textAlign ? `text--${textAlign}` : '';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
+    const text = textAlign
+        ? `text--${textAlign}`
+        : '';
+    const textColor = variant
+        ? `text--${variant}`
+        : '';
+    const textItalic = italic
+        ? 'text--italic'
+        : '';
+    const textDecoration = noDecoration
+        ? 'text-no-decoration'
+        : '';
+    const textType = transform
+        ? `text--${transform}`
+        : '';
+    const textBreak = breakWord
+        ? 'text--break'
+        : '';
+    const textTruncate = truncate
+        ? 'text--truncate'
+        : '';
+    const textWeight = weight
+        ? `text--${weight}`
+        : '';
 
-  return (
-    <div
-      className={clsx(
-        'card__footer',
-        className,
-        text,
-        textType,
-        textColor,
-        textItalic,
-        textDecoration,
-        textBreak,
-        textTruncate,
-        textWeight
-      )}
-      style={style}
-    >
-      {children}
-    </div>
-  );
+    return (< div className = {
+        clsx(
+            'card__footer',
+            className,
+            text,
+            textType,
+            textColor,
+            textItalic,
+            textDecoration,
+            textBreak,
+            textTruncate,
+            textWeight
+        )
+    }
+    style = {
+        style
+    } > {
+        children
+    }</div>);
 };
 
 export default CardFooter;
@@ -647,50 +758,49 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
     ```javascript title="src\theme\MDXComponents.js"
-      import React from 'react';
-      // Importing the original mapper + our components according to the Docusaurus doc
-      import MDXComponents from '@theme-original/MDXComponents';
-      import Card from '@site/src/components/SimpleCard/Card';
-      import CardBody from '@site/src/components/SimpleCard/CardBody';
-      import CardFooter from '@site/src/components/SimpleCard/CardFooter';
-      import CardHeader from '@site/src/components/SimpleCard/CardHeader';
-      import CardImage from '@site/src/components/SimpleCard/CardImage';
-        
+     import React from 'react';
+// Importing the original mapper + our components according to the Docusaurus
+// doc
+import MDXComponents from '@theme-original/MDXComponents';
+import Card from '@site/src/components/SimpleCard/Card';
+import CardBody from '@site/src/components/SimpleCard/CardBody';
+import CardFooter from '@site/src/components/SimpleCard/CardFooter';
+import CardHeader from '@site/src/components/SimpleCard/CardHeader';
+import CardImage from '@site/src/components/SimpleCard/CardImage';
 
-      export default {
-        // Reusing the default mapping
-        ...MDXComponents,
-        Card, 
-        CardHeader, 
-        CardBody, 
-        CardFooter, 
-        CardImage,
-      };
+export default {
+    // Reusing the default mapping
+    ...MDXComponents,
+    Card,
+    CardHeader,
+    CardBody,
+    CardFooter,
+    CardImage
+};
     ```
   </TabItem>
   <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
     ```tsx title="src\theme\MDXComponents.tsx"
 
+import React from 'react';
+// Importing the original mapper + our components according to the Docusaurus
+// doc
+import MDXComponents from '@theme-original/MDXComponents';
+import Card from '@site/src/components/SimpleCard/Card';
+import CardBody from '@site/src/components/SimpleCard/CardBody';
+import CardFooter from '@site/src/components/SimpleCard/CardFooter';
+import CardHeader from '@site/src/components/SimpleCard/CardHeader';
+import CardImage from '@site/src/components/SimpleCard/CardImage';
 
-      import React from 'react';
-      // Importing the original mapper + our components according to the Docusaurus doc
-      import MDXComponents from '@theme-original/MDXComponents';
-      import Card from '@site/src/components/SimpleCard/Card';
-      import CardBody from '@site/src/components/SimpleCard/CardBody';
-      import CardFooter from '@site/src/components/SimpleCard/CardFooter';
-      import CardHeader from '@site/src/components/SimpleCard/CardHeader';
-      import CardImage from '@site/src/components/SimpleCard/CardImage';
-
-
-      export default {
-        // Reusing the default mapping
-        ...MDXComponents,
-        Card, 
-        CardHeader, 
-        CardBody, 
-        CardFooter,
-        CardImage, 
-      };
+export default {
+    // Reusing the default mapping
+    ...MDXComponents,
+    Card,
+    CardHeader,
+    CardBody,
+    CardFooter,
+    CardImage
+};
     ```
   </TabItem>
 </Tabs>
@@ -731,25 +841,24 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
     <div className="col col--6">
 <div className="">
   ```html
-  <Card shadow='tl' >
+  <Card shadow='tl'>
     <CardHeader >
-      <h3>Lorem Ipsum</h3>
+        <h3>Lorem Ipsum</h3>
     </CardHeader>
 
-  <CardBody> 
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-  suspendisse ultrices gravida.
-  </CardBody> 
+    <CardBody>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices
+        gravida.
+    </CardBody>
 
+    <CardFooter>
 
-  <CardFooter>
+        <button className="button button--secondary button--block">See All</button>
 
-    <button className="button button--secondary button--block">See All</button> 
+    </CardFooter>
 
-  </CardFooter> 
-
-  </Card>
+</Card>
   ```
 
 </div>
@@ -805,36 +914,46 @@ Explore our articles, guides, and interactive demos designed to help you stay at
 <div className="">
   ```html
   <Card>
-  <CardHeader style={{ backgroundColor: '#205d3b' , color:'black'}}>
-<div className="avatar avatar--vertical">
-  <img
-    className="avatar__photo avatar__photo--xl"
-    src="https://avatars.githubusercontent.com/u/97809069?v=4" />
-  <div className="avatar__intro">
-    <div className="avatar__name">Docux</div>
-    <small className="avatar__subtitle">
-      Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
-      <a style={{ color:'white'}}  href="https://docuxlab.com/">@docuxlab.com</a>
-    </small>
-  </div>
-</div>
- </CardHeader>
-<CardBody style={{ backgroundColor: 'black' , color:'silver'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase'> 
- <h3>Docux Card component</h3>
- 
-Welcome to DocuxLab, your space for tech discoveries, development tutorials, and tips to enhance your digital projects. Here, we break down code, explore web trends, and share practical resources for all tech enthusiasts.
+    <CardHeader style={{ backgroundColor: '#205d3b' , color:'black'} }="}">
+        <div className="avatar avatar--vertical">
+            <img
+                className="avatar__photo avatar__photo--xl"
+                src="https://avatars.githubusercontent.com/u/97809069?v=4"/>
+            <div className="avatar__intro">
+                <div className="avatar__name">Docux</div>
+                <small className="avatar__subtitle">
+                    Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
+                    <a style={{ color:'white'} }="}" href="https://docuxlab.com/">@docuxlab.com</a>
+                </small>
+            </div>
+        </div>
+    </CardHeader>
+    <CardBody
+        style={{ backgroundColor: 'black' , color:'silver'}
+        }="}"
+        className="padding-vert--md"
+        textAlign='center'
+        Transform='uppercase'>
+        <h3>Docux Card component</h3>
 
-Explore our articles, guides, and interactive demos designed to help you stay at the forefront of innovation. Whether you are a beginner developer or an experienced pro, DocuxLab is here to inspire and support you in your digital projects.
- </CardBody> 
+        Welcome to DocuxLab, your space for tech discoveries, development tutorials, and
+        tips to enhance your digital projects. Here, we break down code, explore web
+        trends, and share practical resources for all tech enthusiasts. Explore our
+        articles, guides, and interactive demos designed to help you stay at the
+        forefront of innovation. Whether you are a beginner developer or an experienced
+        pro, DocuxLab is here to inspire and support you in your digital projects.
+    </CardBody>
 
-
-<CardFooter style={{ backgroundColor: '#205d3b' , color:'black'}} className='text--center'> 
-<div className="button-group button-group--block">
-        <button className="button button--secondary button--sm">Like</button>
-        <button className="button button--secondary button--sm">Comment</button>
-        <button className="button button--secondary button--sm">Share</button>
-      </div>
-</CardFooter> 
+    <CardFooter
+        style={{ backgroundColor: '#205d3b' , color:'black'}
+        }="}"
+        className='text--center'>
+        <div className="button-group button-group--block">
+            <button className="button button--secondary button--sm">Like</button>
+            <button className="button button--secondary button--sm">Comment</button>
+            <button className="button button--secondary button--sm">Share</button>
+        </div>
+    </CardFooter>
 
 </Card>
 ```
@@ -894,40 +1013,55 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
     <div className="col col--6">
 <div className="">
   ```html
-  <Card>
-  <CardHeader className='padding-top--lg' style={{ backgroundColor: 'rgb(33 126 209)' , color:'black'}}>
-<div className="avatar avatar--vertical">
-  <img
-    className="avatar__photo avatar__photo--xl" 
-    src="https://avatars.githubusercontent.com/u/97809069?v=4" />
-  <div className="avatar__intro">
-    <div className="avatar__name">Docux</div>
-    <small className="avatar__subtitle">
-      Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
-      <a style={{ color:'white'}} href="https://docuxlab.com/">@docuxlab.com</a>
-    </small>
-  </div>
-</div>
- </CardHeader>
+ <Card>
+    <CardHeader
+        className='padding-top--lg'
+        style={{ backgroundColor: 'rgb(33 126 209)' , color:'black'}
+        }="}">
+        <div className="avatar avatar--vertical">
+            <img
+                className="avatar__photo avatar__photo--xl"
+                src="https://avatars.githubusercontent.com/u/97809069?v=4"/>
+            <div className="avatar__intro">
+                <div className="avatar__name">Docux</div>
+                <small className="avatar__subtitle">
+                    Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
+                    <a style={{ color:'white'} }="}" href="https://docuxlab.com/">@docuxlab.com</a>
+                </small>
+            </div>
+        </div>
+    </CardHeader>
 
- <CardImage style={{ backgroundColor: 'rgb(33 126 209)' , color:'black'}} cardImageUrl="/img/learn-docker-in-avonture-blog.jpg" />
+    <CardImage
+        style={{ backgroundColor: 'rgb(33 126 209)' , color:'black'}
+        }="}"
+        cardImageUrl="/img/learn-docker-in-avonture-blog.jpg"/>
 
-<CardBody style={{ backgroundColor: '#fefacb' , color:'#8f600b'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase'> 
- <h3>New feature</h3>
+    <CardBody
+        style={{ backgroundColor: '#fefacb' , color:'#8f600b'}
+        }="}"
+        className="padding-vert--md"
+        textAlign='center'
+        Transform='uppercase'>
+        <h3>New feature</h3>
 
-Amazing discovery! I've found an incredible website: [avonture.be](https://www.avonture.be/). This comprehensive resource offers in-depth tutorials, practical examples, and expert insights into various development topics.
+        Amazing discovery! I've found an incredible website:
+        [avonture.be](https://www.avonture.be/). This comprehensive resource offers
+        in-depth tutorials, practical examples, and expert insights into various
+        development topics.
 
- </CardBody>  
+    </CardBody>
 
-
-
-<CardFooter style={{ backgroundColor: '#2887bf' , color:'black'}} className='text--center'> 
-<div className="button-group button-group--block">
-        <button className="button button--secondary button--sm">Like</button>
-        <button className="button button--secondary button--sm">Comment</button>
-        <button className="button button--secondary button--sm">Share</button>
-      </div>
-</CardFooter> 
+    <CardFooter
+        style={{ backgroundColor: '#2887bf' , color:'black'}
+        }="}"
+        className='text--center'>
+        <div className="button-group button-group--block">
+            <button className="button button--secondary button--sm">Like</button>
+            <button className="button button--secondary button--sm">Comment</button>
+            <button className="button button--secondary button--sm">Share</button>
+        </div>
+    </CardFooter>
 
 </Card>
 
@@ -963,17 +1097,20 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
     <div className="col col--6">
 <div className="">
   ```html
-    <Card>
+   <Card>
 
- <CardImage cardImageUrl="/img/docux.png" />
+    <CardImage cardImageUrl="/img/docux.png"/>
 
-<CardFooter style={{ backgroundColor: '#07ac2aff' , color:'#eeff00ff'}} className='text--center'> 
-<div className="button-group button-group--block">
-  <button className="button button--primary button--sm">Like</button>
-  <button className="button button--secondary button--sm">Comment</button>
-  <button className="button button--info button--sm">Share</button>
-</div>
-</CardFooter> 
+    <CardFooter
+        style={{ backgroundColor: '#07ac2aff' , color:'#eeff00ff'}
+        }="}"
+        className='text--center'>
+        <div className="button-group button-group--block">
+            <button className="button button--primary button--sm">Like</button>
+            <button className="button button--secondary button--sm">Comment</button>
+            <button className="button button--info button--sm">Share</button>
+        </div>
+    </CardFooter>
 
 </Card>
 ```
@@ -1012,25 +1149,27 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
     <div className="col col--6">
 <div className="">
   ```html
-     <Card>
+   <Card>
 
- <CardImage cardImageUrl="/img/learn-docusaurus-and-react.jpg" />
+    <CardImage cardImageUrl="/img/learn-docusaurus-and-react.jpg"/>
 
-<CardFooter style={{ backgroundColor: 'white' , color:'black'}} className='text--center'> 
-<div className="avatar">
-  <img
-    className="avatar__photo avatar__photo--xs" 
-    src="https://avatars.githubusercontent.com/u/97809069?v=4" />
-  <div className="avatar__intro">
-    <div className="avatar__name">Learn Docusaurus</div>
-    
-  </div>
-</div>
- 
-</CardFooter> 
+    <CardFooter
+        style={{ backgroundColor: 'white' , color:'black'}
+        }="}"
+        className='text--center'>
+        <div className="avatar">
+            <img
+                className="avatar__photo avatar__photo--xs"
+                src="https://avatars.githubusercontent.com/u/97809069?v=4"/>
+            <div className="avatar__intro">
+                <div className="avatar__name">Learn Docusaurus</div>
+
+            </div>
+        </div>
+
+    </CardFooter>
 
 </Card>
-
 
 ```
 </div>
@@ -1061,7 +1200,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 
   <Card shadow='tl'>
   <CardBody style={{ backgroundColor: 'white' , color:'black'}} className="padding-vert--md "Transform= 'uppercase'> 
-The Infima CSS  framework provides a set of utility classNamees that can be used to style card in Docusaurus. This article will cover how to create a reusable card component for your Docusaurus site that can be customized with different colors and sizes.
+The Infima CSS  framework provides a set of utility classNames that can be used to style card in Docusaurus. This article will cover how to create a reusable card component for your Docusaurus site that can be customized with different colors and sizes.
  </CardBody> 
   <CardFooter style={{ backgroundColor: '#7a9f3d' , color:'#d7de3d'}} > 
 
@@ -1085,25 +1224,29 @@ The Infima CSS  framework provides a set of utility classNamees that can be used
     <div className="col col--6">
 <div className="">
 ```html
-  <Card shadow='tl'>
-  <CardBody style={{ backgroundColor: 'white' , color:'black'}} className="padding-vert--md "Transform= 'uppercase'> 
-A must-visit site for developers looking to expand their knowledge and skills!
- </CardBody> 
-  <CardFooter style={{ backgroundColor: '#7a9f3d' , color:'#d7de3d'}} > 
+<Card shadow='tl'>
+    <CardBody
+        style={{ backgroundColor: 'white' , color:'black'}
+        }="}"
+        className="padding-vert--md "
+        Transform='uppercase'>
+        A must-visit site for developers looking to expand their knowledge and skills!
+    </CardBody>
+    <CardFooter style={{ backgroundColor: '#7a9f3d' , color:'#d7de3d'} }="}">
 
-<div className="avatar padding-top--md">
-        <img
-          className="avatar__photo"
-          src="https://avatars.githubusercontent.com/u/97809069?v=4" />
-        <div className="avatar__intro">
-          <div className="avatar__name">Docux</div>
-          <small className="avatar__subtitle">
-          Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
-          </small>
+        <div className="avatar padding-top--md">
+            <img
+                className="avatar__photo"
+                src="https://avatars.githubusercontent.com/u/97809069?v=4"/>
+            <div className="avatar__intro">
+                <div className="avatar__name">Docux</div>
+                <small className="avatar__subtitle">
+                    Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
+                </small>
+            </div>
         </div>
-</div>
-  </CardFooter> 
-  </Card>
+    </CardFooter>
+</Card>
 ```
 </div>
     </div>
