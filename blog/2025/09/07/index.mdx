@@ -46,10 +46,11 @@ blueSkyRecordKey: 3lycislui2c2a
 With [Infima CSS framework](https://infima.dev/), I’ve created a reusable card component that you can use on your Docusaurus site. With it, you’ll be able to customize each card with different colors and sizes. This component allows you to generate all the cards available in Infima as well as “Custom” cards, and you’ll be able to create and personalize each card independently.
 
 The component is in fact a set of small components that will admit to form the cards.
-### SimpleCard : composition of the master folder
- - Card component (The container of alls parts)
+### Card : composition of the master folder
+ - Card component index.js (The container of alls parts)
  - CardHeader component (Header parts of cards)
  - CardBody component (Body parts of cards)
+ - CardImage component (Image cover parts of cards)
  - CardFooter component (Footer parts of cards)
 
 <!--truncate--> 
@@ -65,7 +66,7 @@ This article was originally published by DocuxLab on the [Docusaurus Community](
 
 Think of this component as the container of all card parts
 
-First we will create the master folder in:  `\src\components\SimpleCard\`. Next we will start by creating a new component called Card. It will be the container component of our different parts to come. Also this will give the possibility to manage className and style for each part.
+First we will create the master folder in:  `\src\components\Card\`. Next we will start by creating a new component called Card. It will be the container component of our different parts to come. Also this will give the possibility to manage className and style for each part.
 
 The component will accept the following props:
 
@@ -76,7 +77,7 @@ Creating the file and adding the source code for the component.
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
-```javascript title='\src\components\SimpleCard\Card\index.js'
+```javascript title='\src\components\Card\index.js'
 import React, {CSSProperties} from 'react'; // CSSProperties allows inline styling with better type checking.
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
 
@@ -105,7 +106,7 @@ export default Card;
 
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
-```tsx title='\src\components\SimpleCard\Card\index.tsx'
+```tsx title='\src\components\Card\index.tsx'
 import React, {CSSProperties, ReactNode} from 'react'; // Import types for props
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
 
@@ -157,7 +158,7 @@ Think of this component as the header of your future cards. Create the file and 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
-```javascript title='\src\components\SimpleCard\CardHeader\index.js'
+```javascript title='\src\components\Card\CardHeader\index.js'
 import React, {CSSProperties} from 'react'; // CSSProperties allows inline styling with better type checking.
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
 import styles from '../styles.module.css';
@@ -223,7 +224,7 @@ export default CardHeader;
 
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
-```tsx title='\src\components\SimpleCard\CardHeader\index.tsx'
+```tsx title='\src\components\Card\CardHeader\index.tsx'
 import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
 import styles from '../styles.module.css';
@@ -318,7 +319,7 @@ Think of this component as the body of your futurs cards. Creating the file and 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
-```javascript title='\src\components\SimpleCard\CardBody\index.js'
+```javascript title='\src\components\Card\CardBody\index.js'
 import React, {CSSProperties} from 'react';
 import clsx from 'clsx';
 import styles from '../styles.module.css';
@@ -384,7 +385,7 @@ export default CardBody;
 
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
-```tsx title='\src\components\SimpleCard\CardBody\index.tsx'
+```tsx title='\src\components\Card\CardBody\index.tsx'
 import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
 import styles from '../styles.module.css';
@@ -473,7 +474,7 @@ This component is optionnal, you can use image html and add ```className={clsx("
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
-```javascript title='\src\components\SimpleCard\CardImage\index.js'
+```javascript title='\src\components\Card\CardImage\index.js'
 import React, {CSSProperties} from 'react';
 import clsx from 'clsx';
 import useBaseUrl from '@docusaurus/useBaseUrl'; // Import the useBaseUrl function from Docusaurus
@@ -504,7 +505,7 @@ export default CardImage;
 
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
-```tsx title='\src\components\SimpleCard\CardImage\index.tsx'
+```tsx title='\src\components\Card\CardImage\index.tsx'
 import React, {CSSProperties} from 'react';
 import clsx from 'clsx';
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -571,7 +572,7 @@ Think of this component as the Footer of your futurs cards. Creating the file an
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
-```javascript title='\src\components\SimpleCard\CardFooter\index.js'
+```javascript title='\src\components\Card\CardFooter\index.js'
 import React, {CSSProperties} from 'react';
 import clsx from 'clsx';
 import styles from '../styles.module.css';
@@ -637,7 +638,7 @@ export default CardFooter;
 
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
-```tsx title='\src\components\SimpleCard\CardFooter\index.tsx'
+```tsx title='\src\components\Card\CardFooter\index.tsx'
 import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
 import styles from '../styles.module.css';
@@ -732,11 +733,11 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 // Importing the original mapper + our components according to the Docusaurus
 // doc
 import MDXComponents from '@theme-original/MDXComponents';
-import Card from '@site/src/components/SimpleCard/Card';
-import CardBody from '@site/src/components/SimpleCard/CardBody';
-import CardFooter from '@site/src/components/SimpleCard/CardFooter';
-import CardHeader from '@site/src/components/SimpleCard/CardHeader';
-import CardImage from '@site/src/components/SimpleCard/CardImage';
+import Card from '@site/src/components/Card/Card';
+import CardBody from '@site/src/components/Card/CardBody';
+import CardFooter from '@site/src/components/Card/CardFooter';
+import CardHeader from '@site/src/components/Card/CardHeader';
+import CardImage from '@site/src/components/Card/CardImage';
 
 export default {
     // Reusing the default mapping
@@ -756,11 +757,11 @@ import React from 'react';
 // Importing the original mapper + our components according to the Docusaurus
 // doc
 import MDXComponents from '@theme-original/MDXComponents';
-import Card from '@site/src/components/SimpleCard/Card';
-import CardBody from '@site/src/components/SimpleCard/CardBody';
-import CardFooter from '@site/src/components/SimpleCard/CardFooter';
-import CardHeader from '@site/src/components/SimpleCard/CardHeader';
-import CardImage from '@site/src/components/SimpleCard/CardImage';
+import Card from '@site/src/components/Card/Card';
+import CardBody from '@site/src/components/Card/CardBody';
+import CardFooter from '@site/src/components/Card/CardFooter';
+import CardHeader from '@site/src/components/Card/CardHeader';
+import CardImage from '@site/src/components/Card/CardImage';
 
 export default {
     // Reusing the default mapping
@@ -1458,4 +1459,4 @@ This modern CSS technique provides effective multi-line truncation that works ac
 
 ## Tricks and Tips
 
-The columns are made according to the infima grid, they are hard coded on this page so that the card component is independent. But if you want to use an easy and quick system for managing your columns while using the Infima grid system look at our component [Columns component](/blog/card-component-docusaurus-infima/columnscomponent/)
+The columns are made according to the infima grid, they are hard coded on this page so that the card component is independent. But if you want to use an easy and quick system for managing your columns while using the Infima grid system look at our component [Columns component](/blog/card-component-docusaurus-infima/)

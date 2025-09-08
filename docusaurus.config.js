@@ -21,7 +21,7 @@ const config = {
   baseUrl: '/',
   plugins: [
     [pluginTagRoute, {}],
-    //[pluginSeriesRoute, {}],
+   // [pluginSeriesRoute, {}],
     [
       '@docusaurus/plugin-client-redirects',
       {
