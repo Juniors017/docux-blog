@@ -36,9 +36,7 @@ blueSkyRecordKey: 3lycislui2c2a
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
 [![Developer](https://img.shields.io/badge/Developement-validated-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 ![](/img/card-component-docusaurus-infima.png)
-
 </div>
 </center>
 
@@ -53,7 +51,9 @@ The component is in fact a set of small components that will admit to form the c
  - CardHeader component (Header parts of cards)
  - CardBody component (Body parts of cards)
  - CardFooter component (Footer parts of cards)
+
 <!--truncate--> 
+
  We will discover that it pairs wonderfully with other components present in our library but this will be the subject of a dedicated page. 
 
 ## Creating the Card component 
@@ -127,7 +127,7 @@ const Card: React.FC<CardProps> = ({
     const cardShadow = shadow
         ? `item shadow--${shadow}`
         : '';
-    return (< div className = "card-demo" > <div className = {
+    return (<div className = "card-demo" > <div className = {
         clsx("card", className, cardShadow)
     }
     style = {
@@ -275,7 +275,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({
         ? `text--${weight}`
         : '';
 
-    return (< div className = {
+    return (<div className = {
         clsx(
             'card__header',
             className,
@@ -436,7 +436,7 @@ const CardBody: React.FC<CardBodyProps> = ({
         ? `text--${weight}`
         : '';
 
-    return (< div className = {
+    return (<div className = {
         clsx(
             'card__body',
             className,
@@ -689,7 +689,7 @@ const CardFooter: React.FC<CardFooterProps> = ({
         ? `text--${weight}`
         : '';
 
-    return (< div className = {
+    return (<div className = {
         clsx(
             'card__footer',
             className,
@@ -1058,6 +1058,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 
 </div>
     </div>
+    
     <div className="col col--6">
 <div className="">
   ```html
@@ -1426,8 +1427,7 @@ The selector specifically targets **paragraphs `<p>`** inside elements with the 
 </CardBody>
 ```
 
-  
-  <Card className='margin-top--lg'>
+<Card className='margin-top--lg'>
 
 
  <CardImage style={{ backgroundColor: 'black' , color:'black'}}cardImageUrl="/img/card-component-docusaurus-infima.png" />
@@ -1458,4 +1458,4 @@ This modern CSS technique provides effective multi-line truncation that works ac
 
 ## Tricks and Tips
 
-The columns are made according to the infima grid, they are hard coded on this page so that the card component is independent. But if you want to use an easy and quick system for managing your columns while using the Infima grid system look at our component [Columns component](columnscomponent)
+The columns are made according to the infima grid, they are hard coded on this page so that the card component is independent. But if you want to use an easy and quick system for managing your columns while using the Infima grid system look at our component [Columns component](/blog/card-component-docusaurus-infima/columnscomponent/)

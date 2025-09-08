@@ -5,7 +5,8 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
-
+import pluginTagRoute from "./plugins/docusaurus-plugin-tag-route/index.cjs"
+import pluginSeriesRoute from "./plugins/docusaurus-plugin-series-route/index.cjs"
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
@@ -18,7 +19,33 @@ const config = {
   projectName: 'docux-blog', // Usually your repo name.
   url: 'https://docuxlab.com',
   baseUrl: '/',
-  
+  plugins: [
+    [pluginTagRoute, {}],
+    //[pluginSeriesRoute, {}],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          // Ajoutez vos redirections ici, par exemple:
+          // {
+          //   from: '/ancienne-page',
+          //   to: '/nouvelle-page',
+          // },
+        ],
+        // Redirections automatiques basées sur une taxonomie courante
+        createRedirects: (existingPath) => {
+          // Redirection des URLs anciennes vers nouvelles
+          if (existingPath.includes('/blog/')) {
+            return [
+              existingPath.replace('/blog/', '/articles/'),
+              existingPath.replace('/blog/', '/posts/')
+            ].filter(redirect => redirect !== existingPath);
+          }
+          return undefined;
+        }
+      },
+    ],
+  ],
   trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
   customFields: {
     blueSky: {
@@ -131,33 +158,6 @@ const config = {
     ],
   ],
   
-  plugins: [
-    [
-      '@docusaurus/plugin-client-redirects',
-      {
-        redirects: [
-          // Ajoutez vos redirections ici, par exemple:
-          // {
-          //   from: '/ancienne-page',
-          //   to: '/nouvelle-page',
-          // },
-        ],
-        // Redirections automatiques basées sur une taxonomie courante
-        createRedirects: (existingPath) => {
-          // Redirection des URLs anciennes vers nouvelles
-          if (existingPath.includes('/blog/')) {
-            return [
-              existingPath.replace('/blog/', '/articles/'),
-              existingPath.replace('/blog/', '/posts/')
-            ].filter(redirect => redirect !== existingPath);
-          }
-          return undefined;
-        }
-      },
-    ],
-
-  ],
-
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
