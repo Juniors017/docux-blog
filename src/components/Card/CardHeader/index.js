@@ -1,5 +1,7 @@
   import React,  { CSSProperties } from 'react'; // CSSProperties allows inline styling with better type checking.
   import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
+  import styles from '../styles.module.css';
+
   const CardHeader = ({
     className, // classNamees for the container card
     style, // Custom styles for the container card
@@ -9,7 +11,6 @@
     italic = false ,
     noDecoration = false,
     transform,
-    breakWord = false,
     truncate = false,
     weight,
   }) => {
@@ -18,8 +19,7 @@
     const textItalic = italic ? 'text--italic' : '';
     const textDecoration = noDecoration ? 'text-no-decoration' : '';
     const textType = transform ? `text--${transform}` : '';
-    const textBreak = breakWord ? 'text--break' : '';
-    const textTruncate = truncate ? 'text--truncate' : '';
+    const textTruncate = truncate ? styles.truncate : '';
     const textWeight = weight ? `text--${weight}` : '';
     return (
       <div
@@ -31,7 +31,6 @@
           textColor,
           textItalic,
           textDecoration,
-          textBreak,
           textTruncate,
           textWeight
         )}

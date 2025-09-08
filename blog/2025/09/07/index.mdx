@@ -151,8 +151,7 @@ Think of this component as the header of your future cards. Create the file and 
 - `italic`: Default value is false, it's for italic text render
 - `noDecoration`: Default value is false, it's for delete text decoration 
 - `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word. 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding... 
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen.  It's truncated by adding &hellip; 
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
 
 <Tabs groupId="js-ts">
@@ -161,6 +160,7 @@ Think of this component as the header of your future cards. Create the file and 
 ```javascript title='\src\components\SimpleCard\CardHeader\index.js'
 import React, {CSSProperties} from 'react'; // CSSProperties allows inline styling with better type checking.
 import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
+import styles from '../styles.module.css';
 
 const CardHeader = ({
     className, // classNamees for the container card
@@ -171,7 +171,6 @@ const CardHeader = ({
     italic = false,
     noDecoration = false,
     transform,
-    breakWord = false,
     truncate = false,
     weight
 }) => {
@@ -190,11 +189,8 @@ const CardHeader = ({
     const textType = transform
         ? `text--${transform}`
         : '';
-    const textBreak = breakWord
-        ? 'text--break'
-        : '';
     const textTruncate = truncate
-        ? 'text--truncate'
+        ? styles.truncate
         : '';
     const textWeight = weight
         ? `text--${weight}`
@@ -209,7 +205,6 @@ const CardHeader = ({
                 textColor,
                 textItalic,
                 textDecoration,
-                textBreak,
                 textTruncate,
                 textWeight
             )}
@@ -231,6 +226,7 @@ export default CardHeader;
 ```tsx title='\src\components\SimpleCard\CardHeader\index.tsx'
 import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
+import styles from '../styles.module.css';
 
 interface CardHeaderProps {
     className?: string;
@@ -241,7 +237,6 @@ interface CardHeaderProps {
     italic?: boolean;
     noDecoration?: boolean;
     transform?: string;
-    breakWord?: boolean;
     truncate?: boolean;
     weight?: string;
 }
@@ -255,7 +250,6 @@ const CardHeader: React.FC<CardHeaderProps> = ({
     italic = false,
     noDecoration = false,
     transform,
-    breakWord = false,
     truncate = false,
     weight
 }) => {
@@ -274,11 +268,8 @@ const CardHeader: React.FC<CardHeaderProps> = ({
     const textType = transform
         ? `text--${transform}`
         : '';
-    const textBreak = breakWord
-        ? 'text--break'
-        : '';
     const textTruncate = truncate
-        ? 'text--truncate'
+        ? styles.truncate
         : '';
     const textWeight = weight
         ? `text--${weight}`
@@ -293,7 +284,6 @@ const CardHeader: React.FC<CardHeaderProps> = ({
             textColor,
             textItalic,
             textDecoration,
-            textBreak,
             textTruncate,
             textWeight
         )
@@ -321,8 +311,7 @@ Think of this component as the body of your futurs cards. Creating the file and 
 - `italic`: Default value is false, it's for italic text render
 - `noDecoration`: Default value is false, it's for delete text decoration 
 - `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word. 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding... 
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen.  It's truncated by adding &hellip; 
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
 
 
@@ -332,6 +321,7 @@ Think of this component as the body of your futurs cards. Creating the file and 
 ```javascript title='\src\components\SimpleCard\CardBody\index.js'
 import React, {CSSProperties} from 'react';
 import clsx from 'clsx';
+import styles from '../styles.module.css';
 
 const CardBody = ({
     className, // classNamees for the container card
@@ -342,7 +332,6 @@ const CardBody = ({
     italic = false,
     noDecoration = false,
     transform,
-    breakWord = false,
     truncate = false,
     weight
 }) => {
@@ -361,11 +350,8 @@ const CardBody = ({
     const textType = transform
         ? `text--${transform}`
         : '';
-    const textBreak = breakWord
-        ? 'text--break'
-        : '';
     const textTruncate = truncate
-        ? 'text--truncate'
+        ? styles.truncate
         : '';
     const textWeight = weight
         ? `text--${weight}`
@@ -380,7 +366,6 @@ const CardBody = ({
                 textColor,
                 textItalic,
                 textDecoration,
-                textBreak,
                 textTruncate,
                 textWeight
             )}
@@ -402,6 +387,7 @@ export default CardBody;
 ```tsx title='\src\components\SimpleCard\CardBody\index.tsx'
 import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
+import styles from '../styles.module.css';
 
 interface CardBodyProps {
     className?: string;
@@ -412,7 +398,6 @@ interface CardBodyProps {
     italic?: boolean;
     noDecoration?: boolean;
     transform?: string;
-    breakWord?: boolean;
     truncate?: boolean;
     weight?: string;
 }
@@ -426,7 +411,6 @@ const CardBody: React.FC<CardBodyProps> = ({
     italic = false,
     noDecoration = false,
     transform,
-    breakWord = false,
     truncate = false,
     weight
 }) => {
@@ -445,11 +429,8 @@ const CardBody: React.FC<CardBodyProps> = ({
     const textType = transform
         ? `text--${transform}`
         : '';
-    const textBreak = breakWord
-        ? 'text--break'
-        : '';
     const textTruncate = truncate
-        ? 'text--truncate'
+        ? styles.truncate
         : '';
     const textWeight = weight
         ? `text--${weight}`
@@ -464,7 +445,6 @@ const CardBody: React.FC<CardBodyProps> = ({
             textColor,
             textItalic,
             textDecoration,
-            textBreak,
             textTruncate,
             textWeight
         )
@@ -584,8 +564,7 @@ Think of this component as the Footer of your futurs cards. Creating the file an
 - `italic`: Default value is false, it's for italic text render
 - `noDecoration`: Default value is false, it's for delete text decoration 
 - `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word. 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding... 
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen.  It's truncated by adding &hellip; 
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
 
 
@@ -595,6 +574,7 @@ Think of this component as the Footer of your futurs cards. Creating the file an
 ```javascript title='\src\components\SimpleCard\CardFooter\index.js'
 import React, {CSSProperties} from 'react';
 import clsx from 'clsx';
+import styles from '../styles.module.css';
 
 const CardFooter = ({
     className,
@@ -605,7 +585,6 @@ const CardFooter = ({
     italic = false,
     noDecoration = false,
     transform,
-    breakWord = false,
     truncate = false,
     weight
 }) => {
@@ -624,11 +603,8 @@ const CardFooter = ({
     const textType = transform
         ? `text--${transform}`
         : '';
-    const textBreak = breakWord
-        ? 'text--break'
-        : '';
     const textTruncate = truncate
-        ? 'text--truncate'
+        ? styles.truncate
         : '';
     const textWeight = weight
         ? `text--${weight}`
@@ -643,7 +619,6 @@ const CardFooter = ({
                 textColor,
                 textItalic,
                 textDecoration,
-                textBreak,
                 textTruncate,
                 textWeight
             )}
@@ -665,6 +640,7 @@ export default CardFooter;
 ```tsx title='\src\components\SimpleCard\CardFooter\index.tsx'
 import React, {CSSProperties, ReactNode} from 'react';
 import clsx from 'clsx';
+import styles from '../styles.module.css';
 
 interface CardFooterProps {
     className?: string;
@@ -675,7 +651,6 @@ interface CardFooterProps {
     italic?: boolean;
     noDecoration?: boolean;
     transform?: string;
-    breakWord?: boolean;
     truncate?: boolean;
     weight?: string;
 }
@@ -689,7 +664,6 @@ const CardFooter: React.FC<CardFooterProps> = ({
     italic = false,
     noDecoration = false,
     transform,
-    breakWord = false,
     truncate = false,
     weight
 }) => {
@@ -708,11 +682,8 @@ const CardFooter: React.FC<CardFooterProps> = ({
     const textType = transform
         ? `text--${transform}`
         : '';
-    const textBreak = breakWord
-        ? 'text--break'
-        : '';
     const textTruncate = truncate
-        ? 'text--truncate'
+        ? styles.truncate
         : '';
     const textWeight = weight
         ? `text--${weight}`
@@ -727,7 +698,6 @@ const CardFooter: React.FC<CardFooterProps> = ({
             textColor,
             textItalic,
             textDecoration,
-            textBreak,
             textTruncate,
             textWeight
         )
@@ -814,7 +784,7 @@ export default {
 <div className="row ">
 <div className="col col--6">
 <div className="">
-  <Card shadow='tl' >
+  <Card shadow='tl margin-bottom--lg'>
     <CardHeader >
       <h3>Lorem Ipsum</h3>
     </CardHeader>
@@ -874,7 +844,7 @@ export default {
 <div className="row padding-bottom--xl">
 <div className="col col--6">
 <div className="">
-  <Card>
+  <Card className='margin-bottom--lg'>
   <CardHeader style={{ backgroundColor: '#205d3b' , color:'black'}}>
 <div className="avatar avatar--vertical">
   <img
@@ -913,7 +883,7 @@ Explore our articles, guides, and interactive demos designed to help you stay at
     <div className="col col--6">
 <div className="">
   ```html
-  <Card>
+  <Card className='margin-bottom--lg'>
     <CardHeader style={{ backgroundColor: '#205d3b' , color:'black'} }="}">
         <div className="avatar avatar--vertical">
             <img
@@ -970,7 +940,7 @@ Explore our articles, guides, and interactive demos designed to help you stay at
 <div className="row padding-bottom--xl">
 <div className="col col--6">
 <div className="">
-  <Card>
+  <Card className='margin-bottom--lg'>
   <CardHeader className='padding-top--lg' style={{ backgroundColor: 'rgb(33 126 209)' , color:'black'}}>
 <div className="avatar avatar--vertical">
   <img
@@ -1078,7 +1048,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 <div className="row padding-bottom--xl">
 <div className="col col--6">
 <div className="">
-  <Card>
+  <Card className='margin-bottom--lg'>
 
  <CardImage cardImageUrl="/img/docux.png" />
 
@@ -1097,13 +1067,12 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
     <div className="col col--6">
 <div className="">
   ```html
-   <Card>
+   <Card className='margin-bottom--lg'>
 
     <CardImage cardImageUrl="/img/docux.png"/>
 
     <CardFooter
-        style={{ backgroundColor: '#07ac2aff' , color:'#eeff00ff'}
-        }="}"
+        style={{ backgroundColor: '#07ac2aff' , color:'#eeff00ff' }}
         className='text--center'>
         <div className="button-group button-group--block">
             <button className="button button--primary button--sm">Like</button>
@@ -1125,7 +1094,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 <div className="row padding-bottom--xl">
 <div className="col col--6">
 <div className="">
-  <Card>
+  <Card className='margin-bottom--lg'>
 
  <CardImage cardImageUrl="/img/learn-docusaurus-and-react.jpg" />
 
@@ -1149,7 +1118,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
     <div className="col col--6">
 <div className="">
   ```html
-   <Card>
+   <Card className='margin-bottom--lg'>
 
     <CardImage cardImageUrl="/img/learn-docusaurus-and-react.jpg"/>
 
@@ -1198,7 +1167,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 <div className="col col--6">
 <div className="">
 
-  <Card shadow='tl'>
+  <Card shadow='tl margin-bottom--lg'>
   <CardBody style={{ backgroundColor: 'white' , color:'black'}} className="padding-vert--md "Transform= 'uppercase'> 
 The Infima CSS  framework provides a set of utility classNames that can be used to style card in Docusaurus. This article will cover how to create a reusable card component for your Docusaurus site that can be customized with different colors and sizes.
  </CardBody> 
@@ -1265,7 +1234,7 @@ The Infima CSS  framework provides a set of utility classNames that can be used 
 <div className="row padding-bottom--xl">
 <div className="col col--6">
 <div className="">
-  <Card>
+  <Card className='margin-bottom--lg'>
   <CardHeader className='padding-top--lg' style={{ backgroundColor: '#87dfb8' , color:'#2d2f4eff'}}>
 <div className="avatar avatar--vertical">
   <img
@@ -1283,7 +1252,7 @@ The Infima CSS  framework provides a set of utility classNames that can be used 
 
  <CardImage style={{ backgroundColor: '#87dfb8' , color:'#2d2f4eff'}} cardImageUrl="/img/docux-and-christophe-learn-docusaurus.jpg" />
 
-<CardBody style={{ backgroundColor: '#87dfb8' , color:'#2d2f4eff'}} className="padding-vert--md" textAlign='right' Transform= 'uppercase'> 
+<CardBody style={{ backgroundColor: '#87dfb8' , color:'#2d2f4eff'}} className="padding-vert--md" textAlign='right' Transform= 'uppercase' > 
  <h3>DocuxLab</h3>
 A must-visit site for developers looking to expand their knowledge and skills!
  </CardBody>  
@@ -1295,7 +1264,7 @@ A must-visit site for developers looking to expand their knowledge and skills!
     <div className="col col--6">
 <div className="">
   
-  <Card>
+  <Card className='margin-bottom--lg'>
   <CardHeader className='padding-top--lg' style={{ backgroundColor: '#7a9f3d' , color:'black'}}>
 <div className="avatar">
   <img
@@ -1333,12 +1302,10 @@ A must-visit site for developers looking to expand their knowledge and skills!
 
  <CardImage style={{ backgroundColor: 'black' , color:'black'}}cardImageUrl="/img/card-component-docusaurus-infima.png" />
 
-<CardBody style={{ backgroundColor: '#40c43b' , color:'#3d521cff'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase'> 
+<CardBody style={{ backgroundColor: '#40c43b' , color:'#3d521cff'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase'  > 
  <h3>Docux Card component</h3>
  
-Welcome to DocuxLab, your space for tech discoveries, development tutorials, and tips to enhance your digital projects. Here, we break down code, explore web trends, and share practical resources for all tech enthusiasts.
-
-Explore our articles, guides, and interactive demos designed to help you stay at the forefront of innovation. Whether you are a beginner developer or an experienced pro, DocuxLab is here to inspire and support you in your digital projects.
+Welcome to DocuxLab, your space for tech discoveries, development tutorials, and tips to enhance your digital projects. Here, we break down code, explore web trends, and share practical resources for all tech enthusiasts. Explore our articles, guides, and interactive demos designed to help you stay at the forefront of innovation. Whether you are a beginner developer or an experienced pro, DocuxLab is here to inspire and support you in your digital projects.
  </CardBody>  
  <CardFooter style={{  backgroundColor: '#d7de3d' , color:'#3d521cff'}} > 
 
@@ -1361,7 +1328,141 @@ Explore our articles, guides, and interactive demos designed to help you stay at
     </div>
 </div>
     </div>
+    
+    ## Why truncate in styles.module.css
 
+The truncate functionality uses CSS Modules to provide better encapsulation and avoid conflicts with global styles. Here's a detailed breakdown of how the `.truncate p` CSS works:
+
+<Tabs groupId="css-scss">
+  <TabItem value="css" label={<><LogoIcon name="css-3" size='24' /> </>}>
+
+```css title='\src\components\Card\styles.module.css'
+.truncate p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0;
+  word-wrap: break-word;
+  max-height: 4.5em; /* 3 lines × 1.5em line-height */
+  line-height: 1.5em;
+}
+```
+
+</TabItem>
+  <TabItem value="scss" label={<><LogoIcon name="sass" size='24' /> </>}>
+    ```scss title="\src\components\Card\styles.module.scss"
+.truncate {
+  p {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0;
+    word-wrap: break-word;
+    max-height: 4.5em; /* 3 lines × 1.5em line-height */
+    line-height: 1.5em;
+  }
+}
+    ```
+</TabItem>
+</Tabs>
+
+### Detailed CSS Properties Explanation:
+
+#### 1. **`display: -webkit-box;`**
+- Enables the WebKit flexible box model (legacy syntax)
+- Required for `-webkit-line-clamp` to function properly
+- Foundation of the multi-line truncation system
+
+#### 2. **`-webkit-line-clamp: 3;` and `line-clamp: 3;`**
+- Limits display to **3 lines maximum**
+- `-webkit-line-clamp`: WebKit version (Safari, Chrome)
+- `line-clamp`: Modern standard version
+- Both included for cross-browser compatibility
+
+#### 3. **`-webkit-box-orient: vertical;`**
+- Defines the orientation of "boxes" vertically
+- Specifies that lines stack vertically
+- Mandatory when using `-webkit-line-clamp`
+
+#### 4. **`overflow: hidden;`**
+- Hides any content that exceeds the container
+- Essential for concealing additional lines (beyond the 3rd)
+
+#### 5. **`text-overflow: ellipsis;`**
+- Adds ellipsis (`...`) at the end of truncated text
+- Only works with `overflow: hidden`
+- Provides the visual "..." effect
+
+#### 6. **`margin-bottom: 0;`**
+- Removes bottom margin from paragraphs
+- Prevents unwanted spacing after truncated text
+
+#### 7. **`word-wrap: break-word;`**
+- Allows long words to break when necessary
+- Prevents words from overflowing container width
+
+#### 8. **`max-height: 4.5em;` and `line-height: 1.5em;`**
+- **Fallback** for browsers that don't support `line-clamp`
+- `4.5em = 3 lines × 1.5em` per line
+- Provides height limitation if `line-clamp` fails
+
+### Why Target `.truncate p`?
+
+The selector specifically targets **paragraphs `<p>`** inside elements with the `.truncate` class. This approach provides:
+
+- **Precision**: Only text content gets truncated
+- **Preservation**: Headings `<h1>`, `<h2>`, `<h3>` remain intact
+- **Flexibility**: You can have non-truncated content in the same CardBody
+
+### Example:
+
+```jsx
+<CardBody truncate={true}>
+  <h3>Complete Title</h3>  {/* ← Not truncated */}
+  
+  <p>                      {/* ← Will be truncated */}
+    Very long text that will be automatically 
+    truncated after 3 lines with ellipsis 
+    at the end...
+  </p>
+</CardBody>
+```
+
+  
+  <Card className='margin-top--lg'>
+
+
+ <CardImage style={{ backgroundColor: 'black' , color:'black'}}cardImageUrl="/img/card-component-docusaurus-infima.png" />
+
+<CardBody style={{ backgroundColor: '#40c43b' , color:'#3d521cff'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase' truncate > 
+ <h3>Docux Card component</h3>
+ 
+Welcome to DocuxLab, your space for tech discoveries, development tutorials, and tips to enhance your digital projects. Here, we break down code, explore web trends, and share practical resources for all tech enthusiasts. Explore our articles, guides, and interactive demos designed to help you stay at the forefront of innovation. Whether you are a beginner developer or an experienced pro, DocuxLab is here to inspire and support you in your digital projects.
+ </CardBody>  
+ <CardFooter style={{  backgroundColor: '#d7de3d' , color:'#3d521cff'}} > 
+
+<div className="avatar padding-top--md padding-bott--md">
+        <img
+          className="avatar__photo"
+          src="https://avatars.githubusercontent.com/u/97809069?v=4" />
+        <div className="avatar__intro">
+          <div className="avatar__name">Docux</div>
+          <small className="avatar__subtitle">
+          Curious explorer, a bit of a mad experimenter, and a bit of a contributor.
+          </small>
+        </div>
+</div>
+  </CardFooter> 
+</Card>
+
+
+This modern CSS technique provides effective multi-line truncation that works across different browsers and maintains clean, readable layouts in your card components.
 
 ## Tricks and Tips
 

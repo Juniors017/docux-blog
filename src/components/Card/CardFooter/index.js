@@ -1,4 +1,6 @@
 import React,  { CSSProperties } from 'react';
+import styles from '../styles.module.css';
+
 import clsx from 'clsx';
 const CardFooter = ({
   className,
@@ -9,7 +11,6 @@ const CardFooter = ({
   italic = false ,
   noDecoration = false,
   transform,
-  breakWord = false,
   truncate = false,
   weight,
 }) => {
@@ -18,8 +19,7 @@ const CardFooter = ({
   const textItalic = italic ? 'text--italic' : '';
   const textDecoration = noDecoration ? 'text-no-decoration' : '';
   const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
+  const textTruncate = truncate ? styles.truncate : '';
   const textWeight = weight ? `text--${weight}` : '';
   return (
     <div
@@ -31,7 +31,6 @@ const CardFooter = ({
         textColor,
         textItalic,
         textDecoration,
-        textBreak,
         textTruncate,
         textWeight
       )}
