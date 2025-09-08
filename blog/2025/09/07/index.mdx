@@ -1412,10 +1412,10 @@ The selector specifically targets **paragraphs `<p>`** inside elements with the 
 - **Preservation**: Headings `<h1>`, `<h2>`, `<h3>` remain intact
 - **Flexibility**: You can have non-truncated content in the same CardBody
 
-### Example:
+### basic Example:
 
 ```jsx
-<CardBody truncate={true}>
+<CardBody truncate> {/* = <true> */}
   <h3>Complete Title</h3>  {/* ← Not truncated */}
   
   <p>                      {/* ← Will be truncated */}
