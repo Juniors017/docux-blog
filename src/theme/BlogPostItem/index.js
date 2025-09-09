@@ -1,0 +1,47 @@
+import React from 'react';
+import clsx from 'clsx';
+import {useBlogPost} from '@docusaurus/plugin-content-blog/client';
+import BlogPostItemContainer from '@theme/BlogPostItem/Container';
+import BlogPostItemHeader from '@theme/BlogPostItem/Header';
+import BlogPostItemContent from '@theme/BlogPostItem/Content';
+import BlogPostItemFooter from '@theme/BlogPostItem/Footer';
+
+// Our posts components
+import RelatedPosts from "@site/src/components/Blog/RelatedPosts/index.js";
+import SeriesPosts from "@site/src/components/Blog/SeriesPosts/index.js";
+
+// Our Bluesky component
+import Bluesky from "@site/src/components/Bluesky/index.js";
+// apply a bottom margin in list view
+function useContainerClassName() {
+  const { isBlogPostPage } = useBlogPost();
+  return !isBlogPostPage ? "margin-bottom--xl" : undefined;
+}
+export default function BlogPostItem({ children, className }) {
+  // We need to retrieve the isBlogPostPage flag
+  const { metadata, isBlogPostPage } = useBlogPost();
+  const containerClassName = useContainerClassName();
+  return (
+    <BlogPostItemContainer className={clsx(containerClassName, className)}>
+      <BlogPostItemHeader />
+
+    
+      <BlogPostItemContent>{children}</BlogPostItemContent>
+      <BlogPostItemFooter />
+
+      {/* Only display our RelatedPosts and Bluesky components on the post page; not the blog view */}
+      {isBlogPostPage && (
+        <>
+          <SeriesPosts
+            series={metadata.frontMatter.series}
+            excludePermalink={metadata.permalink}
+            highlightCurrent={true}
+          />
+          <Bluesky metadata={metadata} />
+
+          <RelatedPosts count="3" description={false} />
+        </>
+      )}
+    </BlogPostItemContainer>
+  );
+}

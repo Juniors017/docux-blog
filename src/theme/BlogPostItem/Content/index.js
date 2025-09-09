@@ -1,24 +1,19 @@
 import React from 'react';
-import BlogPostItemContent from '@theme-original/BlogPostItem/Content';
-import { useBlogPost } from '@docusaurus/plugin-content-blog/client';
-import SerieBanner from '@site/src/components/SerieBanner';
-import BlueSky from "@site/src/components/BlueSky/index.js";  
-export default function BlogPostItemContentWrapper(props) {
-  const { metadata, isBlogPostPage } = useBlogPost();
-  const serieName = metadata?.frontMatter?.serie;
+import clsx from 'clsx';
+import {blogPostContainerID} from '@docusaurus/utils-common';
+import {useBlogPost} from '@docusaurus/plugin-content-blog/client';
+import MDXContent from '@theme/MDXContent';
 
+export default function BlogPostItemContent({children, className}) {
+  const {isBlogPostPage} = useBlogPost();
   return (
-    <>
-      {serieName && isBlogPostPage && (
-        <SerieBanner serieName={serieName} />
-      )}
-           
-
-      <BlogPostItemContent {...props} />
-{isBlogPostPage && <div className="margin-top--xl">
- <hr></hr>
-     <BlueSky metadata={metadata} />
-      </div>}
-    </>
+    <div
+      // This ID is used for the feed generation to locate the main content
+      id={isBlogPostPage ? blogPostContainerID : undefined}
+      className={clsx('markdown', className)}>
+      <MDXContent>{children}</MDXContent>
+     
+   
+    </div>
   );
 }

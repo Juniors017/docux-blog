@@ -84,9 +84,11 @@ export default function RelatedPosts({ count = 3, description = false }) {
     <>
       <h3>Related posts</h3>
       <div className="row">
-        {related.map((post) => (
-          <PostCard key={post.id} layout="small" post={post} />
-        ))}
+        {related.map((post) => {
+          // Si description est false, créer une copie du post sans description
+          const postToRender = description ? post : { ...post, description: null };
+          return <PostCard key={post.id} layout="small" post={postToRender} />;
+        })}
       </div>
     </>
   );

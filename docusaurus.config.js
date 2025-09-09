@@ -20,8 +20,8 @@ const config = {
   url: 'https://docuxlab.com',
   baseUrl: '/',
   plugins: [
-    [pluginTagRoute, {}],
-   // [pluginSeriesRoute, {}],
+  [pluginTagRoute, {}],
+   [pluginSeriesRoute, {}],
     [
       '@docusaurus/plugin-client-redirects',
       {
