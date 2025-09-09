@@ -85,7 +85,7 @@ export function SeriesCards() {
               <div key={seriesName} className="col col--4 margin-bottom--lg">
                 {/* Lien vers la page des articles de la série */}
                 <Link href={`/series/series-articles?name=${seriesSlug}`}>
-                  <Card>
+                  <Card shadow="tl" >
                     <CardImage cardImageUrl={`${image}`} />
                     <CardBody
                       className="padding-vert--md text--center"

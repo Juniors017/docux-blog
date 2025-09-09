@@ -59,7 +59,7 @@ export default function SeriesArticlesPage() {
               <div key={post.permalink} className="col col--4 margin-bottom--lg">
                   {/* Lien vers l'article */}
                   <Link href={post.permalink}>
-                    <Card shadow="md">
+                    <Card shadow="tl">
                       <CardImage 
                         cardImageUrl={post.image || "/img/docux.png"} 
                         alt={post.title}
