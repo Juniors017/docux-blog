@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from "./styles.module.css";
 
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
   const [fly, setFly] = useState(false);
+  const imageUrl = useBaseUrl('/img/buttontop.png');
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -35,7 +37,7 @@ export default function ScrollToTopButton() {
       onClick={scrollToTop}
     >
       <img
-        src="/img/buttontop.png"
+        src={imageUrl}
         alt="Retour en haut"
         width="30"
         height="30"
