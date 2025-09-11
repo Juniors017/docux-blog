@@ -66,11 +66,18 @@ if (window.scrollY > 300) {  // Changez 300 pour ajuster le seuil
 
 ### Changer l'image
 
-Modifiez le chemin de l'image dans `index.js` :
+1. Placez votre image dans le dossier `static/img/` de votre projet
+2. Modifiez l'import dans `index.js` :
+
+```jsx
+import buttontop from '@site/static/img/votre-image.png'  // Remplacez par votre image
+```
+
+3. L'image sera utilisée dans le composant :
 
 ```jsx
 <img
-  src="/img/votre-image.png"  // Remplacez par votre image
+  src={buttontop}
   alt="Retour en haut"
   width="30"
   height="30"
@@ -166,4 +173,4 @@ export default function LayoutWrapper(props) {
 
 ---
 
-**Développé pour Docux Blog** - Un composant simple et efficace pour améliorer l'expérience utilisateur ! 🎉
+**Développé par DocuxLab** - Un composant simple et efficace pour améliorer l'expérience utilisateur ! 🎉
