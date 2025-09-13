@@ -17,3 +17,13 @@ export function loadSimpleAnalytics() {
     noscript.remove();
   };
 }
+
+// Auto-exécution du script
+if (typeof window !== "undefined") {
+  // Attendre que le DOM soit prêt
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadSimpleAnalytics);
+  } else {
+    loadSimpleAnalytics();
+  }
+}

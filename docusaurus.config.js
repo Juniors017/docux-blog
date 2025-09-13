@@ -7,6 +7,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import pluginTagRoute from "./plugins/docusaurus-plugin-tag-route/index.cjs"
 import pluginSeriesRoute from "./plugins/docusaurus-plugin-series-route/index.cjs"
+import simpleAnalytics from "./plugins/simpleAnalytics/index.js"
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
@@ -22,7 +23,7 @@ const config = {
   plugins: [
   [pluginTagRoute, {}],
    [pluginSeriesRoute, {}],
-   ["./plugins/simpleAnalytics/index.js", {}],
+   [simpleAnalytics, {}],
     [
       '@docusaurus/plugin-client-redirects',
       {
