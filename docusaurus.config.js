@@ -22,6 +22,7 @@ const config = {
   plugins: [
   [pluginTagRoute, {}],
    [pluginSeriesRoute, {}],
+   ["./plugins/simpleAnalytics/index.js", {}],
     [
       '@docusaurus/plugin-client-redirects',
       {
