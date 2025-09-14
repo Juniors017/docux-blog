@@ -9,6 +9,7 @@ function simpleAnalyticsPlugin(context, options) {
             attributes: {
               src: 'https://scripts.simpleanalyticscdn.com/latest.js',
               async: true,
+              'data-hostname': 'docuxlab.com', // Configuration pour localhost
             },
           },
           {
@@ -18,12 +19,7 @@ function simpleAnalyticsPlugin(context, options) {
         ],
       };
     },
-    getClientModules() {
-      // Permet d'exposer un module client utilisable dans Layout
-      return [require.resolve("./sa-client.js")];
-    },
   };
 }
 
 module.exports = simpleAnalyticsPlugin;
-
