@@ -1,0 +1,243 @@
+---
+title: "LogoIcon Component"
+description: "A React component tutorial to easily display Iconify logos in Docusaurus MDX pages without individual imports."
+schemaTypes: ["HowTo", "BlogPosting"]
+slug: "logoicon-component-docusaurus"
+image: "/img/logoicon-component-docusaurus.png"
+authors: ["docux"]
+mainTag: Design
+tags: ["iconify", "design", "logos", "icons"]
+date: 2025-09-15
+last_update:
+  date: 2025-09-15
+  author: docux
+difficulty: "Beginner"
+totalTime: "PT15M"
+prepTime: "PT5M"
+performTime: "PT10M"
+estimatedCost: "Free"
+tool: ["React", "Docusaurus", "JavaScript", "TypeScript", "VSCode"]
+supply: ["Node.js", "Docusaurus", "Iconify", "React Component"]
+yield: "Reusable LogoIcon component for displaying logos in MDX"
+genre: "Technical Tutorial"
+inLanguage: "en"
+isAccessibleForFree: true
+readingTime: "5 min"
+articleSection: "Tutorial"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+category: "Web Development"
+keywords: ["iconify", "react", "component", "mdx", "logos", "icons","iconify"]
+hide_table_of_contents: true
+series: "Design your site"
+blueSkyRecordKey: 
+---
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Developement](https://img.shields.io/badge/Developement-validated-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/iconifycomponent.png)
+</div>
+</center>
+
+
+This component allows you to easily display **[Iconify](https://icon-sets.iconify.design/) icons** in **MDX** pages of Docusaurus.  
+It is particularly useful for displaying **logos** (GitHub, Airbnb, Google, etc.) without having to import each icon individually.
+
+
+
+## Installation
+
+In your Docusaurus project, install the Iconify React library:
+
+<Tabs>
+<TabItem value="npm" label={<><LogoIcon name="npm" size='32' /> </>}>
+```bash
+npm install @iconify/react
+```
+</TabItem>
+
+<TabItem value="yarn" label={<><LogoIcon name="yarn" size='32' /> </>}>
+
+```bash
+yarn add @iconify/react
+```
+</TabItem>
+</Tabs>
+
+
+
+##  File structure
+
+```
+src/
+ ├─ components/
+ │   └─ LogoIcon.js       # React component that wraps Iconify
+ └─ theme/
+     └─ MDXComponents.js  # Allows using <LogoIcon /> everywhere in MDX
+```
+
+
+## Component code for Logos category
+
+<Tabs>
+<TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
+
+```jsx title='src\components\LogoIcon.js'
+import React from "react";
+import { Icon } from "@iconify/react";
+
+export default function LogoIcon({ name, size = 48 }) {
+  return <Icon icon={`logos:${name}`} width={size} height={size} />;
+}
+```
+</TabItem>
+
+<TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
+
+```ts title='src\components\LogoIcon.tsx'
+import React from "react";
+import { Icon } from "@iconify/react";
+
+interface LogoIconProps {
+  name: string;
+  size?: number;
+}
+
+export default function LogoIcon({ name, size = 48 }: LogoIconProps): JSX.Element {
+  return <Icon icon={`logos:${name}`} width={size} height={size} />;
+}
+```
+</TabItem>
+</Tabs>
+
+##  Global declaration in MDX
+
+<Tabs>
+<TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
+```jsx title='src\theme\MDXComponents.js'
+
+import React from 'react';
+import MDXComponents from '@theme-original/MDXComponents';
+import LogoIcon from '@site/src/components/LogoIcon';
+
+export default {
+  ...MDXComponents,
+  LogoIcon, // 👈 makes <LogoIcon /> available everywhere
+};
+
+export default CustomMDXComponents;
+```
+</TabItem>
+
+<TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
+
+```ts title='src\theme\MDXComponents.tsx'
+
+import React from 'react';
+import MDXComponents from '@theme-original/MDXComponents';
+import LogoIcon from '@site/src/components/LogoIcon';
+import type { MDXComponents as MDXComponentsType } from '@mdx-js/react';
+
+const CustomMDXComponents: MDXComponentsType = {
+  ...MDXComponents,
+  LogoIcon,
+};
+
+export default CustomMDXComponents;
+```
+</TabItem>
+</Tabs>
+
+
+##  How to use it
+
+* The `name` corresponds to the icon name in the **Logos** set of Iconify.
+  > Example: [logos:airbnb-icon](https://icon-sets.iconify.design/logos/airbnb-icon/) → `name="airbnb-icon"`
+
+* The `size` (optional) defines the logo size in pixels.
+  Default value: `48`.
+
+* You can easily customize the component (add a `color` prop, change the icon set, apply CSS classes, etc.).
+
+Once configured, you can directly use the component without import:
+
+
+## Usage example in MDX files
+<Tabs>
+<TabItem value="js" label={<><LogoIcon name="mdx" size='48' /> </>}>
+```mdx
+<LogoIcon name="docusaurus" size='256' />
+
+<LogoIcon name="react" size='124' /> 
+
+<LogoIcon name="airbnb-icon" size='64' />
+
+<LogoIcon name="github-icon" />
+
+<LogoIcon name="gitlab" size='32' />
+```
+<LogoIcon name="docusaurus" size='256' />
+
+<LogoIcon name="react" size='124' /> 
+
+<LogoIcon name="airbnb-icon" size='64' />
+
+<LogoIcon name="github-icon" />
+
+<LogoIcon name="gitlab" size='32' />
+</TabItem>
+</Tabs>
+
+
+
+## Component code for all Logos category
+
+
+I created this component to easily use [logos](https://icon-sets.iconify.design/logos/?category=Logos)
+Naturally, you can create a similar component for other icon sets (Material Design, FontAwesome, etc.) by adapting the logic.
+Or even have a global logic.
+
+### Global component for all Iconify categories
+
+<Tabs>
+<TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
+
+```jsx title='src\components\LogoIcon.js'
+import React from "react";
+import { Icon } from "@iconify/react";
+
+export default function LogoIcon({ name, size = 48 }) {
+  return <Icon icon={`${name}`} width={size} height={size} />;
+}
+```
+</TabItem>
+
+<TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
+
+```ts title='src\components\LogoIcon.tsx'
+import React from "react";
+import { Icon } from "@iconify/react";
+
+interface LogoIconProps {
+  name: string;
+  size?: number;
+}
+
+export default function LogoIcon({ name, size = 48 }: LogoIconProps): JSX.Element {
+  return <Icon icon={`${name}`} width={size} height={size} />;
+}
+```
+</TabItem>
+</Tabs>
+
+## Advantages of my component
+
+* No need to import each logo in every MDX file.
+* Simple and readable syntax.
+* Easy to customize globally (size, style, default color).
+* Built on Iconify → access to **200k+ open source
+
+> look : https://icon-sets.iconify.design/
