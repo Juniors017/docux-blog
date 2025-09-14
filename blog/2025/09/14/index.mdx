@@ -1,0 +1,256 @@
+---
+title: "Simple Analytics Plugin"
+description: "A complete tutorial to integrate Simple Analytics into your Docusaurus site with a custom local plugin."
+schemaTypes: ["HowTo", "BlogPosting"]
+slug: simple-analytics-plugin-docusaurus
+image: "/img/simpleanalyticsplugin.png"
+authors: ["docux"]
+mainTag: analytics
+tags: ["simple-analytics", "plugin", "navigation", "analytics", "tutorial"]
+date: 2025-09-14
+last_update:
+  date: 2025-09-14
+  author: docux
+difficulty: "Intermediate"
+totalTime: "PT30M"
+prepTime: "PT10M"
+performTime: "PT20M"
+estimatedCost: "Free"
+tool: ["React", "Docusaurus", "JavaScript", "Node.js", "VSCode"]
+supply: ["Node.js", "Docusaurus", "Simple Analytics", "Local Plugin"]
+yield: "Functional Simple Analytics plugin for SPA tracking"
+genre: "Technical Tutorial"
+inLanguage: "en"
+isAccessibleForFree: true
+readingTime: "10 min"
+articleSection: "Tutorial"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+category: "Web Development"
+keywords: ["simple analytics", "plugin", "docusaurus", "spa", "navigation", "analytics"]
+hide_table_of_contents: true
+series: "SEO & Performance"
+blueSkyRecordKey: 
+---
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Developement](https://img.shields.io/badge/Developement-validated-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/simpleanalyticsplugin.png)
+</div>
+</center>
+
+Want to integrate [Simple Analytics](https://www.simpleanalytics.com/?utm_source=docuxlab.com&utm_content=badge&affiliate=babep) into your Docusaurus site and effectively track user navigation in a Single Page Application (SPA) context?
+
+This guide explains how to create a local plugin for Docusaurus that handles the injection of the tracking script and tracks page changes.
+
+It manages the injection of the main script as well as tracking page changes in the context of a Single Page Application (SPA), which is essential for Docusaurus.
+
+This plugin is a local plugin. There's no need to install it via npm or yarn. Simply ensure that the `simpleAnalytics` folder is located in the `plugins` directory at the root of your project.
+
+
+<center>
+<a href="https://www.simpleanalytics.com/?utm_source=docuxlab.com&utm_content=badge&affiliate=babep" referrerpolicy="origin" target="_blank"><picture><source srcset="https://simpleanalyticsbadges.com/docuxlab.com?mode=dark" media="(prefers-color-scheme: dark)" /><img src="https://simpleanalyticsbadges.com/docuxlab.com?mode=light" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" /></picture></a>
+</center>
+
+## Plugin Structure
+
+The plugin separates logic into two distinct files, as they run in different environments and at different times.
+
+### File Tree
+
+```
+plugins/
+└── simpleAnalytics/
+    ├── index.js      # Main Docusaurus plugin file
+    └── sa-client.js  # Client module for SPA navigation tracking
+```
+
+## simpleAnalytics/index.js (Server Side / Build)
+
+This file is the core of the plugin and runs in a Node.js environment during development server startup or site compilation.
+
+<Tabs> 
+ <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
+
+```javascript title='plugins\simpleAnalytics\index.js'
+function simpleAnalyticsPlugin(context, options) {
+  return {
+    name: "docusaurus-plugin-simple-analytics",
+    injectHtmlTags() {
+      return {
+        headTags: [
+          {
+            tagName: 'script',
+            attributes: {
+              src: 'https://scripts.simpleanalyticscdn.com/latest.js',
+              async: true,
+              'data-hostname': 'docuxlab.com', // Configuration for localhost
+            },
+          },
+          {
+            tagName: 'noscript',
+            innerHTML: '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />',
+          },
+        ],
+      };
+    },
+  };
+}
+
+module.exports = simpleAnalyticsPlugin;
+```
+</TabItem>
+</Tabs>
+
+
+
+Its role is to integrate into the Docusaurus build process:
+
+1.  **`injectHtmlTags()`**: This function injects the main Simple Analytics script and the `<noscript>` tag directly into the final HTML file. This is what allows tracking the **first visit** of a user to the site.
+
+2.  **`getClientModules()`**: This function tells Docusaurus that it should include another JavaScript file, `sa-client.js`, in the code that will be sent and executed by the user's browser.
+
+In summary, `index.js` handles the initial and static configuration.
+
+## sa-client.js (Client Side / Browser)
+
+This file executes **only in the user's browser**. Its existence is crucial because Docusaurus functions as a Single Page Application (SPA).
+
+
+<Tabs> 
+ <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
+
+```javascript title='plugins\simpleAnalytics\sa-client.js'
+export function loadSimpleAnalytics() {
+  if (typeof window === "undefined") return;
+  if (document.querySelector("script[src*='simpleanalyticscdn.com']")) return;
+
+  const script = document.createElement("script");
+  script.src = "https://scripts.simpleanalyticscdn.com/latest.js";
+  script.async = true;
+  document.body.appendChild(script);
+
+  const noscript = document.createElement("noscript");
+  noscript.innerHTML =
+    '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" />';
+  document.body.appendChild(noscript);
+
+  return () => {
+    script.remove();
+    noscript.remove();
+  };
+}
+
+// Auto-execution of the script
+if (typeof window !== "undefined") {
+  // Wait for the DOM to be ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadSimpleAnalytics);
+  } else {
+    loadSimpleAnalytics();
+  }
+}
+
+```
+</TabItem>
+</Tabs>
+
+
+
+Its role is to manage navigation tracking **after the initial page load**:
+
+1.  **Listening to route changes**: In an SPA, changing pages doesn't fully reload the HTML. This script therefore listens to Docusaurus internal navigation events.
+
+2.  **Triggering page views**: When a user navigates to a new page (for example, from `/home` to `/blog/my-article`), this script calls the Simple Analytics tracking function (e.g., `window.sa_pageview()`) to manually signal that a new "page view" has occurred.
+
+> Without `sa-client.js`, only the first site access would be counted, and all subsequent navigations within the site would be ignored by Simple Analytics.
+
+## Why two different tracking lines?
+
+In the Simple Analytics plugin code, these two lines serve different but complementary purposes for tracking:
+
+### The main script
+```
+https://scripts.simpleanalyticscdn.com/latest.js
+```
+This URL loads the main Simple Analytics JavaScript script which:
+
+- Collects navigation data (pages visited, time spent, etc.)
+- Manages user events (clicks, scrolling, etc.)
+- Sends data to the Simple Analytics server
+- Only works if JavaScript is enabled in the browser
+
+### The fallback image
+
+```
+<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" />
+```
+This GIF image (1x1 pixel, invisible) serves as a fallback solution when:
+
+- JavaScript is disabled in the browser
+- The main script cannot load (ad blocker, network issue)
+- Very old browsers that don't support modern JavaScript
+
+### Why two different domains?
+
+Simple Analytics uses a distributed architecture:
+
+`https://scripts.simpleanalyticscdn.com/latest.js`: CDN optimized for serving JavaScript files
+
+`https://queue.simpleanalyticscdn.com/noscript.gif`: Specialized server for receiving tracking data
+
+This separation allows:
+
+- Better performance (CDN optimized for each content type)
+- Redundancy (if one server goes down, the other can continue)
+- Blocker bypass (some block scripts but not images)
+- The `<noscript>` tag ensures that at least a basic visit is recorded, even in the most restrictive environments.
+
+## Alternative: Why not modify the `Layout` component?
+
+Another method for tracking navigation in a Single Page Application (SPA) like Docusaurus is to customize (swizzle) the `Layout` component and insert a React `useEffect` that listens to URL changes.
+
+However, this approach has drawbacks:
+
+*   **Tight coupling**: It mixes analytics tracking logic with your theme's presentation logic.
+*   **Less robustness**: Any major modification to your theme or the `Layout` component could break tracking.
+
+This plugin's approach, using `getClientModules`, is the method recommended by Docusaurus. It's cleaner and more robust because it completely decouples the tracking functionality from the theme and React components. Your tracking continues to work even if you radically change your site's appearance.
+
+## Configuration
+
+To activate the plugin, add its path to the `plugins` array in your `docusaurus.config.js` file.
+<Tabs> 
+<TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
+
+```javascript title='docusaurus.config.js'
+
+import simpleAnalytics from "./plugins/simpleAnalytics/index.js"
+// ...existing code...
+const config = {
+  // ...
+  plugins: [
+    // ... other plugins
+    [simpleAnalytics, {}],
+  ],
+  // ...
+};
+// ...existing code...
+```
+</TabItem>
+</Tabs>
+
+:::info
+You can go further by adding different options such as a notrack option to avoid tracking certain pages.
+And surely much more, however I wanted to keep it simple for this example.
+:::
+
+## Useful Resources
+
+- [Official Simple Analytics Documentation](https://docs.simpleanalytics.com/)
+- [Simple Analytics Dashboard](https://simpleanalytics.com/)
+- [Docusaurus Plugin Documentation](https://docusaurus.io/docs/api/plugin-methods)
+
