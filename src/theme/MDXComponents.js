@@ -22,6 +22,7 @@ import AvatarName from '@site/src/components/Avatar/AvatarName';
 import AvatarSubtitle from '@site/src/components/Avatar/AvatarSubtitle';
 import ImageOnClick from '@site/src/components/ImageOnClick';
 import LogoIcon from '@site/src/components/LogoIcon';
+import Skill from '@site/src/components/Skill';
 
 export default {
   // Réutilise la correspondance par défaut
@@ -72,5 +73,6 @@ export default {
   AvatarName,
   AvatarSubtitle,
   ImageOnClick,
-  LogoIcon
+  LogoIcon,
+  Skill
 };

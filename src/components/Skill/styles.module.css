@@ -1,0 +1,230 @@
+/* 
+   SKILL COMPONENT - CSS STYLES
+
+   This file contains all styles for skill bars
+   and circles with animations and themes
+ */
+
+/* === CSS VARIABLES FOR THEMES === */
+:root {
+  /* Light mode (default) */
+  --skill-track-background: #e0e0e0;    /* Bar backgrounds */
+  --skill-circle-background: #e0e0e0;   /* Circle backgrounds */
+}
+
+[data-theme='dark'] {
+  /* Dark mode */
+  --skill-track-background: #333;       /* Darker bar backgrounds */
+  --skill-circle-background: #444;      /* Darker circle backgrounds */
+}
+
+
+/* Main bar container */
+.skillBarContainer {
+  margin: 1rem 0;
+  opacity: 0;                          /* Invisible by default */
+  transform: translateY(20px);         /* Offset downward */
+  animation: fadeInUp 0.6s ease forwards; /* Appearance animation */
+}
+
+/* Header with name and percentage */
+.skillBarHeader {
+  display: flex;
+  justify-content: space-between;      /* Name left, % right */
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Skill name */
+.skillBarName {
+  font-weight: 600;
+  color: var(--ifm-color-content);     /* Theme adaptive color */
+}
+
+/* Percentage value */
+.skillBarValue {
+  font-weight: 500;
+  color: var(--ifm-color-primary);     /* Theme primary color */
+}
+
+/* Bar track (gray background) */
+.skillBarTrack {
+  background-color: var(--skill-track-background); /* Adaptive CSS variable */
+  position: relative;
+  overflow: hidden;                    /* Hide overflows */
+}
+
+/* Rounded borders for track */
+.skillBarTrack.rounded {
+  border-radius: 10px;
+}
+
+/* Colored bar fill */
+.skillBarFill {
+  height: 100%;
+  background-color: #4CAF50;           /* Default color */
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation */
+}
+
+/* Additional animation for bars */
+.skillBarFill.animate {
+  animation: fillAnimation forwards;
+}
+
+/* Rounded borders for fill */
+.skillBarFill.rounded {
+  border-radius: 10px;
+}
+
+/* Container for centered text on bar */
+.skillBarCenterContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;                 /* Empêche le retour à la ligne */
+}
+
+/* Centered skill name on bar */
+.skillBarCenterName {
+  color: white;                        /* Contrast on colored background */
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Shadow for readability */
+}
+
+/* Centered percentage text on bar (updated) */
+.skillBarCenterText {
+  color: white;                        /* Contrast on colored background */
+  font-weight: bold;
+  font-size: 0.875rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Shadow for readability */
+}
+
+
+/* Main circle container */
+.skillCircleContainer {
+  position: relative;
+  display: inline-block;
+  margin: 1rem;
+  opacity: 0;                          /* Invisible by default */
+  transform: translateY(20px);         /* Offset downward */
+  animation: fadeInUp 0.6s ease forwards; /* Appearance animation */
+}
+
+/* Name displayed above circle */
+.skillNameCircle {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--ifm-color-content);     /* Theme adaptive color */
+}
+
+/* Wrapper to position SVG */
+.skillCircleWrapper {
+  position: relative;
+}
+
+/* Circle SVG (rotated -90° to start at top) */
+.skillCircleSvg {
+  transform: rotate(-90deg);
+}
+
+/* Progress circle animation */
+.skillCircleProgress {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation */
+}
+
+/* Text positioned in center of circle */
+.skillCircleText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* Skill name inside circle */
+.skillCircleName {
+  font-weight: 600;
+  font-size: 0.875rem;                /* Default size (adjusted by JS) */
+  color: var(--ifm-color-content);
+  margin-bottom: 0.25rem;
+}
+
+/* Percentage value inside circle */
+.skillCircleValue {
+  font-weight: bold;
+  font-size: 1.25rem;                 /* Default size (adjusted by JS) */
+  color: var(--ifm-color-primary);
+}
+
+/* Container for text around circle */
+.skillCircleAround {
+  position: absolute;
+  top: 100%;                          /* Below the circle */
+  left: 50%;
+  transform: translateX(-50%);        /* Horizontally centered */
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Skill name around circle */
+.skillNameAround {
+  font-weight: 600;
+  color: var(--ifm-color-content);
+}
+
+/* Value around circle */
+.skillValueAround {
+  font-weight: bold;
+  color: var(--ifm-color-primary);
+}
+
+
+/* Bar fill animation (0% → value) */
+@keyframes fillAnimation {
+  from {
+    width: 0%;                         /* Starts empty */
+  }
+  /* to: width inherited from inline style */
+}
+
+/* Circle animation (full circumference → value) */
+@keyframes circleAnimation {
+  from {
+    stroke-dashoffset: var(--circle-circumference, 283); /* Starts hidden */
+  }
+  /* to: stroke-dashoffset inherited from inline style */
+}
+
+/* Scroll appearance animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;                        /* Invisible */
+    transform: translateY(20px);       /* Offset downward */
+  }
+  to {
+    opacity: 1;                        /* Visible */
+    transform: translateY(0);          /* Normal position */
+  }
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+/* Mobile adaptation */
+@media (max-width: 768px) {
+  .skillCircleContainer {
+    margin: 0.5rem;                    /* Reduced margins on mobile */
+  }
+  
+  .skillBarContainer {
+    margin: 0.75rem 0;                 /* Reduced margins on mobile */
+  }
+}
+

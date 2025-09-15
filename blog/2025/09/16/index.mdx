@@ -1,0 +1,1040 @@
+---
+title: "Add Skill Bars & Circles"
+description: "A comprehensive React component for displaying skills as animated progress bars or circles with scroll animations, gradients, and theme support in Docusaurus."
+schemaTypes: ["HowTo", "BlogPosting"]
+slug: "skill-component-animated-progress-docusaurus"
+image: "/img/skillbar.png"
+authors: ["docux"]
+mainTag: Components
+tags: ["react", "components", "animations", "progress", "skills", "svg", "css"]
+date: 2025-09-16
+last_update:
+  date: 2025-09-16
+  author: docux
+difficulty: "Intermediate"
+totalTime: "PT30M"
+prepTime: "PT10M"
+performTime: "PT20M"
+estimatedCost: "Free"
+tool: ["React", "Docusaurus", "JavaScript", "CSS Modules", "SVG", "VSCode"]
+supply: ["Node.js", "Docusaurus", "React Hooks", "Intersection Observer API"]
+yield: "Reusable Skill component with bars/circles and scroll animations"
+genre: "Technical Tutorial"
+inLanguage: "en"
+isAccessibleForFree: true
+readingTime: "8 min"
+articleSection: "Tutorial"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+category: "Web Development"
+keywords: ["skill component", "react", "progress bars", "animated circles", "scroll animations", "svg", "gradients", "intersection observer"]
+hide_table_of_contents: true
+series: "Design your site"
+blueSkyRecordKey: 
+---
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Developement](https://img.shields.io/badge/Developement-progress-orange.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/skillbar.png)
+</div>
+</center>
+
+
+The `Skill` component allows displaying skills as **progress bars** or **animated circles** with scroll animations and complete customization.
+
+I've added JSDoc comments in the code to explain each prop and its function. I've never done this before but I think I'll keep this habit.
+
+<Columns>
+    <Column>
+        <Card>
+            <CardBody>
+                <center>
+                    <Skill
+                        name={<><LogoIcon name="docusaurus" size='64' /> </>}
+                        value={85}
+                        type="circle"
+                        color="#08c921ff"
+                        valuePosition="center"
+                        size={200}/>
+                </center>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column>
+        <Card>
+            <CardBody>
+                <Skill
+                    name={<><LogoIcon name="javascript" size='24' /> HTML5</>}
+                    value={95}
+                    type="bar"
+                    color="#d6e326ff"
+                    height={25}/>
+                <Skill
+                    name={<><LogoIcon name="react" size='24' /> CSS3</>}
+                    value={90}
+                    type="bar"
+                    color="#15b69bff"
+                    height={25}/>
+                
+            </CardBody>
+        </Card>
+    </Column>
+</Columns>
+<!-- truncate -->
+## File Structure
+```
+src/components/Skill/
+├── index.js           # Main React component
+├── styles.module.css  # Styles with CSS Modules
+└── README.md         # Documentation
+```
+
+##  Component Code
+<Tabs>
+<TabItem value="js" label={<><LogoIcon name="javascript" size='32' /> </>}>
+```js "title=\src\components\Skill\index.js"
+
+import React, { useEffect, useRef, useState } from 'react';
+import styles from './styles.module.css';
+
+/**
+ * Skill Component - Display skills with bars or circles
+ * 
+ * @param {string} name - Name of the skill to display
+ * @param {number} value - Mastery percentage (0-100)
+ * @param {string} type - Display type: 'bar' or 'circle'
+ * @param {string} color - Custom color (optional)
+ * @param {object} gradient - Gradient object {from: "color1", to: "color2"}
+ * @param {boolean} rounded - Rounded borders (true/false)
+ * @param {string} valuePosition - Text position: 'top', 'center', 'around'
+ * @param {boolean} showPercentage - Show percentage
+ * @param {number} size - Circle size in pixels
+ * @param {number} height - Bar height in pixels
+ * @param {number} thickness - Circle thickness in pixels
+ * @param {number} animationDuration - Animation duration in seconds
+ * @param {boolean} animateOnScroll - Trigger animation on scroll
+ */
+export default function Skill({
+  name,
+  value = 0,
+  type = 'bar',
+  color,
+  gradient,
+  rounded = true,
+  valuePosition = 'top',
+  showPercentage = true,
+  size = 120,
+  height = 20,
+  thickness = 8,
+  animationDuration = 1.5,
+  animateOnScroll = true
+}) {<
+>
+  
+  // SCROLL ANIMATION MANAGEMENT
+  // DOM reference to observe the element
+  const containerRef = useRef(null);
+  
+  // State to know if the element is visible (triggers animation)
+  const [isVisible, setIsVisible] = useState(!animateOnScroll);
+
+  // Effect hook to configure the Intersection Observer
+  useEffect(() => {
+    // If scroll animation is disabled, exit
+    if (!animateOnScroll) return;
+
+    // Intersection observer configuration
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When the element becomes visible
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Stop observing after the first appearance
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        // Element must be 30% visible to trigger animation
+        threshold: 0.3,
+        // Triggers slightly before element is completely visible
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    // Start observing if element exists
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    // Cleanup on component destruction
+    return () => observer.disconnect();
+  }, [animateOnScroll]);
+
+  
+  // COLOR UTILITY FUNCTIONS
+  /* Generates automatic color based on percentage*/
+
+  const getAutoColor = (value) => {
+    if (value >= 80) return '#4CAF50'; // Green - Expert
+    if (value >= 60) return '#e5ff00ff'; // Yellow - Advanced
+    if (value >= 40) return '#FF9800'; // Orange - Intermediate
+    if (value >= 20) return '#ff4107ff'; // Red - Beginner
+    return '#f44336'; // Dark red - Default
+  };
+
+  // Final color: custom color or automatic color
+  const finalColor = color || getAutoColor(value);
+  
+  /**
+   * Gets background color according to current theme (light/dark)
+   * Necessary for conic gradients in circles
+   */
+  const getBackgroundColor = () => {
+    if (typeof window !== 'undefined') {
+      // Check if dark theme is active
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      return isDark ? '#444' : '#e0e0e0';
+    }
+    return '#e0e0e0'; // Default color
+  };
+  
+  /**
+   * Generates CSS style for gradients
+   * - For bars: linear gradient from left to right
+   * - For circles: conic gradient with empty area in background color
+   */
+  const getGradientStyle = () => {
+    if (gradient) {
+      return type === 'circle' 
+        ? `conic-gradient(${gradient.from} 0deg, ${gradient.to} ${(value * 3.6)}deg, ${getBackgroundColor()} ${(value * 3.6)}deg)`
+        : `linear-gradient(to right, ${gradient.from}, ${gradient.to})`;
+    }
+    return finalColor;
+  };
+
+  
+  // CIRCLE COMPONENT RENDERING
+  if (type === 'circle') {
+    // Mathematical calculations for SVG circle thanks IA :D
+    const radius = (size / 2) - (thickness / 2) - 5; // Radius minus margin
+    const circumference = 2 * Math.PI * radius; // Total circumference
+    const strokeDasharray = circumference; // Dash size
+    
+    // Animation: visible part of circle according to percentage
+    const strokeDashoffset = isVisible ? circumference - (value / 100) * circumference : circumference;
+
+    return (
+      <div ref={containerRef} className={styles.skillCircleContainer} style={{ width: size, height: size }}>
+        {/* Name displayed above the circle */}
+        {valuePosition === 'top' && (
+          <div className={styles.skillNameCircle}>{name}</div>
+        )}
+        
+        <div className={styles.skillCircleWrapper}>
+          {/* SVG containing both circles */}
+          <svg width={size} height={size} className={styles.skillCircleSvg}>
+            
+            {/* Background circle (gray, static) */}
+            <circle
+              cx={size/2}
+              cy={size/2}
+              r={radius}
+              fill="none"
+              stroke="var(--skill-circle-background)" // Adaptive CSS variable
+              strokeWidth={thickness}
+            />
+            
+            {/* Progress circle (colored, animated) */}
+            <circle
+              cx={size/2}
+              cy={size/2}
+              r={radius}
+              fill="none"
+              stroke={gradient ? "url(#gradient)" : finalColor}
+              strokeWidth={thickness}
+              strokeLinecap={rounded ? "round" : "butt"} // Rounded or sharp borders
+              strokeDasharray={strokeDasharray} // Defines total circumference
+              strokeDashoffset={strokeDashoffset} // Hidden part (animation)
+              className={styles.skillCircleProgress}
+              style={{
+                animationDuration: `${animationDuration}s`,
+                '--circle-circumference': circumference // CSS variable for animation
+              }}
+            />
+            
+            {/* SVG gradient definition (if used) */}
+            {gradient && (
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={gradient.from} />
+                  <stop offset="100%" stopColor={gradient.to} />
+                </linearGradient>
+              </defs>
+            )}
+          </svg>
+          
+          {/* Text positioned in the center of the circle */}
+          {valuePosition === 'center' && (
+            <div className={styles.skillCircleText}>
+              <div 
+                className={styles.skillCircleName}
+                style={{ fontSize: `${Math.max(size * 0.08, 10)}px` }} // Adaptive size
+              >
+                {name}
+              </div>
+              {showPercentage && (
+                <div 
+                  className={styles.skillCircleValue}
+                  style={{ fontSize: `${Math.max(size * 0.12, 14)}px` }} // Adaptive size
+                >
+                  {value}%
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        
+        {/* Text positioned around the circle */}
+        {valuePosition === 'around' && (
+          <div className={styles.skillCircleAround}>
+            <div className={styles.skillNameAround}>{name}</div>
+            {showPercentage && (
+              <div className={styles.skillValueAround}>{value}%</div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // BAR COMPONENT RENDERING
+  
+  return (
+    <div ref={containerRef} className={styles.skillBarContainer}>
+      
+      {/* Header with name and percentage */}
+      {valuePosition === 'top' && (
+        <div className={styles.skillBarHeader}>
+          <span className={styles.skillBarName}>{name}</span>
+          {showPercentage && (
+            <span className={styles.skillBarValue}>{value}%</span>
+          )}
+        </div>
+      )}
+      
+      {/* Bar container (gray background) */}
+      <div 
+        className={`${styles.skillBarTrack} ${rounded ? styles.rounded : ''}`}
+        style={{ height: `${height}px` }}
+      >
+        {/* Progress bar (colored, animated) */}
+        <div
+          className={`${styles.skillBarFill} ${rounded ? styles.rounded : ''} ${isVisible ? styles.animate : ''}`}
+          style={{
+            width: isVisible ? `${value}%` : '0%', // Animation: 0% → target value
+            background: getGradientStyle(), // Color or gradient
+            animationDuration: `${animationDuration}s`
+          }}
+        />
+        
+        {/* Centered text on the bar */}
+        {valuePosition === 'center' && showPercentage && (
+          <div className={styles.skillBarCenterText}>{value}%</div>
+        )}
+      </div>
+    </div>
+  );
+}
+```
+</TabItem>
+
+
+
+<TabItem value="css" label={<><LogoIcon name="css-3" size='32' /> </>}>
+
+```css "title=\src\components\Skill\style.module.css"
+
+:root {
+  /* Light mode (default) */
+  --skill-track-background: #e0e0e0;    /* Bar backgrounds */
+  --skill-circle-background: #e0e0e0;   /* Circle backgrounds */
+}
+
+[data-theme='dark'] {
+  /* Dark mode */
+  --skill-track-background: #333;       /* Darker bar backgrounds */
+  --skill-circle-background: #444;      /* Darker circle backgrounds */
+}
+
+/* STYLES FOR SKILL BARS */
+
+/* Main bar container */
+.skillBarContainer {
+  margin: 1rem 0;
+  opacity: 0;                          /* Invisible by default */
+  transform: translateY(20px);         /* Offset downward */
+  animation: fadeInUp 0.6s ease forwards; /* Appearance animation */
+}
+
+/* Header with name and percentage */
+.skillBarHeader {
+  display: flex;
+  justify-content: space-between;      /* Name left, % right */
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Skill name */
+.skillBarName {
+  font-weight: 600;
+  color: var(--ifm-color-content);     /* Theme adaptive color */
+}
+
+/* Percentage value */
+.skillBarValue {
+  font-weight: 500;
+  color: var(--ifm-color-primary);     /* Theme primary color */
+}
+
+/* Bar track (gray background) */
+.skillBarTrack {
+  background-color: var(--skill-track-background); /* Adaptive CSS variable */
+  position: relative;
+  overflow: hidden;                    /* Hide overflows */
+}
+
+/* Rounded borders for track */
+.skillBarTrack.rounded {
+  border-radius: 10px;
+}
+
+/* Colored bar fill */
+.skillBarFill {
+  height: 100%;
+  background-color: #4CAF50;           /* Default color */
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation */
+}
+
+/* Additional animation for bars */
+.skillBarFill.animate {
+  animation: fillAnimation forwards;
+}
+
+/* Rounded borders for fill */
+.skillBarFill.rounded {
+  border-radius: 10px;
+}
+
+/* Centered text on bar */
+.skillBarCenterText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;                        /* Contrast on colored background */
+  font-weight: bold;
+  font-size: 0.875rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Shadow for readability */
+}
+
+/*    STYLES FOR SKILL CIRCLES */
+
+/* Main circle container */
+.skillCircleContainer {
+  position: relative;
+  display: inline-block;
+  margin: 1rem;
+  opacity: 0;                          /* Invisible by default */
+  transform: translateY(20px);         /* Offset downward */
+  animation: fadeInUp 0.6s ease forwards; /* Appearance animation */
+}
+
+/* Name displayed above circle */
+.skillNameCircle {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--ifm-color-content);     /* Theme adaptive color */
+}
+
+/* Wrapper to position SVG */
+.skillCircleWrapper {
+  position: relative;
+}
+
+/* Circle SVG (rotated -90° to start at top) */
+.skillCircleSvg {
+  transform: rotate(-90deg);
+}
+
+/* Progress circle animation */
+.skillCircleProgress {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation */
+}
+
+/* Text positioned in center of circle */
+.skillCircleText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* Skill name inside circle */
+.skillCircleName {
+  font-weight: 600;
+  font-size: 0.875rem;                /* Default size (adjusted by JS) */
+  color: var(--ifm-color-content);
+  margin-bottom: 0.25rem;
+}
+
+/* Percentage value inside circle */
+.skillCircleValue {
+  font-weight: bold;
+  font-size: 1.25rem;                 /* Default size (adjusted by JS) */
+  color: var(--ifm-color-primary);
+}
+
+/* Container for text around circle */
+.skillCircleAround {
+  position: absolute;
+  top: 100%;                          /* Below the circle */
+  left: 50%;
+  transform: translateX(-50%);        /* Horizontally centered */
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Skill name around circle */
+.skillNameAround {
+  font-weight: 600;
+  color: var(--ifm-color-content);
+}
+
+/* Value around circle */
+.skillValueAround {
+  font-weight: bold;
+  color: var(--ifm-color-primary);
+}
+
+/*    CSS ANIMATIONS */
+
+/* Bar fill animation (0% → value) */
+@keyframes fillAnimation {
+  from {
+    width: 0%;                         /* Starts empty */
+  }
+  /* to: width inherited from inline style */
+}
+
+/* Circle animation (full circumference → value) */
+@keyframes circleAnimation {
+  from {
+    stroke-dashoffset: var(--circle-circumference, 283); /* Starts hidden */
+  }
+  /* to: stroke-dashoffset inherited from inline style */
+}
+
+/* Scroll appearance animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;                        /* Invisible */
+    transform: translateY(20px);       /* Offset downward */
+  }
+  to {
+    opacity: 1;                        /* Visible */
+    transform: translateY(0);          /* Normal position */
+  }
+}
+
+/*  RESPONSIVE */
+
+/* Mobile adaptation */
+@media (max-width: 768px) {
+  .skillCircleContainer {
+    margin: 0.5rem;                    /* Reduced margins on mobile */
+  }
+  
+  .skillBarContainer {
+    margin: 0.75rem 0;                 /* Reduced margins on mobile */
+  }
+}
+```
+</TabItem>
+</Tabs>
+
+## When to Use the Skill Component
+
+### Display Types
+- **Horizontal bars** (`type="bar"`)
+- **Progress circles** (`type="circle"`)
+
+### Customization
+- **Automatic colors** based on percentage (green→yellow→orange→red)
+- **Custom colors** with hex, RGB, or named colors
+- **Gradients** (linear for bars, conic for circles)
+- **Text positioning** (top, center, or around for circles)
+- **Size control** (configurable width/height for bars, diameter for circles)
+- **Thickness control** (stroke width for circles, height for bars)
+- **Border styles** (rounded or sharp corners)
+- **Animation control** (scroll-triggered or immediate, custom duration)
+- **Percentage display** (show/hide percentage values)
+- **Theme adaptation** (automatic light/dark mode support)
+
+
+### Animations
+- **Scroll animation** with Intersection Observer
+- **Smooth transitions** with cubic-bezier
+- **Fade-in appearance** with vertical translation
+
+## Automatic Color System
+
+The component automatically generates colors based on percentage:
+
+- **80%+** : 🟢 Green (#4CAF50) - Expert
+- **60-79%** : 🟡 Bright Yellow (#e5ff00ff) - Advanced  
+- **40-59%** : 🟠 Orange (#FF9800) - Intermediate
+- **20-39%** : 🔴 Bright Red (#ff4107ff) - Beginner
+- **`<20%`** : 🔴 Dark Red (#f44336) - Very weak
+
+
+### Themes
+- **Light/dark mode** automatic
+- **Adaptive CSS variables**
+
+## Available Props
+<center>
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | string | - | Skill name |
+| `value` | number | 0 | Percentage (0-100) |
+| `type` | string | "bar" | "bar" or "circle" |
+| `color` | string | auto | Custom color |
+| `gradient` | object | - | `{from: "color1", to: "color2"}` |
+| `rounded` | boolean | true | Rounded borders |
+| `valuePosition` | string | "top" | "top", "center", "around" |
+| `showPercentage` | boolean | true | Show % |
+| `size` | number | 120 | Circle size (px) |
+| `height` | number | 20 | Bar height (px) |
+| `thickness` | number | 8 | Circle thickness (px) |
+| `animationDuration` | number | 1.5 | Animation duration (s) |
+| `animateOnScroll` | boolean | true | Scroll animation |
+
+</center>
+
+
+## Bars
+### Barres avec couleurs automatiques (basées sur le pourcentage)
+```html
+<Skill name="Expert" value={95} type="bar" />
+<Skill name="Avancé" value={75} type="bar" />
+<Skill name="Intermédiaire" value={50} type="bar" />
+<Skill name="Débutant" value={25} type="bar" />
+<Skill name="Très faible" value={10} type="bar" />
+```
+<Skill name="Expert" value={95} type="bar" />
+<Skill name="Avancé" value={75} type="bar" />
+<Skill name="Intermédiaire" value={50} type="bar" />
+<Skill name="Débutant" value={25} type="bar" />
+<Skill name="Très faible" value={10} type="bar" />
+
+
+### Barres avec couleurs personnalisées
+```html
+<Skill name="JavaScript" value={85} type="bar" color="#F7DF1E" />
+<Skill name="React" value={75} type="bar" color="#61DAFB" />
+<Skill name="Vue.js" value={60} type="bar" color="#4FC08D" />
+<Skill name="Angular" value={45} type="bar" color="#DD0031" />
+<Skill name="Svelte" value={30} type="bar" color="#FF3E00" />
+```
+
+<Skill name="JavaScript" value={85} type="bar" color="#F7DF1E" />
+<Skill name="React" value={75} type="bar" color="#61DAFB" />
+<Skill name="Vue.js" value={60} type="bar" color="#4FC08D" />
+<Skill name="Angular" value={45} type="bar" color="#DD0031" />
+<Skill name="Svelte" value={30} type="bar" color="#FF3E00" />
+
+### Barres avec gradients
+```html   
+<Skill name="CSS3" value={90} type="bar" gradient={{ from: '#1572B6', to: '#33A9DC' }} />
+<Skill name="HTML5" value={95} type="bar" gradient={{ from: '#e3d626ff', to: '#1ad843ff' }} />
+<Skill name="Sass" value={80} type="bar" gradient={{ from: '#CC6699', to: '#910b52ff' }} />
+<Skill name="Tailwind" value={70} type="bar" gradient={{ from: '#065fd4ff', to: '#0891B2' }} />
+```
+<Skill name="CSS3" value={90} type="bar" gradient={{ from: '#1572B6', to: '#33A9DC' }} />
+<Skill name="HTML5" value={95} type="bar" gradient={{ from: '#e3d626ff', to: '#1ad843ff' }} />
+<Skill name="Sass" value={80} type="bar" gradient={{ from: '#CC6699', to: '#910b52ff' }} />
+<Skill name="Tailwind" value={70} type="bar" gradient={{ from: '#065fd4ff', to: '#0891B2' }} />
+
+
+### Barres avec hauteurs différentes
+```html
+<Skill name="Mince" value={60} type="bar" height={10} color="#FF6B6B" />
+<Skill name="Normal" value={70} type="bar" height={20} color="#4ECDC4" />
+<Skill name="Épaisse" value={80} type="bar" height={30} color="#45B7D1" />
+<Skill name="Très épaisse" value={90} type="bar" height={40} color="#F9CA24" />
+```
+<Skill name="Mince" value={60} type="bar" height={10} color="#FF6B6B" />
+<Skill name="Normal" value={70} type="bar" height={20} color="#4ECDC4" />
+<Skill name="Épaisse" value={80} type="bar" height={30} color="#45B7D1" />
+<Skill name="Très épaisse" value={90} type="bar" height={40} color="#F9CA24" />
+
+### Barres avec et sans bordures arrondies
+
+```html
+<Skill name="Arrondie" value={75} type="bar" rounded={true} color="#6C5CE7" />
+<Skill name="Carrée" value={75} type="bar" rounded={false} color="#A29BFE" />
+```
+<Skill name="Arrondie" value={75} type="bar" rounded={true} color="#6C5CE7" />
+<Skill name="Carrée" value={75} type="bar" rounded={false} color="#A29BFE" />
+
+### Barres avec positions de texte différentes
+
+```html
+<Skill name="Texte en haut" value={65} type="bar" valuePosition="top" color="#00B894" />
+<Skill name="Texte centré" value={75} type="bar" valuePosition="center" color="#00CEC9" />
+```
+<Skill name="Texte en haut" value={65} type="bar" valuePosition="top" color="#00B894" />
+<Skill name="Texte centré" value={75} type="bar" valuePosition="center" color="#00CEC9" />
+
+### Barres avec vitesses d'animation
+
+```html
+<Skill name="Animation rapide" value={60} type="bar" animationDuration={0.5} color="#E17055" />
+<Skill name="Animation normale" value={70} type="bar" animationDuration={1.5} color="#FDCB6E" />
+<Skill name="Animation lente" value={80} type="bar" animationDuration={3.0} color="#6C5CE7" />
+```
+<Skill name="Animation rapide" value={60} type="bar" animationDuration={0.5} color="#E17055" />
+<Skill name="Animation normale" value={70} type="bar" animationDuration={1.5} color="#FDCB6E" />
+<Skill name="Animation lente" value={80} type="bar" animationDuration={3.0} color="#6C5CE7" />
+
+
+### Palette de technologies complète en barres
+
+```html
+<div style={{display: 'grid', gridTemplateColumns: '1fr', gap: '10px', marginTop: '20px'}}>
+  <Skill name={<><LogoIcon name="html-5" size='24' /> HTML5</>} value={95} type="bar" color="#E34F26" height={25} />
+  <Skill name={<><LogoIcon name="css-3" size='24' /> CSS3</>} value={90} type="bar" color="#1572B6" height={25} />
+  <Skill name={<><LogoIcon name="javascript" size='24' /> JavaScript</>} value={85} type="bar" color="#F7DF1E" height={25} />
+  <Skill name={<><LogoIcon name="typescript-icon-round" size='24' /> TypeScript</>} value={80} type="bar" color="#3178C6" height={25} />
+  <Skill name={<><LogoIcon name="react" size='24' /> React</>} value={88} type="bar" color="#61DAFB" height={25} />
+  <Skill name={<><LogoIcon name="vue" size='24' /> Vue.js</>} value={75} type="bar" color="#4FC08D" height={25} />
+  <Skill name={<><LogoIcon name="nodejs" size='24' /> Node.js</>} value={82} type="bar" color="#339933" height={25} />
+  <Skill name={<><LogoIcon name="python" size='24' /> Python</>} value={78} type="bar" color="#3776AB" height={25} />
+</div>
+```
+
+<div style={{display: 'grid', gridTemplateColumns: '1fr', gap: '10px', marginTop: '20px'}}>
+  <Skill name={<><LogoIcon name="html-5" size='24' /> HTML5</>} value={95} type="bar" color="#E34F26" height={25} />
+  <Skill name={<><LogoIcon name="css-3" size='24' /> CSS3</>} value={90} type="bar" color="#1572B6" height={25} />
+  <Skill name={<><LogoIcon name="javascript" size='24' /> JavaScript</>} value={85} type="bar" color="#F7DF1E" height={25} />
+  <Skill name={<><LogoIcon name="typescript-icon-round" size='24' /> TypeScript</>} value={80} type="bar" color="#3178C6" height={25} />
+  <Skill name={<><LogoIcon name="react" size='24' /> React</>} value={88} type="bar" color="#61DAFB" height={25} />
+  <Skill name={<><LogoIcon name="vue" size='24' /> Vue.js</>} value={75} type="bar" color="#4FC08D" height={25} />
+  <Skill name={<><LogoIcon name="nodejs" size='24' /> Node.js</>} value={82} type="bar" color="#339933" height={25} />
+  <Skill name={<><LogoIcon name="python" size='24' /> Python</>} value={78} type="bar" color="#3776AB" height={25} />
+</div>
+
+
+### Barres sans à 0
+
+```html
+<Skill name="Pas d'animation" value={0} type="bar"  color="#2D3436" />
+```
+
+<Skill name="Pas d'animation" value={0} type="bar"  color="#2D3436" />
+
+
+## Cercles
+### Cercles avec couleurs automatiques
+
+```html
+<Skill name="Expert" value={95} type="circle" valuePosition="center" />
+<Skill name="Avancé" value={75} type="circle" valuePosition="center" />
+<Skill name="Intermédiaire" value={50} type="circle" valuePosition="center" />
+<Skill name="Débutant" value={25} type="circle" valuePosition="center" />
+```
+<Skill name="Expert" value={95} type="circle" valuePosition="center" />
+<Skill name="Avancé" value={75} type="circle" valuePosition="center" />
+<Skill name="Intermédiaire" value={50} type="circle" valuePosition="center" />
+<Skill name="Débutant" value={25} type="circle" valuePosition="center" />
+
+
+
+### Cercles avec couleurs personnalisées
+```html
+<Skill name="Node.js" value={80} type="circle" valuePosition="center" color="#fffb00ff" />
+<Skill name="Python" value={70} type="circle" valuePosition="center" color="#3776AB" />
+<Skill name="Java" value={60} type="circle" valuePosition="center" color="#fc0478ff" />
+<Skill name="C#" value={50} type="circle" valuePosition="center" color="#d43c3cff" />
+```
+
+<Skill name="Node.js" value={80} type="circle" valuePosition="center" color="#fffb00ff" />
+<Skill name="Python" value={70} type="circle" valuePosition="center" color="#3776AB" />
+<Skill name="Java" value={60} type="circle" valuePosition="center" color="#fc0478ff" />
+<Skill name="C#" value={50} type="circle" valuePosition="center" color="#d43c3cff" />
+
+
+### Cercles avec gradients
+```html
+<Skill name="Docker" value={75} type="circle" gradient={{ from: '#0cb628ff', to: '#b7ed24ff' }} valuePosition="center" />
+<Skill name="Kubernetes" value={65} type="circle" gradient={{ from: '#1c4cb4ff', to: '#1A73E8' }} valuePosition="center" />
+<Skill name="AWS" value={70} type="circle" gradient={{ from: '#FF9900', to: '#f80929ff' }} valuePosition="center" />
+```
+
+<Skill name="Docker" value={75} type="circle" gradient={{ from: '#0cb628ff', to: '#b7ed24ff' }} valuePosition="center" />
+<Skill name="Kubernetes" value={65} type="circle" gradient={{ from: '#1c4cb4ff', to: '#1A73E8' }} valuePosition="center" />
+<Skill name="AWS" value={70} type="circle" gradient={{ from: '#FF9900', to: '#f80929ff' }} valuePosition="center" />
+
+
+### Cercles avec tailles différentes
+
+```html
+<Skill name="Petit" value={60} type="circle" size={80} valuePosition="center" color="#FF6B6B" />
+<Skill name="Moyen" value={70} type="circle" size={120} valuePosition="center" color="#4ECDC4" />
+<Skill name="Grand" value={80} type="circle" size={160} valuePosition="center" color="#45B7D1" />
+```
+
+<Skill name="Petit" value={60} type="circle" size={80} valuePosition="center" color="#FF6B6B" />
+<Skill name="Moyen" value={70} type="circle" size={120} valuePosition="center" color="#4ECDC4" />
+<Skill name="Grand" value={80} type="circle" size={160} valuePosition="center" color="#45B7D1" />
+
+
+
+### Cercles avec épaisseurs différentes
+
+```html
+<Skill name="Fin" value={65} type="circle" thickness={4} valuePosition="center" color="#A29BFE" />
+<Skill name="Normal" value={75} type="circle" thickness={8} valuePosition="center" color="#6C5CE7" />
+<Skill name="Épais" value={85} type="circle" thickness={16} valuePosition="center" color="#5F3DC4" />
+```
+
+<Skill name="Fin" value={65} type="circle" thickness={4} valuePosition="center" color="#A29BFE" />
+<Skill name="Normal" value={75} type="circle" thickness={8} valuePosition="center" color="#6C5CE7" />
+<Skill name="Épais" value={85} type="circle" thickness={16} valuePosition="center" color="#5F3DC4" />
+
+
+### Cercles avec positions de texte
+
+```html
+<Skill name="Texte en haut" value={70} type="circle" valuePosition="top" color="#00B894" />
+<Skill name="Texte au centre" value={80} type="circle" valuePosition="center" color="#00CEC9" />
+<Skill name="Texte autour" value={90} type="circle" valuePosition="around" color="#55A3FF" className="margin-bottom--xl" />
+```
+<Skill name="Texte en haut" value={70} type="circle" valuePosition="top" color="#00B894" />
+<Skill name="Texte au centre" value={80} type="circle" valuePosition="center" color="#00CEC9" />
+<Skill name="Texte autour" value={90} type="circle" valuePosition="around" color="#55A3FF" className="margin-bottom--xl" />
+
+
+### Cercles avec et sans bordures arrondies
+
+```html
+<Skill name="Arrondi" value={75} type="circle" rounded={true} valuePosition="center" color="#E17055" />
+<Skill name="Carré" value={75} type="circle" rounded={false} valuePosition="center" color="#FDCB6E" />
+```
+
+<Skill name="Arrondi" value={75} type="circle" rounded={true} valuePosition="center" color="#E17055" />
+<Skill name="Carré" value={75} type="circle" rounded={false} valuePosition="center" color="#FDCB6E" />
+
+
+### Cercles avec et sans pourcentage
+```html
+<Skill name="Avec %" value={80} type="circle" showPercentage={true} valuePosition="center" color="#00B894" />
+<Skill name="Sans %" value={80} type="circle" showPercentage={false} valuePosition="center" color="#E17055" />
+```
+
+<Skill name="Avec %" value={80} type="circle" showPercentage={true} valuePosition="center" color="#00B894" />
+<Skill name="Sans %" value={80} type="circle" showPercentage={false} valuePosition="center" color="#E17055" />
+
+
+### Cercles avec vitesses d'animation
+```html
+<Skill name="Rapide" value={60} type="circle" animationDuration={0.8} valuePosition="center" color="#FF6B6B" />
+<Skill name="Normal" value={70} type="circle" animationDuration={1.5} valuePosition="center" color="#4ECDC4" />
+<Skill name="Lent" value={80} type="circle" animationDuration={2.5} valuePosition="center" color="#45B7D1" />
+```
+
+<Skill name="Rapide" value={60} type="circle" animationDuration={0.8} valuePosition="center" color="#FF6B6B" />
+<Skill name="Normal" value={70} type="circle" animationDuration={1.5} valuePosition="center" color="#4ECDC4" />
+<Skill name="Lent" value={80} type="circle" animationDuration={2.5} valuePosition="center" color="#45B7D1" />
+
+
+### Cercles sans animation à zero
+
+```html
+<Skill name="Statique" value={0} type="circle" animateOnScroll={false} valuePosition="center" color="#2D3436" />
+```
+
+<Skill name="Statique" value={0} type="circle" animateOnScroll={false} valuePosition="center" color="#2D3436" />
+
+
+### Exemples combinés avancés
+
+```html
+<Skill 
+  name="Full Stack Developer" 
+  value={88} 
+  type="circle" 
+  size={180}
+  thickness={15}
+  gradient={{ from: '#667eea', to: '#764ba2' }}
+  valuePosition="center" 
+  animationDuration={2.5}
+  rounded={true}
+/>
+
+<Skill 
+  name="DevOps Master" 
+  value={92} 
+  type="bar" 
+  height={35}
+  gradient={{ from: '#f093fb', to: '#f5576c' }}
+  valuePosition="center" 
+  animationDuration={2.0}
+  rounded={true}
+/>
+```
+
+<Skill 
+  name="Full Stack Developer" 
+  value={88} 
+  type="circle" 
+  size={180}
+  thickness={15}
+  gradient={{ from: '#667eea', to: '#764ba2' }}
+  valuePosition="center" 
+  animationDuration={2.5}
+  rounded={true}
+/>
+
+<Skill 
+  name="DevOps Master" 
+  value={92} 
+  type="bar" 
+  height={35}
+  gradient={{ from: '#f093fb', to: '#f5576c' }}
+  valuePosition="center" 
+  animationDuration={2.0}
+  rounded={true}
+/>
+
+### Palette de technologies complète
+
+
+```html
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', marginTop: '20px'}}>
+  <Skill name={<><LogoIcon name="html-5" size='24' /> </>} value={95} type="circle" color="#E34F26" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="css-3" size='24' /> </>} value={90} type="circle" color="#1572B6" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="javascript" size='24' /> </>} value={85} type="circle" color="#F7DF1E" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="typescript-icon-round" size='24' /> </>} value={80} type="circle" color="#3178C6" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="react" size='24' /> </>} value={88} type="circle" color="#61DAFB" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="vue" size='24' /> </>} value={75} type="circle" color="#4FC08D" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="nodejs" size='24' /> </>} value={82} type="circle" color="#339933" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="python" size='24' /> </>} value={78} type="circle" color="#3776AB" valuePosition="center" size={100} />
+</div>
+```
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', marginTop: '20px'}}>
+  <Skill name={<><LogoIcon name="html-5" size='24' /> </>} value={95} type="circle" color="#E34F26" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="css-3" size='24' /> </>} value={90} type="circle" color="#1572B6" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="javascript" size='24' /> </>} value={85} type="circle" color="#F7DF1E" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="typescript-icon-round" size='24' /> </>} value={80} type="circle" color="#3178C6" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="react" size='24' /> </>} value={88} type="circle" color="#61DAFB" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="vue" size='24' /> </>} value={75} type="circle" color="#4FC08D" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="nodejs" size='24' /> </>} value={82} type="circle" color="#339933" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="python" size='24' /> </>} value={78} type="circle" color="#3776AB" valuePosition="center" size={100} />
+</div>
+
+### Comparaison barres vs cercles
+
+**Même skill, deux représentations faites votre choix**
+
+<Skill name="Database Design" value={75} type="bar" gradient={{ from: '#667eea', to: '#764ba2' }} />
+<Skill name="Database Design" value={75} type="circle" gradient={{ from: '#667eea', to: '#764ba2' }} valuePosition="center" />
+
+### Use with cards component
+
+:::warning
+
+This part requires my [LogoIcon](/blog/logoicon-component-docusaurus/) & [Columns](#) & [Card](/blog/card-component-docusaurus-infima/) components to display technology logos.
+
+:::
+
+```html
+<Columns>
+    <Column>
+        <Card>
+            <CardBody>
+                <center>
+                    <Skill
+                        name={<><LogoIcon name="javascript" size='64' /> </>}
+                        value={85}
+                        type="circle"
+                        color="#F7DF1E"
+                        valuePosition="center"
+                        size={200}/>
+                </center>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column>
+        <Card>
+            <CardBody>
+                <Skill
+                    name={<><LogoIcon name="html-5" size='24' /> HTML5</>}
+                    value={95}
+                    type="bar"
+                    color="#E34F26"
+                    height={25}/>
+                <Skill
+                    name={<><LogoIcon name="css-3" size='24' /> CSS3</>}
+                    value={90}
+                    type="bar"
+                    color="#1572B6"
+                    height={25}/>
+                
+            </CardBody>
+        </Card>
+    </Column>
+</Columns>
+```
+<Columns>
+    <Column>
+        <Card>
+            <CardBody>
+                <center>
+                    <Skill
+                        name={<><LogoIcon name="javascript" size='64' /> </>}
+                        value={85}
+                        type="circle"
+                        color="#F7DF1E"
+                        valuePosition="center"
+                        size={200}/>
+                </center>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column>
+        <Card>
+            <CardBody>
+                <Skill
+                    name={<><LogoIcon name="html-5" size='24' /> HTML5</>}
+                    value={95}
+                    type="bar"
+                    color="#E34F26"
+                    height={25}/>
+                <Skill
+                    name={<><LogoIcon name="css-3" size='24' /> CSS3</>}
+                    value={90}
+                    type="bar"
+                    color="#1572B6"
+                    height={25}/>
+                
+            </CardBody>
+        </Card>
+    </Column>
+</Columns>
