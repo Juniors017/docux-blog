@@ -1,0 +1,151 @@
+.tooltip {
+  position: absolute;
+  background: #333;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  overflow: visible; /* allow absolutely positioned image/arrow to show */
+}
+
+.withImage {
+  /* when an image is present, keep a consistent gap */
+  gap: 12px;
+}
+
+.modelImage {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  pointer-events: none;
+  user-select: none;
+  width: 64px;
+  height: auto;
+  z-index: 1000;
+}
+
+.content {
+  /* force block flow and wrapping */
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  flex: 1 1 auto;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.contentTop {
+  font-size: 13px;
+  color: inherit;
+}
+
+.contentTopTitle {
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.paragraph {
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.contentMainRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.contentMain {
+  flex: 1 1 auto;
+  white-space: normal;
+}
+
+.imageHolder {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+}
+
+.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+}
+
+.tooltip[data-position="top"] .arrow {
+  bottom: -6px; /* slightly more to account for border */
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip[data-position="bottom"] .arrow {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip[data-position="left"] .arrow {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.tooltip[data-position="right"] .arrow {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Mobile / small screens: hide decorative arrow and stack content vertically */
+@media (max-width: 600px) {
+  .tooltip {
+    padding: 12px;
+    border-radius: 10px;
+    max-width: calc(100vw - 24px);
+    word-break: break-word;
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .contentWrapper {
+    gap: 8px;
+  }
+
+  .contentMainRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .imageHolder {
+    justify-content: center;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  .modelImage {
+    width: 56px !important;
+    height: auto;
+    margin-left: 0;
+  }
+}

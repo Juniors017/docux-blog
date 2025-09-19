@@ -23,7 +23,7 @@ import AvatarSubtitle from '@site/src/components/Avatar/AvatarSubtitle';
 import ImageOnClick from '@site/src/components/ImageOnClick';
 import LogoIcon from '@site/src/components/LogoIcon';
 import Skill from '@site/src/components/Skill';
-
+import Tooltip from '@site/src/components/Tooltip';
 export default {
   // Réutilise la correspondance par défaut
   ...MDXComponents,
@@ -74,5 +74,6 @@ export default {
   AvatarSubtitle,
   ImageOnClick,
   LogoIcon,
-  Skill
+  Skill,
+  Tooltip
 };
