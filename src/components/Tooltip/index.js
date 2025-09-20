@@ -62,17 +62,27 @@ const extractChildrenInnerText = (node) => {
  * A flexible and accessible Tooltip component.
  * Displays a tooltip on hover or focus of a trigger element.
  * Positioning is dynamic to stay within the viewport, and the arrow is always aligned.
+ * @param {object} props The component props.
+ * @param {React.ReactNode} props.children The content of the tooltip.
+ * @param {string} props.text The trigger text, which also serves as the tooltip's title.
+ * @param {('info'|'success'|'warning'|'error'|'teacher'|'suricate'|object|Function)} [props.model=null] Pre-defined style model, a custom style object, or a function returning a style object.
+ * @param {'top'|'bottom'|'left'|'right'} [props.position='top'] Preferred tooltip position. It will flip automatically if there's not enough space.
+ * @param {number} [props.delay=200] Delay in milliseconds before the tooltip is shown.
+ * @param {number} [props.offset=10] Distance in pixels between the trigger element and the tooltip.
+ * @param {React.CSSProperties} [props.style={}] Custom CSS styles to apply to the tooltip, overriding model styles.
+ * @param {boolean} [props.shadow=true] Toggles the box-shadow on the tooltip.
+ * @param {boolean} [props.block=false] If true, the trigger element will be a block-level element (`display: block`).
  */
 const Tooltip = ({
-  children, // The content of the tooltip
-  text, // The trigger text AND the tooltip's title
-  model = null, // Pre-defined style model
-  position = "top", // Preferred position (top, bottom, left, right)
-  delay = 200, // Delay in ms before showing
-  offset = 10, // Distance in px between the trigger and the tooltip
+  children,
+  text,
+  model = null,
+  position = "top",
+  delay = 200,
+  offset = 10,
   style = {},
-  shadow = true, // Enable/disable the shadow
-  block = false, // Whether the trigger should be a block-level element
+  shadow = true,
+  block = false,
 }) => {
   // --- Component States ---
   const [visible, setVisible] = useState(false); // Tooltip visibility
