@@ -60,6 +60,7 @@
 .paragraph {
   margin: 0 0 6px 0;
   line-height: 1.3;
+  white-space: pre-wrap;
 }
 
 .contentMainRow {
@@ -70,7 +71,7 @@
 
 .contentMain {
   flex: 1 1 auto;
-  white-space: normal;
+  white-space: pre-wrap;
 }
 
 .imageHolder {
@@ -93,39 +94,27 @@
 
 .tooltip[data-position="top"] .arrow {
   bottom: -6px; /* slightly more to account for border */
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
 }
 
 .tooltip[data-position="bottom"] .arrow {
   top: -6px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
 }
 
 .tooltip[data-position="left"] .arrow {
   right: -6px;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
 }
 
 .tooltip[data-position="right"] .arrow {
   left: -6px;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
 }
 
-/* Mobile / small screens: hide decorative arrow and stack content vertically */
+/* Mobile / small screens: stack content vertically */
 @media (max-width: 600px) {
   .tooltip {
     padding: 12px;
     border-radius: 10px;
     max-width: calc(100vw - 24px);
     word-break: break-word;
-  }
-
-  .arrow {
-    display: none;
   }
 
   .contentWrapper {

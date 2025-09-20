@@ -31,11 +31,11 @@ export const custom = (styles) => ({
 
 // Teacher model with static image (placed in static/img)
 export const teacher = {
-  backgroundColor: '#ffffff',
+  backgroundColor: '#0d491fff',
   /* fallback shorthand */
   background: '#ffffff',
   color: '#000000',
-  border: '2px solid #000000',
+  border: '2px solid #20190aff',
   borderRadius: '8px',
   paddingTop: '30px',
   paddingLeft: '10px',
@@ -43,8 +43,29 @@ export const teacher = {
   image: '/img/toottipsteacherdocuxlab.png',
   // decorative by default; set a string to provide accessible alt text
   imageAlt: '',
-  imageSize: '50px',
-  imageRight: '-10px',
+  imageSize: '70px',
+  imageRight: '10px',
+  imageBottom: '6px',
+  minWidth: '50px',
+};
+
+
+// Teacher model with static image (placed in static/img)
+export const suricate = {
+  backgroundColor: '#0d491fff',
+  /* fallback shorthand */
+  background: '#ffffff',
+  color: '#000000',
+  border: '2px solid #20190aff',
+  borderRadius: '8px',
+  paddingTop: '30px',
+  paddingLeft: '10px',
+  // image displayed inside the tooltip (rendered as an inline img to avoid overlap)
+  image: '/img/test.webp',
+  // decorative by default; set a string to provide accessible alt text
+  imageAlt: '',
+  imageSize: '70px',
+  imageRight: '10px',
   imageBottom: '6px',
   minWidth: '50px',
 };

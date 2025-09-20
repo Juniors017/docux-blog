@@ -1,3 +1,85 @@
+---
+title: "Tooltip tools"
+description: "A comprehensive guide to creating a dynamic and accessible Tooltip component in React and Docusaurus, featuring smart positioning and custom styling."
+schemaTypes: ["HowTo", "BlogPosting"]
+slug: "Tooltip-tools-docusaurus"
+image: "/img/tooltipcomponent.png"
+authors: ["docux"]
+mainTag: Components
+tags: ["react", "component", "tooltip", "docusaurus", "javascript", "css", "accessibility"]
+date: 2025-09-18
+last_update:
+  date: 2025-09-20
+  author: docux
+difficulty: "Intermediate"
+totalTime: "PT35M"
+prepTime: "PT5M"
+performTime: "PT30M"
+estimatedCost: "Free"
+tool: ["React", "Docusaurus", "JavaScript", "CSS Modules", "VSCode"]
+supply: ["Node.js", "Docusaurus", "React Hooks", "ResizeObserver API"]
+yield: "A reusable Tooltip component with dynamic positioning and customization."
+genre: "Technical Tutorial"
+inLanguage: "en"
+isAccessibleForFree: true
+readingTime: "8 min"
+articleSection: "Tutorial"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+category: "Web Development"
+keywords: ["tooltip", "react", "component", "dynamic positioning", "flipping", "react portal", "accessibility", "docusaurus"]
+hide_table_of_contents: true
+series: "Design your site"
+blueSkyRecordKey: 
+---
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Developement](https://img.shields.io/badge/Developement-docux-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/tooltipcomponent.png)
+</div>
+</center>
+
+<Tooltip model="teacher" text="Tooltips">In computing, a tooltip is a message that appears as an overlay when the mouse pointer hovers over certain elements of the graphical user interface. 
+It gets its name from its resemblance to speech bubbles in comic strips 
+[Source Wikipedia](https://en.wikipedia.org/wiki/Tooltip)</Tooltip> are everywhere on the web. They are essential for providing contextual information without cluttering the interface. But creating one that is robust, aesthetically pleasing, and above all, accessible, is a real challenge.
+
+In this article, I will introduce the `Tooltip` component I developed for <Tooltip model="teacher" text="Docusaurus" >Docusaurus is a static-site generator. 
+It builds a single-page application with fast client-side navigation, leveraging the full power of React to make your site interactive. 
+It provides out-of-the-box documentation features but can be used to create any kind of site (personal website, product, blog, marketing landing pages, etc).</Tooltip>. It doesn't just display a simple information box; it integrates intelligent positioning logic, an arrow that always stays aligned, and great customization flexibility.
+
+<!--truncate-->
+
+## Key Features
+
+Before diving into the demo, here is an overview of the features that make this component so cool.
+
+### 1. Smart Positioning (Flipping)
+
+The component is smart enough to know if it has enough space to be displayed. If you ask for a tooltip to appear at the top (`position="top"`) but it is too close to the top edge of the screen, it will **automatically flip** to the bottom. This ensures the content always remains visible to the user.
+
+### 2. Always-Aligned Arrow
+
+This is the killer detail! The small arrow of the tooltip isn't just centered. It is dynamically calculated in JavaScript to **point precisely to the center of the trigger element**, even when the tooltip is shifted by the screen edges. No more arrows pointing into empty space!
+
+### 3. Advanced Customization
+
+The `Tooltip` component comes with several predefined "models" for common use cases (`info`, `success`, `warning`, `error`), but it also allows for full customization via the `style` prop. You can even insert rich content, such as images or other React components.
+
+### 4. Accessibility (`a11y`)
+
+A good component must be accessible to everyone. The tooltip is linked to its trigger element via the `aria-describedby` attributes, it is focusable, and can be closed with the `Escape` key.
+
+##  Component Code
+
+<Tabs>
+<TabItem value="js" label={<><LogoIcon name="javascript" size='32' /> </>}>
+<details>
+ <summary> Open for look component's code </summary>
+
+```js "title=\src\components\Tooltip\index.js"
 import React, {
   useState,
   useRef,
@@ -407,8 +489,460 @@ const Tooltip = ({
 };
 
 export default Tooltip;
+```
+</details>
+</TabItem>
+
+<TabItem value="css" label={<><LogoIcon name="css-3" size='32' /> </>}>
+<details>
+  <summary> Open for look the css </summary>
+
+```css "title=\src\components\Tooltip\style.module.css"
+.tooltip {
+  position: absolute;
+  background: #333;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  overflow: visible; /* allow absolutely positioned image/arrow to show */
+}
+
+.withImage {
+  /* when an image is present, keep a consistent gap */
+  gap: 12px;
+}
+
+.modelImage {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  pointer-events: none;
+  user-select: none;
+  width: 64px;
+  height: auto;
+  z-index: 1000;
+}
+
+.content {
+  /* force block flow and wrapping */
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  flex: 1 1 auto;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.contentTop {
+  font-size: 13px;
+  color: inherit;
+}
+
+.contentTopTitle {
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.paragraph {
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+  white-space: pre-wrap;
+}
+
+.contentMainRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.contentMain {
+  flex: 1 1 auto;
+  white-space: pre-wrap;
+}
+
+.imageHolder {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+}
+
+.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+}
+
+.tooltip[data-position="top"] .arrow {
+  bottom: -6px; /* slightly more to account for border */
+}
+
+.tooltip[data-position="bottom"] .arrow {
+  top: -6px;
+}
+
+.tooltip[data-position="left"] .arrow {
+  right: -6px;
+}
+
+.tooltip[data-position="right"] .arrow {
+  left: -6px;
+}
+
+/* Mobile / small screens: stack content vertically */
+@media (max-width: 600px) {
+  .tooltip {
+    padding: 12px;
+    border-radius: 10px;
+    max-width: calc(100vw - 24px);
+    word-break: break-word;
+  }
+
+  .contentWrapper {
+    gap: 8px;
+  }
+
+  .contentMainRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .imageHolder {
+    justify-content: center;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  .modelImage {
+    width: 56px !important;
+    height: auto;
+    margin-left: 0;
+  }
+}
+
+```
+</details>  
+</TabItem>
+</Tabs>
+<Tabs>
+<TabItem value="js" label={<><LogoIcon name="javascript" size='32' /> </>}>
+<details>
+ <summary> Open for look code for use models </summary>
+ 
+```js "title=\src\components\Tooltip\models.js"
+// Predefined tooltip models for easy reuse
+
+export const info = {
+  backgroundColor: '#2196F3', // Blue
+  color: '#FFFFFF',
+};
+
+export const success = {
+  backgroundColor: '#4CAF50', // Green
+  color: '#FFFFFF',
+};
+
+export const warning = {
+  backgroundColor: '#FFC107', // Yellow
+  color: '#000000',
+};
+
+export const error = {
+  backgroundColor: '#F44336', // Red
+  color: '#FFFFFF',
+};
+
+/**
+ * A special model to allow full customization.
+ * @param {React.CSSProperties} styles The custom styles to apply.
+ * @returns {React.CSSProperties}
+ */
+export const custom = (styles) => ({
+    ...styles
+});
+
+// Teacher model with static image (placed in static/img)
+export const teacher = {
+  backgroundColor: '#0d491fff',
+  /* fallback shorthand */
+  background: '#ffffff',
+  color: '#000000',
+  border: '2px solid #20190aff',
+  borderRadius: '8px',
+  paddingTop: '30px',
+  paddingLeft: '10px',
+  // image displayed inside the tooltip (rendered as an inline img to avoid overlap)
+  image: '/img/toottipsteacherdocuxlab.png',
+  // decorative by default; set a string to provide accessible alt text
+  imageAlt: '',
+  imageSize: '70px',
+  imageRight: '10px',
+  imageBottom: '6px',
+  minWidth: '50px',
+};
+
+
+// Teacher model with static image (placed in static/img)
+export const suricate = {
+  backgroundColor: '#0d491fff',
+  /* fallback shorthand */
+  background: '#ffffff',
+  color: '#000000',
+  border: '2px solid #20190aff',
+  borderRadius: '8px',
+  paddingTop: '30px',
+  paddingLeft: '10px',
+  // image displayed inside the tooltip (rendered as an inline img to avoid overlap)
+  image: '/img/test.webp',
+  // decorative by default; set a string to provide accessible alt text
+  imageAlt: '',
+  imageSize: '70px',
+  imageRight: '10px',
+  imageBottom: '6px',
+  minWidth: '50px',
+};
+
+```
+</details>
+
+</TabItem>
+</Tabs>
+
+## Usage in Docusaurus
+
+One of the great advantages of Docusaurus is its ability to "swizzle" components and make them globally available in MDX files. This is exactly what was done for this `Tooltip` component.
+
+Thanks to a simple configuration in the `src/theme/MDXComponents.js` file, the component is imported and added to the list of MDX components.
+
+```js title="src/theme/MDXComponents.js"
+import Tooltip from '@site/src/components/Tooltip';
+
+export default {
+  // ... other components
+  Tooltip
+};
+```
+
+**What does this mean for you?**
+Simply that you **never need to import the `Tooltip` component** in your `.mdx` files. You can use it directly, as if it were a native HTML tag.
+
+## Usage Examples
+
+Here is an overview of the different ways to use the `Tooltip` component.
+
+### Positioning
+
+The `position` prop allows you to choose where the tooltip appears. The options are `top`, `bottom`, `left`, and `right`. Don't forget that if the tooltip doesn't have enough space, it will automatically reposition itself!
+
+<Columns className="margin-vert--md text--center">
+<Column>
+
+  <Tooltip text="Position Top" position="top">
+    Default position.
+  </Tooltip>
+  
+</Column>
+<Column>
+  <Tooltip text="Position Bottom" position="bottom">
+    Appears below.
+  </Tooltip>
+</Column>
+<Column>
+  <Tooltip text="Position Left" position="left">
+    Appears on the left.
+  </Tooltip>
+</Column>
+<Column>
+  <Tooltip text="Position Right" position="right">
+    Appears on the right.
+  </Tooltip>
+</Column>
+
+</Columns>
+
+
+```mdx
+// Top
+<Tooltip text="Position Top" position="top">
+  Default position.
+</Tooltip>
+
+// Bottom
+<Tooltip text="Position Bottom" position="bottom">
+  Appears below.
+</Tooltip>
+
+// Left
+<Tooltip text="Position Left" position="left">
+  Appears on the left.
+</Tooltip>
+
+// Right
+<Tooltip text="Position Right" position="right">
+  Appears on the right.
+</Tooltip>
+```
+
+### Style Models
+
+Use the `model` prop to quickly change the tooltip's appearance.
+You can create your own reusable models in `models.js`
+
+<Columns className="margin-vert--md text--center">
+
+<Column>
+  <Tooltip text="Information" model="info">
+    This is useful information.
+  </Tooltip>
+</Column>
+<Column>
+  <Tooltip text="Success" model="success">
+    The operation was successful!
+  </Tooltip>
+</Column>
+<Column>
+  <Tooltip text="Warning" model="warning">
+    Be careful here.
+  </Tooltip>
+  </Column>
+  <Column>
+  <Tooltip text="Error" model="error">
+    An error has occurred.
+  </Tooltip>
+  </Column>
+</Columns>
+
+
+```mdx
+// Info
+<Tooltip text="Information" model="info">
+  This is useful information.
+</Tooltip>
+
+// Success
+<Tooltip text="Success" model="success">
+  The operation was successful!
+</Tooltip>
+
+// Warning
+<Tooltip text="Warning" model="warning">
+  Be careful here.
+</Tooltip>
+
+// Error
+<Tooltip text="Error" model="error">
+  An error has occurred.
+</Tooltip>
+
+```
+### We can create cool models
+<Columns className="margin-vert--md text--center">
+<Column>
+<Tooltip model="teacher" text="DocuxLab" >
+My favorite 
+and the one you will find mostly on this site.
+We can really make nice tooltips, 
+ it dusts off the classic info bubble.
+<LogoIcon name="docusaurus" size='20' />
+</Tooltip>
+</Column>
+<Column>
+<Tooltip model="suricate" text="But what is it doing here?" >
+My friend Christophe's mascot has sneaked in here.
+
+[@avonture.be](https://avonture.be/)
+</Tooltip>
+</Column>
+</Columns>
+
+```mdx
+<Tooltip model="teacher" text="DocuxLab" >
+My favorite 
+and the one you will find mostly on this site.
+We can really make nice tooltips, 
+ it dusts off the classic info bubble.
+<LogoIcon name="docusaurus" size='20' />
+</Tooltip>
+
+<Tooltip model="suricate" text="But what is it doing here?" >
+My friend Christophe's mascot has sneaked in here.
+
+[@avonture.be](https://avonture.be/)
+</Tooltip>
+```
+
+
+### Rich Content and Customization
+
+The true power of this component lies in its ability to accept rich content and custom styles.
+
+<Columns className="margin-vert--md text--center">
+<Column>
+
+<Tooltip text="Rich Content">
+  You can use <b>bold</b>, <i>italics</i>, and even links like [this link](https://docusaurus.io).
+
+  You can even include other components, and even an image.
+  <center>
+  ![](/img/tooltipstest.png)
+  </center>
+</Tooltip>
+
+  </Column>
+  <Column>
+  <Tooltip text="Custom Style" style={{
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    color: 'white',
+    border: '2px solid white',
+    borderRadius: '10px',
+    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'
+  }}>
+    This tooltip has a unique style passed via the <code>style</code> prop.
+  </Tooltip>
+</Column>
+</Columns>
 
 
 
 
+```mdx
+// Rich Content
+<Tooltip text="Rich Content">
+  You can use <b>bold</b>, <i>italics</i>, and even links like [this link](https://docusaurus.io).
 
+  You can even include other components, and even an image.
+  <center>
+  ![](/img/tooltipstest.png)
+  </center>
+</Tooltip>
+
+// Custom Style
+  <Tooltip text="Custom Style" style={{
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    color: 'white',
+    border: '2px solid white',
+    borderRadius: '10px',
+    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'
+  }}>
+    This tooltip has a unique style passed via the <code>style</code> prop.
+  </Tooltip>
+```

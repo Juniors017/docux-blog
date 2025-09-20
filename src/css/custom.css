@@ -32,16 +32,10 @@
  .avatar__photo {  
     border: 2px solid rgb(79 79 79);
   }
+
 }
 
 
-
-.alert--jira {
---ifm-alert-background-color: rgba(43, 117, 253, 0.5);
---ifm-alert-background-color-highlight: rgba(6, 40, 133, 0.15);
---ifm-alert-foreground-color: rgb(65, 63, 63);
---ifm-alert-border-color: #1f1cd4;
-}
 
 html[data-theme='dark'] .alert--jira {
 --ifm-alert-background-color:  rgba(43, 117, 253, 0.5);
@@ -86,7 +80,7 @@ html[data-theme='dark'] .alert--docu {
 padding: 15px;
 background-color: #aab121;
 text-align: center;
-border-radius: 8px;
+border-radius: 3px;
 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 color: rgba(0, 0, 0, 0.8);
 }
@@ -180,3 +174,5 @@ h2.title_f1Hy {
     border-radius: 100%;
     border: 2px solid white;
 }
+
+

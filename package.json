@@ -19,6 +19,7 @@
     "@docusaurus/plugin-client-redirects": "^3.8.1",
     "@docusaurus/plugin-sitemap": "^3.8.1",
     "@docusaurus/preset-classic": "3.8.1",
+    "@floating-ui/react": "^0.27.16",
     "@iconify/react": "^6.0.1",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
