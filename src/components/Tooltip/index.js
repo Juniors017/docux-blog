@@ -233,13 +233,14 @@ const Tooltip = ({
 
   // --- Event Observers ---
 
-  // Recalculates position on scroll or resize
+  // Handles closing on scroll and repositioning on resize.
   const debouncedUpdate = useDebounce(updatePosition, 20);
   useIsomorphicLayoutEffect(() => {
     if (!visible) return;
-    updatePosition(); // Initial update
+    updatePosition(); // Initial position calculation
 
-    window.addEventListener("scroll", debouncedUpdate, { passive: true });
+    // Hide on scroll, but recalculate position on resize
+    window.addEventListener("scroll", hideTooltip, { passive: true });
     window.addEventListener("resize", debouncedUpdate);
 
     // ResizeObserver is more performant for detecting element size changes
@@ -251,11 +252,11 @@ const Tooltip = ({
     }
 
     return () => {
-      window.removeEventListener("scroll", debouncedUpdate);
+      window.removeEventListener("scroll", hideTooltip);
       window.removeEventListener("resize", debouncedUpdate);
       if (ro) ro.disconnect();
     };
-  }, [visible, updatePosition, debouncedUpdate]);
+  }, [visible, updatePosition, debouncedUpdate, hideTooltip]);
 
   // Hides the tooltip with the "Escape" key
   useEffect(() => {
@@ -415,6 +416,54 @@ const Tooltip = ({
     </>
   );
 };
+
+import PropTypes from "prop-types";
+
+Tooltip.propTypes = {
+  // The main content of the tooltip. Can be text or JSX.
+  children: PropTypes.node, // optional
+
+  // The trigger text, also used as the tooltip's title.
+  text: PropTypes.string.isRequired,
+
+  // Pre-defined style model, custom style object, or a function returning a style object.
+  // If string, must be one of the predefined models.
+  model: PropTypes.oneOfType([
+    PropTypes.oneOf(['info', 'success', 'warning', 'error', 'teacher', 'suricate']),
+    PropTypes.object,
+    PropTypes.func,
+  ]),
+
+  // Preferred position of the tooltip relative to the trigger element.
+  position: PropTypes.oneOf(['top', 'bottom', 'left', 'right']),
+
+  // Delay in milliseconds before showing the tooltip.
+  delay: PropTypes.number,
+
+  // Distance in pixels between the trigger and the tooltip.
+  offset: PropTypes.number,
+
+  // Custom CSS styles to override the model styles.
+  style: PropTypes.object,
+
+  // Enable or disable box-shadow on the tooltip.
+  shadow: PropTypes.bool,
+
+  // If true, the trigger element is displayed as block-level.
+  block: PropTypes.bool,
+};
+
+Tooltip.defaultProps = {
+  children: null,
+  model: null,
+  position: "top",
+  delay: 200,
+  offset: 10,
+  style: {},
+  shadow: true,
+  block: false,
+};
+
 
 export default Tooltip;
 
