@@ -8,6 +8,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import pluginTagRoute from "./plugins/docusaurus-plugin-tag-route/index.cjs"
 import pluginSeriesRoute from "./plugins/docusaurus-plugin-series-route/index.cjs"
 import simpleAnalytics from "./plugins/simpleAnalytics/index.js"
+import remarkReplaceWords from "./plugins/remark-replace-words/index.js"
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
@@ -127,38 +128,40 @@ const config = {
   ],
 
   presets: [
-    [
-      'classic',
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
-        docs: false,
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/Juniors017/docux-blog/tree/main/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'ignore',
+  [
+    'classic',
+    /** @type {import('@docusaurus/preset-classic').Options} */
+    ({
+      docs: false,
+      blog: {
+        showReadingTime: true,
+        feedOptions: {
+          type: ['rss', 'atom'],
+          xslt: true,
         },
-        theme: {
-          customCss: './src/css/custom.css',
-        },
-        sitemap: {
-          changefreq: 'weekly',
-          priority: 0.5,
-          ignorePatterns: ['/tags/**', '/search/**', '/404', '/404.html'],
-          filename: 'sitemap.xml',
-        },
-      }),
-    ],
+       remarkPlugins: [[remarkReplaceWords, "blog"]] ,
+
+        editUrl: 'https://github.com/Juniors017/docux-blog/tree/main/',
+        onInlineTags: 'warn',
+        onInlineAuthors: 'warn',
+        onUntruncatedBlogPosts: 'ignore',
+      },
+      pages: {
+        remarkPlugins: [[remarkReplaceWords, "pages"]],
+      },
+      theme: {
+        customCss: './src/css/custom.css',
+      },
+      sitemap: {
+        changefreq: 'weekly',
+        priority: 0.5,
+        ignorePatterns: ['/tags/**', '/search/**', '/404', '/404.html'],
+        filename: 'sitemap.xml',
+      },
+    }),
   ],
+],
+
   
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
