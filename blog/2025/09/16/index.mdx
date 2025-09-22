@@ -629,22 +629,22 @@ The component automatically generates colors based on percentage:
 
 
 ## Bars
-### Barres avec couleurs automatiques (basées sur le pourcentage)
+### Bars with automatic colours (based on percentage)
 ```html
 <Skill name="Expert" value={95} type="bar" />
-<Skill name="Avancé" value={75} type="bar" />
-<Skill name="Intermédiaire" value={50} type="bar" />
-<Skill name="Débutant" value={25} type="bar" />
-<Skill name="Très faible" value={10} type="bar" />
+<Skill name="Advanced" value={75} type="bar" />
+<Skill name="Intermediate" value={50} type="bar" />
+<Skill name="Beginner" value={25} type="bar" />
+<Skill name="Very weak" value={10} type="bar" />
 ```
 <Skill name="Expert" value={95} type="bar" />
-<Skill name="Avancé" value={75} type="bar" />
-<Skill name="Intermédiaire" value={50} type="bar" />
-<Skill name="Débutant" value={25} type="bar" />
-<Skill name="Très faible" value={10} type="bar" />
+<Skill name="Advanced" value={75} type="bar" />
+<Skill name="Intermediate" value={50} type="bar" />
+<Skill name="Beginner" value={25} type="bar" />
+<Skill name="Very weak" value={10} type="bar" />
 
 
-### Barres avec couleurs personnalisées
+### Bars with custom colors
 ```html
 <Skill name="JavaScript" value={85} type="bar" color="#F7DF1E" />
 <Skill name="React" value={75} type="bar" color="#61DAFB" />
@@ -659,7 +659,7 @@ The component automatically generates colors based on percentage:
 <Skill name="Angular" value={45} type="bar" color="#DD0031" />
 <Skill name="Svelte" value={30} type="bar" color="#FF3E00" />
 
-### Barres avec gradients
+### Bars with gradients
 ```html   
 <Skill name="CSS3" value={90} type="bar" gradient={{ from: '#1572B6', to: '#33A9DC' }} />
 <Skill name="HTML5" value={95} type="bar" gradient={{ from: '#e3d626ff', to: '#1ad843ff' }} />
@@ -672,49 +672,49 @@ The component automatically generates colors based on percentage:
 <Skill name="Tailwind" value={70} type="bar" gradient={{ from: '#065fd4ff', to: '#0891B2' }} />
 
 
-### Barres avec hauteurs différentes
+### Bars with different heights
 ```html
-<Skill name="Mince" value={60} type="bar" height={10} color="#FF6B6B" />
+<Skill name="Thin" value={60} type="bar" height={10} color="#FF6B6B" />
 <Skill name="Normal" value={70} type="bar" height={20} color="#4ECDC4" />
-<Skill name="Épaisse" value={80} type="bar" height={30} color="#45B7D1" />
-<Skill name="Très épaisse" value={90} type="bar" height={40} color="#F9CA24" />
+<Skill name="Thick" value={80} type="bar" height={30} color="#45B7D1" />
+<Skill name="Very thick" value={90} type="bar" height={40} color="#F9CA24" />
 ```
-<Skill name="Mince" value={60} type="bar" height={10} color="#FF6B6B" />
+<Skill name="Thin" value={60} type="bar" height={10} color="#FF6B6B" />
 <Skill name="Normal" value={70} type="bar" height={20} color="#4ECDC4" />
-<Skill name="Épaisse" value={80} type="bar" height={30} color="#45B7D1" />
-<Skill name="Très épaisse" value={90} type="bar" height={40} color="#F9CA24" />
+<Skill name="Thick" value={80} type="bar" height={30} color="#45B7D1" />
+<Skill name="Very thick" value={90} type="bar" height={40} color="#F9CA24" />
 
-### Barres avec et sans bordures arrondies
-
-```html
-<Skill name="Arrondie" value={75} type="bar" rounded={true} color="#6C5CE7" />
-<Skill name="Carrée" value={75} type="bar" rounded={false} color="#A29BFE" />
-```
-<Skill name="Arrondie" value={75} type="bar" rounded={true} color="#6C5CE7" />
-<Skill name="Carrée" value={75} type="bar" rounded={false} color="#A29BFE" />
-
-### Barres avec positions de texte différentes
+### Bars with and without rounded borders
 
 ```html
-<Skill name="Texte en haut" value={65} type="bar" valuePosition="top" color="#00B894" />
-<Skill name="Texte centré" value={75} type="bar" valuePosition="center" color="#00CEC9" />
+<Skill name="Rounded" value={75} type="bar" rounded={true} color="#6C5CE7" />
+<Skill name="Square" value={75} type="bar" rounded={false} color="#A29BFE" />
 ```
-<Skill name="Texte en haut" value={65} type="bar" valuePosition="top" color="#00B894" />
-<Skill name="Texte centré" value={75} type="bar" valuePosition="center" color="#00CEC9" />
+<Skill name="Rounded" value={75} type="bar" rounded={true} color="#6C5CE7" />
+<Skill name="Square" value={75} type="bar" rounded={false} color="#A29BFE" />
 
-### Barres avec vitesses d'animation
+### Bars with different text positions
 
 ```html
-<Skill name="Animation rapide" value={60} type="bar" animationDuration={0.5} color="#E17055" />
-<Skill name="Animation normale" value={70} type="bar" animationDuration={1.5} color="#FDCB6E" />
-<Skill name="Animation lente" value={80} type="bar" animationDuration={3.0} color="#6C5CE7" />
+<Skill name="Text at top" value={65} type="bar" valuePosition="top" color="#00B894" />
+<Skill name="Centered text" value={75} type="bar" valuePosition="center" color="#00CEC9" />
 ```
-<Skill name="Animation rapide" value={60} type="bar" animationDuration={0.5} color="#E17055" />
-<Skill name="Animation normale" value={70} type="bar" animationDuration={1.5} color="#FDCB6E" />
-<Skill name="Animation lente" value={80} type="bar" animationDuration={3.0} color="#6C5CE7" />
+<Skill name="Text at top" value={65} type="bar" valuePosition="top" color="#00B894" />
+<Skill name="Centered text" value={75} type="bar" valuePosition="center" color="#00CEC9" />
+
+### Bars with animation speeds
+
+```html
+<Skill name="Fast animation" value={60} type="bar" animationDuration={0.5} color="#E17055" />
+<Skill name="Normal animation" value={70} type="bar" animationDuration={1.5} color="#FDCB6E" />
+<Skill name="Slow animation" value={80} type="bar" animationDuration={3.0} color="#6C5CE7" />
+```
+<Skill name="Fast animation" value={60} type="bar" animationDuration={0.5} color="#E17055" />
+<Skill name="Normal animation" value={70} type="bar" animationDuration={1.5} color="#FDCB6E" />
+<Skill name="Slow animation" value={80} type="bar" animationDuration={3.0} color="#6C5CE7" />
 
 
-### Palette de technologies complète en barres
+### Complete technology palette in bars
 
 ```html
 <div style={{display: 'grid', gridTemplateColumns: '1fr', gap: '10px', marginTop: '20px'}}>
@@ -741,32 +741,32 @@ The component automatically generates colors based on percentage:
 </div>
 
 
-### Barres sans à 0
+### Bars at 0
 
 ```html
-<Skill name="Pas d'animation" value={0} type="bar"  color="#2D3436" />
+<Skill name="No animation" value={0} type="bar"  color="#2D3436" />
 ```
 
-<Skill name="Pas d'animation" value={0} type="bar"  color="#2D3436" />
+<Skill name="No animation" value={0} type="bar"  color="#2D3436" />
 
 
-## Cercles
-### Cercles avec couleurs automatiques
+## Circles
+### Circles with automatic colors
 
 ```html
 <Skill name="Expert" value={95} type="circle" valuePosition="center" />
-<Skill name="Avancé" value={75} type="circle" valuePosition="center" />
-<Skill name="Intermédiaire" value={50} type="circle" valuePosition="center" />
-<Skill name="Débutant" value={25} type="circle" valuePosition="center" />
+<Skill name="Advanced" value={75} type="circle" valuePosition="center" />
+<Skill name="Intermediate" value={50} type="circle" valuePosition="center" />
+<Skill name="Beginner" value={25} type="circle" valuePosition="center" />
 ```
 <Skill name="Expert" value={95} type="circle" valuePosition="center" />
-<Skill name="Avancé" value={75} type="circle" valuePosition="center" />
-<Skill name="Intermédiaire" value={50} type="circle" valuePosition="center" />
-<Skill name="Débutant" value={25} type="circle" valuePosition="center" />
+<Skill name="Advanced" value={75} type="circle" valuePosition="center" />
+<Skill name="Intermediate" value={50} type="circle" valuePosition="center" />
+<Skill name="Beginner" value={25} type="circle" valuePosition="center" />
 
 
 
-### Cercles avec couleurs personnalisées
+### Circles with custom colors
 ```html
 <Skill name="Node.js" value={80} type="circle" valuePosition="center" color="#fffb00ff" />
 <Skill name="Python" value={70} type="circle" valuePosition="center" color="#3776AB" />
@@ -780,7 +780,7 @@ The component automatically generates colors based on percentage:
 <Skill name="C#" value={50} type="circle" valuePosition="center" color="#d43c3cff" />
 
 
-### Cercles avec gradients
+### Circles with gradients
 ```html
 <Skill name="Docker" value={75} type="circle" gradient={{ from: '#0cb628ff', to: '#b7ed24ff' }} valuePosition="center" />
 <Skill name="Kubernetes" value={65} type="circle" gradient={{ from: '#1c4cb4ff', to: '#1A73E8' }} valuePosition="center" />
@@ -792,88 +792,88 @@ The component automatically generates colors based on percentage:
 <Skill name="AWS" value={70} type="circle" gradient={{ from: '#FF9900', to: '#f80929ff' }} valuePosition="center" />
 
 
-### Cercles avec tailles différentes
+### Circles with different sizes
 
 ```html
-<Skill name="Petit" value={60} type="circle" size={80} valuePosition="center" color="#FF6B6B" />
-<Skill name="Moyen" value={70} type="circle" size={120} valuePosition="center" color="#4ECDC4" />
-<Skill name="Grand" value={80} type="circle" size={160} valuePosition="center" color="#45B7D1" />
+<Skill name="Small" value={60} type="circle" size={80} valuePosition="center" color="#FF6B6B" />
+<Skill name="Medium" value={70} type="circle" size={120} valuePosition="center" color="#4ECDC4" />
+<Skill name="Large" value={80} type="circle" size={160} valuePosition="center" color="#45B7D1" />
 ```
 
-<Skill name="Petit" value={60} type="circle" size={80} valuePosition="center" color="#FF6B6B" />
-<Skill name="Moyen" value={70} type="circle" size={120} valuePosition="center" color="#4ECDC4" />
-<Skill name="Grand" value={80} type="circle" size={160} valuePosition="center" color="#45B7D1" />
+<Skill name="Small" value={60} type="circle" size={80} valuePosition="center" color="#FF6B6B" />
+<Skill name="Medium" value={70} type="circle" size={120} valuePosition="center" color="#4ECDC4" />
+<Skill name="Large" value={80} type="circle" size={160} valuePosition="center" color="#45B7D1" />
 
 
 
-### Cercles avec épaisseurs différentes
+### Circles with different thicknesses
 
 ```html
-<Skill name="Fin" value={65} type="circle" thickness={4} valuePosition="center" color="#A29BFE" />
+<Skill name="Thin" value={65} type="circle" thickness={4} valuePosition="center" color="#A29BFE" />
 <Skill name="Normal" value={75} type="circle" thickness={8} valuePosition="center" color="#6C5CE7" />
-<Skill name="Épais" value={85} type="circle" thickness={16} valuePosition="center" color="#5F3DC4" />
+<Skill name="Thick" value={85} type="circle" thickness={16} valuePosition="center" color="#5F3DC4" />
 ```
 
-<Skill name="Fin" value={65} type="circle" thickness={4} valuePosition="center" color="#A29BFE" />
+<Skill name="Thin" value={65} type="circle" thickness={4} valuePosition="center" color="#A29BFE" />
 <Skill name="Normal" value={75} type="circle" thickness={8} valuePosition="center" color="#6C5CE7" />
-<Skill name="Épais" value={85} type="circle" thickness={16} valuePosition="center" color="#5F3DC4" />
+<Skill name="Thick" value={85} type="circle" thickness={16} valuePosition="center" color="#5F3DC4" />
 
 
-### Cercles avec positions de texte
+### Circles with text positions
 
 ```html
-<Skill name="Texte en haut" value={70} type="circle" valuePosition="top" color="#00B894" />
-<Skill name="Texte au centre" value={80} type="circle" valuePosition="center" color="#00CEC9" />
-<Skill name="Texte autour" value={90} type="circle" valuePosition="around" color="#55A3FF" className="margin-bottom--xl" />
+<Skill name="Text at top" value={70} type="circle" valuePosition="top" color="#00B894" />
+<Skill name="Centered text" value={80} type="circle" valuePosition="center" color="#00CEC9" />
+<Skill name="Text around" value={90} type="circle" valuePosition="around" color="#55A3FF" className="margin-bottom--xl" />
 ```
-<Skill name="Texte en haut" value={70} type="circle" valuePosition="top" color="#00B894" />
-<Skill name="Texte au centre" value={80} type="circle" valuePosition="center" color="#00CEC9" />
-<Skill name="Texte autour" value={90} type="circle" valuePosition="around" color="#55A3FF" className="margin-bottom--xl" />
+<Skill name="Text at top" value={70} type="circle" valuePosition="top" color="#00B894" />
+<Skill name="Centered text" value={80} type="circle" valuePosition="center" color="#00CEC9" />
+<Skill name="Text around" value={90} type="circle" valuePosition="around" color="#55A3FF" className="margin-bottom--xl" />
 
 
-### Cercles avec et sans bordures arrondies
+### Circles with and without rounded borders
 
 ```html
-<Skill name="Arrondi" value={75} type="circle" rounded={true} valuePosition="center" color="#E17055" />
-<Skill name="Carré" value={75} type="circle" rounded={false} valuePosition="center" color="#FDCB6E" />
-```
-
-<Skill name="Arrondi" value={75} type="circle" rounded={true} valuePosition="center" color="#E17055" />
-<Skill name="Carré" value={75} type="circle" rounded={false} valuePosition="center" color="#FDCB6E" />
-
-
-### Cercles avec et sans pourcentage
-```html
-<Skill name="Avec %" value={80} type="circle" showPercentage={true} valuePosition="center" color="#00B894" />
-<Skill name="Sans %" value={80} type="circle" showPercentage={false} valuePosition="center" color="#E17055" />
+<Skill name="Rounded" value={75} type="circle" rounded={true} valuePosition="center" color="#E17055" />
+<Skill name="Square" value={75} type="circle" rounded={false} valuePosition="center" color="#FDCB6E" />
 ```
 
-<Skill name="Avec %" value={80} type="circle" showPercentage={true} valuePosition="center" color="#00B894" />
-<Skill name="Sans %" value={80} type="circle" showPercentage={false} valuePosition="center" color="#E17055" />
+<Skill name="Rounded" value={75} type="circle" rounded={true} valuePosition="center" color="#E17055" />
+<Skill name="Square" value={75} type="circle" rounded={false} valuePosition="center" color="#FDCB6E" />
 
 
-### Cercles avec vitesses d'animation
+### Circles with and without percentage
 ```html
-<Skill name="Rapide" value={60} type="circle" animationDuration={0.8} valuePosition="center" color="#FF6B6B" />
+<Skill name="With %" value={80} type="circle" showPercentage={true} valuePosition="center" color="#00B894" />
+<Skill name="Without %" value={80} type="circle" showPercentage={false} valuePosition="center" color="#E17055" />
+```
+
+<Skill name="With %" value={80} type="circle" showPercentage={true} valuePosition="center" color="#00B894" />
+<Skill name="Without %" value={80} type="circle" showPercentage={false} valuePosition="center" color="#E17055" />
+
+
+### Circles with animation speeds
+```html
+<Skill name="Fast" value={60} type="circle" animationDuration={0.8} valuePosition="center" color="#FF6B6B" />
 <Skill name="Normal" value={70} type="circle" animationDuration={1.5} valuePosition="center" color="#4ECDC4" />
-<Skill name="Lent" value={80} type="circle" animationDuration={2.5} valuePosition="center" color="#45B7D1" />
+<Skill name="Slow" value={80} type="circle" animationDuration={2.5} valuePosition="center" color="#45B7D1" />
 ```
 
-<Skill name="Rapide" value={60} type="circle" animationDuration={0.8} valuePosition="center" color="#FF6B6B" />
+<Skill name="Fast" value={60} type="circle" animationDuration={0.8} valuePosition="center" color="#FF6B6B" />
 <Skill name="Normal" value={70} type="circle" animationDuration={1.5} valuePosition="center" color="#4ECDC4" />
-<Skill name="Lent" value={80} type="circle" animationDuration={2.5} valuePosition="center" color="#45B7D1" />
+<Skill name="Slow" value={80} type="circle" animationDuration={2.5} valuePosition="center" color="#45B7D1" />
 
 
-### Cercles sans animation à zero
+### Circles without animation at zero
 
 ```html
-<Skill name="Statique" value={0} type="circle" animateOnScroll={false} valuePosition="center" color="#2D3436" />
+<Skill name="Static" value={0} type="circle" animateOnScroll={false} valuePosition="center" color="#2D3436" />
 ```
 
-<Skill name="Statique" value={0} type="circle" animateOnScroll={false} valuePosition="center" color="#2D3436" />
+<Skill name="Static" value={0} type="circle" animateOnScroll={false} valuePosition="center" color="#2D3436" />
 
 
-### Exemples combinés avancés
+### Advanced combined examples
 
 ```html
 <Skill 
@@ -923,7 +923,7 @@ The component automatically generates colors based on percentage:
   rounded={true}
 />
 
-### Palette de technologies complète
+### Complete technology palette
 
 
 ```html
@@ -949,9 +949,9 @@ The component automatically generates colors based on percentage:
   <Skill name={<><LogoIcon name="python" size='24' /> </>} value={78} type="circle" color="#3776AB" valuePosition="center" size={100} />
 </div>
 
-### Comparaison barres vs cercles
+### Comparison bars vs circles
 
-**Même skill, deux représentations faites votre choix**
+**Same skill, two representations, make your choice**
 
 <Skill name="Database Design" value={75} type="bar" gradient={{ from: '#667eea', to: '#764ba2' }} />
 <Skill name="Database Design" value={75} type="circle" gradient={{ from: '#667eea', to: '#764ba2' }} valuePosition="center" />
