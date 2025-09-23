@@ -1,24 +1,24 @@
 {
-    "pages": {
-        "words": {
-            "remark": "Remark"
-        }
-    },
-    "blog": {
-        "words": {
-            "challenge": '<Skill name="No animation" value={0} type="bar" color="#2D3436" />',
- 
-        }
-    },
-    "docs": {
-        "words": {
-            "remark": "Remark"
-        }
-    },
-    "all": {
-        "words": {
-            "markdown": "Markdown",
-            "docusaurus": "Docusaurus"
-        }
+  "pages": {
+    "words": {
+      
+      "markdown": "Markdown"
+      
     }
+  },
+  "blog": {
+    "words": {
+      "javascript": "JavaScript"
+    }
+  },
+  "docs": {
+    "words": {
+      "remark": "Remark"
+    }
+  },
+  "all": {
+    "words": {
+      "docusaurus": "Docusaurus"
+    }
+  }
 }
