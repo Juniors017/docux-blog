@@ -1,0 +1,36 @@
+{
+  "all": {
+    "kiki": {
+      "component": "Tooltip",
+      "props": { "text": "DocuxLab" },
+      "children": "Remplacement global"
+    }
+  },
+  "blog": {
+    "merkate": {
+      "component": "Tooltip",
+      "props": { "text": "Apparaît en bas", "position": "bottom" },
+      "children": "mon nouveau mot"
+    },
+    "Cavo": {
+      "children": "pépé christophe"
+    }
+  },
+  "pages": {
+    "CSS-3": {
+      "component": "LogoIcon",
+      "props": { "name": "ccs-3", "size": "124" }
+    },
+    "toto": {
+      "component": "LogoIcon",
+      "props": { "name": "docusaurus", "size": "124" }
+    }
+  },
+  "docs": {
+    "kiki": {
+      "component": "Tooltip",
+      "props": { "text": "Documentation" },
+      "children": "Docux Docs"
+    }
+  }
+}

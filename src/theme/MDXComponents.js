@@ -24,6 +24,8 @@ import ImageOnClick from '@site/src/components/ImageOnClick';
 import LogoIcon from '@site/src/components/LogoIcon';
 import Skill from '@site/src/components/Skill';
 import Tooltip from '@site/src/components/Tooltip';
+import ReplaceWords from '@site/src/components/ReplaceWords';
+
 export default {
   // Réutilise la correspondance par défaut
   ...MDXComponents,
@@ -75,5 +77,6 @@ export default {
   ImageOnClick,
   LogoIcon,
   Skill,
-  Tooltip
+  Tooltip,
+  ReplaceWords
 };

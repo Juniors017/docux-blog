@@ -13,7 +13,7 @@ import remarkReplaceWords from "./plugins/remark-replace-words/index.js"
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'DOCUX',
-    tagline: 'Content Management System for Docusaurus',
+    tagline: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus',
     favicon: 'img/docux.png',
 
     organizationName: 'DocuxLab', // Usually your GitHub org/user name.

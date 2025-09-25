@@ -91,6 +91,8 @@ export default function Thanks() {
             </Card>
           </Column>
         </Columns>
+
+        
       </main>
     </Layout>
   );
