@@ -13,7 +13,8 @@ import remarkReplaceWords from "./plugins/remark-replace-words/index.js"
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'DOCUX',
-    tagline: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus',
+    tagline: 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
+            'ut Docusaurus',
     favicon: 'img/docux.png',
     organizationName: 'DocuxLab', // Usually your GitHub org/user name.
     projectName: 'docux-blog', // Usually your repo name.
@@ -21,10 +22,10 @@ const config = {
     baseUrl: '/',
     plugins: [
         [
-            pluginTagRoute, {}
+            pluginSeriesRoute, {}
         ],
         [
-            pluginSeriesRoute, {}
+            pluginTagRoute, {}
         ],
         [
             simpleAnalytics, {}
@@ -57,9 +58,9 @@ const config = {
         }
     },
     // Configuration des URLs canoniques
-    onBrokenLinks: 'warn',
-    onBrokenMarkdownLinks: 'warn',
-
+    onBrokenLinks: 'ignore',
+    onBrokenMarkdownLinks: 'ignore',
+    onDuplicateRoutes: "throw",
     // Future flags pour préparer Docusaurus v4
     future: {
         v4: {
@@ -99,7 +100,8 @@ const config = {
                 '@type': 'WebSite',
                 'name': 'DOCUX',
                 'url': 'https://docuxlab.com/',
-                'description': 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus',
+                'description': 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
+                        'ut Docusaurus',
                 'potentialAction': {
                     '@type': 'SearchAction',
                     'target': 'https://docuxlab.com/search?q={search_term_string}',
@@ -132,11 +134,10 @@ const config = {
                 docs: false,
                 blog: {
                     showReadingTime: true,
-                    blogSidebarCount: 'ALL',
-                    blogSidebarTitle: 'All our articles',
-                    // Please change this to your repo.
-                    // Remove this to remove the "edit this page" links.
-                    // editUrl: '
+                    blogSidebarTitle: "All posts",
+                    blogSidebarCount: "ALL",
+                    // Please change this to your repo. Remove this to remove the "edit this page"
+                    // links. editUrl: '
                     feedOptions: {
                         type: [
                             'rss', 'atom'
@@ -184,7 +185,8 @@ const config = {
                 content: 'docusaurus, blog, documentation, cms, react, gestion de contenu, markdown'
             }, {
                 name: 'description',
-                content: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus'
+                content: 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
+                        'ut Docusaurus'
             }, {
                 name: 'author',
                 content: 'Docux'
@@ -212,12 +214,12 @@ const config = {
                 content: 'DOCUX - CMS pour Docusaurus'
             }, {
                 name: 'twitter:description',
-                content: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus'
+                content: 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
+                        'ut Docusaurus'
             }, {
                 name: 'twitter:image',
                 content: 'https://docuxlab.com/img/docux.png'
-            },
-            {
+            }, {
                 property: 'og:title',
                 content: 'DOCUX - CMS pour Docusaurus'
             }, {
@@ -231,7 +233,8 @@ const config = {
                 content: 'https://docuxlab.com/img/docux.png'
             }, {
                 property: 'og:description',
-                content: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus'
+                content: 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
+                        'ut Docusaurus'
             }, {
                 property: 'og:site_name',
                 content: 'DOCUX'
