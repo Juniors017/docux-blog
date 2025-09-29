@@ -309,31 +309,7 @@ const config = {
         prism: {
             theme: prismThemes.github,
             darkTheme: prismThemes.dracula
-        },
-         algolia: {
-        // @see https://docusaurus.io/docs/search for documentation
-        // @see https://dashboard.algolia.com/ for appId, apiKey and indexName
-
-        // The application ID provided by Algolia
-        appId: "L49WSUCG5E",
-
-        // Public API key: it is safe to commit it
-        apiKey: "a1eaa28984f5ff117427ec2805f2e976",
-
-        indexName: "docuxlab",
-
-        // Optional: see doc section below
-        contextualSearch: true,
-
-        // Optional: Algolia search parameters
-        searchParameters: {},
-
-        // Optional: path for search page that enabled by default (`false` to disable it)
-        searchPagePath: "search",
-
-        // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
-        insights: false,
-      },
+        }
     
     })
 };
