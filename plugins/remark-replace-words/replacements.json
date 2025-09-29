@@ -1,13 +1,18 @@
 {
   "all": {
-    "kiki": {
+    "Giti": {
       "component": "Tooltip",
       "props": { "text": "DocuxLab" },
+      "children": "Remplacement global"
+    },
+    "doculab": {
+      "component": "Tooltip",
+      "props": { "text": "dokidoki" },
       "children": "Remplacement global"
     }
   },
   "blog": {
-    "merkate": {
+    "kikinou": {
       "component": "Tooltip",
       "props": { "text": "Apparaît en bas", "position": "bottom" },
       "children": "mon nouveau mot"
@@ -17,11 +22,11 @@
     }
   },
   "pages": {
-    "CSS-3": {
+    "nana": {
       "component": "LogoIcon",
       "props": { "name": "ccs-3", "size": "124" }
     },
-    "toto": {
+    "roki": {
       "component": "LogoIcon",
       "props": { "name": "docusaurus", "size": "124" }
     }

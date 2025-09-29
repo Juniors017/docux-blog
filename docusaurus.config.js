@@ -15,7 +15,6 @@ const config = {
     title: 'DOCUX',
     tagline: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus',
     favicon: 'img/docux.png',
-
     organizationName: 'DocuxLab', // Usually your GitHub org/user name.
     projectName: 'docux-blog', // Usually your repo name.
     url: 'https://docuxlab.com',
@@ -100,7 +99,7 @@ const config = {
                 '@type': 'WebSite',
                 'name': 'DOCUX',
                 'url': 'https://docuxlab.com/',
-                'description': 'Un système de gestion de contenu basé sur Docusaurus',
+                'description': 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus',
                 'potentialAction': {
                     '@type': 'SearchAction',
                     'target': 'https://docuxlab.com/search?q={search_term_string}',
@@ -177,7 +176,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
         // Replace with your project's social card
-        image: 'img/docusaurus-social-card.jpg',
+        image: 'img/docux.png',
         metadata: [
             // Métadonnées générales
             {
@@ -185,8 +184,7 @@ const config = {
                 content: 'docusaurus, blog, documentation, cms, react, gestion de contenu, markdown'
             }, {
                 name: 'description',
-                content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la créati' +
-                        'on de blogs et de documentation technique'
+                content: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus'
             }, {
                 name: 'author',
                 content: 'Docux'
@@ -214,14 +212,11 @@ const config = {
                 content: 'DOCUX - CMS pour Docusaurus'
             }, {
                 name: 'twitter:description',
-                content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la créati' +
-                        'on de blogs et de documentation technique'
+                content: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus'
             }, {
                 name: 'twitter:image',
-                content: 'https://docuxlab.com/img/docusaurus-social-card.jpg'
+                content: 'https://docuxlab.com/img/docux.png'
             },
-
-            // Open Graph data
             {
                 property: 'og:title',
                 content: 'DOCUX - CMS pour Docusaurus'
@@ -233,17 +228,16 @@ const config = {
                 content: 'https://docuxlab.com/'
             }, {
                 property: 'og:image',
-                content: 'https://docuxlab.com/img/docusaurus-social-card.jpg'
+                content: 'https://docuxlab.com/img/docux.png'
             }, {
                 property: 'og:description',
-                content: 'Un système de gestion de contenu basé sur Docusaurus pour simplifier la créati' +
-                        'on de blogs et de documentation technique'
+                content: 'Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus'
             }, {
                 property: 'og:site_name',
                 content: 'DOCUX'
             }, {
                 property: 'og:locale',
-                content: 'fr_FR'
+                content: 'en'
             }
         ],
         navbar: {
@@ -285,9 +279,6 @@ const config = {
                     title: 'Community',
                     items: [
                         {
-                            label: 'Stack Overflow',
-                            href: 'https://stackoverflow.com/questions/tagged/docusaurus'
-                        }, {
                             label: 'Discord',
                             href: 'https://discordapp.com/invite/docusaurus'
                         }
