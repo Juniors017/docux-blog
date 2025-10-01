@@ -32,6 +32,7 @@ const config = {
         [
             simpleAnalytics, {}
         ],
+ 
         [
             '@docusaurus/plugin-client-redirects', {
                 redirects: [
@@ -39,6 +40,9 @@ const config = {
                     // '/nouvelle-page', },
                 ],
                 // Redirections automatiques basées sur une taxonomie courante
+                /**
+                 * @param {string} existingPath
+                 */
                 createRedirects: (existingPath) => {
                     // Redirection des URLs anciennes vers nouvelles
                     if (existingPath.includes('/blog/')) {
@@ -52,6 +56,10 @@ const config = {
             }
         ]
     ],
+    // Les thèmes (UI) doivent être déclarés dans "themes" et non "plugins"
+    themes: [
+        '@docusaurus/theme-live-codeblock'
+    ],
     trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
     customFields: {
         blueSky: {
@@ -59,9 +67,15 @@ const config = {
             handle: "docuxlab.com"
         }
     },
-    // Configuration des URLs canoniques
+    // Configuration des URLs canoniques et gestion des liens/markdown cassés
     onBrokenLinks: 'ignore',
-    onBrokenMarkdownLinks: 'ignore',
+    // Migration: l'option onBrokenMarkdownLinks est désormais gérée via markdown.hooks
+    markdown: {
+        hooks: {
+            // Ancienne valeur: 'ignore' (migrée depuis la racine)
+            onBrokenMarkdownLinks: 'ignore'
+        }
+    },
     onDuplicateRoutes: "throw",
     // Future flags pour préparer Docusaurus v4
     future: {
@@ -245,6 +259,15 @@ const config = {
                 content: 'en'
             }
         ],
+        
+            liveCodeBlock: {
+            /**
+             * La position du terrain de jeu en direct, au-dessus ou au-dessous de l'éditeur
+             * Valeurs possibles : "top" | "bottom"
+             */
+            playgroundPosition: 'bottom',
+            },
+  
         navbar: {
             title: 'Docux',
             style: 'dark',

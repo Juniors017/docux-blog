@@ -1,0 +1,255 @@
+---
+title: "Tutorial: Docusaurus React Live"
+slug: docusaurus-react-live-guide
+description: "Practical guide to add interactive react-live code playgrounds in Docusaurus: theme installation, configuration, ReactLiveScope swizzle, and maintainable example patterns."
+schemaTypes: ["HowTo", "BlogPosting"]
+image: "/img/livecoding.png"
+authors: ["docux"]
+mainTag: live-code
+tags: ["react","live-code","playground","swizzle","mdx"]
+date: 2025-10-01
+difficulty: "Beginner-Intermediate"
+totalTime: "PT20M"
+prepTime: "PT5M"
+performTime: "PT15M"
+estimatedCost: "Free"
+tool: ["React","Docusaurus","react-live","MDX"]
+supply: ["Node.js","Docusaurus","React","Hooks"]
+yield: "Reusable interactive playground with a custom swizzled scope."
+genre: "Technical Tutorial"
+inLanguage: "en"
+readingTime: "6 min"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+category: "Frontend"
+keywords: ["docusaurus","react-live","live code","mdx","swizzle","playground","react"]
+hide_table_of_contents: true
+series: "Design your site"
+blueSkyRecordKey: 
+---
+<center>
+<div>
+![](/img/livecoding.png)
+</div>
+</center>
+
+## 1. Why a playground?
+Readers learn faster when they can modify an example inline. The `@docusaurus/theme-live-codeblock` theme integrates **react-live** to evaluate JSX in real time.
+
+Benefits:
+- Instant feedback
+- Pedagogical demos without an external sandbox
+- Visual consistency with your site
+- No page context switching
+
+
+
+## 2. Install the live theme
+
+```bash
+npm install @docusaurus/theme-live-codeblock --save
+```
+
+Ensure all `@docusaurus/*` versions are aligned (e.g. `3.9.1`).
+
+
+## 3. Configure `docusaurus.config.js`
+
+Add (or extend) the `themes` key:
+
+```js title="docusaurus.config.js"
+export default {
+	// ...other options
+	themes: [
+		'@docusaurus/theme-live-codeblock'
+	],
+};
+```
+
+Optional: adjust styling with custom CSS (Infima is bundled).
+
+
+
+## 4. Create your first `jsx live` blocks
+
+A MDX fenced block becomes interactive by adding `live` after the language:
+
+````mdx
+```jsx live
+() => <button style={{padding:8}}>Click me</button>
+```
+````
+
+
+You can also write a function:
+
+````mdx
+```jsx live
+function Counter(){
+	const [n,setN] = React.useState(0);
+	return <button onClick={()=>setN(n+1)}>Count: {n}</button>;
+}
+<Counter />
+```
+````
+
+
+
+## 5. Effective patterns
+
+| Pattern | Use case | Benefit | Example |
+|---------|-------|----------|---------|
+| Final expression | Tiny demo | Ultra concise | `(<Badge>Hi</Badge>)` |
+| Const + final identifier | Readable snippet | Shows value | `const el=<div/>; el` |
+| Function + call | Internal logic | Reusable | `function Demo(){...}; <Demo />` |
+| Inline hooks | Small interactions | Direct | `const [x,setX]=useState(0); <button onClick={()=>setX(x+1)}>{x}` |
+| Export default (avoid) | Legacy habit | Noise here | (do not use) |
+
+Key rule: the last **expression** of the block is rendered (no `export`).
+
+
+
+## 6. Swizzle `ReactLiveScope`
+
+Problem: inside a live block, your custom components (`Tooltip`, `LogoIcon`, etc.) are not known by default.
+
+Solution: create `src/theme/ReactLiveScope/index.js` to inject a global scope.
+
+```text
+src/theme/ReactLiveScope/index.js
+```
+
+```js title="src/theme/ReactLiveScope/index.js"
+import * as React from 'react';
+import Tooltip from '@site/src/components/Tooltip';
+import LogoIcon from '@site/src/components/LogoIcon';
+import Skill from '@site/src/components/Skill';
+import Contributor from '@site/src/components/Contributor';
+
+export default {
+	React,
+	...React,
+	Tooltip,
+	LogoIcon,
+	Skill,
+	Contributor,
+};
+```
+
+From there on:
+
+```jsx live
+
+	<Tooltip model="teacher" text="DocuxLab">
+		Swizzle ready!
+	</Tooltip>
+
+```
+
+
+## 7. Advanced examples: interactive Tooltip
+
+### Simple model
+```jsx live
+
+	<Tooltip text="Simple tooltip">Short content.</Tooltip>
+
+```
+
+### Two tooltips side by side
+```jsx live
+
+	<div style={{display:'flex', gap:16}}>
+		<Tooltip model="teacher" text="Teacher">
+			Example with model.
+		</Tooltip>
+		<Tooltip model="suricate" text="Pépé" position="bottom">
+			Bottom position.
+		</Tooltip>
+	</div>
+
+```
+
+
+
+
+
+### Skill (progress bar)
+```jsx live
+<div style={{display:'flex', flexDirection:'column', gap:8}}>
+	<Skill name={<><LogoIcon name="react" size='24' /> React</>} value={88} type="bar" color="#61DAFB" height={25} />
+	<Skill name={<><LogoIcon name="vue" size='24' /> Vue.js</>} value={75} type="bar" color="#4FC08D" height={25} />
+	<Skill name={<><LogoIcon name="nodejs" size='24' /> Node.js</>} value={82} type="bar" color="#339933" height={25} />
+	<Skill name={<><LogoIcon name="python" size='24' /> Python</>} value={78} type="bar" color="#3776AB" height={25} />
+</div>
+
+```
+
+### Skill (animated circle)
+```jsx live
+<div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', marginTop: '20px'}}>
+  <Skill name={<><LogoIcon name="html-5" size='24' /> </>} value={95} type="circle" color="#E34F26" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="css-3" size='24' /> </>} value={90} type="circle" color="#1572B6" valuePosition="center" size={100} />
+  <Skill name={<><LogoIcon name="javascript" size='24' /> </>} value={85} type="circle" color="#F7DF1E" valuePosition="center" size={100} />
+  </div>
+```
+
+### Contributor (card)
+```jsx live
+
+	<Contributor
+		name="Docux"
+		github="Juniors017"
+		website="https://github.com/Juniors017"
+		avatarUrl="/img/docux.png"
+		components={['Tooltip','Skill','etc...']}
+		description="Author of several UI components for this site."
+        
+	/>
+
+```
+
+### LogoIcon (variants)
+```jsx live
+
+	<div style={{display:'flex',gap:24,alignItems:'center'}}>
+		<LogoIcon name="docusaurus" size={40} />
+		<LogoIcon name="javascript" size={40} />
+		<LogoIcon name="css-3" size={40} />
+	</div>
+
+```
+
+
+
+## 8. Best practices
+* Keep snippets short and progressive.
+* Do not overload the scope (clarity + performance).
+* Watch for CSS collisions (avoid heavy globals).
+* Prefer an explicit final expression for readability.
+* Update `@docusaurus/*` dependencies together.
+
+## 9. Quick debugging
+
+<center>
+
+| Issue | Likely cause | Fix |
+|----------|----------------|----------|
+| `X is not defined` | Component not in scope | Add to `ReactLiveScope` |
+| Nothing displayed | No final expression | End with JSX or identifier |
+| React import crash | Unnecessary import | Remove `import React` |
+| Broken style | Infima/custom conflict | Wrap / isolate |
+| Versions mismatch | Misaligned packages | Align versions |
+
+</center>
+
+
+## 10. Going further
+Ideas:
+- Add a light/dark theme toggle inside demos.
+- Persist state (localStorage) in a live block.
+- Generate dynamic component variations.
+
+<Tooltip model="teacher" text="Your turn!">You can now integrate maintainable, ergonomic interactive examples into your site.</Tooltip>
+
+

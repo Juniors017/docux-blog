@@ -1006,3 +1006,23 @@ The true power of this component lies in its ability to accept rich content and 
     This tooltip has a unique style passed via the <code>style</code> prop.
   </Tooltip>
 ```
+## Play in live with tooltip
+```jsx live
+// Thanks to the ReactLiveScope swizzle, Tooltip and LogoIcon are available without import.
+// You can simply return JSX (last evaluated expression)
+(
+  <div style={{display:'flex', gap:16}}>
+    <Tooltip model="teacher" text="DocuxLab">
+      My favorite
+      and the one you will find mostly on this site.
+      <br />
+      We can really make nice tooltips,
+      it dusts off the classic info bubble.
+      <LogoIcon name="docusaurus" size='20' />
+    </Tooltip>
+    <Tooltip model="suricate" text="Pépé" position="bottom">
+      A second tooltip using another model.
+    </Tooltip>
+  </div>
+)
+```
