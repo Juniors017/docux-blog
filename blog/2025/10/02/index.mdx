@@ -1,0 +1,159 @@
+---
+title: "ScrollToTopButton Component"
+slug: docusaurus-scroll-to-top-button
+description: "Simple React component adding a floating 'back to top' button with delayed appearance (after scrolling 300px), click animation and smooth scroll behavior in Docusaurus."
+schemaTypes: ["HowTo", "BlogPosting"]
+image: "/img/scrolltotop.png"
+authors: ["docux"]
+mainTag: ux
+tags: ["react","scroll","component"]
+date: 2025-10-02
+difficulty: "easy"
+totalTime: "PT20M"
+yield: "Reusable back-to-top button."
+genre: "Technical Tutorial"
+inLanguage: "en"
+readingTime: "3 min"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+keywords: ["docusaurus","scroll to top","react","component","ui","scroll"]
+hide_table_of_contents: true
+series: "Design your site"
+blueSkyRecordKey: 
+---
+
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-docux-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/scrolltotop.png)
+</div>
+</center>
+
+This component adds a fixed floating Back to Top button. It becomes visible after the user scrolls 300px vertically; on click it triggers a smooth scroll to the top while playing a short visual animation on the icon. It does not expose public props: customization (threshold, image) is done by editing the source (`index.js`). The goal is to keep it lightweight and easy to reuse.
+
+## Overview
+
+Implemented features:
+- Appears after 300px scroll (hard‑coded condition)
+- Smooth scroll to top on click
+- CSS animation on click (`fly` + `@keyframes flyUp`)
+- Show/Hide using opacity + visibility
+- Scroll listener with cleanup in `useEffect`
+- Icon image can be swapped by changing the import
+
+## Installation
+
+1. Copy the `ScrollToTopButton` folder into `src/components/`
+2. Import the component in your global layout (or a specific page)
+3. Ensure the image import works (`/static/img/buttontop.PNG`)
+4. (Optional) Replace the image with your own
+
+## File structure
+
+```
+src/components/ScrollToTopButton/
+├── index.js              # Main React component
+└── styles.module.css     # Scoped CSS Module
+```
+
+## Usage
+
+### In a Docusaurus layout
+
+```jsx
+import ScrollToTopButton from '../../components/ScrollToTopButton';
+
+export default function Layout(props) {
+  return (
+    <LayoutProvider>
+      {/* Your layout content */}
+      <ScrollToTopButton />
+    </LayoutProvider>
+  );
+}
+```
+
+### Configuration
+
+No props are supported in the current version. To change:
+- Threshold: edit `if (window.scrollY > 300)` in `index.js`
+- Image: replace the imported `buttontop` image
+
+## Customization
+
+### Change the image
+
+1. Place your image inside `static/img/`
+2. Update the import in `index.js`:
+
+```jsx
+import buttontop from '@site/static/img/your-image.png'
+```
+
+3. The component uses it like:
+
+```jsx
+<img
+  src={buttontop}
+  alt="Back to top"
+  width="30"
+  height="30"
+/>
+```
+
+### Edit styles
+
+Open `styles.module.css` and adjust:
+
+- Position: tweak `bottom` / `right`
+- Size: adjust `width` / `height`
+- Visual: modify `box-shadow`
+- Animation: change `flyUp` keyframes
+
+## State & Behavior
+
+- `isVisible`: true when `window.scrollY > 300`, else false
+- `fly`: toggled to true on click, reset after 800ms
+- Scroll listener: handles visibility logic and is cleaned up on unmount
+
+## Animations
+
+### Show/Hide
+```css
+transition: opacity 0.4s, visibility 0.4s;
+```
+
+### Click animation (flyUp)
+```css
+@keyframes flyUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-300px) scale(0.6);
+    opacity: 0;
+  }
+}
+```
+
+## Full example
+
+```jsx
+import React from 'react';
+import Layout from '@theme-original/Layout';
+import ScrollToTopButton from '@site/src/components/ScrollToTopButton';
+
+export default function LayoutWrapper(props) {
+  return (
+    <>
+      <Layout {...props} />
+      <ScrollToTopButton />
+    </>
+  );
+}
+```
+
