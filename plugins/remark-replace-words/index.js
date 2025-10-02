@@ -4,27 +4,39 @@ import mapping from './replacements.json' with { type: "json" };
 const DEBUG = true;
 const stats = {};
 
+// Echapper un terme pour usage en RegExp
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /**
- * Vérifie si le remplacement doit être interdit
- * - Liens Markdown (`link`, `linkReference`, `definition`)
- * - Blocs de code (`code`, `inlineCode`)
- * - Composant MDX `<a>` (équivalent HTML)
+ * Détermine si on doit ignorer le texte sous ce parent.
+ * Ajouts vs version précédente : heading, image, imageReference, composants déjà insérés.
  */
-function isForbiddenParent(parent) {
+function isForbiddenParent(parent, replacementComponentNames) {
   if (!parent) return false;
 
+  // Nœuds markdown/MDX où on ne veut pas remplacer
   if (
-    parent.type === 'link' ||                // [texte](url)
-    parent.type === 'linkReference' ||       // [texte][ref]
-    parent.type === 'definition' ||          // [ref]: url
-    parent.type === 'code' ||                // ```bloc de code```
-    parent.type === 'inlineCode'             // `inline code`
+    parent.type === 'link' ||
+    parent.type === 'linkReference' ||
+    parent.type === 'definition' ||
+    parent.type === 'code' ||
+    parent.type === 'inlineCode' ||
+    parent.type === 'heading' || // # titre
+    parent.type === 'image' ||
+    parent.type === 'imageReference'
   ) {
     return true;
   }
 
-  // Cas spécifique MDX : <a href="...">texte</a>
-  if (parent.type === 'mdxJsxFlowElement' && parent.name === 'a') {
+  // Balises/Composants MDX spécifiques à ignorer
+  if (
+    (parent.type === 'mdxJsxFlowElement' || parent.type === 'mdxJsxTextElement') && (
+      parent.name === 'a' || // <a>
+      replacementComponentNames.has(parent.name) // composant déjà inséré par un remplacement précédent
+    )
+  ) {
     return true;
   }
 
@@ -44,28 +56,38 @@ export default function remarkReplaceFromJson() {
     const typeMapping = mapping[type] || {};
     const mergedMapping = { ...allMapping, ...typeMapping };
 
+    // Prépare set de noms de composants de remplacement (pour éviter re-traversée)
+    const replacementComponentNames = new Set(
+      Object.values(mergedMapping)
+        .map((c) => c.component)
+        .filter(Boolean)
+    );
+
+    // Tri des mots par longueur décroissante pour éviter chevauchements
+    const entries = Object.entries(mergedMapping).sort((a, b) => b[0].length - a[0].length);
+
     visit(tree, 'text', (node, index, parent) => {
-      // Vérifie si on est dans un contexte interdit
-      if (isForbiddenParent(parent)) return;
+      if (isForbiddenParent(parent, replacementComponentNames)) return;
+      if (!node.value || typeof node.value !== 'string') return;
 
       let fragments = [{ type: 'text', value: node.value }];
       let replaced = false;
 
-      // Boucle sur chaque mot à remplacer
-      for (const [word, conf] of Object.entries(mergedMapping)) {
-        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      for (const [word, conf] of entries) {
+        if (!word) continue;
+        const safe = escapeRegex(word);
+        const regex = new RegExp(`\\b${safe}\\b`, 'gi');
 
         fragments = fragments.flatMap((frag) => {
           if (frag.type !== 'text') return [frag];
+          if (!regex.test(frag.value)) return [frag];
+          regex.lastIndex = 0;
 
           const parts = frag.value.split(regex);
-          const matches = frag.value.match(regex);
-
-          if (!matches) return [frag];
+            const matches = frag.value.match(regex) || [];
+          if (!matches.length) return [frag];
 
           replaced = true;
-
-          // Statistiques debug
           if (DEBUG) {
             stats[filePath] = stats[filePath] || {};
             stats[filePath][word] = (stats[filePath][word] || 0) + matches.length;
@@ -74,38 +96,39 @@ export default function remarkReplaceFromJson() {
           const newNodes = [];
           parts.forEach((part, i) => {
             if (part) newNodes.push({ type: 'text', value: part });
+            if (i < matches.length) {
+              const compName = conf.component;
+              const replacementLabel = conf.children || matches[i];
 
-            if (i < parts.length - 1) {
-              // Détermine si le remplacement doit être inline (mdxJsxTextElement)
-              // ou block (mdxJsxFlowElement)
-              const isInline =
-                parent.type === 'paragraph' ||
-                parent.type === 'mdxJsxFlowElement' || // ex: <Hero>texte mot</Hero>
-                parent.type === 'emphasis' ||
-                parent.type === 'strong';
-
-              const nodeType = isInline ? 'mdxJsxTextElement' : 'mdxJsxFlowElement';
-
-              newNodes.push({
-                type: nodeType,
-                name: conf.component,
-                attributes: Object.entries(conf.props || {}).map(([key, value]) => ({
-                  type: 'mdxJsxAttribute',
-                  name: key,
-                  value,
-                })),
-                children: conf.children
-                  ? [{ type: 'text', value: conf.children }]
-                  : [],
-              });
+              if (compName) {
+                const isInline =
+                  parent.type === 'paragraph' ||
+                  parent.type === 'mdxJsxFlowElement' ||
+                  parent.type === 'emphasis' ||
+                  parent.type === 'strong' ||
+                  parent.type === 'delete' ||
+                  parent.type === 'listItem';
+                const nodeType = isInline ? 'mdxJsxTextElement' : 'mdxJsxFlowElement';
+                newNodes.push({
+                  type: nodeType,
+                  name: compName,
+                  attributes: Object.entries(conf.props || {}).map(([key, value]) => ({
+                    type: 'mdxJsxAttribute',
+                    name: key,
+                    value,
+                  })),
+                  children: replacementLabel ? [{ type: 'text', value: replacementLabel }] : [],
+                });
+              } else {
+                // Pas de composant → simple texte remplacé
+                newNodes.push({ type: 'text', value: replacementLabel });
+              }
             }
           });
-
           return newNodes;
         });
       }
 
-      // Si on a remplacé du texte → on met à jour les enfants du parent
       if (replaced) {
         parent.children.splice(index, 1, ...fragments);
       }
