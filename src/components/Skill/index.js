@@ -1,5 +1,5 @@
 // ===============================================
-// SKILL COMPONENT - Progress Bars and Circles
+// SKILL COMPONENT - Progress Bars and Circles by DocuxLab
 // ===============================================
 // This component allows displaying skills as:
 // - Progress bars (type="bar")
@@ -7,12 +7,13 @@
 // With scroll animations and complete customization
 
 import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from './styles.module.css';
 
 /**
  * Skill Component - Display skills with bars or circles
  * 
- * @param {string} name - Name of the skill to display
+ * @param {React.ReactNode} name - Nom ou contenu JSX (texte, icône, fragment)
  * @param {number} value - Mastery percentage (0-100)
  * @param {string} type - Display type: 'bar' or 'circle'
  * @param {string} color - Custom color (optional)
@@ -284,3 +285,23 @@ export default function Skill({
     </div>
   );
 }
+
+Skill.propTypes = {
+  name: PropTypes.node.isRequired,
+  value: PropTypes.number,
+  type: PropTypes.oneOf(['bar', 'circle']),
+  color: PropTypes.string,
+  gradient: PropTypes.shape({
+    from: PropTypes.string.isRequired,
+    to: PropTypes.string.isRequired
+  }),
+  rounded: PropTypes.bool,
+  valuePosition: PropTypes.oneOf(['top', 'center', 'around']),
+  showPercentage: PropTypes.bool,
+  size: PropTypes.number,
+  height: PropTypes.number,
+  thickness: PropTypes.number,
+  animationDuration: PropTypes.number,
+  animateOnScroll: PropTypes.bool,
+  className: PropTypes.string
+};
