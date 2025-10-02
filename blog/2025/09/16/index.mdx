@@ -97,13 +97,22 @@ src/components/Skill/
 <TabItem value="js" label={<><LogoIcon name="javascript" size='32' /> </>}>
 ```js "title=\src\components\Skill\index.js"
 
+// ===============================================
+// SKILL COMPONENT - Progress Bars and Circles by valentin chevoleau
+// ===============================================
+// This component allows displaying skills as:
+// - Progress bars (type="bar")
+// - Progress circles (type="circle")
+// With scroll animations and complete customization
+
 import React, { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from './styles.module.css';
 
 /**
  * Skill Component - Display skills with bars or circles
  * 
- * @param {string} name - Name of the skill to display
+ * @param {React.ReactNode} name - Nom ou contenu JSX (texte, icône, fragment)
  * @param {number} value - Mastery percentage (0-100)
  * @param {string} type - Display type: 'bar' or 'circle'
  * @param {string} color - Custom color (optional)
@@ -116,6 +125,7 @@ import styles from './styles.module.css';
  * @param {number} thickness - Circle thickness in pixels
  * @param {number} animationDuration - Animation duration in seconds
  * @param {boolean} animateOnScroll - Trigger animation on scroll
+ * @param {string} className - Additional CSS classes
  */
 export default function Skill({
   name,
@@ -130,11 +140,13 @@ export default function Skill({
   height = 20,
   thickness = 8,
   animationDuration = 1.5,
-  animateOnScroll = true
-}) {<
->
-  
+  animateOnScroll = true,
+  className = '' // Nouvelle prop className
+}) {
+  // ===============================================
   // SCROLL ANIMATION MANAGEMENT
+  // ===============================================
+  
   // DOM reference to observe the element
   const containerRef = useRef(null);
   
@@ -173,10 +185,19 @@ export default function Skill({
     return () => observer.disconnect();
   }, [animateOnScroll]);
 
-  
+  // ===============================================
   // COLOR UTILITY FUNCTIONS
-  /* Generates automatic color based on percentage*/
+  // ===============================================
 
+  /**
+   * Generates automatic color based on percentage
+   * Color system by tiers:
+   * - 80%+ : Green (very good)
+   * - 60-79% : Yellow (good)
+   * - 40-59% : Orange (average)
+   * - 20-39% : Red (weak)
+   * - <20% : Dark red (very weak)
+   */
   const getAutoColor = (value) => {
     if (value >= 80) return '#4CAF50'; // Green - Expert
     if (value >= 60) return '#e5ff00ff'; // Yellow - Advanced
@@ -215,8 +236,9 @@ export default function Skill({
     return finalColor;
   };
 
-  
+  // ===============================================
   // CIRCLE COMPONENT RENDERING
+  // ===============================================
   if (type === 'circle') {
     // Mathematical calculations for SVG circle thanks IA :D
     const radius = (size / 2) - (thickness / 2) - 5; // Radius minus margin
@@ -226,8 +248,15 @@ export default function Skill({
     // Animation: visible part of circle according to percentage
     const strokeDashoffset = isVisible ? circumference - (value / 100) * circumference : circumference;
 
+    // Generate unique ID for gradient
+    const gradientId = `gradient-${Math.random().toString(36).substr(2, 9)}`;
+
     return (
-      <div ref={containerRef} className={styles.skillCircleContainer} style={{ width: size, height: size }}>
+      <div 
+        ref={containerRef} 
+        className={`${styles.skillCircleContainer} ${className}`} 
+        style={{ width: size, height: size }}
+      >
         {/* Name displayed above the circle */}
         {valuePosition === 'top' && (
           <div className={styles.skillNameCircle}>{name}</div>
@@ -236,6 +265,16 @@ export default function Skill({
         <div className={styles.skillCircleWrapper}>
           {/* SVG containing both circles */}
           <svg width={size} height={size} className={styles.skillCircleSvg}>
+            
+            {/* SVG gradient definition (must be before circles) */}
+            {gradient && (
+              <defs>
+                <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor={gradient.from} />
+                  <stop offset="100%" stopColor={gradient.to} />
+                </linearGradient>
+              </defs>
+            )}
             
             {/* Background circle (gray, static) */}
             <circle
@@ -253,7 +292,7 @@ export default function Skill({
               cy={size/2}
               r={radius}
               fill="none"
-              stroke={gradient ? "url(#gradient)" : finalColor}
+              stroke={gradient ? `url(#${gradientId})` : finalColor}
               strokeWidth={thickness}
               strokeLinecap={rounded ? "round" : "butt"} // Rounded or sharp borders
               strokeDasharray={strokeDasharray} // Defines total circumference
@@ -264,16 +303,6 @@ export default function Skill({
                 '--circle-circumference': circumference // CSS variable for animation
               }}
             />
-            
-            {/* SVG gradient definition (if used) */}
-            {gradient && (
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={gradient.from} />
-                  <stop offset="100%" stopColor={gradient.to} />
-                </linearGradient>
-              </defs>
-            )}
           </svg>
           
           {/* Text positioned in the center of the circle */}
@@ -310,7 +339,9 @@ export default function Skill({
     );
   }
 
+  // ===============================================
   // BAR COMPONENT RENDERING
+  // ===============================================
   
   return (
     <div ref={containerRef} className={styles.skillBarContainer}>
@@ -341,13 +372,38 @@ export default function Skill({
         />
         
         {/* Centered text on the bar */}
-        {valuePosition === 'center' && showPercentage && (
-          <div className={styles.skillBarCenterText}>{value}%</div>
+        {valuePosition === 'center' && (
+          <div className={styles.skillBarCenterContainer}>
+            <div className={styles.skillBarCenterName}>{name}</div>
+            {showPercentage && (
+              <div className={styles.skillBarCenterText}>{value}%</div>
+            )}
+          </div>
         )}
       </div>
     </div>
   );
 }
+
+Skill.propTypes = {
+  name: PropTypes.node.isRequired,
+  value: PropTypes.number,
+  type: PropTypes.oneOf(['bar', 'circle']),
+  color: PropTypes.string,
+  gradient: PropTypes.shape({
+    from: PropTypes.string.isRequired,
+    to: PropTypes.string.isRequired
+  }),
+  rounded: PropTypes.bool,
+  valuePosition: PropTypes.oneOf(['top', 'center', 'around']),
+  showPercentage: PropTypes.bool,
+  size: PropTypes.number,
+  height: PropTypes.number,
+  thickness: PropTypes.number,
+  animationDuration: PropTypes.number,
+  animateOnScroll: PropTypes.bool,
+  className: PropTypes.string
+};
 ```
 </TabItem>
 
