@@ -11,7 +11,7 @@ function escapeRegex(str) {
 
 /**
  * Détermine si on doit ignorer le texte sous ce parent.
- * Ajouts vs version précédente : heading, image, imageReference, composants déjà insérés.
+
  */
 function isForbiddenParent(parent, replacementComponentNames) {
   if (!parent) return false;
@@ -70,13 +70,22 @@ export default function remarkReplaceFromJson() {
       if (isForbiddenParent(parent, replacementComponentNames)) return;
       if (!node.value || typeof node.value !== 'string') return;
 
+      // Normalisation NFC pour éviter que des formes décomposées (e + ^) perturbent les correspondances
+      // et pour avoir un comportement cohérent sur les accents (é, è, ê, ô, ç, œ, ï, ...)
+      node.value = node.value.normalize('NFC');
+
       let fragments = [{ type: 'text', value: node.value }];
       let replaced = false;
 
       for (const [word, conf] of entries) {
         if (!word) continue;
         const safe = escapeRegex(word);
-        const regex = new RegExp(`\\b${safe}\\b`, 'gi');
+        // Ancien: const regex = new RegExp(`\\b${safe}\\b`, 'gi');
+        // Problème: \b ne reconnaît pas correctement les frontières autour des lettres accentuées en Unicode,
+        // ce qui causait des faux positifs / "morceaux" à l'intérieur de mots (ex: PI dans PIèce, PER dans PERçus, TS dans intérêTS, impôTS, etc.)
+        // Nouveau: frontières Unicode via lookbehind/lookahead sur "non lettre" (\p{L}) pour ne matcher que le mot isolé.
+        // Flags: g = global, i = case-insensitive, u = Unicode
+        const regex = new RegExp(`(?<!\\p{L})${safe}(?!\\p{L})`, 'giu');
 
         fragments = fragments.flatMap((frag) => {
           if (frag.type !== 'text') return [frag];
