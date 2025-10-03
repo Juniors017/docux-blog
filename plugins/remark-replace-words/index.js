@@ -85,7 +85,10 @@ export default function remarkReplaceFromJson() {
         // ce qui causait des faux positifs / "morceaux" à l'intérieur de mots (ex: PI dans PIèce, PER dans PERçus, TS dans intérêTS, impôTS, etc.)
         // Nouveau: frontières Unicode via lookbehind/lookahead sur "non lettre" (\p{L}) pour ne matcher que le mot isolé.
         // Flags: g = global, i = case-insensitive, u = Unicode
-        const regex = new RegExp(`(?<!\\p{L})${safe}(?!\\p{L})`, 'giu');
+  // Ajustement: étendre la notion de "caractère de mot" pour inclure lettres, chiffres, underscore, tiret, slash, guillemet et apostrophes (' et ’)
+  // Objectif: ne PAS matcher un terme si immédiatement collé à _ - / " ' ou ’ (ex: AC_01, AC-01, AC/01, AC"01, AC'01, AC’01)
+  // Classe étendue: [\p{L}\p{N}_/"'’-] (le tiret en fin; la quote typographique ’ est incluse)
+  const regex = new RegExp(`(?<![\\p{L}\\p{N}_/"'’-])${safe}(?![\\p{L}\\p{N}_/"'’-])`, 'giu');
 
         fragments = fragments.flatMap((frag) => {
           if (frag.type !== 'text') return [frag];
