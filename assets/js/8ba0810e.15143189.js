@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocux_blog=self.webpackChunkdocux_blog||[]).push([[5262],{207:l=>{l.exports=JSON.parse('{"tag":{"label":"mdx","permalink":"/blog/tags/mdx","allTagsPath":"/blog/tags","count":1,"unlisted":false},"listMetadata":{"permalink":"/blog/tags/mdx","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
