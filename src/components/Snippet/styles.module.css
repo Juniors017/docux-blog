@@ -1,0 +1,118 @@
+code {
+  /* This variable adapts automatically to light and dark themes */
+  background-color: var(--ifm-code-background) !important;
+}
+
+code:hover {
+  background-color: var(--ifm-code-background) !important;
+}
+
+.snippet_block {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.snippet_summary {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.75rem 0;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  --chevron-rotation: 0deg;
+}
+
+.snippet_summary:hover {
+  background: var(--ifm-hover-overlay);
+}
+
+.snippet_summary[aria-expanded="true"] {
+  --chevron-rotation: 180deg;
+}
+
+.snippet_summary:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.snippet_summary svg {
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+  transform: rotate(var(--chevron-rotation));
+}
+
+.chevron.rotate {
+  transform: rotate(180deg);
+}
+
+.snippet_content {
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.snippet_toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+/* === Common styles for variants and icons === */
+
+/* === Icon base style === */
+[class$="_icon"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+/* === Variant base === */
+[class^="variant_"] {
+  color: #fff;
+  border-radius: 8px;
+}
+
+/* === Per-language border colors === */
+.variant_apacheconf { border-color: #d22128; }  /* Red-ish for Apache */
+.variant_asm         { border-color: #6e4c13; }  /* Rusty color */
+.variant_bash        { border-color: #3eaaaf; }
+.variant_batch       { border-color: #8bad2e; color: #2b2b2b; }
+.variant_csv         { border-color: #2d7f5e; }
+.variant_css         { border-color: #1e4fb4; }
+.variant_diff        { border-color: #e36209; }
+.variant_docker      { border-color: #0aa2ce; }
+.variant_docusaurus  { border-color: #3ecc5f; }
+.variant_gherkin     { border-color: #5a9a00; }
+.variant_html        { border-color: #e44d26; }
+.variant_ignore      { border-color: #6a737d; }
+.variant_ini         { border-color: #008080; }
+.variant_java        { border-color: #e11e2b; }
+.variant_js          { border-color: #f0d91e; color: #000; }
+.variant_json        { border-color: #1c1c1c; color: #ffcc00; }
+.variant_log         { border-color: #808080; }
+.variant_makefile    { border-color: #6e4f1e; }
+.variant_md          { border-color: #083fa1; }
+.variant_none        { border-color: #aaaaaa; }
+.variant_pascal      { border-color: #4278b8; }
+.variant_php         { border-color: #7a87b9; }
+.variant_powershell  { border-color: #0078d7; }
+.variant_python      { border-color: #2c628d; }
+.variant_sql         { border-color: #e38c00; }
+.variant_svg         { border-color: #f04e23; }
+.variant_toml        { border-color: #f36d25; }
+.variant_txt         { border-color: #6a737d; }
+.variant_vb          { border-color: #571a66; }
+.variant_vbnet       { border-color: #68217a; }
+.variant_xml         { border-color: #bf3b1b; }
+.variant_yaml        { border-color: #a31416; }

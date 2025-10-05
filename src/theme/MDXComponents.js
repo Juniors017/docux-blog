@@ -24,7 +24,7 @@ import ImageOnClick from '@site/src/components/ImageOnClick';
 import LogoIcon from '@site/src/components/LogoIcon';
 import Skill from '@site/src/components/Skill';
 import Tooltip from '@site/src/components/Tooltip';
-
+import Snippet from '@site/src/components/Snippet';
 
 export default {
   // Réutilise la correspondance par défaut
@@ -77,5 +77,6 @@ export default {
   ImageOnClick,
   LogoIcon,
   Skill,
-  Tooltip
+  Tooltip,
+  Snippet
 };

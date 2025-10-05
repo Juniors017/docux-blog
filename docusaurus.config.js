@@ -8,6 +8,8 @@ import pluginTagRoute from "./plugins/docusaurus-plugin-tag-route/index.cjs"
 import pluginSeriesRoute from "./plugins/docusaurus-plugin-series-route/index.cjs"
 import simpleAnalytics from "./plugins/simpleAnalytics/index.js"
 import remarkReplaceWords from "./plugins/remark-replace-words/index.js"
+import remarkSnippetLoader from "./plugins/remark-snippet-loader/index.cjs";
+
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 /** @type {import('@docusaurus/types').Config} */
@@ -32,7 +34,6 @@ const config = {
         [
             simpleAnalytics, {}
         ],
- 
         [
             '@docusaurus/plugin-client-redirects', {
                 redirects: [
@@ -161,7 +162,8 @@ const config = {
                         xslt: true
                     },
                     remarkPlugins: [
-                        [remarkReplaceWords, "blog"]
+                        remarkSnippetLoader,
+                        [remarkReplaceWords, "blog"],
                     ],
 
                     editUrl: 'https://github.com/Juniors017/docux-blog/tree/main/',
@@ -171,7 +173,8 @@ const config = {
                 },
                 pages: {
                     remarkPlugins: [
-                        [remarkReplaceWords, "pages"]
+                        remarkSnippetLoader,
+                        [remarkReplaceWords, "pages"],
                     ]
                 },
                 theme: {
