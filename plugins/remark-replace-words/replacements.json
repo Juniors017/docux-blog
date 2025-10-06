@@ -12,18 +12,13 @@
     }
   },
   "blog": {
-    "kikinou": {
+    "kiki": {
       "component": "Tooltip",
-      "props": { "text": "Apparaît en bas", "position": "bottom" ,"model":"teacher" },
+      "props": { "text": "Apparaît en bas", "position": "bottom" , "model": "teacher"},
       "children": "mon nouveau mot"
     },
 
-    "kiki": {
-      "component": "Tooltip",
-      "props": { "text": "Documentation" },
-      "children": "Docux Docs"
-    },
-
+    
 
     "schema-diagram": {
       "component": "ImageOnClick",
