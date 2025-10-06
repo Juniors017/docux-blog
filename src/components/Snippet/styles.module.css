@@ -1,15 +1,8 @@
-code {
-  /* This variable adapts automatically to light and dark themes */
-  background-color: var(--ifm-code-background) !important;
-}
 
-code:hover {
-  background-color: var(--ifm-code-background) !important;
-}
 
 .snippet_block {
   border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 8px;
+  border-radius: 3px;
   margin: 1rem 0;
   overflow: hidden;
 }
@@ -84,35 +77,35 @@ code:hover {
 }
 
 /* === Per-language border colors === */
-.variant_apacheconf { border-color: #d22128; }  /* Red-ish for Apache */
-.variant_asm         { border-color: #6e4c13; }  /* Rusty color */
-.variant_bash        { border-color: #3eaaaf; }
-.variant_batch       { border-color: #8bad2e; color: #2b2b2b; }
-.variant_csv         { border-color: #2d7f5e; }
-.variant_css         { border-color: #1e4fb4; }
-.variant_diff        { border-color: #e36209; }
-.variant_docker      { border-color: #0aa2ce; }
-.variant_docusaurus  { border-color: #3ecc5f; }
-.variant_gherkin     { border-color: #5a9a00; }
-.variant_html        { border-color: #e44d26; }
-.variant_ignore      { border-color: #6a737d; }
-.variant_ini         { border-color: #008080; }
-.variant_java        { border-color: #e11e2b; }
-.variant_js          { border-color: #f0d91e; color: #000; }
-.variant_json        { border-color: #1c1c1c; color: #ffcc00; }
-.variant_log         { border-color: #808080; }
-.variant_makefile    { border-color: #6e4f1e; }
-.variant_md          { border-color: #083fa1; }
-.variant_none        { border-color: #aaaaaa; }
-.variant_pascal      { border-color: #4278b8; }
-.variant_php         { border-color: #7a87b9; }
-.variant_powershell  { border-color: #0078d7; }
-.variant_python      { border-color: #2c628d; }
-.variant_sql         { border-color: #e38c00; }
-.variant_svg         { border-color: #f04e23; }
-.variant_toml        { border-color: #f36d25; }
-.variant_txt         { border-color: #6a737d; }
-.variant_vb          { border-color: #571a66; }
-.variant_vbnet       { border-color: #68217a; }
-.variant_xml         { border-color: #bf3b1b; }
-.variant_yaml        { border-color: #a31416; }
+.variant_apacheconf { border-color: #d22128; background-color: #d221281a; }  /* Red-ish for Apache */
+.variant_asm         { border-color: #6e4c13; background-color: #6e4c131a; }  /* Rusty color */
+.variant_bash        { border-color: #3eaaaf; background-color: #3eaaaf1a; }
+.variant_batch       { border-color: #8bad2e; color: #2b2b2b; background-color: #8bad2e1a; }
+.variant_csv         { border-color: #2d7f5e; background-color: #2d7f5e1a; }
+.variant_css         { border-color: #1e4fb4; background-color: #1e4fb41a; }
+.variant_diff        { border-color: #e36209; background-color: #e362091a; }
+.variant_docker      { border-color: #0aa2ce; background-color: #0aa2ce1a; }
+.variant_docusaurus  { border-color: #3ecc5f; background-color: #3ecc5f1a; }
+.variant_gherkin     { border-color: #5a9a00; background-color: #5a9a001a; }
+.variant_html        { border-color: #e44d26; background-color: #e44d261a; }
+.variant_ignore      { border-color: #6a737d; background-color: #6a737d1a; }
+.variant_ini         { border-color: #008080; background-color: #0080801a; }
+.variant_java        { border-color: #e11e2b; background-color: #e11e2b1a; }
+.variant_js          { border-color: #f0d91e; color: #000; background-color:#f0d91e1a; }
+.variant_json        { border-color: #5a5252; color: #ffcc00;background-color: #5a52521a; }
+.variant_log         { border-color: #808080; background-color: #8080801a; }
+.variant_makefile    { border-color: #6e4f1e; background-color: #6e4f1e1a; }
+.variant_md          { border-color: #083fa1;background-color: #083fa11a; }
+.variant_none        { border-color: #aaaaaa; background-color: #aaaaaa1a; }
+.variant_pascal      { border-color: #4278b8; background-color: #4278b81a; }
+.variant_php         { border-color: #7a87b9; background-color: #7a87b91a; }
+.variant_powershell  { border-color: #0078d7; background-color: #0078d71a; }
+.variant_python      { border-color: #2c628d; background-color: #2c628d1a; }
+.variant_sql         { border-color: #e38c00; background-color: #e38c001a; }
+.variant_svg         { border-color: #f04e23; background-color: #f04e231a; }
+.variant_toml        { border-color: #f36d25; background-color: #f36d251a; }
+.variant_txt         { border-color: #6a737d; background-color: #6a737d1a; }
+.variant_vb          { border-color: #571a66; background-color: #571a661a; }
+.variant_vbnet       { border-color: #68217a; background-color: #68217a1a; }
+.variant_xml         { border-color: #bf3b1b; background-color: #bf3b1b1a; }
+.variant_yaml        { border-color: #a31416; background-color: #a314161a; }

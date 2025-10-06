@@ -14,11 +14,44 @@
   "blog": {
     "kikinou": {
       "component": "Tooltip",
-      "props": { "text": "Apparaît en bas", "position": "bottom" },
+      "props": { "text": "Apparaît en bas", "position": "bottom" ,"model":"teacher" },
       "children": "mon nouveau mot"
+    },
+
+    "kiki": {
+      "component": "Tooltip",
+      "props": { "text": "Documentation" },
+      "children": "Docux Docs"
+    },
+
+
+    "schema-diagram": {
+      "component": "ImageOnClick",
+      "props": {
+        "imageUrl": "/img/remarkreplace.png",
+        "altText": "Schéma d’architecture",
+        "buttonName": "Click me"
+      }
     },
     "Cavo": {
       "children": "pépé christophe"
+    },
+    "cta-docs": {
+      "component": "DocusaurusButton",
+      "props": { "to": "/img/remarkreplace.png", "label": "Read Docs" },
+      "children": "Lire la documentation"
+    },
+    "nana": {
+      "component": "LogoIcon",
+      "props": { "name": "logos:css-3", "size": "124" }
+    },
+    "roki": {
+      "component": "LogoIcon",
+      "props": { "name": "docusaurus", "size": "124" }
+    },
+    "node": {
+      "component": "LogoIcon",
+      "props": { "name": "logos:nodejs-icon", "size": 64 }
     }
   },
   "pages": {
@@ -29,6 +62,18 @@
     "roki": {
       "component": "LogoIcon",
       "props": { "name": "docusaurus", "size": "124" }
+    },
+    "node": {
+      "component": "LogoIcon",
+      "props": { "name": "logos:nodejs-icon", "size": 64 }
+    },
+    "schema-diagram": {
+      "component": "ImageOnClick",
+      "props": {
+        "imageUrl": "/img/DocuxLab.png",
+        "altText": "Schéma d’architecture",
+        "buttonName": "Voir le schéma"
+      }
     }
   },
   "docs": {

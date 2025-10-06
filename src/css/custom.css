@@ -175,4 +175,22 @@ h2.title_f1Hy {
     border: 2px solid white;
 }
 
+/* Wrap long lines in code blocks (but not inline code) */
+/* Prism/Infima selectors for fenced code blocks */
+pre[class*='language-'] {
+  white-space: pre-wrap;      /* Wrap long lines */
+  word-break: break-word;     /* Break long tokens */
+  overflow-x: auto;           /* Keep horizontal scroll if needed */
+}
+
+/* Ensure code element inside pre inherits wrapping */
+pre[class*='language-'] code {
+  white-space: inherit;
+}
+
+/* Keep inline code on a single line */
+:not(pre) > code {
+  white-space: normal; /* or initial to allow wrapping with surrounding text */
+}
+
 

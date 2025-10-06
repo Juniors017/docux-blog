@@ -1,0 +1,246 @@
+---
+title: "Plugin Remark Replace Words"
+slug: remark-replace-words-plugin
+description: "Automatically replace words with text, icons, or MDX components (Tooltip, buttons…) in your pages/blog/docs with a configurable Remark plugin."
+schemaTypes: ["HowTo", "BlogPosting"]
+image: "/img/remarkreplace.png"
+authors: ["docux"]
+mainTag: remarkPlugins
+tags: ["remark","mdx","plugin","glossary","tooltip","icon","replacement"]
+date: 2025-10-07
+difficulty: "intermediate"
+totalTime: "PT30M"
+yield: "Configurable word replacement plugin."
+genre: "Technical Tutorial"
+inLanguage: "en"
+readingTime: "16 min"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+keywords: ["docusaurus","remark replace words","mdx replace","glossary","tooltip","icons","replacements json"]
+hide_table_of_contents: true
+series: "Docusaurus Plugins"
+blueSkyRecordKey: 
+---
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-docux-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/remarkreplace.png)
+</div>
+</center>
+
+<div className="text--justify">
+This remark/MDX plugin automatically replaces certain words in your .mdx/.md content with other text, an icon, or even a React component (e.g., Tooltip). It’s ideal for keeping terminology consistent, adding contextual help, or “styling” recurring keywords.
+
+The plugin walks Markdown/MDX text nodes, skips certain parents (links, headings, code…), merges `all` + the current section (`blog`/`pages`/`docs`), sorts keys by decreasing length, then replaces with plain text or MDX components. Matching is Unicode‑safe to avoid false positives inside words.
+
+:::tip Interactive glossary
+Combined with a `Tooltip` component, this plugin lets you build a real interactive glossary: authors write plain Markdown, and the plugin replaces terms with rich components (tooltips, icons, buttons) without extra effort.
+:::
+</div>
+{/* truncate */}
+
+## Why this plugin?
+
+- Standardize brand or team terms (e.g., product names)
+- Automatically substitute words or components
+- Centralize replacement rules in a simple per‑section JSON file (blog, pages, docs)
+- Keep Markdown/MDX clean and readable, without intrusive tags or components
+- Easier maintenance: a change in JSON propagates everywhere
+- And why not?
+
+
+
+## Plugin code
+
+Create a folder `plugins/remark-replace-words` in your Docusaurus project, with a file: `index.js` (the plugin).
+
+<Snippet filename="plugins/remark-replace-words/index.js" source="plugins/remark-replace-words/index.js" />
+
+
+### JSON configuration
+
+In your `plugins/remark-replace-words` folder, add a file: `replacements.json`.
+
+Replacements are driven by `plugins/remark-replace-words/replacements.json`. It contains 4 top‑level keys:
+- `all`: global replacements (all sections)
+- `blog`: replacements specific to blog posts
+- `pages`: replacements for pages
+- `docs`: replacements for documentation
+
+Each entry uses the word to detect as the key, and an object as the value:
+- `component` (optional): name of the MDX component to inject (e.g., Tooltip, LogoIcon)
+- `props` (optional): props passed to the component
+- `children` (optional): component’s child text; if missing, the matched word is reused
+
+<Snippet filename="plugins/remark-replace-words/replacements.json" source="plugins/remark-replace-words/replacements.json" />
+
+
+## Installation and setup
+
+The plugin is already present in this repo under `plugins/remark-replace-words`. To enable it in Docusaurus, it’s referenced in `docusaurus.config.js` at the Blog, Pages, and Docs presets level.
+
+```js title="docusaurus.config.js"
+// ...imports
+import remarkReplaceWords from "./plugins/remark-replace-words/index.js"
+
+export default {
+  // ...
+  presets: [
+    [
+      'classic',
+      ({
+        blog: {
+          remarkPlugins: [
+            // ...
+            [remarkReplaceWords, "blog"],
+          ],
+        },
+        pages: {
+          remarkPlugins: [
+            // ...
+            [remarkReplaceWords, "pages"],
+          ],
+        },
+        // If you have a Docs section
+        docs: {
+          remarkPlugins: [
+            // ...
+            [remarkReplaceWords, "docs"],
+          ],
+        },
+      })
+    ]
+  ]
+}
+```
+
+The second argument ("blog" | "pages" | "docs") selects a specific section in the configuration JSON. An `all` block is also available for global replacements.
+
+
+
+### Strategy
+
+- Section detection from the file path (`/blog/`, `/pages/`, `/docs/`), otherwise fallback to `pages`.
+- Mapping merge: `merged = { ...mapping.all, ...mapping[section] }` to support global then section‑specific rules.
+- Unicode NFC normalization to stabilize accents (é, è, ê, ô, ç, œ, ï, …).
+- Ignored parents to avoid unwanted replacements:
+  - Markdown/MDX: `link`, `linkReference`, `definition`, `code`, `inlineCode`, `heading`, `image`, `imageReference`, `blockquote`, `url`.
+  - MDX JSX: `a` tag and any component already inserted by a previous replacement (prevents re‑traversal).
+- Pre‑collect replacement component names (Set) to detect them during the visit and short‑circuit.
+- Sort replacement keys by decreasing length to prevent overlaps (longest first).
+- Robust Unicode word‑boundary regex to avoid matching inside a word and when adjacent to `_ - / " ' ’`:
+  - `(?<![\p{L}\p{N}_/"'’-])word(?![\p{L}\p{N}_/"'’-])` with `giu` flags.
+- Replace by fragments: split the text and insert either plain text or an MDX element (`mdxJsxTextElement` inline, `mdxJsxFlowElement` block) with `name`, `attributes` (props) and `children`.
+- `children` choice: if `children` is defined in JSON, use it; otherwise reuse the captured value.
+- DEBUG report (optional): aggregate by type (`blog`, `pages`, `docs`, `all`) and print once at the end of build/dev.
+- Performance goal: avoid replacements in undesired areas, reduce false positives with the Unicode regex, and limit re‑traversal via the Set and longest‑first sort.
+
+
+
+## Concrete replacement examples
+
+Here are several use cases, based on this project’s JSON.
+
+### Word → Word (plain text)
+
+- Key: `Cavo` in the `blog` section:
+    ```json
+    "Cavo": { "children": "pépé christophe" }
+    ```
+    In a post, typing 
+    ```md
+    “Cavo” will render “pépé christophe”.
+    ```
+    Rendered `Cavo` = “pépé christophe”.
+
+### Word → Icon (LogoIcon)
+
+- Keys: `nana` and `roki` in the `pages` section:
+  ```json
+  "nana": { "component": "LogoIcon", "props": { "name": "ccs-3", "size": "124" } }
+  "roki": { "component": "LogoIcon", "props": { "name": "docusaurus", "size": "124" } }
+  ```
+  ```mdx
+  On an MDX page, typing “nana” will display the CSS‑3 icon and “roki” the Docusaurus icon.
+  ```
+  Rendered: 
+  On an MDX page, typing “nana” will display the CSS‑3 icon and “roki” the Docusaurus icon.
+
+  Additional example with an explicit Iconify set:
+  ```json
+  "node": { "component": "LogoIcon", "props": { "name": "logos:nodejs", "size": 64 } }
+  ```
+    Rendered `node` = Node.js icon.
+
+### Word → Tooltip
+
+- Keys: `Giti` and `kiki`:
+    ```json
+    "Giti": { "component": "Tooltip", "props": { "text": "DocuxLab" }, "children": "Global replacement" }
+    "kiki": { "component": "Tooltip", "props": { "text": "Documentation" }, "children": "Docux Docs" }
+    ```
+    ```mdx
+    The word “Giti” anywhere will be replaced by `<Tooltip text="DocuxLab">Global replacement</Tooltip>`. In docs, “kiki” becomes `<Tooltip text="Documentation">Docux Docs</Tooltip>`.
+    ```
+    Rendered: The word “Giti” anywhere will be replaced by `<Tooltip text="DocuxLab">Global replacement</Tooltip>`. In docs, “kiki” becomes `<Tooltip text="Documentation">Docux Docs</Tooltip>`.
+
+
+
+
+
+
+### Word → Clickable image (ImageOnClick)
+
+`ImageOnClick` is a local component that displays an image overlay on click. 
+
+```mdx
+In a post, typing “schema-diagram” will display a clickable link opening the image `/img/diagram.png` fullscreen.
+```
+Replacement example:
+
+```json
+{
+  "pages": {
+    "schema-diagram": {
+      "component": "ImageOnClick",
+      "props": {
+        "imageUrl": "/img/rocket_1f680.gif",
+        "altText": "Architecture diagram",
+        "buttonName": "Click me"
+      }
+    }
+  }
+}
+```
+
+On a page, typing schema-diagram will display a clickable link opening the image `/img/rocket_1f680.gif` fullscreen.
+
+
+## Important behaviors to know
+
+- Ignored parents: no replacement inside links, headings, code blocks/inline code, images.
+- Merged sections: for a blog file, merge `all` then `blog` (the latter wins on conflict). Same logic for `pages` and `docs`.
+- Replacement order: sort by decreasing word length to avoid overlaps.
+- Unicode boundaries: the regex uses lookarounds and Unicode classes to avoid matching substrings (e.g., don’t replace “TS” inside “intérêts”).
+- Build report: with DEBUG on, a console report per section shows how many times each word was replaced.
+
+> File compatibility: the plugin works in both `.md` and `.mdx` pages.
+> Opinion: I chose to convert all my pages to `.mdx` to guarantee consistent support for MDX components and the plugin everywhere. Handling `.jsx` or `.tsx` pages would require a different, more complex approach with a dedicated React component for pages.
+
+
+## Example of the report log
+
+When `DEBUG` is enabled, the plugin prints a summary of replacements to the console after build/dev:
+
+```text
+=== Remark replacements report ===
+[blog]
+- "Cavo" replaced 4 times
+- "kikinou" replaced 4 times
+[all]
+- "Giti" replaced 4 times
+======================================
+```
