@@ -3,38 +3,35 @@
     "Giti": {
       "component": "Tooltip",
       "props": { "text": "DocuxLab" },
-      "children": "Remplacement global"
+      "children": "Global replacement"
     },
     "doculab": {
       "component": "Tooltip",
       "props": { "text": "dokidoki" },
-      "children": "Remplacement global"
+      "children": "Global replacement"
     }
   },
   "blog": {
     "kiki": {
       "component": "Tooltip",
-      "props": { "text": "Apparaît en bas", "position": "bottom" , "model": "teacher"},
-      "children": "mon nouveau mot"
+      "props": { "text": "Appears at the bottom", "position": "bottom", "model": "teacher" },
+      "children": "my new word"
     },
-
-    
-
     "schema-diagram": {
       "component": "ImageOnClick",
       "props": {
         "imageUrl": "/img/remarkreplace.png",
-        "altText": "Schéma d’architecture",
+        "altText": "Architecture diagram",
         "buttonName": "Click me"
       }
     },
     "Cavo": {
-      "children": "pépé christophe"
+      "children": "grandpa Christophe"
     },
     "cta-docs": {
       "component": "DocusaurusButton",
       "props": { "to": "/img/remarkreplace.png", "label": "Read Docs" },
-      "children": "Lire la documentation"
+      "children": "Read the documentation"
     },
     "nana": {
       "component": "LogoIcon",
@@ -66,8 +63,8 @@
       "component": "ImageOnClick",
       "props": {
         "imageUrl": "/img/DocuxLab.png",
-        "altText": "Schéma d’architecture",
-        "buttonName": "Voir le schéma"
+        "altText": "Architecture diagram",
+        "buttonName": "View diagram"
       }
     }
   },
