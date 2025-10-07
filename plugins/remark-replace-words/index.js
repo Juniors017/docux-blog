@@ -69,7 +69,10 @@ export default function remarkReplaceFromJson() {
         if (!word) continue;
         const safe = escapeRegex(word);
 
-        const regex = new RegExp(`(?<![\\p{L}\\p{N}_/"'’-])${safe}(?![\\p{L}\\p{N}_/"'’-])`, 'giu');
+       const regex = new RegExp(
+  `(?<![\\p{L}\\p{N}_/"'’-])${safe}(?!(?:[\\p{L}\\p{N}_/"'’-]|\\.[\\p{L}\\p{N}]))`,
+  'giu'
+);
 
         fragments = fragments.flatMap((frag) => {
           if (frag.type !== 'text') return [frag];
