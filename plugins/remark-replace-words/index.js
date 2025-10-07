@@ -18,7 +18,7 @@ function isForbiddenParent(parent, replacementComponentNames) {
     parent.type === 'definition' ||
     parent.type === 'code' ||
     parent.type === 'inlineCode' ||
-    parent.type === 'heading' || // # titre
+    parent.type === 'heading' || 
     parent.type === 'image' ||
     parent.type === 'imageReference'
   ) {
@@ -27,7 +27,7 @@ function isForbiddenParent(parent, replacementComponentNames) {
 
   if (
     (parent.type === 'mdxJsxFlowElement' || parent.type === 'mdxJsxTextElement') && (
-      parent.name === 'a' || // <a>
+      parent.name === 'a' || 
       replacementComponentNames.has(parent.name)  )
   ) {
     return true;

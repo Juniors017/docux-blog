@@ -19,7 +19,7 @@ copyrightHolder: "Docux"
 keywords: ["docusaurus","remark replace words","mdx replace","glossary","tooltip","icons","replacements json"]
 hide_table_of_contents: true
 series: "Docusaurus Plugins"
-blueSkyRecordKey: 
+blueSkyRecordKey: 3m2ljvfomz22t
 ---
 <center>
 <div>
@@ -35,6 +35,7 @@ blueSkyRecordKey:
 This remark/MDX plugin automatically replaces certain words in your .mdx/.md content with other text, an icon, or even a React component (e.g., Tooltip). It’s ideal for keeping terminology consistent, adding contextual help, or “styling” recurring keywords.
 
 The plugin walks Markdown/MDX text nodes, skips certain parents (links, headings, code…), merges `all` + the current section (`blog`/`pages`/`docs`), sorts keys by decreasing length, then replaces with plain text or MDX components. Matching is Unicode‑safe to avoid false positives inside words.
+
 
 :::tip Interactive glossary
 Combined with a `Tooltip` component, this plugin lets you build a real interactive glossary: authors write plain Markdown, and the plugin replaces terms with rich components (tooltips, icons, buttons) without extra effort.
@@ -227,8 +228,22 @@ On a page, typing schema-diagram will display a clickable link opening the image
 - Unicode boundaries: the regex uses lookarounds and Unicode classes to avoid matching substrings (e.g., don’t replace “TS” inside “intérêts”).
 - Build report: with DEBUG on, a console report per section shows how many times each word was replaced.
 
+
+## Why MDX/MD instead of JSX/TSX pages?
+
 > File compatibility: the plugin works in both `.md` and `.mdx` pages.
 > Opinion: I chose to convert all my pages to `.mdx` to guarantee consistent support for MDX components and the plugin everywhere. Handling `.jsx` or `.tsx` pages would require a different, more complex approach with a dedicated React component for pages.
+
+
+- Remark/rehype pipeline: Remark plugins only run on Markdown/MDX content. JSX/TSX pages are plain React components compiled by Babel/TS and bypass the Markdown pipeline, so the plugin never “sees” their text.
+- AST expectations: This plugin operates on the Markdown AST (mdast) text nodes. In JSX, text is split across JSXText/StringLiteral and mixed with elements/props. Safe replacement there would require a Babel/SWC transform or a runtime React tree walk, with high risk of touching code, props, or links.
+- Word-boundaries and Unicode: The plugin relies on contiguous text to apply robust Unicode word-boundary regexes. In JSX, sentences are often fragmented across nodes/components, making accurate matching and ordering (inline vs block) unreliable.
+- MDX is a perfect fit: MDX gives a Markdown-first AST where narrative text lives in text nodes, and it officially supports injecting MDX components as replacements—exactly what the plugin generates.
+
+If you must keep JSX/TSX pages, possible alternatives:
+- Build-time: write a Babel/SWC plugin that transforms JSXText/StringLiteral using the same rules (harder to maintain).
+- Runtime: create a React wrapper that recursively walks children and replaces strings (perf and correctness caveats).
+- Hybrid: wrap JSX pages with a thin MDX shell and keep textual content in MDX so the plugin can process it.
 
 
 ## Example of the report log
