@@ -17,7 +17,7 @@ const config = {
     title: 'DOCUX',
     tagline: 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
             'ut Docusaurus',
-    favicon: 'img/docux.png',
+    favicon: 'img/docux.webp',
     organizationName: 'DocuxLab', // Usually your GitHub org/user name.
     projectName: 'docux-blog', // Usually your repo name.
     url: 'https://docuxlab.com',
@@ -137,7 +137,7 @@ const config = {
                 '@type': 'Organization',
                 'name': 'DOCUX',
                 'url': 'https://docuxlab.com/',
-                'logo': 'https://docuxlab.com/img/docux.png',
+                'logo': 'https://docuxlab.com/img/docux.webp',
                 'sameAs': ['https://github.com/Juniors017/docux-blog']
             })
         }
@@ -196,7 +196,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
         // Replace with your project's social card
-        image: 'img/docux.png',
+        image: 'img/docux.webp',
         metadata: [
             // Métadonnées générales
             {
@@ -237,7 +237,7 @@ const config = {
                         'ut Docusaurus'
             }, {
                 name: 'twitter:image',
-                content: 'https://docuxlab.com/img/docux.png'
+                content: 'https://docuxlab.com/img/docux.webp'
             }, {
                 property: 'og:title',
                 content: 'DOCUX - CMS pour Docusaurus'
@@ -249,7 +249,7 @@ const config = {
                 content: 'https://docuxlab.com/'
             }, {
                 property: 'og:image',
-                content: 'https://docuxlab.com/img/docux.png'
+                content: 'https://docuxlab.com/img/docux.webp'
             }, {
                 property: 'og:description',
                 content: 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
@@ -276,7 +276,7 @@ const config = {
             style: 'dark',
             logo: {
                 alt: 'Docux Blog Logo',
-                src: 'img/docux.png'
+                src: 'img/docux.webp'
             },
             items: [
 
