@@ -3,7 +3,7 @@
 
 # Production
 /build
-
+/static/img/old/
 # Generated files
 .docusaurus
 .cache-loader

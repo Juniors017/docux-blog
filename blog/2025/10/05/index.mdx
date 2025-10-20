@@ -3,7 +3,7 @@ title: "ScrollToTopButton Component"
 slug: docusaurus-scroll-to-top-button
 description: "Simple React component adding a floating 'back to top' button with delayed appearance (after scrolling 300px), click animation and smooth scroll behavior in Docusaurus."
 schemaTypes: ["HowTo", "BlogPosting"]
-image: "/img/scrolltotop.png"
+image: "/img/scrolltotop.webp"
 authors: ["docux"]
 mainTag: ux
 tags: ["react","scroll","component"]
@@ -28,7 +28,7 @@ blueSkyRecordKey: 3m2ivzblafs2h
 [![Development](https://img.shields.io/badge/Development-docux-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![](/img/scrolltotop.png)
+![](/img/scrolltotop.webp)
 </div>
 </center>
 
@@ -55,7 +55,7 @@ Implemented features:
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import styles from "./styles.module.css";
-import buttontop from '@site/static/img/buttontop.PNG'
+import buttontop from '@site/static/img/buttontop.webp'
 
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -161,7 +161,7 @@ export default function ScrollToTopButton() {
 
 1. Copy the `ScrollToTopButton` folder into `src/components/`
 2. Import the component in your global layout (or a specific page)
-3. Ensure the image import works (`/static/img/buttontop.PNG`)
+3. Ensure the image import works (`/static/img/buttontop.webp`)
 4. (Optional) Replace the image with your own
 
 ## File structure
@@ -186,7 +186,7 @@ src/components/ScrollToTopButton/
 2. Update the import in `index.js`:
 
 ```jsx
-import buttontop from '@site/static/img/your-image.png'
+import buttontop from '@site/static/img/your-image.webp'
 ```
 
 3. The component uses it like:
