@@ -23,7 +23,7 @@ function HomepageHeader() {
     </div>
     <div className="col col--3 text--center padding-horiz--xs">
       <div className={styles.circleImage}>
-        <img src="/img/docux4.png" alt="Docux Logo" />
+        <img src="/img/docux4.webp" alt="Docux Logo" />
       </div>
     </div> 
     <div className="col col--6 text--center">

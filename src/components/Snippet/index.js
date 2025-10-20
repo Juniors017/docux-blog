@@ -100,27 +100,27 @@ const variantIcons = {
   apacheconf: {
     iconClassName: styles.apacheconf_icon,
     iconify: "logos:apache",
-    ariaLabel: "ApacheConf Logo",
+    ariaLabel: "Apache Logo",
   },
   asm: {
     iconClassName: styles.asm_icon,
-    iconify: "vscode-icons:file-type-assembly",
-    ariaLabel: "Asm Logo",
+    iconify: "logos:assemblyscript",
+    ariaLabel: "AssemblyScript Logo",
   },
   bash: {
     iconClassName: styles.bash_icon,
-    iconify: "devicon:bash",
+    iconify: "logos:bash-icon",
     ariaLabel: "Bash Logo",
   },
   batch: {
     iconClassName: styles.batch_icon,
-    iconify: "file-icons:ms-dos",
-    ariaLabel: "Batch Logo",
+    iconify: "logos:microsoft-windows",
+    ariaLabel: "Windows Batch Logo",
   },
   css: {
     iconClassName: styles.css_icon,
-    iconify: "ph:file-css",
-    ariaLabel: "CSS Logo",
+    iconify: "logos:css-3",
+    ariaLabel: "CSS3 Logo",
   },
   csv: {
     iconClassName: styles.csv_icon,
@@ -129,12 +129,12 @@ const variantIcons = {
   },
   diff: {
     iconClassName: styles.diff_icon,
-    iconify: "ph:git-diff",
-    ariaLabel: "Diff Logo",
+    iconify: "logos:git-icon",
+    ariaLabel: "Git Diff Logo",
   },
   docker: {
     iconClassName: styles.docker_icon,
-    iconify: "uil:docker",
+    iconify: "logos:docker-icon",
     ariaLabel: "Docker Logo",
   },
   docusaurus: {
@@ -144,18 +144,18 @@ const variantIcons = {
   },
   gherkin: {
     iconClassName: styles.gherkin_icon,
-    iconify: "skill-icons:gherkin-light",
-    ariaLabel: "Gherkin Logo",
+    iconify: "logos:cucumber",
+    ariaLabel: "Cucumber/Gherkin Logo",
   },
   html: {
     iconClassName: styles.html_icon,
-    iconify: "ph:file-html",
-    ariaLabel: "HTML Logo",
+    iconify: "logos:html-5",
+    ariaLabel: "HTML5 Logo",
   },
   ignore: {
     iconClassName: styles.ignore_icon,
-    iconify: "codicon:sync-ignored",
-    ariaLabel: "Ignore Logo",
+    iconify: "logos:git-icon",
+    ariaLabel: "Git Ignore Logo",
   },
   ini: {
     iconClassName: styles.ini_icon,
@@ -164,17 +164,17 @@ const variantIcons = {
   },
   java: {
     iconClassName: styles.java_icon,
-    iconify: "vscode-icons:file-type-java",
+    iconify: "logos:java",
     ariaLabel: "Java Logo",
   },
   js: {
     iconClassName: styles.js_icon,
     iconify: "logos:javascript",
-    ariaLabel: "JS Logo",
+    ariaLabel: "JavaScript Logo",
   },
   json: {
     iconClassName: styles.json_icon,
-    iconify: "ix:json-document",
+    iconify: "logos:json",
     ariaLabel: "JSON Logo",
   },
   log: {
@@ -184,12 +184,12 @@ const variantIcons = {
   },
   makefile: {
     iconClassName: styles.makefile_icon,
-    iconify: "vscode-icons:file-type-makefile",
+    iconify: "logos:gnu",
     ariaLabel: "GNU Makefile Logo",
   },
   md: {
     iconClassName: styles.md_icon,
-    iconify: "ph:markdown-logo",
+    iconify: "logos:markdown",
     ariaLabel: "Markdown Logo",
   },
   none: {
@@ -204,48 +204,48 @@ const variantIcons = {
   },
   php: {
     iconClassName: styles.php_icon,
-    iconify: "bi:filetype-php",
+    iconify: "logos:php",
     ariaLabel: "PHP Logo",
   },
   powershell: {
     iconClassName: styles.powershell_icon,
-    iconify: "file-icons:powershell",
-    ariaLabel: "Powershell Logo",
+    iconify: "logos:powershell",
+    ariaLabel: "PowerShell Logo",
   },
   python: {
     iconClassName: styles.python_icon,
-    iconify: "devicon:python",
+    iconify: "logos:python",
     ariaLabel: "Python Logo",
   },
   sql: {
     iconClassName: styles.sql_icon,
-    iconify: "ph:file-sql",
+    iconify: "logos:mysql",
     ariaLabel: "SQL Logo",
   },
   svg: {
     iconClassName: styles.svg_icon,
-    iconify: "ph:file-svg",
+    iconify: "logos:svg",
     ariaLabel: "SVG Logo",
   },
   toml: {
     iconClassName: styles.toml_icon,
     iconify: "tabler:toml",
-    ariaLabel: "Toml Logo",
+    ariaLabel: "TOML Logo",
   },
   txt: {
     iconClassName: styles.txt,
     iconify: "ph:file-txt",
-    ariaLabel: "Txt Logo",
+    ariaLabel: "Text Logo",
   },
   vb: {
     iconClassName: styles.vb_icon,
-    iconify: "fluent:document-vb-16-regular",
-    ariaLabel: "VB Logo",
+    iconify: "logos:microsoft-icon",
+    ariaLabel: "Visual Basic Logo",
   },
   vbnet: {
     iconClassName: styles.vbnet_icon,
-    iconify: "fluent:document-vb-16-regular",
-    ariaLabel: "VbNet Logo",
+    iconify: "logos:dotnet",
+    ariaLabel: "VB.NET Logo",
   },
   xml: {
     iconClassName: styles.xml_icon,
@@ -254,7 +254,7 @@ const variantIcons = {
   },
   yaml: {
     iconClassName: styles.yaml_icon,
-    iconify: "devicon-plain:yaml",
+    iconify: "logos:yaml",
     ariaLabel: "YAML Logo",
   },
 };

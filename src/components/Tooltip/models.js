@@ -40,7 +40,7 @@ export const teacher = {
   paddingTop: '30px',
   paddingLeft: '10px',
   // image displayed inside the tooltip (rendered as an inline img to avoid overlap)
-  image: '/img/toottipsteacherdocuxlab.png',
+  image: '/img/toottipsteacherdocuxlab.webp',
   // decorative by default; set a string to provide accessible alt text
   imageAlt: '',
   imageSize: '70px',

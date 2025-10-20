@@ -9,7 +9,7 @@ function simpleAnalyticsPlugin(context, options) {
             attributes: {
               src: 'https://scripts.simpleanalyticscdn.com/latest.js',
               async: true,
-              'data-hostname': 'docuxlab.com', // Configuration pour localhost
+              'data-hostname': 'docuxlab.com',
             },
           },
           {

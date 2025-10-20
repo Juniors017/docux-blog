@@ -20,9 +20,9 @@ const {
 } = React;
 
 export default {
-  // Garder l'objet React complet accessible si besoin (sans le spread pour éviter la clé 'default')
+  // Keep the complete React object accessible if needed (without spread to avoid 'default' key)
   React,
-  // Hooks fréquemment utilisés dans les snippets
+  // Frequently used hooks in snippets
   useState,
   useEffect,
   useRef,
@@ -32,7 +32,7 @@ export default {
   forwardRef,
   createElement,
   Children,
-  // Composants custom exposés dans les blocs live
+  // Custom components exposed in live blocks
   Tooltip,
   LogoIcon,
   Skill,

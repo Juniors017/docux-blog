@@ -23,13 +23,13 @@
   transform: scale(1.1);
 }
 
-/* Bouton visible après scroll */
+/* Button visible after scroll */
 .scrollBtn.show {
   opacity: 1;
   visibility: visible;
 }
 
-/* Animation "vol vers le haut" */
+/* "Fly upward" animation */
 .scrollBtn.fly img {
   animation: flyUp 0.8s ease-in forwards;
 }

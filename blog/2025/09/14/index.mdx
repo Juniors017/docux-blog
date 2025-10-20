@@ -72,38 +72,7 @@ plugins/
 
 This file is the core of the plugin and runs in a Node.js environment during development server startup or site compilation.
 
-<Tabs> 
- <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
-
-```javascript title='plugins\simpleAnalytics\index.js'
-function simpleAnalyticsPlugin(context, options) {
-  return {
-    name: "docusaurus-plugin-simple-analytics",
-    injectHtmlTags() {
-      return {
-        headTags: [
-          {
-            tagName: 'script',
-            attributes: {
-              src: 'https://scripts.simpleanalyticscdn.com/latest.js',
-              async: true,
-              'data-hostname': 'docuxlab.com', // Configuration for localhost
-            },
-          },
-          {
-            tagName: 'noscript',
-            innerHTML: '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />',
-          },
-        ],
-      };
-    },
-  };
-}
-
-module.exports = simpleAnalyticsPlugin;
-```
-</TabItem>
-</Tabs>
+<Snippet filename="plugins/simpleAnalytics/index.js" source="plugins/simpleAnalytics/index.js" />
 
 
 
@@ -119,45 +88,7 @@ In summary, `index.js` handles the initial and static configuration.
 
 This file executes **only in the user's browser**. Its existence is crucial because Docusaurus functions as a Single Page Application (SPA).
 
-
-<Tabs> 
- <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
-
-```javascript title='plugins\simpleAnalytics\sa-client.js'
-export function loadSimpleAnalytics() {
-  if (typeof window === "undefined") return;
-  if (document.querySelector("script[src*='simpleanalyticscdn.com']")) return;
-
-  const script = document.createElement("script");
-  script.src = "https://scripts.simpleanalyticscdn.com/latest.js";
-  script.async = true;
-  document.body.appendChild(script);
-
-  const noscript = document.createElement("noscript");
-  noscript.innerHTML =
-    '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" />';
-  document.body.appendChild(noscript);
-
-  return () => {
-    script.remove();
-    noscript.remove();
-  };
-}
-
-// Auto-execution of the script
-if (typeof window !== "undefined") {
-  // Wait for the DOM to be ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", loadSimpleAnalytics);
-  } else {
-    loadSimpleAnalytics();
-  }
-}
-
-```
-</TabItem>
-</Tabs>
-
+<Snippet filename="plugins/simpleAnalytics/sa-client.js" source="plugins/simpleAnalytics/sa-client.js" />
 
 
 Its role is to manage navigation tracking **after the initial page load**:
