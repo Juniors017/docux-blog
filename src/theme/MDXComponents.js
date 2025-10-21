@@ -25,6 +25,9 @@ import LogoIcon from '@site/src/components/LogoIcon';
 import Skill from '@site/src/components/Skill';
 import Tooltip from '@site/src/components/Tooltip';
 import Snippet from '@site/src/components/Snippet';
+import Trees from '@site/src/components/Trees';
+import Folder from '@site/src/components/Trees/Folder';
+import File from '@site/src/components/Trees/File';
 
 export default {
   // Réutilise la correspondance par défaut
@@ -78,5 +81,8 @@ export default {
   LogoIcon,
   Skill,
   Tooltip,
-  Snippet
+  Snippet,
+  Trees,
+  Folder,
+  File
 };

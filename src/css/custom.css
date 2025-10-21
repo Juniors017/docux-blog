@@ -193,4 +193,67 @@ pre[class*='language-'] code {
   white-space: normal; /* or initial to allow wrapping with surrounding text */
 }
 
+/* =========================
+   Ratio cohérent : Sidebar gauche | Article central | TOC droite
+   ========================= */
+
+/* Élargir le conteneur global pour avoir plus d'espace total */
+.container {
+  max-width: 1600px !important;
+}
+
+/* Pour les très grands écrans */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1800px !important;
+  }
+}
+
+/* Ajuster toutes les colonnes pour un ratio équilibré */
+@media (min-width: 997px) {
+  /* Sidebar gauche (liste des articles) : 20% */
+  aside.theme-doc-sidebar-container,
+  .col.col--2 {
+    --ifm-col-width: 20%;
+    flex: 0 0 var(--ifm-col-width);
+    max-width: var(--ifm-col-width);
+  }
+
+  /* Article principal au centre : 55% */
+  .col.col--7,
+  article.col {
+    --ifm-col-width: 65%;
+    flex: 0 0 var(--ifm-col-width);
+    max-width: var(--ifm-col-width);
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  /* Table des matières à droite : 25% */
+  .col.col--3 {
+    --ifm-col-width: 15%;
+    flex: 0 0 var(--ifm-col-width);
+    max-width: var(--ifm-col-width);
+  }
+
+  /* Rendre la TOC et la sidebar sticky */
+  .table-of-contents,
+  .theme-doc-toc-desktop {
+    position: sticky;
+    top: calc(var(--ifm-navbar-height) + 1rem);
+    max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
+    overflow-y: auto;
+  }
+  
+  /* Sidebar gauche aussi sticky */
+  aside.theme-doc-sidebar-container {
+    position: sticky;
+    top: calc(var(--ifm-navbar-height) + 1rem);
+    max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
+    overflow-y: auto;
+  }
+}
+
+
+
 
