@@ -23,6 +23,13 @@ const config = {
     url: 'https://docuxlab.com',
 
     baseUrl: '/',
+    scripts: [
+  {
+    async: true,
+    src: 'https://gc.zgo.at/count.js',
+    'data-goatcounter': 'https://docuxlab.goatcounter.com/count',
+  },
+],
 
     plugins: [
         [
@@ -214,12 +221,7 @@ const config = {
                 content: 'index, follow'
             },
 
-            // Google Search Console - Remplacez VOTRE_CODE_VERIFICATION_GOOGLE par votre
-            // code réel
-            {
-                name: 'google-site-verification',
-                content: 'VOTRE_CODE_VERIFICATION_GOOGLE'
-            },
+           
 
             // Twitter Card data
             {
@@ -230,7 +232,7 @@ const config = {
                 content: '@votre_compte_twitter'
             }, {
                 name: 'twitter:title',
-                content: 'DOCUX - CMS pour Docusaurus'
+                content: 'DOCUXLAB'
             }, {
                 name: 'twitter:description',
                 content: 'Explore Docusaurus with me. Find here my developments, research, and notes abo' +
@@ -240,7 +242,7 @@ const config = {
                 content: 'https://docuxlab.com/img/docux.webp'
             }, {
                 property: 'og:title',
-                content: 'DOCUX - CMS pour Docusaurus'
+                content: 'DOCUXLAB'
             }, {
                 property: 'og:type',
                 content: 'website'
