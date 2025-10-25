@@ -17,6 +17,9 @@
       "props": { "text": "Appears at the bottom", "position": "bottom", "model": "teacher" },
       "children": "my new word"
     },
+    "Goatcounter": {
+            "children": "[GoatCounter](https://www.goatcounter.com/)"
+    },
     "schema-diagram": {
       "component": "ImageOnClick",
       "props": {

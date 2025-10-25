@@ -1,0 +1,315 @@
+title: "GoatCounter: privacy‑friendly analytics for Docusaurus"
+description: "Discover GoatCounter (open‑source, cookieless) and 3 ways to integrate it with Docusaurus, including SPA route change tracking."
+slug: goatcounter
+date: 2025-10-24
+authors: ["docux"]
+tags: ["analytics", "goatcounter", "docusaurus", "privacy", "spa"]
+image: "/img/docuxgoatcounter.webp"
+schemaTypes: ["HowTo", "BlogPosting"]
+mainTag: "analytics"
+difficulty: "intermediate"
+totalTime: "PT15M"
+yield: "Working GoatCounter integration on Docusaurus (SPA)."
+genre: "Technical Tutorial"
+inLanguage: "en"
+readingTime: "10 min"
+keywords: ["goatcounter","analytics","privacy","docusaurus","spa","web analytics","cookieless"]
+hide_table_of_contents: false
+series: "Analyze your site"
+blueSkyRecordKey: 
+
+
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-docux-green.svg)](https://github.com/Juniors017)
+[![AI 50%](https://img.shields.io/badge/AI-50%-blue.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/docuxgoatcounter.webp)
+</div>
+</center>
+
+Analyzing website traffic while respecting user privacy is an increasing challenge. GoatCounter is an open‑source, cookieless analytics solution that addresses this need. In this post, we’ll look at GoatCounter’s essential options and three simple ways to integrate it with a Docusaurus site, including tracking page changes in a single‑page application (SPA).
+
+	{/* truncate */}
+
+## GoatCounter
+
+GoatCounter is a lightweight, privacy‑friendly, open‑source analytics tool by [Martin Tournoij](https://www.arp242.net/).
+It sets no cookies, doesn’t track individuals, and provides enough stats to understand real site usage (pageviews, referrers, devices, etc.).
+
+- Open source (AGPL), self‑hostable or hosted service.
+- Cookieless and privacy‑compliant in most cases.
+- Tiny script (~3–7 KB gzipped) and fast.
+- Simple API to count pageviews or events manually.
+
+:::tip[Bonus]
+Compared to other free analytics solutions, it lets you exclude your IP and more.
+:::
+
+Official site: [GoatCounter](https://www.goatcounter.com/) — [Documentation](https://www.goatcounter.com/help)
+
+
+
+## Basics: add the script
+
+The minimal method (hosted by GoatCounter) is to add this script to your pages:
+
+```html
+<script
+	data-goatcounter="https://VOTRE_NOM.goatcounter.com/count"
+	async
+	src="https://gc.zgo.at/count.js"
+></script>
+```
+
+For a self‑hosted GoatCounter, the `data-goatcounter` attribute must point to your `/count` endpoint:
+
+```html
+<script
+	data-goatcounter="https://stats.mondomaine.tld/count"
+	async
+	src="https://stats.mondomaine.tld/count.js"
+></script>
+```
+
+Noscript tip (counts a view even if JS is disabled):
+
+```html
+<noscript>
+	<img src="https://VOTRE_NOM.goatcounter.com/count?p=/" alt="" />
+</noscript>
+```
+
+
+
+## Essential options
+
+Options are set via a global `window.goatcounter` object before loading the script,
+or via the `<script>` tag’s `data-goatcounter` attribute.
+
+- `data-goatcounter`: Counting endpoint URL (e.g. `https://abc.goatcounter.com/count`).
+- `window.goatcounter.no_onload` (bool): disable automatic counting on initial load.
+  Useful for SPAs (like Docusaurus) so you call `count()` manually on each route change.
+- `window.goatcounter.endpoint` (string): explicitly set the counting endpoint if you don’t use `data-goatcounter`.
+- `window.goatcounter.allow_local` (bool): allow (or not) local counts (by default, local is ignored).
+- `window.goatcounter.path` (function): customize the path being counted (include query/hash if desired).
+- `window.goatcounter.count({ ... })`: JS API to count a pageview or an event manually.
+  - `path`: path to count (e.g. `"/docs/intro"`).
+  - `title`: page/event title.
+  - `referrer`: referrer to use.
+  - `event: true` to record an event (CTA click, etc.).
+
+_(Source: official documentation)_
+
+:::warning
+For single‑page sites like Docusaurus (SPA), you need a bit of setup to avoid double counting and to track client‑side page changes.
+:::
+
+## Integration with Docusaurus (3 approaches)
+
+### 1- Basic add via `docusaurus.config.js`
+
+For a simple static site (no route change tracking),
+add the script in `docusaurus.config.js`.
+
+#### Basic:
+```js title="docusaurus.config.js"
+
+module.exports = {
+	// ... your other configuration ...
+  scripts: [
+    {
+      src: "https://gc.zgo.at/count.js",
+      async: true,
+      'data-goatcounter': 'https://monprojet.goatcounter.com/count',
+    },
+  ],
+};
+``` 
+> Note that by default, localhost is not counted by GoatCounter.
+
+#### Production‑only variant:
+```js title="docusaurus.config.js"
+
+const isProd = process.env.NODE_ENV === 'production';
+
+module.exports = {
+	// ...
+	scripts: isProd
+		? [
+				{ content: 'window.goatcounter = { no_onload: true };' },
+				{
+					src: 'https://gc.zgo.at/count.js',
+					async: true,
+					'data-goatcounter': 'https://VOTRE_NOM.goatcounter.com/count',
+				},
+			]
+		: [],
+};
+```
+
+
+Pros: simple and immediate. Limitation: counts only the initial load; in a SPA, client‑side page changes won’t be tracked automatically.
+
+### 2- Minimal SPA tracking with a client module
+
+Docusaurus can run JS on each route change via [`onRouteDidUpdate`](https://docusaurus.io/docs/advanced/client#client-module-lifecycles).
+
+Create a file `src/utils/goatcounter.js`:
+
+
+```js title="src/utils/goatcounter.js"
+
+export function onRouteDidUpdate({ location }) {
+	if (typeof window === 'undefined') return;
+	const gc = window.goatcounter;
+	if (!gc || typeof gc.count !== 'function') return;
+
+	// full path (include query/hash if useful)
+	const path = location.pathname + location.search + location.hash;
+	gc.count({ path, title: document.title });
+}
+```
+
+Then reference this module on the client side in `docusaurus.config.js`:
+
+```js  title="docusaurus.config.js"
+const isProd = process.env.NODE_ENV === 'production';
+
+module.exports = {
+	// ...
+	scripts: isProd
+		? [
+				{ content: 'window.goatcounter = { no_onload: true };' },
+				{
+					src: 'https://gc.zgo.at/count.js',
+					async: true,
+					'data-goatcounter': 'https://VOTRE_NOM.goatcounter.com/count',
+				},
+			]
+		: [],
+	clientModules: [require.resolve('./src/utils/goatcounter.js')],
+};
+```
+
+	**Result:** the initial view and all internal navigations are counted properly.
+
+	#### Choose a pattern for the initial view (A/B)
+
+	Two equivalent approaches — pick just one to avoid duplicates:
+
+	- Pattern A — `no_onload: true` + count everywhere via `onRouteDidUpdate` (snippet above). Advantage: everything is driven by your code.
+	- Pattern B — Let GoatCounter auto‑count the initial view, then count only subsequent SPA navigations.
+
+	Example Pattern B (with small dedup):
+
+	```js  title="src/utils/goatcounter.js"
+	let lastCountedPath;
+	export function onRouteDidUpdate({ location, previousLocation }) {
+		if (typeof window === 'undefined') return;
+
+		// Ignore the very first render (already auto‑counted by GoatCounter)
+		if (!previousLocation) return;
+
+		const gc = window.goatcounter;
+		if (!gc || typeof gc.count !== 'function') return;
+
+		const path = `${location.pathname}${location.search}${location.hash}`;
+		if (path === lastCountedPath) return;
+		lastCountedPath = path;
+
+		gc.count({ path, title: document.title });
+	}
+	```
+
+	And in config, don’t set `no_onload: true`; just inject the script:
+
+	```js  title="docusaurus.config.js" 
+	scripts: [
+		{
+			src: 'https://gc.zgo.at/count.js',
+			async: true,
+			'data-goatcounter': 'https://VOTRE_NOM.goatcounter.com/count',
+		},
+	],
+	```
+
+
+
+### 3- Small Docusaurus plugin (optional, more structured)
+
+If you prefer to encapsulate the logic, create a small plugin that injects the script and handles navigations.
+Conceptually, it exposes `getClientModules()` and a client module with `onRouteDidUpdate`.
+This makes reuse (multi‑projects) and options (endpoint, allow_local, etc.) easier.
+
+#### Example config‑side API (idea):
+
+```js  title="docusaurus.config.js"
+plugins: [
+	[
+		require.resolve('./plugins/goatcounter'),
+		{
+			endpoint: 'https://VOTRE_NOM.goatcounter.com/count',
+			no_onload: true,
+			allow_local: false,
+		},
+	],
+],
+```
+
+
+
+## Custom events (clicks, CTAs, etc.)
+
+You can also count events (in addition to pageviews):
+
+```js
+// Example: sign‑up button click
+window.goatcounter?.count({
+	path: '/event/signup-cta',
+	title: 'Signup CTA click',
+	event: true,
+});
+```
+
+Best practices:
+- Prefix events with `/event/` or use a clear scheme.
+- Avoid sending personal data (PII).
+- Throttle/deduplicate on the UI side if needed to avoid spam.
+
+
+
+## Self‑hosting vs hosted service
+
+- Hosted service: get started in minutes, no infrastructure to manage.
+- Self‑hosting: full control of data, custom domains/CDN; you need to deploy the GoatCounter app and expose `/count.js` and `/count`.
+
+In both cases, the Docusaurus integration is the same (only the URL changes).
+
+
+
+## Verify everything works
+
+1) Run the site in production mode (build + serve) to test conditional scripts.
+2) Open the browser console: no GoatCounter‑related errors.
+3) Navigate between several pages: you should see hits arriving in your GoatCounter dashboard.
+4) Trigger a custom event (see section above) and validate it appears.
+
+:::note
+By default, GoatCounter ignores the local environment; enable `allow_local` if you want to test without deploying.
+:::
+
+If everything is OK, you should see your multi‑page navigation appear in the GoatCounter dashboard.
+<center>
+![GoatCounter dashboard](/img/tdbgoatcounter.webp)
+</center>
+
+## Exclude your IP address
+
+In the GoatCounter dashboard, go to `Settings` → `Main` and add your IP address under "Ignore these IP addresses" so your own visits aren’t counted.
+
+Happy GoatCounter integration!
+
+
