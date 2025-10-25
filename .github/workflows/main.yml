@@ -24,6 +24,8 @@ jobs:
         run: npm ci
 
       - name: Build Docusaurus site
+        env:
+          DOCUSAURUS_IGNORE_SSG_WARNINGS: "true"
         run: npm run build
 
       - name: Deploy to GitHub Pages
@@ -32,4 +34,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
           publish_branch: gh-pages
-          force_orphan: true  
+          force_orphan: true
