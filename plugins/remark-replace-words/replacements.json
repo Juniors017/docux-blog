@@ -29,6 +29,11 @@
     "Cavo": {
       "children": "grandpa Christophe"
     },
+    "goatcounter": {
+      "component": "a",
+      "props": { "href":"https://www.goatcounter.com/" },
+      "children": "Goatcounter"
+    },
     "cta-docs": {
       "component": "DocusaurusButton",
       "props": { "to": "/img/remarkreplace.png", "label": "Read Docs" },
