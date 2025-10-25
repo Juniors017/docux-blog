@@ -4,6 +4,8 @@
 // https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
+import path from 'path';
+import {fileURLToPath} from 'url';
 import pluginTagRoute from "./plugins/docusaurus-plugin-tag-route/index.cjs"
 import pluginSeriesRoute from "./plugins/docusaurus-plugin-series-route/index.cjs"
 import simpleAnalytics from "./plugins/simpleAnalytics/index.js"
@@ -23,13 +25,19 @@ const config = {
     url: 'https://docuxlab.com',
 
     baseUrl: '/',
-    scripts: [
+        scripts: [
   {
     async: true,
     src: 'https://gc.zgo.at/count.js',
     'data-goatcounter': 'https://docuxlab.goatcounter.com/count',
   },
 ],
+
+        // Track SPA navigations with GoatCounter via a client module
+        clientModules: [
+                // Resolve path in ESM context
+                path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src/utils/goatcounter.js'),
+        ],
 
     plugins: [
         [
