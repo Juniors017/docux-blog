@@ -5,6 +5,7 @@ import {usePluralForm} from '@docusaurus/theme-common';
 import {useDateTimeFormat} from '@docusaurus/theme-common/internal';
 import {useBlogPost} from '@docusaurus/plugin-content-blog/client';
 import styles from './styles.module.css';
+import GoatCounterViews from '@site/src/components/GoatCountViews';
 // Very simple pluralization: probably good enough for now
 function useReadingTimePlural() {
   const {selectMessage} = usePluralForm();
@@ -51,6 +52,8 @@ export default function BlogPostItemHeaderInfo({className}) {
         <>
           <Spacer />
           <ReadingTime readingTime={readingTime} />
+          <Spacer />
+          <GoatCounterViews path={metadata.permalink} />
         </>
       )}
     </div>

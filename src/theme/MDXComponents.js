@@ -28,6 +28,7 @@ import Snippet from '@site/src/components/Snippet';
 import Trees from '@site/src/components/Trees';
 import Folder from '@site/src/components/Trees/Folder';
 import File from '@site/src/components/Trees/File';
+import GoatCounterViews from '@site/src/components/GoatCountViews';
 
 export default {
   // Réutilise la correspondance par défaut
@@ -84,5 +85,6 @@ export default {
   Snippet,
   Trees,
   Folder,
-  File
+  File,
+  GoatCounterViews
 };

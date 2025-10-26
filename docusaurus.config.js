@@ -25,12 +25,13 @@ const config = {
     url: 'https://docuxlab.com',
 
     baseUrl: '/',
-        scripts: [
-  {
-    async: true,
-    src: 'https://gc.zgo.at/count.js',
-    'data-goatcounter': 'https://docuxlab.goatcounter.com/count',
-  },
+                scripts: [
+    {
+        async: true,
+        src: 'https://gc.zgo.at/count.js',
+        'data-goatcounter': 'https://docuxlab.goatcounter.com/count',
+        crossOrigin: 'anonymous',
+    },
 ],
 
         // Track SPA navigations with GoatCounter via a client module
