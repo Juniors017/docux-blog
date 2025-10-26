@@ -59,7 +59,7 @@ The minimal method (hosted by GoatCounter) is to add this script to your pages:
 
 ```html
 <script
-	data-goatcounter="https://VOTRE_NOM.goatcounter.com/count"
+	data-goatcounter="https://yourSite.goatcounter.com/count"
 	async
 	src="https://gc.zgo.at/count.js"
 ></script>
@@ -69,9 +69,9 @@ For a self‑hosted GoatCounter, the `data-goatcounter` attribute must point to 
 
 ```html
 <script
-	data-goatcounter="https://stats.mondomaine.tld/count"
+	data-goatcounter="https://stats.yourdomain.tld/count"
 	async
-	src="https://stats.mondomaine.tld/count.js"
+	src="https://stats.yourdomain.tld/count.js"
 ></script>
 ```
 
@@ -79,7 +79,7 @@ Noscript tip (counts a view even if JS is disabled):
 
 ```html
 <noscript>
-	<img src="https://VOTRE_NOM.goatcounter.com/count?p=/" alt="" />
+	<img src="https://yourSite.goatcounter.com/count?p=/" alt="" />
 </noscript>
 ```
 
@@ -120,14 +120,12 @@ add the script in `docusaurus.config.js`.
 
 module.exports = {
 	// ... your other configuration ...
-  scripts: [
-    {
-      src: "https://gc.zgo.at/count.js",
-      async: true,
-      'data-goatcounter': 'https://monprojet.goatcounter.com/count',
-    },
-  ],
-};
+  scripts: [{
+  	src: "https://gc.zgo.at/count.js",
+  	async: true,
+  	'data-goatcounter': 'https://myProject.goatcounter.com/count',
+  }, ],
+  };
 ``` 
 > Note that by default, localhost is not counted by GoatCounter.
 
@@ -137,17 +135,18 @@ module.exports = {
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-	// ...
-	scripts: isProd
-		? [
-				{ content: 'window.goatcounter = { no_onload: true };' },
-				{
-					src: 'https://gc.zgo.at/count.js',
-					async: true,
-					'data-goatcounter': 'https://VOTRE_NOM.goatcounter.com/count',
-				},
-			]
-		: [],
+
+	scripts: isProd ?
+		[{
+				content: 'window.goatcounter = { no_onload: true };'
+			},
+			{
+				src: 'https://gc.zgo.at/count.js',
+				async: true,
+				'data-goatcounter': 'https://yourSite.goatcounter.com/count',
+			},
+		] :
+		[],
 };
 ```
 
@@ -163,14 +162,19 @@ Create a file `src/utils/goatcounter.js`:
 
 ```js title="src/utils/goatcounter.js"
 
-export function onRouteDidUpdate({ location }) {
+export function onRouteDidUpdate({
+	location
+}) {
 	if (typeof window === 'undefined') return;
 	const gc = window.goatcounter;
 	if (!gc || typeof gc.count !== 'function') return;
 
 	// full path (include query/hash if useful)
 	const path = location.pathname + location.search + location.hash;
-	gc.count({ path, title: document.title });
+	gc.count({
+		path,
+		title: document.title
+	});
 }
 ```
 
@@ -180,19 +184,20 @@ Then reference this module on the client side in `docusaurus.config.js`:
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-	// ...
-	scripts: isProd
-		? [
-				{ content: 'window.goatcounter = { no_onload: true };' },
-				{
-					src: 'https://gc.zgo.at/count.js',
-					async: true,
-					'data-goatcounter': 'https://VOTRE_NOM.goatcounter.com/count',
-				},
-			]
-		: [],
-	clientModules: [require.resolve('./src/utils/goatcounter.js')],
-};
+	
+	scripts: isProd ?
+		[{
+				content: 'window.goatcounter = { no_onload: true };'
+			},
+			{
+				src: 'https://gc.zgo.at/count.js',
+				async: true,
+				'data-goatcounter': 'https://yourSite.goatcounter.com/count',
+			},
+		] :
+		[],
+		clientModules: [require.resolve('./src/utils/goatcounter.js')],
+	};
 ```
 
 	**Result:** the initial view and all internal navigations are counted properly.
@@ -232,7 +237,7 @@ module.exports = {
 		{
 			src: 'https://gc.zgo.at/count.js',
 			async: true,
-			'data-goatcounter': 'https://VOTRE_NOM.goatcounter.com/count',
+			'data-goatcounter': 'https://yourSite.goatcounter.com/count',
 		},
 	],
 	```
@@ -252,7 +257,7 @@ plugins: [
 	[
 		require.resolve('./plugins/goatcounter'),
 		{
-			endpoint: 'https://VOTRE_NOM.goatcounter.com/count',
+			endpoint: 'https://yourSite.goatcounter.com/count',
 			no_onload: true,
 			allow_local: false,
 		},
