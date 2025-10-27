@@ -138,7 +138,7 @@ export default function Contributor({
         
         {contributorData.components && contributorData.components.length > 0 && (
           <div className={styles.componentsList}>
-            <h4>Composants:</h4>
+            <h4>Components:</h4>
             <ul>
               {contributorData.components.map((component, idx) => (
                 <li key={idx} className={styles.componentItem}>{component}</li>
