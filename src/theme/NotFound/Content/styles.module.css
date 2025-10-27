@@ -15,6 +15,17 @@
 	padding: 2rem 1rem;
 	overflow: hidden; /* masque les empreintes qui débordent */
 }
+
+/* Adaptation mobile: éviter le "fixed" et montrer davantage l'image */
+@media (max-width: 768px) {
+  .notFoundBg {
+    background-attachment: scroll; /* améliore les perfs et la compat iOS */
+    background-position: center top; /* focus en haut utile si le sujet est en haut */
+    background-size: contain; /* montre l'image entière sans recadrage */
+    /* utiliser l'unité svh moderne pour gérer la barre d'URL mobile */
+    min-height: calc(100svh - var(--ifm-navbar-height, 0px));
+  }
+}
 h1 {
     display:none;
 }
@@ -28,4 +39,21 @@ p {
     padding: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 
+}
+
+/* Mobile: image dédiée + typo adaptée */
+@media (max-width: 768px) {
+  .notFoundBg {
+    background-image: url('/img/404mobile.webp');
+    background-attachment: scroll;
+    background-position: center top;
+    background-size: cover;
+    min-height: calc(100svh - var(--ifm-navbar-height, 0px));
+  }
+
+  .notFoundBg p {
+    font-size: clamp(1rem, 4.5vw, 1.25rem);
+    line-height: 1.6;
+    padding: 0 1rem;
+  }
 }
