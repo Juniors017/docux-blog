@@ -1,0 +1,31 @@
+/* Plein écran pour la page 404, avec centrage du contenu */
+
+
+.notFoundBg {
+	/* Occupe toute la hauteur visible en tenant compte de la navbar Docusaurus */
+	min-height: calc(100dvh - var(--ifm-navbar-height, 0px));
+	background: url('/img/404bg.webp') no-repeat center center fixed;
+	/* Remplir l'écran: recadre si nécessaire */
+	background-size: cover;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem 1rem;
+	overflow: hidden; /* masque les empreintes qui débordent */
+}
+h1 {
+    display:none;
+}
+
+p {
+    color: white;
+    font-size: 2rem;
+    line-height: 1.5;   
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+
+}
