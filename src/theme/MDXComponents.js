@@ -29,6 +29,7 @@ import Trees from '@site/src/components/Trees';
 import Folder from '@site/src/components/Trees/Folder';
 import File from '@site/src/components/Trees/File';
 import GoatCounterViews from '@site/src/components/GoatCountViews';
+import Terminal from '@site/src/components/Terminal';
 
 export default {
   // Réutilise la correspondance par défaut
@@ -86,5 +87,6 @@ export default {
   Trees,
   Folder,
   File,
-  GoatCounterViews
+  GoatCounterViews,
+  Terminal
 };
