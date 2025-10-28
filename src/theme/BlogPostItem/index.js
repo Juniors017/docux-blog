@@ -32,14 +32,22 @@ export default function BlogPostItem({ children, className }) {
       {/* Only display our RelatedPosts and BlueSky components on the post page; not the blog view */}
       {isBlogPostPage && (
         <>
+         <div style={{ marginTop: '3rem' }}>
+          <center>
+          <hr width="50%"  />
+          </center>
           <SeriesPosts
             series={metadata.frontMatter.series}
             excludePermalink={metadata.permalink}
             highlightCurrent={true}
           />
+          </div>
+          <div style={{ marginTop: '3rem' }}>
           <BlueSky metadata={metadata} />
-
-          <RelatedPosts count="3" description={false} />
+</div>
+<div style={{ marginTop: '3rem' }}>
+          <RelatedPosts count="6" description={false} />
+          </div>
         </>
       )}
     </BlogPostItemContainer>
