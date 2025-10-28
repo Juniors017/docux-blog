@@ -1,11 +1,9 @@
-/* Plein écran pour la page 404, avec centrage du contenu */
 
 
 .notFoundBg {
-	/* Occupe toute la hauteur visible en tenant compte de la navbar Docusaurus */
 	min-height: calc(100dvh - var(--ifm-navbar-height, 0px));
 	background: url('/img/404bg.webp') no-repeat center center fixed;
-	/* Remplir l'écran: recadre si nécessaire */
+	/* Fill the screen: crop if necessary */
 	background-size: cover;
 	position: relative;
 	display: flex;
@@ -13,16 +11,16 @@
 	align-items: center;
 	justify-content: center;
 	padding: 2rem 1rem;
-	overflow: hidden; /* masque les empreintes qui débordent */
+	overflow: hidden; 
 }
 
-/* Adaptation mobile: éviter le "fixed" et montrer davantage l'image */
+/* Mobile adaptation: avoid "fixed" and show more of the image */
 @media (max-width: 768px) {
   .notFoundBg {
-    background-attachment: scroll; /* améliore les perfs et la compat iOS */
-    background-position: center top; /* focus en haut utile si le sujet est en haut */
-    background-size: contain; /* montre l'image entière sans recadrage */
-    /* utiliser l'unité svh moderne pour gérer la barre d'URL mobile */
+    background-attachment: scroll; 
+    background-position: center top;
+    background-size: contain; 
+    /* use modern svh unit to handle mobile URL bar */
     min-height: calc(100svh - var(--ifm-navbar-height, 0px));
   }
 }
@@ -32,7 +30,7 @@
 
 
 
-/* Mobile: image dédiée + typo adaptée */
+/* Mobile: dedicated image + adapted typography */
 @media (max-width: 768px) {
   .notFoundBg {
     background-image: url('/img/404mobile.webp');
