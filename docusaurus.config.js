@@ -75,7 +75,23 @@ const config = {
     ],
     // Les thèmes (UI) doivent être déclarés dans "themes" et non "plugins"
     themes: [
-        '@docusaurus/theme-live-codeblock'
+        '@docusaurus/theme-live-codeblock',
+        [
+            "@easyops-cn/docusaurus-search-local",
+            {
+                hashed: true,
+                language: ["en"],
+                highlightSearchTermsOnTargetPage: true,
+                explicitSearchResultPath: true,
+                indexBlog: true,
+                indexDocs: false,
+                indexPages: true,
+                blogRouteBasePath: "/blog",
+                searchResultLimits: 8,
+                searchResultContextMaxLength: 50,
+                docsRouteBasePath: ["/"],
+            }
+        ]
     ],
     trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
     customFields: {
@@ -307,6 +323,9 @@ const config = {
                     to: '/repository',
                     label: 'Repository',
                     position: 'left'
+                }, {
+                    type: 'search',
+                    position: 'right'
                 }, {
                     to: 'https://github.com/Juniors017/docux-blog',
                     label: 'GitHub',
