@@ -6,7 +6,7 @@ export default function ContentWrapper(props) {
   return (
     <div className={styles.notFoundBg}>
       <h1>404 -Page Not Found</h1>
-      <p id="404">We could not find what you were looking for.
+      <p>We could not find what you were looking for.
 
 Please contact the owner of the site that linked <br />
 you to the original URL and let them know their link is broken.</p>
