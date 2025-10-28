@@ -1,0 +1,145 @@
+---
+title: "Creating a Custom 404 Page in Docusaurus"
+description: "Learn how to build a stylish, responsive custom 404 error page in Docusaurus using swizzle, modern CSS, and optimized WebP images."
+slug: 404-custom-page-tutorial
+schemaTypes: ["HowTo", "BlogPosting"]
+image: "/img/404bg.webp"
+authors: ["docux"]
+mainTag: customization
+tags: [ "404", "custom-page", "swizzle", "react", "responsive-design"]
+date: 2025-10-29
+difficulty: "Beginner-Intermediate"
+estimatedCost: "Free"
+tool: ["Docusaurus", "React", "CSS", "WebP"]
+supply: ["Node.js", "Docusaurus", "React", "CSS Modules"]
+genre: "Technical Tutorial"
+inLanguage: "en"
+category: "Frontend"
+keywords: ["404 page", "custom error page", "docusaurus swizzle", "responsive design", "react component", "webp optimization"]
+hide_table_of_contents: false
+series: "Design your site"
+blueSkyRecordKey: 
+copyrightYear: 2025
+copyrightHolder: "Docux"
+---
+
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![AI 0%](https://img.shields.io/badge/AI-0%-blue.svg)](https://github.com/Juniors017)
+
+![](/img/404bg.webp)
+</div>
+</center>
+The default 404 page in Docusaurus is functional, but quite basic. For many years now, it has become a page that allows you to stand out even though it's the result of a website flaw (broken link or unredirected URL).
+Building a stylish 404 page is therefore an opportunity to provide a better experience when a link breaks. Here's how I set up a custom 404 with Docusaurus, keeping the page lightweight and responsive.
+{/* truncate */}
+## My objectives
+
+- Full screen with a dedicated background image
+- Simple, readable, centered text
+- Optimized mobile version (image and adapted viewport units)
+- Minimal implementation via Docusaurus swizzle mechanism
+
+I could have added home or search buttons, but I wanted to keep the page very lightweight.
+
+## Swizzle the NotFound/Content component
+
+Docusaurus exposes a 404 view via `@theme/NotFound`. We'll swizzle its `Content` part to customize the rendering.
+
+### Command
+<Terminal title="user@machine: ~/yourproject">
+
+npm run swizzle @docusaurus/theme-classic NotFound --eject
+
+</Terminal>
+
+- `@docusaurus/theme-classic` → the theme you want to modify (default for most sites).
+
+- `NotFound` → the 404 page component.
+
+- `--eject` → creates a real local copy of the component you can edit.
+
+This creates the override in `src/theme/NotFound/Content/`.
+
+## The React component
+
+We just created what will allow us to customize the 404 page rendering.
+
+### Basic file
+
+<Snippet filename="src/theme/NotFound/Content/index.js" >
+
+```js title="src/theme/NotFound/Content/index.js"
+import React from 'react';
+import Content from '@theme-original/NotFound/Content';
+
+export default function ContentWrapper(props) {
+  return (
+    <>
+      <Content {...props} />
+    </>
+  );
+}
+```
+</Snippet>
+
+### Custom file
+
+<Snippet filename="src/theme/NotFound/Content/index.js" source="src/theme/NotFound/Content/index.js"/>   
+
+
+Note: I keep an `<h1>` for semantics and accessibility, but I hide it visually with CSS since the image meets my needs.
+
+## Full screen, responsive and lightweight styling
+
+<Snippet filename="src/theme/NotFound/Content/styles.module.css" source="src/theme/NotFound/Content/styles.module.css"/>   
+
+### Key points:
+
+- Optimized WebP images: `static/img/404bg.webp` (desktop) and `static/img/404mobile.webp` (mobile) *to learn more about image optimization [See Cavo789's tutorial](https://www.avonture.be/blog/reduce-image-size)*
+- Modern viewport units: `dvh`/`svh` handle URL bars/mobile bounds better than `vh`
+- `background-attachment: scroll` on mobile to avoid stuttering and improve iOS compatibility (yes I love apples)
+- Adaptive typography via `clamp()` to stay readable on small screens
+
+## Add the assets
+
+Place your images in `static/img/` so they're served from the site root. Naming is up to you, but here are mine:
+
+- `/img/404bg.webp`
+- `/img/404mobile.webp`
+
+You can generate two versions (desktop/mobile) to reduce the weight transferred on mobile and have a cleaner rendering.
+
+## Quick testing
+
+For quick testing use this command
+
+<Terminal title="user@machine: ~/yourproject">
+
+npm start
+
+</Terminal>
+
+In development, launch the site and visit a non-existent URL (for example `/url-that-does-not-exist`). You should see the full-screen background and the centered message.
+
+## This is just the beginning
+
+### Some ideas to go further:
+
+- Add a "Back to home" or "Search" button
+- Instrument an analytics event to know how often the 404 is viewed
+- Adapt the illustration in dark mode (if you force a light/dark image)
+- Add light CSS animations to make the page more dynamic
+- Add a more personalized error message (for example, based on the URL)
+- Indicate useful links (FAQ, support, etc.)
+- Record the initial request
+
+
+
+In the end, swizzling only `NotFound/Content` is enough to create a custom, expressive and performant 404, while staying aligned with Docusaurus theme architecture.
+
+Now it's your turn! For inspiration, you can check out creative 404 page sites like [https://www.404s.design/](https://www.404s.design/) or [https://www.awwwards.com/40-inspiring-404-error-pages.html](https://www.awwwards.com/40-inspiring-404-error-pages.html)  
+
