@@ -315,7 +315,11 @@ const config = {
                     to: '/series',
                     label: 'Series',
                     position: 'left'
-                }, {
+                },  {
+                    to: 'https://forum.docuxlab.com',
+                    label: 'Forum',
+                    position: 'left'
+                },{
                     to: '/thanks',
                     label: 'Thanks',
                     position: 'right'
