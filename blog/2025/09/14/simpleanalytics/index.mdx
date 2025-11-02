@@ -61,14 +61,16 @@ This plugin is a local plugin. There's no need to install it via npm or yarn. Si
 
 The plugin separates logic into two distinct files, as they run in different environments and at different times.
 
-### File Tree
+### Files structure
 
-```
-plugins/
-└── simpleAnalytics/
-    ├── index.js      # Main Docusaurus plugin file
-    └── sa-client.js  # Client module for SPA navigation tracking
-```
+<Trees>
+  <Folder label="plugins" expanded={true}>
+    <Folder label="simpleAnalytics" expanded={true}>
+      <File label="index.js" icon="javascript" />
+      <File label="sa-client.js" icon="javascript" />
+    </Folder>
+  </Folder>
+</Trees>
 
 ## simpleAnalytics/index.js (Server Side / Build)
 

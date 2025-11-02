@@ -86,16 +86,26 @@ I've added JSDoc comments in the code to explain each prop and its function. I'v
 
 {/* truncate */}
 
-## File Structure
-```
-src/components/Skill/
-├── index.js           # Main React component
-├── styles.module.css  # Styles with CSS Modules
-└── README.md         # Documentation
-```
+
 
 ##  Component Code
+### Files structure
 
+<Trees>
+  <Folder label="src" expanded={true}>
+    <Folder label="components" expanded={true}>
+      <Folder label="Skill" expanded={true}>
+        <File label="index.js" icon="javascript" />
+        <File label="styles.module.css" icon="logos:css-3" />
+        
+      </Folder>
+    </Folder>
+    <Folder label="theme" expanded={true}>
+      <File label="MDXComponents.js" icon="javascript" />
+    </Folder>
+  </Folder>
+</Trees>
+### Code 
 <Snippet filename="src/components/Skill/index.js" source="src/components/Skill/index.js" />
 
 <Snippet filename="src/components/Skill/styles.module.css" source="src/components/Skill/styles.module.css" />

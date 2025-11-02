@@ -75,12 +75,67 @@ A good component must be accessible to everyone. The tooltip is linked to its tr
 
 ##  Component Code
 
+### Files structure
 
+<Trees>
+  <Folder label="src" expanded={true}>
+    <Folder label="components" expanded={true}>
+      <Folder label="Tooltip" expanded={true}>
+        <File label="index.js" icon="javascript" />
+        <File label="styles.module.css" icon="logos:css-3" />
+        <File label="models.js" icon="javascript" />
+      </Folder>
+    </Folder>
+    <Folder label="theme" expanded={true}>
+      <File label="MDXComponents.js" icon="javascript" />
+    </Folder>
+  </Folder>
+</Trees>
+
+### Code
 <Snippet filename="/src/components/Tooltip/index.js" source="src/components/Tooltip/index.js" />
 
 <Snippet filename="/src/components/Tooltip/styles.module.css" source="src/components/Tooltip/styles.module.css" />
 
 ## Models Code
+
+The `models.js` file contains **predefined styles** to facilitate reusability and consistency of tooltips in your application. Instead of redefining the same styles each time, you can import and use these models.
+
+### Model Advantages
+
+- **Reusability**: Define once, use everywhere
+- **Consistency**: All tooltips of the same type have the same style
+- **Maintenance**: Modify the style in a single place
+- **Simplicity**: No need to memorize colors and styles
+
+### Available Models
+
+The file offers several ready-to-use models:
+
+- **`info`**: Blue tooltip (#2196F3) for information
+- **`success`**: Green tooltip (#4CAF50) for success messages
+- **`warning`**: Yellow tooltip (#FFC107) for warnings
+- **`error`**: Red tooltip (#F44336) for errors
+- **`custom`**: Function to create your own custom styles
+- **`teacher`**: Special model with background image and custom border
+
+### Usage
+
+Instead of writing:
+```jsx
+<Tooltip text="Message" backgroundColor="#2196F3" color="#FFFFFF">
+  Hover me
+</Tooltip>
+```
+
+You can simply import the model and use it:
+```jsx
+
+<Tooltip text="Message" Type="info">
+  Hover me
+</Tooltip>
+```
+
 <Snippet filename="/src/components/Tooltip/models.js" source="src/components/Tooltip/models.js" />
 
 
@@ -305,9 +360,7 @@ The true power of this component lies in its ability to accept rich content and 
 ```
 ## Play in live with tooltip
 ```jsx live
-// Thanks to the ReactLiveScope swizzle, Tooltip and LogoIcon are available without import.
-// You can simply return JSX (last evaluated expression)
-(
+
   <div style={{display:'flex', gap:16}}>
     <Tooltip model="teacher" text="DocuxLab">
       My favorite
@@ -321,5 +374,5 @@ The true power of this component lies in its ability to accept rich content and 
       A second tooltip using another model.
     </Tooltip>
   </div>
-)
+
 ```
