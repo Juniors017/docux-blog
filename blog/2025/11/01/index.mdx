@@ -50,6 +50,44 @@ While observing my daughter's Time Timer, I had the idea to develop the `TimeTim
 - ✅ **UTC support**: `strict` option to avoid timezone issues
 - ✅ **Flexible fallbacks**: Customizable messages before and after the active period
 
+### Why Conditional Rendering Over CSS?
+
+Unlike solutions that use `display: none` or `visibility: hidden`, TimeTimer uses **React's conditional rendering**:
+
+```jsx
+// ❌ CSS approach - All content loaded, just hidden
+<div style={{ display: isActive ? 'block' : 'none' }}>
+  Heavy promotional content with images...
+</div>
+
+// ✅ TimeTimer - Only active content exists in DOM
+{isActive ? <PromoContent /> : null}
+```
+
+**What happens in the DOM:**
+
+When you use CSS to hide content, the browser still:
+1. Downloads all the HTML (even hidden parts)
+2. Parses and creates DOM nodes for hidden elements
+3. Loads images and resources referenced in hidden content
+4. Keeps all this in memory
+5. Just visually hides it with CSS
+
+With TimeTimer's conditional rendering:
+1. Only the active period's content is sent to the browser
+2. The DOM contains **only what should be visible right now**
+3. When the period changes, React replaces the old content with the new one
+4. Inactive content literally doesn't exist in the page source
+
+**Example: Inspect the page source**
+- With CSS: You'll see all periods (past, present, future) in the HTML
+- With TimeTimer: You'll only see the current period's content
+
+**The benefits:**
+- 🚀 **Performance**: Inactive content isn't downloaded or rendered at all
+- 🔍 **SEO**: Search engines only see current, relevant content
+- ♿ **Accessibility**: Screen readers skip inactive periods entirely
+- 💾 **Lighter page**: Reduced HTML size and memory usage
 
 ## Installation
 
@@ -67,6 +105,8 @@ While observing my daughter's Time Timer, I had the idea to develop the `TimeTim
     </Folder>
   </Folder>
 </Trees>
+
+
 
 ### Create the Component
 
