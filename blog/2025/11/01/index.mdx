@@ -1,0 +1,712 @@
+---
+title: "Component TimeTimer"
+slug: docusaurus-timetimer-component
+description: "React component for time-based conditional rendering in Docusaurus. Display content based on fixed dates or time ranges with UTC support, custom fallback dates, and flexible period management."
+schemaTypes: ["HowTo", "BlogPosting"]
+image: "/img/timetimer.webp"
+authors: ["docux"]
+mainTag: conditional-rendering
+tags: ["react", "component", "date", "time", "conditional-rendering"]
+date: 2025-11-02
+difficulty: "Intermediate"
+yield: "Time-based conditional component"
+genre: "Technical Tutorial"
+inLanguage: "en"
+copyrightYear: 2025
+copyrightHolder: "Docux"
+keywords: ["docusaurus", "react", "time", "date", "conditional", "component", "utc", "fallback"]
+hide_table_of_contents: false
+series: "Design your site"
+blueSkyRecordKey: 
+---
+
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![AI 50%](https://img.shields.io/badge/AI-50%-blue.svg)](https://github.com/Juniors017)
+</div>
+
+![](/img/timetimer.webp)
+</center>
+
+The Time Timer is an innovative visual tool designed to "materialize" the passage of time, allowing for better activity management by making the remaining time visible.
+It comes in the form of a timer with an analog dial featuring a colored disk, often red on a white background, which gradually shrinks as the countdown progresses until the final alarm or color change.
+This device, invented by Jan Rogers to help her daughter better understand transitions between activities, is particularly useful for children who struggle with the concept of elapsed time, but also for adults.
+It's used to visualize the remaining time for a task, whether for homework, classes, playtime, or other daily activities, thus promoting autonomy, concentration, and time management.
+
+While observing my daughter's Time Timer, I had the idea to develop the `TimeTimer` component to solve a simple need: displaying content only at certain dates or during specific periods. Whether for promotional offers, seasonal events, or temporary announcements, this component allows you to automate the display without having to manually modify your pages.
+
+**Bonus: at the end of this article, you'll discover how I created an Advent calendar with my TimeTimer component!**
+
+{/* truncate */}
+
+## Features I Integrated
+
+- ✅ **Fixed date display**: Content visible on a specific date (with or without time)
+- ✅ **Period display**: Time ranges with start date and duration
+- ✅ **Custom dates for fallbacks**: Override start/end dates in messages
+- ✅ **UTC support**: `strict` option to avoid timezone issues
+- ✅ **Flexible fallbacks**: Customizable messages before and after the active period
+
+
+## Installation
+
+### File Structure
+
+<Trees>
+  <Folder label="src">
+    <Folder label="components">
+      <Folder label="TimeTimer">
+        <File label="index.js" icon="javascript" />
+      </Folder>
+    </Folder>
+    <Folder label="theme">
+      <File label="MDXComponents.js" icon="javascript"/>
+    </Folder>
+  </Folder>
+</Trees>
+
+### Create the Component
+
+<Snippet filename="src/components/TimeTimer/index.js" source="src/components/TimeTimer/index.js" />
+
+### Register the Component in MDX
+
+Add the component to `src/theme/MDXComponents.js`:
+
+<Snippet filename="src/theme/MDXComponents.js">
+
+```js
+import TimeTimer, { FallbackBefore, FallbackAfter } from '@site/src/components/TimeTimer';
+
+export default {
+  ...MDXComponents,
+  TimeTimer,
+  FallbackBefore,
+  FallbackAfter
+};
+```
+
+</Snippet>
+
+## How to Use It
+
+### Simple Fixed Date
+
+Here's how I display content only on Christmas day:
+
+```mdx
+<TimeTimer date="25/12/2025">
+  🎄 Merry Christmas!
+  <FallbackBefore>⏳ Not Christmas yet...</FallbackBefore>
+  <FallbackAfter>🎁 Christmas has passed!</FallbackAfter>
+</TimeTimer>
+```
+
+**Behavior**:
+- Before 25/12/2025 at 00:00 → "⏳ Not Christmas yet..."
+- All day on 25/12/2025 → "🎄 Merry Christmas!"
+- From 26/12/2025 at 00:00 → "🎁 Christmas has passed!"
+
+### Date with Specific Time
+
+To trigger display at a specific time, I use this format:
+
+```mdx
+<TimeTimer date="31/12/2025 23:59">
+  🎉 Happy New Year! The countdown has begun!
+  <FallbackBefore>⏰ Come back at 11:59 PM for the countdown</FallbackBefore>
+</TimeTimer>
+```
+
+**Behavior**:
+- Before 31/12/2025 at 23:59 → "⏰ Come back at 11:59 PM for the countdown"
+- From 31/12/2025 23:59 to 01/01/2026 23:59 → "🎉 Happy New Year!"
+- From 01/01/2026 at 23:59 → Nothing (no FallbackAfter)
+
+### Period with Duration
+
+For an offer lasting 30 days, I combine `start` and `duration`:
+
+```mdx
+<TimeTimer start="01/11/2025 10:00" duration="30d">
+  🎁 Black Friday Sale: -50% on everything!
+  <FallbackBefore>⏳ The offer starts on November 1st at 10 AM</FallbackBefore>
+  <FallbackAfter>❌ Offer ended, see you next year!</FallbackAfter>
+</TimeTimer>
+```
+
+**Behavior**:
+- Before 01/11/2025 at 10:00 → FallbackBefore message
+- From 01/11 10:00 to 01/12 10:00 (30 days) → Main content
+- From 01/12/2025 at 10:00 → FallbackAfter message
+
+## Advanced Features I Added
+
+### Custom Dates in Fallbacks
+
+A feature I love: you can customize the start/end dates of fallback messages independently from the main period:
+
+```mdx
+<TimeTimer start="01/12/2025 10:00" duration="30d">
+  🎉 Christmas Sale Active!
+  
+  <FallbackBefore start="15/11/2025 10:00">
+    📅 Get ready! The offer starts soon
+  </FallbackBefore>
+  
+  <FallbackAfter end="10/01/2026 23:59">
+    🎄 Offer ended, thank you!
+  </FallbackAfter>
+</TimeTimer>
+```
+
+**Behavior**:
+- Before 15/11 at 10:00 → Nothing
+- From 15/11 to 01/12 → "📅 Get ready!"
+- From 01/12 to 31/12 (30 days) → "🎉 Christmas Sale Active!"
+- From 31/12 to 10/01 23:59 → "🎄 Offer ended!"
+- After 10/01 23:59 → Nothing
+
+:::tip Important Point
+The `end` prop in `FallbackAfter` **does NOT modify** your offer's duration! It only defines until when you want to display the "Offer ended" message. Your `duration="30d"` remains intact.
+:::
+
+### Strict UTC Mode
+
+I added a `strict` mode for worldwide events. It avoids timezone issues:
+
+```mdx
+<TimeTimer date="01/01/2026 00:00" strict>
+  🌍 Happy New Year worldwide! (UTC Time)
+  <FallbackBefore>🕐 Just a few more hours...</FallbackBefore>
+</TimeTimer>
+```
+
+What it changes concretely:
+- Without `strict`: each visitor sees content according to their local timezone
+- With `strict`: everyone sees the change at exactly the same moment (UTC time)
+
+### Date without Year (Recurring)
+
+A handy trick: you can omit the year to create recurring content that displays every year:
+
+```mdx
+<TimeTimer date="25/12">
+  🎅 It's Christmas today!
+  <FallbackBefore>⏳ Patience, Christmas is coming...</FallbackBefore>
+  <FallbackAfter>🎁 Christmas has passed this year</FallbackAfter>
+</TimeTimer>
+```
+
+## Props Reference I Implemented
+
+### TimeTimer
+
+| Prop | Type | Default | Description |
+|------|------|--------|-------------|
+| `date` | `string` | - | Fixed date: `DD/MM/YYYY` or `DD/MM/YYYY HH:MM` or `DD/MM` |
+| `start` | `string` | - | Start date: `DD/MM/YYYY HH:MM` (requires `duration`) |
+| `duration` | `string` | - | Duration: `30d`, `2h`, `45m` (requires `start`) |
+| `strict` | `boolean` | `false` | Uses UTC instead of local timezone |
+| `children` | `node` | - | Main content + FallbackBefore/After |
+
+### FallbackBefore
+
+| Prop | Type | Default | Description |
+|------|------|--------|-------------|
+| `start` | `string` | - | Custom start date for the fallback |
+| `children` | `node` | - | Content to display before the period |
+
+### FallbackAfter
+
+| Prop | Type | Default | Description |
+|------|------|--------|-------------|
+| `end` | `string` | - | Date until when to display the fallback (doesn't affect `duration`) |
+| `children` | `node` | - | Content to display after the period |
+
+## Accepted Formats
+
+### Dates
+
+| Format | Example | Behavior |
+|--------|---------|--------------|
+| `DD/MM/YYYY` | `25/12/2025` | All day long (00:00 to 23:59) |
+| `DD/MM/YYYY HH:MM` | `25/12/2025 18:00` | From 6 PM, for 24 hours |
+| `DD/MM` | `25/12` | Current year automatic |
+
+### Durations
+
+| Unit | Example | Description |
+|-------|---------|-------------|
+| `d` | `30d` | 30 days |
+| `h` | `2h` | 2 hours |
+| `m` | `45m` | 45 minutes |
+
+## Other Examples
+:::tip
+You'll note that I used the `jsx live` format for the interactive examples below. This allows you to test the component in real-time directly on the page!
+ > Play with the dates to experiment with the component's behavior (insert a space to refresh the Live editor).
+
+To learn how to set up live mode in your articles, check out my tutorial on [integrating interactive components with Docusaurus](https://docux.dev/blog/docusaurus-live-components).    
+:::
+
+### Today's Content
+```jsx live
+<TimeTimer date="01/11/2025">
+  ✅ You see this message because it's November 1st, 2025
+  
+  <FallbackBefore>
+    ⏳ This message will only display on November 1st
+  </FallbackBefore>
+  
+  <FallbackAfter>
+    🕰️ November 1st has passed
+  </FallbackAfter>
+</TimeTimer>
+```
+
+### One-Week Period
+```jsx live
+<TimeTimer start="01/11/2025 00:00" duration="7d">
+  📅 Week of November 1st to 8th active!
+  
+  <FallbackBefore>
+    ⏳ The week hasn't started yet
+  </FallbackBefore>
+  
+  <FallbackAfter>
+    ✔️ The week of November 1st is over
+  </FallbackAfter>
+</TimeTimer>
+```
+### With Custom Dates
+```jsx live
+### With Custom Dates
+```jsx live
+<TimeTimer start="01/11/2025 00:00" duration="30d">
+  🎯 **Main content active**
+  
+  <FallbackBefore start="25/10/2025">
+    📢 Preparation in progress... Starts November 1st
+  </FallbackBefore>
+  
+  <FallbackAfter end="15/11/2025">
+    ✅ Finished earlier than expected!
+  </FallbackAfter>
+</TimeTimer>
+```
+```
+
+
+```jsx live
+
+    <TimeTimer date="01/11/2025">
+      <div style={{padding: '20px', background: '#4CAF50', color: 'white', borderRadius: '8px'}}>
+        ✅ Content displayed on November 1st, 2025
+      </div>
+      
+      <FallbackBefore>
+        <div style={{padding: '20px', background: '#FF9800', color: 'white', borderRadius: '8px'}}>
+          ⏳ Not yet November 1st
+        </div>
+      </FallbackBefore>
+      
+      <FallbackAfter>
+        <div style={{padding: '20px', background: '#2196F3', color: 'white', borderRadius: '8px'}}>
+          🕰️ November 1st has passed
+        </div>
+      </FallbackAfter>
+    </TimeTimer>
+
+```
+
+### Customizable Duration
+
+```jsx live
+
+    <TimeTimer start="01/11/2025 10:00" duration="2h">
+      <div style={{padding: '20px', background: '#E91E63', color: 'white', borderRadius: '8px'}}>
+        ⚡ Flash sale active for 2 hours!
+      </div>
+      
+      <FallbackBefore>
+        <div style={{padding: '15px', background: '#9C27B0', color: 'white', borderRadius: '8px'}}>
+          🔔 The offer starts at 10am
+        </div>
+      </FallbackBefore>
+      
+      <FallbackAfter>
+        <div style={{padding: '15px', background: '#607D8B', color: 'white', borderRadius: '8px'}}>
+          😢 Offer ended
+        </div>
+      </FallbackAfter>
+    </TimeTimer>
+
+```
+
+### Custom Dates in Fallbacks
+
+```jsx live
+
+     <TimeTimer start="01/12/2025 10:00" duration="30d">
+      <div style={{padding: '20px', background: '#00BCD4', color: 'white', borderRadius: '8px', fontSize: '18px'}}>
+        🎉 Christmas offer active!
+      </div>
+      
+      <FallbackBefore start="01/11/2025 10:00">
+        <div style={{padding: '15px', background: '#FFC107', color: '#333', borderRadius: '8px'}}>
+          📅 Get ready! The offer starts soon
+        </div>
+      </FallbackBefore>
+      
+      <FallbackAfter end="10/01/2026 23:59">
+        <div style={{padding: '15px', background: '#8BC34A', color: 'white', borderRadius: '8px'}}>
+          🎄 Offer ended, thank you!
+        </div>
+      </FallbackAfter>
+    </TimeTimer>
+
+```
+
+:::tip 
+Feel free to modify the dates and durations in the code above to experiment! A few ideas:
+- Change `date="01/11/2025"` to today's date to see the active content
+- Test `duration="5m"` instead of `2h` for a shorter duration
+- Customize the CSS styles to your liking
+:::
+
+
+## Advanced Use Cases
+
+### Maintenance Banner
+
+```jsx live
+<TimeTimer start="15/11/2025 02:00" duration="2h">
+  <FallbackBefore start="14/11/2025 20:00">
+    ⚠️ Scheduled maintenance tomorrow at 2am
+  </FallbackBefore>
+  
+  🔧 Site under maintenance, back at 4am
+  
+  <FallbackAfter>
+    ✅ Maintenance completed, everything works!
+  </FallbackAfter>
+</TimeTimer>
+```
+
+### Countdown to an Event
+
+```jsx live
+<TimeTimer date="25/12/2025 00:00">
+  🎄 It's Christmas! Happy Holidays to all!
+  
+  <FallbackBefore start="01/12/2025">
+    🎅 Just a few more days until Christmas!
+  </FallbackBefore>
+</TimeTimer>
+```
+
+### 2-Hour Flash Sale
+
+```jsx live
+<TimeTimer start="01/11/2025 14:00" duration="2h">
+  ⚡ FLASH SALE: -70% for 2 hours!
+  
+  <FallbackBefore>
+    🔔 Next flash sale at 2pm
+  </FallbackBefore>
+  
+  <FallbackAfter>
+    😢 Flash sale ended, see you tomorrow!
+  </FallbackAfter>
+</TimeTimer>
+```
+
+### Temporary Discount Code (15 minutes)
+
+```jsx live
+<TimeTimer start="01/11/2025 22:20" duration="10m">
+  🎟️ PROMO CODE: **FLASH15** valid for 15 minutes!
+  
+  <FallbackBefore>
+    ⏰ Promo code coming in a few moments...
+  </FallbackBefore>
+  
+  <FallbackAfter end="01/11/2025 22:35">
+    ⏱️ Code expired! Next code at 4pm
+  </FallbackAfter>
+</TimeTimer>
+```
+
+
+### Temporary Message After a Sale
+
+```jsx live
+<TimeTimer start="01/11/2025 00:00" duration="30d">
+  🎉 Black Friday: -50% on everything!
+  
+  <FallbackAfter end="07/12/2025 23:59">
+    👋 Thank you for participating! See you next year
+  </FallbackAfter>
+</TimeTimer>
+```
+
+### Interactive Advent Calendar
+
+Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon to create an Advent calendar:
+
+<Columns className="margin-vert--md">
+  <Column>
+    <TimeTimer date="01/11/2025" >
+      <Card shadow>
+        <CardBody>
+          <center>
+            <LogoIcon name="noto:wrapped-gift" size={48} />
+            <h3>Day 1</h3>
+            <p>🎁 Gift discovered!</p>
+          </center>
+        </CardBody>
+      </Card>
+      <FallbackBefore>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:locked" size={48} />
+              <h3>Day 1</h3>
+              <p>Please wait...</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackBefore>
+      <FallbackAfter>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:check-mark-button" size={48} />
+              <h3>Day 1</h3>
+              <p>✅ Already opened</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackAfter>
+    </TimeTimer>
+  </Column>
+  
+  <Column>
+    <TimeTimer date="02/11/2025" duration="100m">
+      <Card shadow>
+        <CardBody>
+          <center>
+            <LogoIcon name="noto:candy" size={48} />
+            <h3>Day 2</h3>
+            <p>🍬 Surprise candy!</p>
+          </center>
+        </CardBody>
+      </Card>
+      <FallbackBefore>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:locked" size={48} />
+              <h3>Day 2</h3>
+              <p>Please wait...</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackBefore>
+      <FallbackAfter>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:check-mark-button" size={48} />
+              <h3>Day 2</h3>
+              <p>✅ Already opened</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackAfter>
+    </TimeTimer>
+  </Column>
+  
+  <Column>
+    <TimeTimer date="03/12/2025">
+      <Card shadow>
+        <CardBody>
+          <center>
+            <LogoIcon name="noto:cookie" size={48} />
+            <h3>Day 3</h3>
+            <p>🍪 Special cookie!</p>
+          </center>
+        </CardBody>
+      </Card>
+      <FallbackBefore>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:locked" size={48} />
+              <h3>Day 3</h3>
+              <p>Please wait...</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackBefore>
+      <FallbackAfter>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:check-mark-button" size={48} />
+              <h3>Day 3</h3>
+              <p>✅ Already opened</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackAfter>
+    </TimeTimer>
+  </Column>
+</Columns>
+
+<Columns className="margin-vert--md">
+  <Column>
+    <TimeTimer date="04/12/2025">
+      <Card shadow>
+        <CardBody>
+          <center>
+            <LogoIcon name="noto:snowman" size={48} />
+            <h3>Day 4</h3>
+            <p>⛄ Snowman!</p>
+          </center>
+        </CardBody>
+      </Card>
+      <FallbackBefore>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:locked" size={48} />
+              <h3>Day 4</h3>
+              <p>Please wait...</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackBefore>
+      <FallbackAfter>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:check-mark-button" size={48} />
+              <h3>Day 4</h3>
+              <p>✅ Already opened</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackAfter>
+    </TimeTimer>
+  </Column>
+  
+  <Column>
+    <TimeTimer date="05/12/2025">
+      <Card shadow>
+        <CardBody>
+          <center>
+            <LogoIcon name="noto:christmas-tree" size={48} />
+            <h3>Day 5</h3>
+            <p>🎄 Decorated tree!</p>
+          </center>
+        </CardBody>
+      </Card>
+      <FallbackBefore>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:locked" size={48} />
+              <h3>Day 5</h3>
+              <p>Please wait...</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackBefore>
+      <FallbackAfter>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:check-mark-button" size={48} />
+              <h3>Day 5</h3>
+              <p>✅ Already opened</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackAfter>
+    </TimeTimer>
+  </Column>
+  
+  <Column>
+    <TimeTimer date="06/12/2025">
+      <Card shadow>
+        <CardBody>
+          <center>
+            <LogoIcon name="noto:star" size={48} />
+            <h3>Day 6</h3>
+            <p>⭐ Magic star!</p>
+          </center>
+        </CardBody>
+      </Card>
+      <FallbackBefore>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:locked" size={48} />
+              <h3>Day 6</h3>
+              <p>Please wait...</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackBefore>
+      <FallbackAfter>
+        <Card>
+          <CardBody>
+            <center>
+              <LogoIcon name="noto:check-mark-button" size={48} />
+              <h3>Day 6</h3>
+              <p>✅ Already opened</p>
+            </center>
+          </CardBody>
+        </Card>
+      </FallbackAfter>
+    </TimeTimer>
+  </Column>
+</Columns>
+
+
+:::tip Dynamic Three-State Calendar
+This calendar displays three different states for each box:
+- 🔒 **Before the date**: Locked box with a padlock
+- 🎁 **On the day**: Opened box with the day's gift
+- ✅ **After the date**: Box marked as "Already opened"
+
+You can easily extend it to December 24 by duplicating the structure!
+:::
+
+
+
+
+## My Usage Recommendations
+
+### What I Recommend
+
+- Use `strict` for global events
+- Test with different dates before publishing
+- Take advantage of custom dates in fallbacks—it's super flexible
+
+
+
+
+## Resources
+
+- [React Documentation](https://react.dev/)
+- [Date MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
+- [UTC vs Local Time](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC)
+- [Docusaurus MDX](https://docusaurus.io/docs/markdown-features/react)
+
+

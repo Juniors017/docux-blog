@@ -30,6 +30,8 @@ import Folder from '@site/src/components/Trees/Folder';
 import File from '@site/src/components/Trees/File';
 import GoatCounterViews from '@site/src/components/GoatCountViews';
 import Terminal from '@site/src/components/Terminal';
+import TimeTimer, { FallbackBefore, FallbackAfter } from '@site/src/components/TimeTimer';
+
 
 export default {
   // Réutilise la correspondance par défaut
@@ -88,5 +90,8 @@ export default {
   Folder,
   File,
   GoatCounterViews,
-  Terminal
+  Terminal,
+  TimeTimer,
+  FallbackBefore,
+  FallbackAfter
 };

@@ -21,7 +21,7 @@
     "schema-diagram": {
       "component": "ImageOnClick",
       "props": {
-        "imageUrl": "/img/remarkreplace.png",
+        "imageUrl": "/img/404bg.png",
         "altText": "Architecture diagram",
         "buttonName": "Click me"
       }

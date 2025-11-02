@@ -53,15 +53,15 @@ const config = {
         [
             '@docusaurus/plugin-client-redirects', {
                 redirects: [
-                    // Ajoutez vos redirections ici, par exemple: {   from: '/ancienne-page',   to:
-                    // '/nouvelle-page', },
+                    // Add your redirects here, for example: {   from: '/old-page',   to:
+                    // '/new-page', },
                 ],
-                // Redirections automatiques basées sur une taxonomie courante
+                // Automatic redirects based on common taxonomy
                 /**
                  * @param {string} existingPath
                  */
                 createRedirects: (existingPath) => {
-                    // Redirection des URLs anciennes vers nouvelles
+                    // Redirect old URLs to new ones
                     if (existingPath.includes('/blog/')) {
                         return [
                             existingPath.replace('/blog/', '/articles/'),
@@ -73,7 +73,7 @@ const config = {
             }
         ]
     ],
-    // Les thèmes (UI) doivent être déclarés dans "themes" et non "plugins"
+    // Themes (UI) must be declared in "themes" and not "plugins"
     themes: [
         '@docusaurus/theme-live-codeblock',
         [
@@ -93,24 +93,24 @@ const config = {
             }
         ]
     ],
-    trailingSlash: true, // Assure la cohérence des URLs avec des barres obliques finales
+    trailingSlash: true, // Ensures URL consistency with trailing slashes
     customFields: {
         blueSky: {
             // This is the BlueSky handle as displayed in your BlueSky profile page
             handle: "docuxlab.com"
         }
     },
-    // Configuration des URLs canoniques et gestion des liens/markdown cassés
+    // Canonical URL configuration and broken links/markdown handling
     onBrokenLinks: 'ignore',
-    // Migration: l'option onBrokenMarkdownLinks est désormais gérée via markdown.hooks
+    // Migration: the onBrokenMarkdownLinks option is now handled via markdown.hooks
     markdown: {
         hooks: {
-            // Ancienne valeur: 'ignore' (migrée depuis la racine)
+            // Old value: 'ignore' (migrated from root)
             onBrokenMarkdownLinks: 'ignore'
         }
     },
     onDuplicateRoutes: "throw",
-    // Future flags pour préparer Docusaurus v4
+    // Future flags to prepare for Docusaurus v4
     future: {
         v4: {
             removeLegacyPostBuildHeadAttribute: true,
@@ -138,7 +138,7 @@ const config = {
     },
 
     headTags: [
-        // Données structurées du site web
+        // Structured data for the website
         {
             tagName: 'script',
             attributes: {
@@ -158,7 +158,7 @@ const config = {
                 }
             })
         },
-        // Données structurées pour l'organisation
+        // Structured data for the organization
         {
             tagName: 'script',
             attributes: {
@@ -230,7 +230,7 @@ const config = {
         // Replace with your project's social card
         image: 'img/docux.webp',
         metadata: [
-            // Métadonnées générales
+            // General metadata
             {
                 name: 'keywords',
                 content: 'docusaurus, blog, documentation, cms, react, gestion de contenu, markdown'
@@ -292,8 +292,8 @@ const config = {
         
             liveCodeBlock: {
             /**
-             * La position du terrain de jeu en direct, au-dessus ou au-dessous de l'éditeur
-             * Valeurs possibles : "top" | "bottom"
+             * The position of the live playground, above or below the editor
+             * Possible values: "top" | "bottom"
              */
             playgroundPosition: 'bottom',
             },

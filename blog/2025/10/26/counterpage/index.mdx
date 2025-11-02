@@ -33,14 +33,16 @@ copyrightHolder: "Docux"
 </div>
 </center>
 
-After adding GoatCounter to my blog, my goal was to test the following:
-- Display the number of views for a page.
-- In the article list, show the views for each post individually.
-- Avoid HTML injection and the “flash” of unparsed content (common when using JavaScript or the iframe).
+After adding GoatCounter to my blog, I wanted to display view counts for each page. My goals were to:
+- Display the number of views for a page
+- In the article list, show the views for each post individually
+- Avoid HTML injection and the "flash" of unparsed content (common when using JavaScript or the iframe)
+
+So I created this component using GoatCounter's JSON API.
 
 Official GoatCounter docs for this: [View counts](https://www.goatcounter.com/help/visitor-counter)
 	{/* truncate */}
-## Why use the JSON API instead of `visit_count()`?
+## Why I chose the JSON API instead of `visit_count()`
 
 - Inline `<script>` tags aren’t well supported by MDX/Docusaurus (acorn parsing errors).
 - `visit_count()` injects raw HTML, which causes a visible “flash” before we can parse/format it. <ImageOnClick imageUrl="/img/vuegoatcounteriframe.webp" altText="Flash" buttonName="here's what flashes for 1–3 seconds"  />
