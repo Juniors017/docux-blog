@@ -495,10 +495,10 @@ Feel free to modify the dates and durations in the code above to experiment! A f
 ### Interactive Advent Calendar
 
 Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon to create an Advent calendar:
-
+```jsx live
 <Columns className="margin-vert--md">
   <Column className="margin-vert--md">
-    <TimeTimer date="01/11/2025" >
+    <TimeTimer date="01/11/2025">
       <Card shadow>
         <CardBody>
           <center>
@@ -534,7 +534,7 @@ Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon t
   </Column>
   
   <Column className="margin-vert--md">
-    <TimeTimer date="02/11/2025" duration="100m">
+    <TimeTimer date="06/11/2025">
       <Card shadow>
         <CardBody>
           <center>
@@ -606,116 +606,10 @@ Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon t
   </Column>
 </Columns>
 
-<Columns className="margin-vert--md">
-  <Column className="margin-vert--md">
-    <TimeTimer date="04/12/2025">
-      <Card shadow>
-        <CardBody>
-          <center>
-            <LogoIcon name="noto:snowman" size={48} />
-            <h3>Day 4</h3>
-            <p>⛄ Snowman!</p>
-          </center>
-        </CardBody>
-      </Card>
-      <FallbackBefore>
-        <Card>
-          <CardBody>
-            <center>
-              <LogoIcon name="noto:locked" size={48} />
-              <h3>Day 4</h3>
-              <p>Please wait...</p>
-            </center>
-          </CardBody>
-        </Card>
-      </FallbackBefore>
-      <FallbackAfter>
-        <Card>
-          <CardBody>
-            <center>
-              <LogoIcon name="noto:check-mark-button" size={48} />
-              <h3>Day 4</h3>
-              <p>✅ Already opened</p>
-            </center>
-          </CardBody>
-        </Card>
-      </FallbackAfter>
-    </TimeTimer>
-  </Column>
-  
-  <Column className="margin-vert--md">
-    <TimeTimer date="05/12/2025">
-      <Card shadow>
-        <CardBody>
-          <center>
-            <LogoIcon name="noto:christmas-tree" size={48} />
-            <h3>Day 5</h3>
-            <p>🎄 Decorated tree!</p>
-          </center>
-        </CardBody>
-      </Card>
-      <FallbackBefore>
-        <Card>
-          <CardBody>
-            <center>
-              <LogoIcon name="noto:locked" size={48} />
-              <h3>Day 5</h3>
-              <p>Please wait...</p>
-            </center>
-          </CardBody>
-        </Card>
-      </FallbackBefore>
-      <FallbackAfter>
-        <Card>
-          <CardBody>
-            <center>
-              <LogoIcon name="noto:check-mark-button" size={48} />
-              <h3>Day 5</h3>
-              <p>✅ Already opened</p>
-            </center>
-          </CardBody>
-        </Card>
-      </FallbackAfter>
-    </TimeTimer>
-  </Column>
-  
-  <Column className="margin-vert--md">
-    <TimeTimer date="06/12/2025">
-      <Card shadow>
-        <CardBody>
-          <center>
-            <LogoIcon name="noto:star" size={48} />
-            <h3>Day 6</h3>
-            <p>⭐ Magic star!</p>
-          </center>
-        </CardBody>
-      </Card>
-      <FallbackBefore>
-        <Card>
-          <CardBody>
-            <center>
-              <LogoIcon name="noto:locked" size={48} />
-              <h3>Day 6</h3>
-              <p>Please wait...</p>
-            </center>
-          </CardBody>
-        </Card>
-      </FallbackBefore>
-      <FallbackAfter>
-        <Card>
-          <CardBody>
-            <center>
-              <LogoIcon name="noto:check-mark-button" size={48} />
-              <h3>Day 6</h3>
-              <p>✅ Already opened</p>
-            </center>
-          </CardBody>
-        </Card>
-      </FallbackAfter>
-    </TimeTimer>
-  </Column>
-</Columns>
 
+
+
+```
 
 :::tip Dynamic Three-State Calendar
 This calendar displays three different states for each box:
@@ -725,8 +619,6 @@ This calendar displays three different states for each box:
 
 You can easily extend it to December 24 by duplicating the structure!
 :::
-
-
 
 
 ## My Usage Recommendations
