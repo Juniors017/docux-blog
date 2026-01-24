@@ -124,7 +124,7 @@ export default function PostCard({
 
   // Default "big" layout
   return (
-    <div className="col col--3 margin-bottom--lg">
+    <div className="col col--2 margin-bottom--lg">
       <Card shadow="md">
         <CardImage
           cardImageUrl={image || defaultImage}
@@ -134,7 +134,7 @@ export default function PostCard({
         <CardBody className="padding-vert--md text--center" textAlign="center">
           <h3>
             <Link href={permalink} aria-label={`Read article: ${title}`}>
-              {title}&nbsp;→
+              {title}
             </Link>
           </h3>
           {description && <p className={styles.description}>{description}</p>}
