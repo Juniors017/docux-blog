@@ -110,22 +110,23 @@ const config = {
         }
     },
     onDuplicateRoutes: "throw",
+    // Storage configuration
+    storage: {
+        type: 'localStorage',
+        namespace: true
+    },
     // Future flags to prepare for Docusaurus v4
     future: {
         v4: {
             removeLegacyPostBuildHeadAttribute: true,
             useCssCascadeLayers: true
         },
-        experimental_faster: {
+        faster: {
             swcJsLoader: true,
             swcJsMinimizer: true,
             swcHtmlMinimizer: true,
             lightningCssMinimizer: true,
             mdxCrossCompilerCache: true
-        },
-        experimental_storage: {
-            type: 'localStorage',
-            namespace: true
         }
     },
 
