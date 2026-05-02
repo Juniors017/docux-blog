@@ -2,11 +2,15 @@ import React from 'react';
 import clsx from 'clsx';
 import {blogPostContainerID} from '@docusaurus/utils-common';
 import {useBlogPost} from '@docusaurus/plugin-content-blog/client';
+import OldPostNotice from "@site/src/components/Blog/OldPostNotice/index.js";
+
 import MDXContent from '@theme/MDXContent';
 
 export default function BlogPostItemContent({children, className}) {
   const {isBlogPostPage} = useBlogPost();
   return (
+    <>
+    <OldPostNotice/>
     <div
       // This ID is used for the feed generation to locate the main content
       id={isBlogPostPage ? blogPostContainerID : undefined}
@@ -15,5 +19,6 @@ export default function BlogPostItemContent({children, className}) {
      
    
     </div>
+    </>
   );
 }
