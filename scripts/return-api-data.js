@@ -38,8 +38,13 @@ async function main() {
         data = JSON.parse(await fs.readFile(OUTPUT_FILE, 'utf8'));
         usedExistingFile = true;
       } else {
-        throw new Error(`API error ${statusText}`);
+        throw new Error(`API error ${statusText} (HTML response)`);
       }
+    } else if (!response.headers.get('content-type')?.includes('application/json')) {
+       // Si l'API renvoie 200 mais du HTML (protection WAF)
+       const text = await response.text();
+       console.warn("⚠️ Received HTML instead of JSON. API might be protected.");
+       throw new Error('Response is not JSON');
     } else {
       data = await response.json();
     }

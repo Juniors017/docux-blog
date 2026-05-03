@@ -36,7 +36,7 @@ jobs:
           if curl --fail -sL --compressed "https://api.slingacademy.com/v1/sample-data/photos?offset=5&limit=20" \
                  -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36" \
                  -H "Accept: application/json" \
-                 -o static/json/photos-data.json; then
+                 -o static/json/photos-data.json && jq . static/json/photos-data.json > /dev/null 2>&1; then
             
             echo "✅ API call successful"
             
@@ -46,12 +46,19 @@ jobs:
             jq . static/json/photos-data.json | head -n 20
             
             echo "🔢 Nombre d'éléments récupérés :"
-            jq '. | length' static/json/photos-data.json
+            jq '.photos | length' static/json/photos-data.json
             # ---------------
             
           else
-            echo "⚠️ API call failed, using fallback"
-            if [ -f static/json/photos-data-fallback.json ]; then
+            echo "⚠️ Primary API call failed or returned invalid JSON (HTML protection?)"
+            echo "🔄 Trying Lorem Picsum fallback..."
+            if curl --fail -sL "https://picsum.photos/v2/list?limit=20" -o static/json/photos-data-temp.json; then
+              echo "✅ Fallback to Lorem Picsum successful"
+              # On restructure le tableau de Picsum pour correspondre au format Sling Academy
+              jq '{success: true, photos: .}' static/json/photos-data-temp.json > static/json/photos-data.json
+              rm static/json/photos-data-temp.json
+            elif [ -f static/json/photos-data-fallback.json ]; then
+              echo "⚠️ API Fallback failed, using local fallback file"
               cp static/json/photos-data-fallback.json static/json/photos-data.json
             else
               echo "❌ Error: No fallback file found at static/json/photos-data-fallback.json"

@@ -1,16 +1,16 @@
 ---
-title: "How to Use an API at Build Time in Docusaurus"
+title: "Comment utiliser une API au moment du build dans Docusaurus"
 slug: fetch-api-build-docusaurus
-description: "Simple example: fetch an API at build time, generate static JSON and display photos in Docusaurus."
+description: "Exemple simple : récupérer des données d'une API au moment du build, générer un fichier JSON statique et afficher des photos dans Docusaurus."
 schemaTypes: ["HowTo", "BlogPosting"]
 image: "/img/api.png"
 authors: ["docux"]
 mainTag: api
 tags: ["docusaurus", "api", "build", "react", "static", "photos"]
 date: 2026-05-03
-difficulty: "Intermediate"
-yield: "Use an API at build time in Docusaurus"
-genre: "Technical Tutorial"
+difficulty: "Intermédiaire"
+yield: "Utiliser une API au moment du build dans Docusaurus"
+genre: "Tutoriel Technique"
 inLanguage: "en"
 copyrightYear: 2026
 copyrightHolder: "Docux"
@@ -18,12 +18,13 @@ keywords: ["docusaurus", "api", "build", "photos", "json", "static site"]
 hide_table_of_contents: false
 series: "Api and scripts in Docusaurus"
 blueSkyRecordKey: 
+draft: true
 ---
 
 <center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
-[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![Développement](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![AI 50%](https://img.shields.io/badge/AI-50%-blue.svg)](https://github.com/Juniors017)
 </div>
@@ -32,7 +33,7 @@ blueSkyRecordKey:
 </center>
 
 
-## Goal
+## Objectif
 
 I show here a simple and concrete example: using an API during Docusaurus build, saving the result in a static JSON file, then displaying this data in a page.
 
@@ -57,7 +58,7 @@ This type of flow is ideal for keeping a static site in production while leverag
   <Folder label="src" expanded={true}>
     <Folder label="components" expanded={true}>
       <Folder label="PhotosGrid" expanded={true}>
-        <File label="index.jsx" icon="javascript" />
+        <File label="index.js" icon="javascript" />
       </Folder>
     </Folder>
     <Folder label="pages" expanded={true}>
@@ -66,41 +67,44 @@ This type of flow is ideal for keeping a static site in production while leverag
   </Folder>
 </Trees>
 
-## GitHub Actions Workflow
+## Workflow GitHub Actions
 
-Instead of using a Node.js script during local build, we use GitHub Actions to fetch API data during deployment. This approach is more reliable for CI/CD environments and handles API failures gracefully.
+Pour les builds CI/CD, nous utilisons GitHub Actions pour récupérer les données de l'API lors du déploiement. Cette approche est plus fiable et gère les échecs d'API de manière élégante.
+
+Pour le développement local, un script Node.js (`scripts/return-api-data.js`) peut être utilisé pour pré-générer le fichier JSON statique, simulant ainsi l'environnement de production.
 
 The workflow `.github/workflows/main.yml` includes an API call step that:
 
-1. **Tries the primary API** (Sling Academy) with realistic browser headers
-2. **Validates the response** to ensure it's proper JSON with success status
-3. **Falls back to Lorem Picsum** if the primary API fails or returns invalid data
+1.  **Tente d'appeler l'API principale** (Sling Academy) avec des en-têtes de navigateur réalistes.
+2.  **Valide la réponse** pour s'assurer qu'il s'agit bien d'un JSON valide avec un statut de succès.
+3.  **Utilise une API de secours (Lorem Picsum)** si l'API principale échoue ou renvoie des données invalides.
+4.  **Utilise un fichier de secours local** si l'API de secours échoue également.
 
 <Snippet filename=".github/workflows/main.yml" source=".github/workflows/main.yml" />
 
-This robust approach ensures the build always succeeds, even if external APIs are temporarily unavailable.
+Cette approche robuste garantit que le build réussit toujours, même si les API externes sont temporairement indisponibles.
 
-## Display Photos in a Page
+## Afficher les Photos sur une Page
 
-The page `src/pages/photos.jsx` reads the static JSON and displays the photos.
+La page `src/pages/photos.jsx` lit le JSON statique et affiche les photos.
 
 <Snippet filename="src/pages/photos.jsx" source="src/pages/photos.jsx" />
 
-The page loads `/json/photos-data.json`. If this file doesn't exist in development, it falls back to direct API loading to still display images.
+La page charge `/json/photos-data.json`. En mode développement (lancé via `npm start`), si ce fichier n'existe pas, la page se rabat sur un chargement direct depuis l'API pour afficher les images.
 
-See the page in action [/photos/](/photos/)
+Voir la page en action /photos/
 
-## Create the `PhotosGrid` Component
+## Créer le Composant `PhotosGrid`
 
-The component `src/components/PhotosGrid/index.jsx` is the element that renders the photo grid in your article.
+Le composant `src/components/PhotosGrid/index.js` est l'élément qui rend la grille de photos dans votre article.
 
 It does several important things:
 
-- it first tries to load the static file `/json/photos-data.json`
-- if this file doesn't exist in development, it automatically falls back to the Sling Academy API (our demo API)
-- it manages loading state (`loading`), errors, and the case where no photos are available
-- it limits the number of displayed photos with the `limit` prop
-- it builds a responsive grid with Docusaurus cards
+-   il tente d'abord de charger le fichier statique `/json/photos-data.json`
+-   si ce fichier n'existe pas en développement, il se rabat automatiquement sur l'API Sling Academy (notre API de démonstration)
+-   il gère l'état de chargement (`loading`), les erreurs et le cas où aucune photo n'est disponible
+-   il limite le nombre de photos affichées avec la prop `limit`
+-   il construit une grille réactive avec les cartes Docusaurus
 
 <Snippet filename="src/components/PhotosGrid/index.js" source="src/components/PhotosGrid/index.js" />
 
@@ -169,4 +173,3 @@ If you want, you can replace the React page with an MDX page, but the principle 
 3. consume this static file in your page
 
 > This article shows how to use an API at build time with a light and easy-to-reproduce example.
-

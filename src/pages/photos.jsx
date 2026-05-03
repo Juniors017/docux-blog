@@ -16,15 +16,18 @@ export default function PhotosPage() {
     // Try to load the pre-generated static JSON file first.
     fetch(STATIC_URL)
       .then((response) => {
-        if (response.ok) {
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        
+        if (response.ok && isJson) {
           return response.json();
         }
 
-        // If the static file does not exist, fallback to the remote API.
-        if (response.status === 404) {
+        // If the static file does not exist (404) or is HTML, fallback to the remote API.
+        if (response.status === 404 || !isJson) {
           return fetch(API_URL).then((fallback) => {
-            if (!fallback.ok) {
-              throw new Error(`API fallback error ${fallback.status}`);
+            const isFallbackJson = fallback.headers.get('content-type')?.includes('application/json');
+            if (!fallback.ok || !isFallbackJson) {
+              throw new Error(`API fallback error (Status: ${fallback.status}, JSON: ${isFallbackJson})`);
             }
             return fallback.json();
           });
@@ -48,7 +51,7 @@ export default function PhotosPage() {
         <h1>Photos from the Test API</h1>
         <p>
           Images are served from the static file <code>/json/photos-data.json</code>,
-          generated at build time by <code>scripts/return-api-data.js</code>.
+          generated at build time by the <strong>GitHub Actions Workflow</strong>.
         </p>
         <p>
           In development mode, if this file doesn't exist yet, the page falls back

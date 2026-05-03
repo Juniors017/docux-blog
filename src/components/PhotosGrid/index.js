@@ -15,15 +15,18 @@ export default function PhotosGrid({ limit = 8 }) {
     // Try to load the pre-generated static JSON file first.
     fetch(STATIC_URL)
       .then((response) => {
-        if (response.ok) {
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        
+        if (response.ok && isJson) {
           return response.json();
         }
 
-        // If the static file does not exist, fallback to the remote API.
-        if (response.status === 404) {
+        // If the static file does not exist (404) or is HTML, fallback to the remote API.
+        if (response.status === 404 || !isJson) {
           return fetch(API_URL).then((fallback) => {
-            if (!fallback.ok) {
-              throw new Error(`API fallback error ${fallback.status}`);
+            const isFallbackJson = fallback.headers.get('content-type')?.includes('application/json');
+            if (!fallback.ok || !isFallbackJson) {
+              throw new Error(`API fallback error (Status: ${fallback.status}, JSON: ${isFallbackJson})`);
             }
             return fallback.json();
           });
