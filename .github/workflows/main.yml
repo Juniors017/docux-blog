@@ -33,7 +33,7 @@ jobs:
           echo "🌐 Appel de l'API en cours..."
           
           # Exécution du curl avec gestion de la compression et des redirections
-          if curl --fail -sL --compressed "https://jsonplaceholder.typicode.com/photos?_start=5&_limit=20" \
+          if curl --fail -sL --compressed "https://api.slingacademy.com/v1/sample-data/photos?offset=5&limit=20" \
                  -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36" \
                  -H "Accept: application/json" \
                  -o static/json/photos-data.json; then
