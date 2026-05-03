@@ -1,12 +1,13 @@
-name: Deploy Docusaurus site to GitHub Pages
+name: Docusaurus site to GitHub Pages
 
 on:
   push:
     branches:
-      - main  
+      - main
+  workflow_dispatch: # Permet de lancer le build manuellement pour tester
 
 permissions:
-  contents: write  
+  contents: write
 
 jobs:
   deploy:
@@ -19,9 +20,44 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20  
+          node-version: 20
+          cache: 'npm'
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Fetch API data
+        run: |
+          mkdir -p static/json
+          
+          echo "🌐 Appel de l'API en cours..."
+          
+          # Exécution du curl avec gestion de la compression et des redirections
+          if curl --fail -sL --compressed "https://jsonplaceholder.typicode.com/photos?_start=5&_limit=20" \
+                 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36" \
+                 -H "Accept: application/json" \
+                 -o static/json/photos-data.json; then
+            
+            echo "✅ API call successful"
+            
+            # --- LOGGING ---
+            echo "📊 Aperçu des données reçues :"
+            # jq . formate le JSON proprement, head affiche les 20 premières lignes
+            jq . static/json/photos-data.json | head -n 20
+            
+            echo "🔢 Nombre d'éléments récupérés :"
+            jq '. | length' static/json/photos-data.json
+            # ---------------
+            
+          else
+            echo "⚠️ API call failed, using fallback"
+            if [ -f static/json/photos-data-fallback.json ]; then
+              cp static/json/photos-data-fallback.json static/json/photos-data.json
+            else
+              echo "❌ Error: No fallback file found at static/json/photos-data-fallback.json"
+              exit 1
+            fi
+          fi
 
       - name: Build Docusaurus site
         env:
