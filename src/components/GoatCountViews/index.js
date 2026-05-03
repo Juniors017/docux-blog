@@ -70,7 +70,7 @@ export default function GoatCounterViews({path: explicitPath}) {
             const value = Number(digits);
             if (done) return;
             // Rule: < 100 => "New!", otherwise formatted value
-            setText(value < 100 ? 'New!' : format(value));
+            setText(value < 20 ? 'New!' : format(value));
             done = true;
             return;
           }
