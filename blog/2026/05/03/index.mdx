@@ -111,7 +111,7 @@ It does several important things:
 The component is exposed in MDX via `src/theme/MDXComponents.js`, which allows calling it directly in an article with:
 
 ```html
-<PhotosGrid limit={6} />
+<PhotosGrid limit={8} />
 ```
 
 This creation is a practical option: it allows cleanly inserting data into an MDX page without duplicating the fetch and display logic.
@@ -145,7 +145,7 @@ The page presents:
 
 Here is a **live** preview of photos fetched from the API (limited to 6 photos):
 
-<PhotosGrid limit={6} />
+<PhotosGrid limit={8} />
 
 *The photos above are loaded dynamically from the JSON file generated at build time (from Sling Academy API or Lorem Picsum fallback) or directly from the API in development mode.*
 

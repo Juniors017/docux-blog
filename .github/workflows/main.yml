@@ -3,8 +3,8 @@ name: Docusaurus site to GitHub Pages
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: "*/30 * * * *"   # optionnel : toutes les 30 minutes
+ # schedule:
+   # cron: "*/30 * * * *"   # optionnel : toutes les 30 minutes
   workflow_dispatch:
 
 permissions:
@@ -33,7 +33,7 @@ jobs:
           echo "🌐 Appel de l'API Lorem Picsum..."
           curl -o static/json/photos-data.json "https://picsum.photos/v2/list?limit=20"
           echo "✅ Données récupérées et sauvegardées dans static/json/photos-data.json"
-          echo "📊 Aperçu (5 premières entrées) :"
+          echo "📊 Aperçu :"
           head -n 20 static/json/photos-data.json
 
       - name: Build Docusaurus site
