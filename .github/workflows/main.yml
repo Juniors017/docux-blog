@@ -2,9 +2,10 @@ name: Docusaurus site to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch: # Permet de lancer le build manuellement pour tester
+    branches: [main]
+  schedule:
+    - cron: "*/30 * * * *"   # optionnel : toutes les 30 minutes
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -26,49 +27,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch API data
+      - name: Fetch API data (Lorem Picsum)
         run: |
           mkdir -p static/json
-          
-          echo "🌐 Appel de l'API en cours..."
-          
-          # Exécution du curl avec gestion de la compression et des redirections
-          if curl --fail -sL --compressed "https://api.slingacademy.com/v1/sample-data/photos?offset=5&limit=20" \
-                 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36" \
-                 -H "Accept: application/json" \
-                 -o static/json/photos-data.json && jq . static/json/photos-data.json > /dev/null 2>&1; then
-            
-            echo "✅ API call successful"
-            
-            # --- LOGGING ---
-            echo "📊 Aperçu des données reçues :"
-            # jq . formate le JSON proprement, head affiche les 20 premières lignes
-            jq . static/json/photos-data.json | head -n 20
-            
-            echo "🔢 Nombre d'éléments récupérés :"
-            jq '.photos | length' static/json/photos-data.json
-            # ---------------
-            
-          else
-            echo "⚠️ Primary API call failed or returned invalid JSON (HTML protection?)"
-            echo "🔄 Trying Lorem Picsum fallback..."
-            if curl --fail -sL "https://picsum.photos/v2/list?limit=20" -o static/json/photos-data-temp.json; then
-              echo "✅ Fallback to Lorem Picsum successful"
-              # On restructure le tableau de Picsum pour correspondre au format Sling Academy
-              jq '{success: true, photos: .}' static/json/photos-data-temp.json > static/json/photos-data.json
-              rm static/json/photos-data-temp.json
-            elif [ -f static/json/photos-data-fallback.json ]; then
-              echo "⚠️ API Fallback failed, using local fallback file"
-              cp static/json/photos-data-fallback.json static/json/photos-data.json
-            else
-              echo "❌ Error: No fallback file found at static/json/photos-data-fallback.json"
-              exit 1
-            fi
-          fi
+          echo "🌐 Appel de l'API Lorem Picsum..."
+          curl -o static/json/photos-data.json "https://picsum.photos/v2/list?limit=20"
+          echo "✅ Données récupérées et sauvegardées dans static/json/photos-data.json"
+          echo "📊 Aperçu (5 premières entrées) :"
+          head -n 20 static/json/photos-data.json
 
       - name: Build Docusaurus site
-        env:
-          DOCUSAURUS_IGNORE_SSG_WARNINGS: "true"
         run: npm run build
 
       - name: Deploy to GitHub Pages

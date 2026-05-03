@@ -1,84 +1,74 @@
 import React, { useEffect, useState } from 'react';
+import Admonition from '@theme/Admonition';
 
-// Path to the static JSON file generated at build time.
-const STATIC_URL = '/json/photos-data.json';
-// Fallback remote API used in development when the static file is missing.
-const API_URL = 'https://api.slingacademy.com/v1/sample-data/photos?offset=5&limit=20';
+// API directe pour le développement
+const API_URL = 'https://picsum.photos/v2/list?limit=20';
+// Fichier statique pour la production (généré par GitHub Actions)
+const STATIC_JSON_URL = '/json/photos-data.json';
 
-export default function PhotosGrid({ limit = 8 }) {
-  // Local component state for the photo list, loading state, and any error.
+export default function PhotoGrid({ limit = 8 }) {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Try to load the pre-generated static JSON file first.
-    fetch(STATIC_URL)
-      .then((response) => {
-        const isJson = response.headers.get('content-type')?.includes('application/json');
-        
-        if (response.ok && isJson) {
-          return response.json();
-        }
+    // Choix de l'URL selon l'environnement
+    const isDev = process.env.NODE_ENV === 'development';
+    const url = isDev ? API_URL : STATIC_JSON_URL;
 
-        // If the static file does not exist (404) or is HTML, fallback to the remote API.
-        if (response.status === 404 || !isJson) {
-          return fetch(API_URL).then((fallback) => {
-            const isFallbackJson = fallback.headers.get('content-type')?.includes('application/json');
-            if (!fallback.ok || !isFallbackJson) {
-              throw new Error(`API fallback error (Status: ${fallback.status}, JSON: ${isFallbackJson})`);
-            }
-            return fallback.json();
-          });
-        }
-        throw new Error(`Error ${response.status}`);
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
       })
-      .then((json) => {
-        // The API response is expected to include a `photos` array.
-        const allPhotos = (json.photos || json) ?? [];
-        setPhotos(allPhotos.slice(0, limit)); // Limit the number of photos displayed
+      .then((data) => {
+        // Gère le format : tableau direct (Picsum) ou bien { photos: [...] }
+        let allPhotos = Array.isArray(data) ? data : data.photos;
+        if (!allPhotos || !Array.isArray(allPhotos)) {
+          throw new Error('Format de données inattendu');
+        }
+        setPhotos(allPhotos.slice(0, limit));
         setLoading(false);
       })
       .catch((err) => {
+        console.error(err);
         setError(err.message);
         setLoading(false);
       });
   }, [limit]);
 
-  if (loading) {
-    return <p>Loading photos...</p>;
-  }
+  if (loading) return <div className="text--center margin-vert--lg">Chargement des photos...</div>;
 
   if (error) {
     return (
-      <div className="alert alert--danger">
-        <strong>Error:</strong> {error}
-      </div>
+      <Admonition type="warning" title="Erreur de chargement">
+        <p>{error}</p>
+      </Admonition>
     );
   }
 
-  if (photos.length === 0) {
-    return <p>No photos found.</p>;
+  if (!photos.length) {
+    return <Admonition type="info" title="Aucune photo">Aucune photo à afficher.</Admonition>;
   }
 
   return (
     <div className="row">
       {photos.map((photo) => (
         <div key={photo.id} className="col col--4 margin-bottom--lg">
-          <div className="card padding--sm">
+          <div className="card shadow--md">
             <div className="card__image">
               <img
-                src={photo.url}
-                alt={photo.title || photo.description || `Photo ${photo.id}`}
+                src={`https://picsum.photos/id/${photo.id}/400/300`}
+                alt={photo.author}
                 style={{ width: '100%', height: 'auto', display: 'block' }}
               />
             </div>
-            <div className="card__body padding-top--sm">
-              <h4>{photo.title}</h4>
-              <p style={{ fontSize: '0.9em', color: 'var(--ifm-color-emphasis-700)' }}>
-                {photo.description.length > 100
-                  ? `${photo.description.substring(0, 100)}...`
-                  : photo.description}
+            <div className="card__body">
+              <h4>{photo.author}</h4>
+              <p className="text--small">
+                <a href={photo.download_url} target="_blank" rel="noopener noreferrer">
+                  Voir l'original
+                </a>
               </p>
             </div>
           </div>
