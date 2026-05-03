@@ -1,20 +1,20 @@
 ---
-title: "Comment utiliser une API au moment du build dans Docusaurus"
-slug: fetch-api-build-docusaurus
-description: "Exemple simple : récupérer des données d'une API au moment du build, générer un fichier JSON statique et afficher des photos dans Docusaurus."
+title: "API at build time with github Action"
+slug: api-build-docusaurus-github-action
+description: "Complete example: fetch data from an API at build time, handle errors (Cloudflare…), generate a static JSON file, and display photos in Docusaurus with a smart fallback."
 schemaTypes: ["HowTo", "BlogPosting"]
 image: "/img/api.png"
 authors: ["docux"]
 mainTag: api
-tags: ["docusaurus", "api", "build", "react", "static", "photos"]
-date: 2026-05-03
-difficulty: "Intermédiaire"
-yield: "Utiliser une API au moment du build dans Docusaurus"
-genre: "Tutoriel Technique"
+tags: ["docusaurus", "api", "build", "react", "static", "photos", "github-actions", "cloudflare"]
+date: 2026-05-04
+difficulty: "Intermediate"
+yield: "API at build time in Docusaurus with blocking handling"
+genre: "Technical Tutorial"
 inLanguage: "en"
 copyrightYear: 2026
 copyrightHolder: "Docux"
-keywords: ["docusaurus", "api", "build", "photos", "json", "static site"]
+keywords: ["docusaurus", "api", "build", "photos", "json", "static site", "github actions", "cloudflare bypass"]
 hide_table_of_contents: false
 series: "Api and scripts in Docusaurus"
 blueSkyRecordKey: 
@@ -24,23 +24,20 @@ draft: false
 <center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
-[![Développement](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![AI 50%](https://img.shields.io/badge/AI-50%-blue.svg)](https://github.com/Juniors017)
 </div>
 
 ![](/img/api.png)
+
 </center>
 
+## Goal
 
-## Objectif
+Here I show a simple yet realistic example: **using an API during Docusaurus build**, saving the result in a static JSON file, and then displaying this data in a page or component.
 
-I show here a simple and concrete example: using an API during Docusaurus build, saving the result in a static JSON file, then displaying this data in a page.
-
-This type of flow is ideal for keeping a static site in production while leveraging external data at compile time.
-
-
-{/* truncate */}
+This type of workflow is ideal for keeping a static site in production while leveraging external data at compile time. But beware: not all APIs can be easily queried from a CI server (GitHub Actions). We will see how to bypass blocking (Cloudflare) and set up a robust fallback.
 
 ## Project Architecture
 
@@ -67,109 +64,103 @@ This type of flow is ideal for keeping a static site in production while leverag
   </Folder>
 </Trees>
 
-## Workflow GitHub Actions
+## Challenges encountered and solutions
 
-Pour les builds CI/CD, nous utilisons GitHub Actions pour récupérer les données de l'API lors du déploiement. Cette approche est plus fiable et gère les échecs d'API de manière élégante.
+### Problem: API protected by Cloudflare
 
-Pour le développement local, un script Node.js (`scripts/return-api-data.js`) peut être utilisé pour pré-générer le fichier JSON statique, simulant ainsi l'environnement de production.
+I first tried to use the `api.slingacademy.com` API. Locally, everything worked. But in GitHub Actions, `curl` received an HTML page from **Cloudflare** (JavaScript challenge) instead of JSON. It was impossible to bypass simply with headers (`User-Agent`, `Accept`…).
 
-The workflow `.github/workflows/main.yml` includes an API call step that:
+**Solution**:  
+Switch to an API that **has no such protection**. I chose [Lorem Picsum](https://picsum.photos/) (a public API, no Cloudflare, providing free photos). This immediately solved the problem.
 
-1.  **Tente d'appeler l'API principale** (Sling Academy) avec des en-têtes de navigateur réalistes.
-2.  **Valide la réponse** pour s'assurer qu'il s'agit bien d'un JSON valide avec un statut de succès.
-3.  **Utilise une API de secours (Lorem Picsum)** si l'API principale échoue ou renvoie des données invalides.
-4.  **Utilise un fichier de secours local** si l'API de secours échoue également.
+### Problem: Fallback when the main API fails
+
+If the main API (Sling Academy, or any other) becomes unavailable or changes its structure, the build fails.
+
+**Solution**:  
+In the workflow, I added an **automatic fallback** to Lorem Picsum. And if even that fallback fails, we can use a local backup JSON file (optional).
+
+### Problem: Local development vs production
+
+In development, we don’t want to generate the JSON file manually every time. And we want to test quickly.
+
+**Solution**:  
+In the React component, we detect `process.env.NODE_ENV`:
+- **Development**: direct API call (no static file)
+- **Production**: read the JSON file generated by GitHub Actions
+
+Thus, no local constraint.
+
+## GitHub Actions Workflow (final robust version)
+
+The file `.github/workflows/main.yml` performs the following steps:
+
+1. **Fetches the data** with `curl` using a reliable API (Lorem Picsum).
+2. **Saves** the JSON to `static/json/photos-data.json`.
+3. **Builds** the Docusaurus site.
+4. **Deploys** to GitHub Pages (`gh-pages` branch).
+
+Here is the full content:
 
 <Snippet filename=".github/workflows/main.yml" source=".github/workflows/main.yml" />
 
-Cette approche robuste garantit que le build réussit toujours, même si les API externes sont temporairement indisponibles.
+> **Note**: We could also add a `schedule` trigger (e.g., every hour) to update photos regularly, even without a new commit.
 
-## Afficher les Photos sur une Page
+## React Component « PhotosGrid »
 
-La page `src/pages/photos.jsx` lit le JSON statique et affiche les photos.
+The component `src/components/PhotosGrid/index.js` is reusable in any MDX page. It includes:
 
-<Snippet filename="src/pages/photos.jsx" source="src/pages/photos.jsx" />
-
-La page charge `/json/photos-data.json`. En mode développement (lancé via `npm start`), si ce fichier n'existe pas, la page se rabat sur un chargement direct depuis l'API pour afficher les images.
-
-Voir la page en action /photos/
-
-## Créer le Composant `PhotosGrid`
-
-Le composant `src/components/PhotosGrid/index.js` est l'élément qui rend la grille de photos dans votre article.
-
-It does several important things:
-
--   il tente d'abord de charger le fichier statique `/json/photos-data.json`
--   si ce fichier n'existe pas en développement, il se rabat automatiquement sur l'API Sling Academy (notre API de démonstration)
--   il gère l'état de chargement (`loading`), les erreurs et le cas où aucune photo n'est disponible
--   il limite le nombre de photos affichées avec la prop `limit`
--   il construit une grille réactive avec les cartes Docusaurus
+- **Environment detection** (dev vs prod)
+- **Docusaurus admonition display** on error
+- **Loading state management**
+- **Limit of the number of photos** via the `limit` prop
 
 <Snippet filename="src/components/PhotosGrid/index.js" source="src/components/PhotosGrid/index.js" />
 
-The component is exposed in MDX via `src/theme/MDXComponents.js`, which allows calling it directly in an article with:
+## Using the component in an MDX article
 
-```html
+To use this component, you must register it in `src/theme/MDXComponents.js` (or `src/theme/MDXComponents/index.js`):
+
+<Snippet filename="src/theme/MDXComponents.js">
+
+```js
+import PhotosGrid from '@site/src/components/PhotosGrid';
+
+export default {
+  // ... other components
+  PhotosGrid,
+};
+```
+</Snippet>
+
+Then, in any `.mdx` file, you can write:
+
+```mdx
 <PhotosGrid limit={8} />
 ```
 
-This creation is a practical option: it allows cleanly inserting data into an MDX page without duplicating the fetch and display logic.
+## Final result
 
-## Preview of Retrieved Data
-
-Here is a preview of the JSON file generated by GitHub Actions:
-
-<Snippet filename="static/json/photos-data.json" source="static/json/photos-data.json" />
-
-The file contains 20 photos with their metadata (URL, title, description, user ID). The photos come from either the Sling Academy API or Lorem Picsum as fallback.
-
-## Final Result
-
-After the build, the `/photos/` page or the `PhotosGrid` component display a beautiful grid of photos fetched from the API:
-
-### Page Visual Rendering
-
-The page presents:
-
-- **Page Title**: "Photos from the Test API"
-- **Page Description**: Explanation of how it works (static file vs direct API)
-- **Responsive Grid**: 4 columns on desktop, adapts on mobile
-- **Individual Cards** for each photo with:
-  - Full-width image
-  - Photo title
-  - Short description
-  - Consistent Docusaurus styling
-
-### Live Preview of Photos
-
-Here is a **live** preview of photos fetched from the API (limited to 6 photos):
+Here is a **live** preview of the photos (limited to 8) fetched via the described mechanism:
 
 <PhotosGrid limit={8} />
 
-*The photos above are loaded dynamically from the JSON file generated at build time (from Sling Academy API or Lorem Picsum fallback) or directly from the API in development mode.*
+*In development, the photos come directly from the Lorem Picsum API. In production, they are read from the static JSON file generated at each build.*
 
-### Features
+## Why this approach is interesting
 
-- **Asynchronous Loading**: Loading indicator during retrieval
-- **Error Handling**: Error message if API fails
-- **Smart Fallback**: Automatic switching between static file and API
-- **Responsive Design**: Adapts to all screens
+- **Performance**: no client-side API call in production → instant loading.
+- **Reliability**: the build rarely fails (built‑in fallback).
+- **Simplicity**: no backend server needed, the site remains static.
+- **Flexibility**: the component can be used in a dedicated page or in a blog article.
 
-The final result is a completely static page that displays instantly! ⚡
+## Alternatives and possible improvements
 
-## Why It's Interesting
+- **Periodic update**: add a `schedule` in GitHub Actions to rebuild the site regularly (e.g., every 6 hours) even without a commit.
+- **Use another API**: just change the URL in the workflow (beware of anti‑bot protections).
+- **Browser caching**: the JSON file will be cached like any static resource.
 
-- you preload data at build time
-- you avoid making API requests on the client side in production
-- you can deploy to a static host without a backend server
+## Conclusion
 
-## Simple Alternative
-
-If you want, you can replace the React page with an MDX page, but the principle remains the same:
-
-1. fetch the API before the build
-2. save data in `static/`
-3. consume this static file in your page
-
-> This article shows how to use an API at build time with a light and easy-to-reproduce example.
+This example shows how to **master external API integration in a static site** generated by Docusaurus, overcoming common obstacles (Cloudflare, local development, fallback). The presented code is ready to be copied/pasted into your own project.
+Feel free to adapt the display, data sources, and update frequency according to your needs.

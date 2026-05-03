@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p static/json
           echo "🌐 Appel de l'API Lorem Picsum..."
-          curl -o static/json/photos-data.json "https://picsum.photos/v2/list?limit=20"
+          curl -o static/json/photos-data.json "https://picsum.photos/v2/list?page=2&limit=10"
           echo "✅ Données récupérées et sauvegardées dans static/json/photos-data.json"
           echo "📊 Aperçu :"
           head -n 20 static/json/photos-data.json
