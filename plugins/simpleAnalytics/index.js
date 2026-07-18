@@ -12,6 +12,11 @@ function simpleAnalyticsPlugin() {
               "data-hostname": "docuxlab.com",
             },
           },
+        ],
+        // The <noscript><img> fallback pixel must live at the end of <body>:
+        // an <img> is invalid inside <head>, which makes the HTML parser close
+        // the head early and emit "stray tag" / duplicate <body> diagnostics.
+        postBodyTags: [
           {
             tagName: "noscript",
             innerHTML:
