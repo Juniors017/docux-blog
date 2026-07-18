@@ -1,0 +1,207 @@
+---
+title: "A Docusaurus Plugin to Optimize Images at Build Time"
+slug: image-optimizer-docusaurus-plugin
+description: "Build a local Docusaurus plugin that compresses and resizes your images at build time with sharp — non-destructive, incrementally cached, and it cut my deployed images in half (-49%)."
+schemaTypes: ["HowTo", "BlogPosting"]
+image: "/img/photo-optimizer.png"
+authors: ["docux"]
+mainTag: performance
+tags:
+  [
+    "docusaurus",
+    "plugin",
+    "images",
+    "performance",
+    "sharp",
+    "webp",
+    "optimization",
+    "build",
+  ]
+date: 2026-07-19
+last_update:
+  date: 2026-07-19
+  author: docux
+difficulty: "intermediate"
+totalTime: "PT30M"
+estimatedCost: "Free"
+tool: ["Node.js", "sharp", "Docusaurus"]
+supply: ["Docusaurus", "Node.js"]
+yield: "A build-time image optimizer plugin with a persistent cache"
+genre: "Technical Tutorial"
+inLanguage: "en"
+isAccessibleForFree: true
+readingTime: "13 min"
+articleSection: "Tutorial"
+copyrightYear: 2026
+copyrightHolder: "Docux"
+category: "Web Development"
+keywords:
+  [
+    "docusaurus image optimization",
+    "docusaurus plugin sharp",
+    "compress images build",
+    "resize images webp",
+    "postBuild plugin",
+    "image cache artifact",
+  ]
+hide_table_of_contents: false
+series: "Docusaurus Plugins"
+---
+
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![AI 90%](https://img.shields.io/badge/AI-90%25-blue.svg)](https://github.com/Juniors017)
+
+![](/img/photo-optimizer.png)
+
+</div>
+</center>
+
+<div className="text--justify">
+My blog was quietly shipping **13.7 MB of images**. A few PNGs weighed over a megabyte, and several WebP files were surprisingly heavy — over-sized dimensions and default encoder quality. Heavy images hurt load time, Core Web Vitals, and ultimately SEO. So I built a small local Docusaurus plugin that optimizes every image **at build time**, and it cut the deployed images almost in half (**-49%**) — without touching a single source file.
+
+This article walks through the plugin: how it hooks into the build, how a content-hash cache makes it incremental (already-optimized images become a reusable artifact), and the real numbers it produced.
+
+:::tip Design goals
+Non-destructive (never modify sources), incremental (process new images only), and reference-safe (formats are preserved, so no URL ever breaks).
+:::
+
+</div>
+{/* truncate */}
+
+## Why a build-time plugin (and not the source images)?
+
+There are several ways to optimize images. I picked the one that fits a Docusaurus site best:
+
+- **At build time, on the `build/` output.** Docusaurus copies `static/` and processes co-located images into `build/`. Optimizing there means _every_ image is covered — including the hashed assets from MDX — while my source files stay pristine.
+- **Non-destructive.** Re-compressing sources in place is risky: quality degrades a little on every pass, and a mistake is permanent. Working on the generated output keeps the originals safe.
+- **Reference-safe.** Each image keeps its format and filename (WebP → WebP, PNG → PNG), so no link, `image:` front matter, or `<img>` src ever changes.
+
+The one downside — the build output is regenerated every time, so a naive version would re-encode everything on every build. That's what the cache solves.
+
+## The tool: sharp
+
+[`sharp`](https://sharp.pixelplumbing.com/) is the de-facto Node library for fast image processing (resize, re-encode, format conversion). It ships prebuilt binaries, so it just works locally and in CI.
+
+<Terminal title="user@machine: ~/yourproject">
+
+npm install sharp
+
+</Terminal>
+
+## The plugin
+
+The plugin lives in `plugins/`, like my other local plugins.
+
+<Trees>
+  <Folder label="plugins" expanded={true}>
+    <Folder label="docusaurus-plugin-image-optimizer" expanded={true}>
+      <File label="index.cjs" icon="javascript" />
+      <File label="readme.md" icon="markdown" />
+    </Folder>
+  </Folder>
+</Trees>
+
+It hooks into Docusaurus's `postBuild` lifecycle, which runs **only during `docusaurus build`** (never during `docusaurus start`). Here is the whole thing:
+
+<Snippet
+  filename="plugins/docusaurus-plugin-image-optimizer/index.cjs"
+  source="plugins/docusaurus-plugin-image-optimizer/index.cjs"
+/>
+
+### The transform
+
+For each image, `sharp`:
+
+1. Downscales it to `maxWidth` (default **1920px**), never enlarging.
+2. Re-encodes it at `quality` (default **80**), keeping the original format.
+3. Keeps the original if the "optimized" version isn't actually smaller — so we never inflate a file.
+
+### The cache = the incremental part
+
+This is the key idea. Each image is keyed by `sha256(bytes) + settings`, and the chosen result is stored in a persistent folder:
+
+```text
+node_modules/.cache/docusaurus-plugin-image-optimizer/
+```
+
+On the next build, an image whose hash is already in the cache is **restored from it** instead of being re-encoded. So:
+
+- **First build:** every image is processed.
+- **Later builds:** only new or changed images are processed; everything else is a cache hit.
+
+A nice side effect: two byte-identical images (say, the same picture referenced from `static/` and from a blog post) share a hash, so the work is done once and deduplicated automatically.
+
+:::note The cache is the "artifact"
+Because the cache lives under `node_modules/.cache`, it's git-ignored. In CI we persist it with `actions/cache` (below), which is exactly what makes the already-optimized images a build artifact reused across runs.
+:::
+
+## Registering the plugin
+
+In `docusaurus.config.js`:
+
+```js
+import pluginImageOptimizer from "./plugins/docusaurus-plugin-image-optimizer/index.cjs";
+
+const config = {
+  plugins: [
+    [pluginImageOptimizer, { quality: 80, maxWidth: 1920 }],
+    // ...other plugins
+  ],
+};
+```
+
+## The results
+
+After one `npm run build`, the plugin prints a report:
+
+```text
+=== Image optimizer ===
+Images: 69  (optimized: 46, from cache: 22, no gain: 1, failed: 0)
+Total: 13.34 MB → 6.76 MB  (saved 6.58 MB, -49.3%)
+=======================
+```
+
+A few representative files:
+
+| Image           | Before          | After          | Saved    |
+| --------------- | --------------- | -------------- | -------- |
+| `404bg.webp`    | 855 KB @ 2473px | 73 KB @ 1920px | **-91%** |
+| `api.png`       | 1729 KB         | 414 KB         | **-76%** |
+| `icon/css.webp` | 904 KB          | 513 KB         | **-43%** |
+
+The biggest wins come from **resizing** over-sized images (that 2473px background didn't need to be wider than the layout) combined with a sane re-encode. And a second build is basically instant for images — everything comes from the cache:
+
+```text
+Images: 69  (optimized: 0, from cache: 69, no gain: 0, failed: 0)
+```
+
+## Caching in CI
+
+My GitHub Actions workflow builds on every push. To reuse the optimized images across runs — so CI only re-encodes what actually changed — I cache the plugin folder before the build step:
+
+```yaml
+- name: Cache optimized images
+  uses: actions/cache@v4
+  with:
+    path: node_modules/.cache/docusaurus-plugin-image-optimizer
+    key: image-optimizer-${{ github.run_id }}
+    restore-keys: |
+      image-optimizer-
+```
+
+The `restore-keys` prefix restores the most recent cache, and a run-specific `key` saves an updated one — so the cache keeps growing with each new image.
+
+## Tuning and trade-offs
+
+- **`quality` / `maxWidth`** are plugin options. Lower quality or a smaller max width means smaller files; tune to taste.
+- **PNG uses a palette (lossy) re-encode** for much smaller files. It's great for screenshots and illustrations; if you have PNGs where exact pixels matter, raise the quality or exclude them via `extensions`.
+- **Animated images** are left un-resized to stay safe.
+- The plugin only runs in `build`, so your dev server stays fast.
+
+:::tip Takeaway
+A ~130-line `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy.
+:::
