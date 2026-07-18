@@ -18,10 +18,10 @@
  * Additional styles can be customized via `styles.module.css` in the same folder.
  */
 
-import { useBlogPost } from '@docusaurus/plugin-content-blog/client';
+import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
 import Translate from "@docusaurus/Translate";
-import clsx from 'clsx';
-import styles from './styles.module.css';
+import clsx from "clsx";
+import styles from "./styles.module.css";
 
 export default function OldPostNotice() {
   const { metadata } = useBlogPost();
@@ -31,7 +31,9 @@ export default function OldPostNotice() {
 
   if (frontMatter.updates && frontMatter.updates.length > 0) {
     // Sort updates by date in descending order and take the most recent one
-    const mostRecentUpdate = [...frontMatter.updates].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    const mostRecentUpdate = [...frontMatter.updates].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    )[0];
     lastUpdated = mostRecentUpdate.date;
   }
 

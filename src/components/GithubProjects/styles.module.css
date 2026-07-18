@@ -41,7 +41,9 @@
   backdrop-filter: blur(8px);
   border: 1px solid #eaeaea;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 /* Image de fond avec le logo GitHub */
@@ -52,7 +54,7 @@
   right: 0;
   width: 40%;
   height: 100%;
-  background-image: url('/img/icon/github-logo.svg');
+  background-image: url("/img/icon/github-logo.svg");
   background-size: 80px;
   background-position: 90% 10%;
   background-repeat: no-repeat;
@@ -99,7 +101,7 @@
 }
 
 .repo_link::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
@@ -185,7 +187,7 @@
 /* Dark mode styles pour les cartes et éléments */
 
 /* Dark mode - Card styling */
-[data-theme='dark'] .github_projects_card {
+[data-theme="dark"] .github_projects_card {
   background-color: rgba(40, 40, 40, 0.95);
   border: 1px solid #333;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
@@ -194,55 +196,55 @@
 }
 
 /* Logo GitHub en mode sombre */
-[data-theme='dark'] .github_projects_card::after {
+[data-theme="dark"] .github_projects_card::after {
   opacity: 0.15;
   filter: invert(1);
 }
 
-[data-theme='dark'] .github_projects_card:hover {
+[data-theme="dark"] .github_projects_card:hover {
   box-shadow: 0 12px 24px rgba(78, 154, 6, 0.25);
 }
 
 /* Dark mode - Link styling */
-[data-theme='dark'] .repo_link {
+[data-theme="dark"] .repo_link {
   color: rgb(215, 222, 77);
   position: relative;
   z-index: 2;
 }
 
-[data-theme='dark'] .repo_link:hover {
+[data-theme="dark"] .repo_link:hover {
   color: rgb(152, 204, 10);
 }
 
-[data-theme='dark'] .repo_link::after {
+[data-theme="dark"] .repo_link::after {
   background-color: rgb(152, 204, 10);
 }
 
 /* Dark mode - Archived label */
-[data-theme='dark'] .archived_label {
+[data-theme="dark"] .archived_label {
   color: #aaa;
 }
 
 /* Dark mode - Footer styling */
-[data-theme='dark'] .github_projects_card .card__footer {
+[data-theme="dark"] .github_projects_card .card__footer {
   border-top: 1px solid #444;
   color: #bbb;
 }
 
 /* Dark mode - Filters panel */
-[data-theme='dark'] .filters_panel {
+[data-theme="dark"] .filters_panel {
   background-color: rgba(63, 63, 63, 0.3);
   border: 1px solid rgba(60, 119, 58, 0.3);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme='dark'] .filters_panel label {
+[data-theme="dark"] .filters_panel label {
   color: #ddd;
 }
 
-[data-theme='dark'] .filters_panel select,
-[data-theme='dark'] .filters_panel input,
-[data-theme='dark'] .filters_panel input[type="text"] {
+[data-theme="dark"] .filters_panel select,
+[data-theme="dark"] .filters_panel input,
+[data-theme="dark"] .filters_panel input[type="text"] {
   background-color: #333;
   color: #eee;
   border: 1px solid #555;

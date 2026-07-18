@@ -6,7 +6,8 @@ slug: avatarcomponent-docusaurus-infima
 image: "/img/timeline.webp"
 authors: ["docux"]
 mainTag: infima
-tags: ["avatar", "infima", "component", "tutorial", "front-end", "customization"]
+tags:
+  ["avatar", "infima", "component", "tutorial", "front-end", "customization"]
 date: 2025-08-29
 last_update:
   date: 2025-08-29
@@ -27,7 +28,8 @@ articleSection: "Tutorial"
 copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Web Development"
-keywords: ["avatar", "infima", "component", "tutorial", "front-end", "customization"]
+keywords:
+  ["avatar", "infima", "component", "tutorial", "front-end", "customization"]
 hide_table_of_contents: false
 series: "infima components"
 blueSkyRecordKey: 3lxoqtinrbc2g
@@ -43,26 +45,28 @@ blueSkyRecordKey: 3lxoqtinrbc2g
 </div>
 
 ![infima avatar component](/img/timeline.webp)
+
 </center>
 
-I built this Avatar component using [Infima CSS framework](https://infima.dev/)'s utility classes to create a flexible and reusable solution for Docusaurus sites. 
-This component allows you to personalize avatars with different colors, orientations and sizes. 
+I built this Avatar component using [Infima CSS framework](https://infima.dev/)'s utility classes to create a flexible and reusable solution for Docusaurus sites.
+This component allows you to personalize avatars with different colors, orientations and sizes.
 It covers all the avatar designs available in Infima plus custom layouts, giving you the freedom to create and personalize each avatar independently.
 
-{/* truncate */} 
+{/* truncate */}
 
 Docusaurus uses the Infima framework for styling layout. I based my components entirely on the Infima avatar system. More detail on the Infima avatar can be found in the [Infima docs](https://infima.dev/docs/components/avatar)
 
 I designed the component as a set of small components that work together to form the complete Avatar.
 
 ## Avatar : composition of the master folder
- - AvatarContainer (The container of alls parts)
- - AvatarImage component (Image parts of Avatar)
- - AvatarIntro component (Intro parts of Avatar)
- - AvatarName component (Name parts of Avatar)
- - AvatarSubtitle component (Subtitle parts of Avatar)
 
- We will discover that it pairs wonderfully with other components present in our library but this will be the subject of a dedicated page. 
+- AvatarContainer (The container of alls parts)
+- AvatarImage component (Image parts of Avatar)
+- AvatarIntro component (Intro parts of Avatar)
+- AvatarName component (Name parts of Avatar)
+- AvatarSubtitle component (Subtitle parts of Avatar)
+
+We will discover that it pairs wonderfully with other components present in our library but this will be the subject of a dedicated page.
 
 ### File Structure
 
@@ -88,15 +92,16 @@ I designed the component as a set of small components that work together to form
       </Folder>
     </Folder>
     <Folder label="theme" expanded={true}>
-      <File label="MDXComponents.js" icon="javascript"/>
+      <File label="MDXComponents.js" icon="javascript" />
     </Folder>
   </Folder>
 </Trees>
 
-## Creating the Avatar component 
+## Creating the Avatar component
+
 Think of this component as the container of all Avatar parts
 
-First we will create the master folder in:  `\src\components\Avatar\`. Next we will start by creating a new component called Avatar. It will be the container component of our different parts to come. Also this will give the possibility to manage className and style for each part.
+First we will create the master folder in: `\src\components\Avatar\`. Next we will start by creating a new component called Avatar. It will be the container component of our different parts to come. Also this will give the possibility to manage className and style for each part.
 
 The component will accept the following props:
 
@@ -108,34 +113,29 @@ Creating the file and adding the source code for the component.
   <TabItem value="js" label={<><LogoIcon name="logos:javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\Avatar\AvatarContainer\index.js'
-import React,  { CSSProperties } from 'react';
-import clsx from 'clsx'; 
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
 
 const AvatarContainer = ({
   className, // Custom classes for the component
   style, // Custom styles for the component
   children, // Content of the component
   vertical = false, // Default to false for vertical position
-  
-}) => {   
-  const avatarPosition = vertical ? `avatar--vertical` :'';
-  
-  return (
-    <div className={clsx(
-          "avatar", 
-          className,  
-          avatarPosition
-        )} 
-        
-        style={style}>
-   
-    {children}
-  </div>
-  );
-}
+}) => {
+  const avatarPosition = vertical ? `avatar--vertical` : "";
 
-export default AvatarContainer ;
-  
+  return (
+    <div
+      className={clsx("avatar", className, avatarPosition)}
+
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default AvatarContainer;
 ```
 
 </TabItem>
@@ -143,8 +143,8 @@ export default AvatarContainer ;
 <TabItem value="ts" label={<><LogoIcon name="logos:typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\Avatar\AvatarContainer\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react';
-import clsx from 'clsx';
+import React, { CSSProperties, ReactNode } from "react";
+import clsx from "clsx";
 
 interface AvatarContainerProps {
   className?: string; // Custom classes for the component
@@ -158,31 +158,29 @@ const AvatarContainer: React.FC<AvatarContainerProps> = ({
   style, // Custom styles for the component
   children, // Content of the component
   vertical = false, // Default to false for vertical position
-}) => {   
-  const avatarPosition = vertical ? 'avatar--vertical' : '';
+}) => {
+  const avatarPosition = vertical ? "avatar--vertical" : "";
 
   return (
-    <div className={clsx(
-          "avatar", 
-          className, 
-          avatarPosition
-        )} 
-        
-        style={style}>
+    <div
+      className={clsx("avatar", className, avatarPosition)}
 
+      style={style}
+    >
       {children}
     </div>
   );
-}
+};
 
 export default AvatarContainer;
-
 ```
+
 </TabItem>
 
 </Tabs>
 
 ## Creating the AvatarImage component
+
 Think of this component as the image of your futurs avatar element. Creating the file and adding the source code for the component.The component will accept the following props:
 
 - `avatarImageUrl`: The url of your image
@@ -198,9 +196,9 @@ Creating the file and adding the source code for the component.
   <TabItem value="js" label={<><LogoIcon name="logos:javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\Avatar\AvatarImage\index.js'
-import React, { CSSProperties } from 'react';
-import clsx from 'clsx'; 
-import useBaseUrl from '@docusaurus/useBaseUrl'; // Import the useBaseUrl function from Docusaurus for generate valide image url
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
+import useBaseUrl from "@docusaurus/useBaseUrl"; // Import the useBaseUrl function from Docusaurus for generate valide image url
 
 const AvatarImage = ({
   className, // Custom classes for the component
@@ -209,33 +207,25 @@ const AvatarImage = ({
   alt, // Alt text for the image
   title, // Title text for the image
   link = false, // Default to false Determines if the image should be a link
-  destination = '#', // Link URL if link = true, default value if destination is not provided
+  destination = "#", // Link URL if link = true, default value if destination is not provided
   avatarSize, // Size class for the avatar image
-}) => {   
-
+}) => {
   const generatedAvatarUrl = useBaseUrl(avatarImageUrl);
-  const avatarimagesize = avatarSize ? `avatar__photo--${avatarSize}` :'';
+  const avatarimagesize = avatarSize ? `avatar__photo--${avatarSize}` : "";
   const imgElement = (
-
     <img
-      className={clsx(
-        "avatar__photo", 
-        className, 
-        avatarimagesize
-      )} 
-      
+      className={clsx("avatar__photo", className, avatarimagesize)}
+
       style={style}
 
-      src={generatedAvatarUrl} 
-      alt={alt} 
-      title={title} />
-
+      src={generatedAvatarUrl}
+      alt={alt}
+      title={title}
+    />
   );
 
   return link ? (
-    <a
-      className="avatar__photo-link "
-      href={destination}>
+    <a className="avatar__photo-link " href={destination}>
       {imgElement}
     </a>
   ) : (
@@ -244,7 +234,6 @@ const AvatarImage = ({
 };
 
 export default AvatarImage;
-  
 ```
 
 </TabItem>
@@ -252,9 +241,9 @@ export default AvatarImage;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\Avatar\AvatarImage\index.tsx'
-import React, { CSSProperties } from 'react';
-import clsx from 'clsx'; 
-import useBaseUrl from '@docusaurus/useBaseUrl'; // Import the useBaseUrl function from Docusaurus for generate valide image url
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
+import useBaseUrl from "@docusaurus/useBaseUrl"; // Import the useBaseUrl function from Docusaurus for generate valide image url
 
 interface AvatarImageProps {
   className?: string; // Custom classes for the component
@@ -274,25 +263,20 @@ const AvatarImage: React.FC<AvatarImageProps> = ({
   alt, // Alt text for the image
   title, // Title text for the image
   link = false, // Default to false Determines if the image should be a link
-  destination = '#', // Link URL if link = true, default value if destination is not provided
+  destination = "#", // Link URL if link = true, default value if destination is not provided
   avatarSize, // Size class for the avatar image
-}) => {   
+}) => {
   const generatedAvatarUrl = useBaseUrl(avatarImageUrl);
-  const avatarImageSizeClass = avatarSize ? `avatar__photo--${avatarSize}` : '';
-  
+  const avatarImageSizeClass = avatarSize ? `avatar__photo--${avatarSize}` : "";
+
   const imgElement = (
     <img
-      className={clsx(
-        "avatar__photo", 
-        className, 
-        avatarImageSizeClass
-      )}
+      className={clsx("avatar__photo", className, avatarImageSizeClass)}
 
       style={style}
       src={generatedAvatarUrl}
       alt={alt}
       title={title}
-
     />
   );
 
@@ -306,24 +290,23 @@ const AvatarImage: React.FC<AvatarImageProps> = ({
 };
 
 export default AvatarImage;
-
-
 ```
+
 </TabItem>
 
 </Tabs>
 
-
 ## Creating the AvatarIntro component
+
 Think of this component as the container of name and subtitle for your futurs avatar element. Creating the file and adding the source code for the component. The component will accept the following props:
 
 - `textAlign`: The option for text alignment `left` `right` `center` `justify`
 - `variant`: (optional)This will be used to apply different colors to the text based on the Infima CSS utility classNames.
 - `italic`: Default value is false, it's for italic text render
-- `noDecoration`: Default value is false, it's for delete text decoration 
-- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word. 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding... 
+- `noDecoration`: Default value is false, it's for delete text decoration
+- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text`
+- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word.
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding...
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
 
 Creating the file and adding the source code for the component.
@@ -332,59 +315,54 @@ Creating the file and adding the source code for the component.
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\Avatar\AvatarIntro\index.js'
-import React,  { CSSProperties } from 'react';
-import clsx from 'clsx'; 
-
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
 
 const AvatarIntro = ({
   className, // Custom classes for the component
   style, // Custom styles for the component
   children, // Content of the component
-  textAlign, // Text alignment 
-  variant, // Variant for text color 
+  textAlign, // Text alignment
+  variant, // Variant for text color
   italic = false, // Default to false for italic text
   noDecoration = false, // Default to false for no decoration
-  transform, // Text transform option 
+  transform, // Text transform option
   breakWord = false, // Default to false for break words
   truncate = false, // Default to false for truncate
-  weight, // Weight of the text 
-}) => {   
+  weight, // Weight of the text
+}) => {
+  const textAlignClass = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textBreak = breakWord ? "text--break" : "";
+  const textTruncate = truncate ? "text--truncate" : "";
+  const textWeight = weight ? `text--${weight}` : "";
 
-  const textAlignClass = textAlign ? `text--${textAlign}` :'';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
-  
   return (
-  
-    <div className={clsx(
-        "avatar__intro", 
-        className, 
-        textAlignClass, 
-        textType, 
-        textColor, 
-        textItalic, 
-        textDecoration, 
-        textBreak, 
-        textTruncate, 
+    <div
+      className={clsx(
+        "avatar__intro",
+        className,
+        textAlignClass,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textBreak,
+        textTruncate,
         textWeight
-    )} 
+      )}
 
-    style={style}
+      style={style}
     >
-     {children}
-
+      {children}
     </div>
-
   );
-}
+};
 
-export default AvatarIntro ;
-
+export default AvatarIntro;
 ```
 
 </TabItem>
@@ -392,87 +370,92 @@ export default AvatarIntro ;
 <TabItem value="ts" label={<><LogoIcon name="logos:typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\Avatar\AvatarIntro\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react';
-import clsx from 'clsx'; 
+import React, { CSSProperties, ReactNode } from "react";
+import clsx from "clsx";
 
 interface AvatarIntroProps {
   className?: string; // Custom classes for the component
   style?: CSSProperties; // Custom styles for the component
   children: ReactNode; // Content of the component
-  textAlign?: 'left' | 'center' | 'right'; // Text alignment options
-  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'link' | string;
+  textAlign?: "left" | "center" | "right"; // Text alignment options
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "warning"
+    | "success"
+    | "info"
+    | "link"
+    | string;
   italic?: boolean; // Determines if the text is italic
   noDecoration?: boolean; // Determines if the text has no decoration
   transform?: string; // Text transform option
   breakWord?: boolean; // Determines if the text breaks words
   truncate?: boolean; // Determines if the text is truncated
-  weight?: string; // Weight of the text 
+  weight?: string; // Weight of the text
 }
 
 const AvatarIntro: React.FC<AvatarIntroProps> = ({
   className, // Custom classes for the component
   style, // Custom styles for the component
   children, // Content of the component
-  textAlign, // Text alignment 
+  textAlign, // Text alignment
   variant, // Variant for text color or style
   italic = false, // Default to false for italic text
   noDecoration = false, // Default to false for no decoration
   transform, // Text transform option
   breakWord = false, // Default to false for break words
   truncate = false, // Default to false for truncate
-  weight, // Weight of the text 
-}) => {   
+  weight, // Weight of the text
+}) => {
+  const textAlignClass = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textBreak = breakWord ? "text--break" : "";
+  const textTruncate = truncate ? "text--truncate" : "";
+  const textWeight = weight ? `text--${weight}` : "";
 
-  const textAlignClass = textAlign ? `text--${textAlign}` : '';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
-  
   return (
-    <div 
+    <div
       className={clsx(
-          "avatar__intro",
-          className,
-          textAlignClass,
-          textType,
-          textColor,
-          textItalic,
-          textDecoration,
-          textBreak,
-          textTruncate,
-          textWeight
+        "avatar__intro",
+        className,
+        textAlignClass,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textBreak,
+        textTruncate,
+        textWeight
       )}
       style={style}
     >
       {children}
     </div>
   );
-}
+};
 
 export default AvatarIntro;
-
-
 ```
+
 </TabItem>
 
 </Tabs>
 
-
-
 ## Creating the AvatarName component
+
 Think of this component as the Name or pseudonym of your futurs avatar element. Creating the file and adding the source code for the component. The component will accept the following props:
 
 - `textAlign`: The option for text alignment `left` `right` `center` `justify`
 - `variant`: (optional)This will be used to apply different colors to the text based on the Infima CSS utility classNames.
 - `italic`: Default value is false, it's for italic text render
-- `noDecoration`: Default value is false, it's for delete text decoration 
-- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word. 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding... 
+- `noDecoration`: Default value is false, it's for delete text decoration
+- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text`
+- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word.
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding...
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
 
 Creating the file and adding the source code for the component.
@@ -481,55 +464,52 @@ Creating the file and adding the source code for the component.
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\Avatar\AvatarName\index.js'
-import React,  { CSSProperties } from 'react';
-import clsx from 'clsx'; // Assurez-vous d'avoir clsx installé et importé correctement
-
+import React, { CSSProperties } from "react";
+import clsx from "clsx"; // Assurez-vous d'avoir clsx installé et importé correctement
 
 const AvatarName = ({
   className, // Custom classes for the component
   style, // Custom styles for the component
   children, // Content of the component
-  textAlign, // Text alignment 
+  textAlign, // Text alignment
   variant, // Variant for text color or style
   italic = false, // Default to false for italic text
   noDecoration = false, // Default to false for no decoration
   transform, // Text transform option
   breakWord = false, // Default to false for break words
   truncate = false, // Default to false for truncate
-  weight, // Weight of the text 
-  }) => {   
-    const textAlignClass = textAlign ? `text--${textAlign}` :'';
-    const textColor = variant ? `text--${variant}` : '';
-    const textItalic = italic ? 'text--italic' : '';
-    const textDecoration = noDecoration ? 'text-no-decoration' : '';
-    const textType = transform ? `text--${transform}` : '';
-    const textBreak = breakWord ? 'text--break' : '';
-    const textTruncate = truncate ? 'text--truncate' : '';
-    const textWeight = weight ? `text--${weight}` : '';
+  weight, // Weight of the text
+}) => {
+  const textAlignClass = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textBreak = breakWord ? "text--break" : "";
+  const textTruncate = truncate ? "text--truncate" : "";
+  const textWeight = weight ? `text--${weight}` : "";
   return (
-  
-    <div className={clsx(
-        "avatar__name", 
-        className, 
-        textAlignClass, 
-        textType, 
-        textColor, 
-        textItalic, 
-        textDecoration, 
-        textBreak, 
-        textTruncate, 
+    <div
+      className={clsx(
+        "avatar__name",
+        className,
+        textAlignClass,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textBreak,
+        textTruncate,
         textWeight
-    )} 
-    style={style}>
-
-     {children}
+      )}
+      style={style}
+    >
+      {children}
     </div>
-
   );
-}
+};
 
-export default AvatarName ;
-
+export default AvatarName;
 ```
 
 </TabItem>
@@ -537,18 +517,26 @@ export default AvatarName ;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\Avatar\AvatarName\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react';
-import clsx from 'clsx'; 
+import React, { CSSProperties, ReactNode } from "react";
+import clsx from "clsx";
 
 interface AvatarNameProps {
   className?: string; // Custom classes for the component
   style?: CSSProperties; // Custom styles for the component
   children: ReactNode; // Content of the component
-  textAlign?: 'left' | 'center' | 'right'; // Text alignment options
-  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'link' | string;
+  textAlign?: "left" | "center" | "right"; // Text alignment options
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "warning"
+    | "success"
+    | "info"
+    | "link"
+    | string;
   italic?: boolean; // Determines if the text is italic
   noDecoration?: boolean; // Determines if the text has no decoration
-  transform?: string; // Text transform option 
+  transform?: string; // Text transform option
   breakWord?: boolean; // Determines if the text breaks words
   truncate?: boolean; // Determines if the text is truncated
   weight?: string; // Weight of the text
@@ -558,64 +546,63 @@ const AvatarName: React.FC<AvatarNameProps> = ({
   className, // Custom classes for the component
   style, // Custom styles for the component
   children, // Content of the component
-  textAlign, // Text alignment 
+  textAlign, // Text alignment
   variant, // Variant for text color or style
   italic = false, // Default to false for italic text
   noDecoration = false, // Default to false for no decoration
   transform, // Text transform option
   breakWord = false, // Default to false for break words
   truncate = false, // Default to false for truncate
-  weight, // Weight of the text 
-}) => {   
-  const textAlignClass = textAlign ? `text--${textAlign}` : '';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
-  
+  weight, // Weight of the text
+}) => {
+  const textAlignClass = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textBreak = breakWord ? "text--break" : "";
+  const textTruncate = truncate ? "text--truncate" : "";
+  const textWeight = weight ? `text--${weight}` : "";
+
   return (
-    <div 
+    <div
       className={clsx(
-        "avatar__name", 
-        className, 
-        textAlignClass, 
-        textType, 
-        textColor, 
-        textItalic, 
-        textDecoration, 
-        textBreak, 
-        textTruncate, 
+        "avatar__name",
+        className,
+        textAlignClass,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textBreak,
+        textTruncate,
         textWeight
-      )} 
+      )}
       style={style}
     >
       {children}
     </div>
   );
-}
+};
 
 export default AvatarName;
-
-
 ```
+
 </TabItem>
 
 </Tabs>
 
-
 ## Creating the AvatarSubtitle component
+
 Think of this component as the Subtitle (for exemple : Company Position at the company or bio) of your futurs avatar element. Creating the file and adding the source code for the component. The component will accept the following props:
 
 - `textAlign`: The option for text alignment `left` `right` `center` `justify`
 - `variant`: (optional)This will be used to apply different colors to the text based on the Infima CSS utility classNames.
 - `italic`: Default value is false, it's for italic text render
-- `noDecoration`: Default value is false, it's for delete text decoration 
-- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word. 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding... 
+- `noDecoration`: Default value is false, it's for delete text decoration
+- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text`
+- `breakWord`: The option for break text, the text will break at the a word boundary so it will not break in the middle of a word.
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding...
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
 
 Creating the file and adding the source code for the component.
@@ -624,9 +611,8 @@ Creating the file and adding the source code for the component.
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
 
 ```javascript title='\src\components\Avatar\AvatarSubtitle\index.js'
-import React,  { CSSProperties } from 'react';
-import clsx from 'clsx'; 
-
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
 
 const AvatarSubtitle = ({
   className, // Custom classes for the component
@@ -639,42 +625,38 @@ const AvatarSubtitle = ({
   transform, // Text transform option
   breakWord = false, // Default to false for break words
   truncate = false, // Default to false for truncate
-  weight, // Weight of the text 
-  }) => {   
-    const text = textAlign ? `text--${textAlign}` :'';
-    const textColor = variant ? `text--${variant}` : '';
-    const textItalic = italic ? 'text--italic' : '';
-    const textDecoration = noDecoration ? 'text-no-decoration' : '';
-    const textType = transform ? `text--${transform}` : '';
-    const textBreak = breakWord ? 'text--break' : '';
-    const textTruncate = truncate ? 'text--truncate' : '';
-    const textWeight = weight ? `text--${weight}` : '';
+  weight, // Weight of the text
+}) => {
+  const text = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textBreak = breakWord ? "text--break" : "";
+  const textTruncate = truncate ? "text--truncate" : "";
+  const textWeight = weight ? `text--${weight}` : "";
   return (
-  
-    <small  className={clsx(
-          "avatar__subtitle", 
-          className,
-          text, 
-          textType, 
-          textColor, 
-          textItalic, 
-          textDecoration, 
-          textBreak, 
-          textTruncate, 
-          textWeight
-        )} 
-        style={style}>
-
-    <> {children}</>
-    </small >
-
+    <small
+      className={clsx(
+        "avatar__subtitle",
+        className,
+        text,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textBreak,
+        textTruncate,
+        textWeight
+      )}
+      style={style}
+    >
+      <> {children}</>
+    </small>
   );
-}
+};
 
-
-export default AvatarSubtitle ;
-
-
+export default AvatarSubtitle;
 ```
 
 </TabItem>
@@ -682,18 +664,26 @@ export default AvatarSubtitle ;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
 
 ```tsx title='\src\components\Avatar\AvatarSubtitle\index.tsx'
-import React, { CSSProperties, ReactNode } from 'react';
-import clsx from 'clsx'; 
+import React, { CSSProperties, ReactNode } from "react";
+import clsx from "clsx";
 
 interface AvatarSubtitleProps {
   className?: string; // Custom classes for the component
   style?: CSSProperties; // Custom styles for the component
   children: ReactNode; // Content of the component
-  textAlign?: 'left' | 'center' | 'right'; // Text alignment options
-  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'link' | string;
+  textAlign?: "left" | "center" | "right"; // Text alignment options
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "warning"
+    | "success"
+    | "info"
+    | "link"
+    | string;
   italic?: boolean; // Determines if the text is italic
   noDecoration?: boolean; // Determines if the text has no decoration
-  transform?: string; // Text transform option 
+  transform?: string; // Text transform option
   breakWord?: boolean; // Determines if the text breaks words
   truncate?: boolean; // Determines if the text is truncated
   weight?: string; // Weight of the text
@@ -710,17 +700,17 @@ const AvatarSubtitle: React.FC<AvatarSubtitleProps> = ({
   transform, // Text transform option
   breakWord = false, // Default to false for break words
   truncate = false, // Default to false for truncate
-  weight, // Weight of the text 
-}) => {   
-  const textAlignClass = textAlign ? `text--${textAlign}` : '';
-  const textColor = variant ? `text--${variant}` : '';
-  const textItalic = italic ? 'text--italic' : '';
-  const textDecoration = noDecoration ? 'text-no-decoration' : '';
-  const textType = transform ? `text--${transform}` : '';
-  const textBreak = breakWord ? 'text--break' : '';
-  const textTruncate = truncate ? 'text--truncate' : '';
-  const textWeight = weight ? `text--${weight}` : '';
-  
+  weight, // Weight of the text
+}) => {
+  const textAlignClass = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textBreak = breakWord ? "text--break" : "";
+  const textTruncate = truncate ? "text--truncate" : "";
+  const textWeight = weight ? `text--${weight}` : "";
+
   return (
     <small
       className={clsx(
@@ -740,20 +730,18 @@ const AvatarSubtitle: React.FC<AvatarSubtitleProps> = ({
       {children}
     </small>
   );
-}
+};
 
 export default AvatarSubtitle;
-
 ```
+
 </TabItem>
 
 </Tabs>
 
-
-
 ## MDX Component Scope
-To follow the Docusaurus documentation, we create a theme folder that will host the `MDXComponents` file. This gives us `src\theme\MDXComponents.*`. You may already have a `src\theme` folder or an `MDXComponents` file if so - merge the changes described here with yours.
 
+To follow the Docusaurus documentation, we create a theme folder that will host the `MDXComponents` file. This gives us `src\theme\MDXComponents.*`. You may already have a `src\theme` folder or an `MDXComponents` file if so - merge the changes described here with yours.
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
@@ -766,22 +754,21 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
       import AvatarIntro from '@site/src/components/Avatar/AvatarIntro';
       import AvatarName from '@site/src/components/Avatar/AvatarName';
       import AvatarSubtitle from '@site/src/components/Avatar/AvatarSubtitle';
-        
 
       export default {
         // Reusing the default mapping
         ...MDXComponents,
-        AvatarContainer, 
+        AvatarContainer,
         AvatarImage,
         AvatarIntro,
         AvatarName,
         AvatarSubtitle,
       };
     ```
+
   </TabItem>
   <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size={24} /> </>}>
     ```tsx title="src\theme\MDXComponents.tsx"
-
 
       import React from 'react';
       // Importing the original mapper + our components according to the Docusaurus doc
@@ -796,27 +783,27 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
       export default {
         // Reusing the default mapping
         ...MDXComponents,
-        AvatarContainer, 
+        AvatarContainer,
         AvatarImage,
         AvatarIntro,
         AvatarName,
-        AvatarSubtitle, 
+        AvatarSubtitle,
       };
     ```
+
   </TabItem>
 </Tabs>
 
-
 ## Using the Avatar Component in an MDX File
 
-
 ### Avatar classic horizontal
+
 <Columns>
 <Column className='col--5'>
 
 ```html
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<AvatarContainer>  
+<AvatarContainer>
 <AvatarImage avatarSize='lg' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
 <AvatarIntro>
 <AvatarName style={{color:'white'}} > Docux </AvatarName>
@@ -829,12 +816,22 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 
 <Column className='col--7 text--justify'>
 <p>Lorem ipsum dolor sit amet, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<AvatarContainer>  
+<AvatarContainer>
 
-<AvatarImage avatarSize='lg' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
+<AvatarImage
+  avatarSize="lg"
+  avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4"
+  link
+  destination="https://github.com/Juniors017"
+/>
 <AvatarIntro>
-<AvatarName style={{color:'white'}} > Docux </AvatarName>
-<AvatarSubtitle  className='primary'>humble contributor on :   <a style={{ color:'white'}}  href="https://docusaurus.community/">@Doc.Community</a></AvatarSubtitle>
+  <AvatarName style={{ color: "white" }}> Docux </AvatarName>
+  <AvatarSubtitle className="primary">
+    humble contributor on :{" "}
+    <a style={{ color: "white" }} href="https://docusaurus.community/">
+      @Doc.Community
+    </a>
+  </AvatarSubtitle>
 </AvatarIntro>
 
 </AvatarContainer>
@@ -844,11 +841,12 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 </Columns>
 
 ### Avatar type post horizontal
+
 <Columns>
 <Column className='col--6'>
 
 ```html
-<AvatarContainer>  
+<AvatarContainer>
 <AvatarImage avatarSize='xs' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
 <AvatarIntro>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
@@ -861,7 +859,7 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 </Column>
 
 <Column className='col--6 text--justify'>
-<AvatarContainer>  
+<AvatarContainer>
 
 <AvatarImage avatarSize='xs' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
 <AvatarIntro>
@@ -876,14 +874,14 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 </Column>
 </Columns>
 
-
 ### Avatar classic vertical
+
 <Columns>
 <Column className='col--5'>
 
 ```html
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<AvatarContainer vertical>  
+<AvatarContainer vertical>
 <AvatarImage  avatarSize='lg' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
 <AvatarIntro>
 <AvatarName className='text--info' > Docux </AvatarName>
@@ -911,7 +909,8 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 </Column>
 </Columns>
 
-### Various  styles
+### Various styles
+
 <Columns>
 <Column className='col--6'>
 ```html
@@ -934,7 +933,6 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 <AvatarImage  avatarSize='xs' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
 
 </AvatarContainer>
-
 
 </Column>
 <Column className='col--6'>
@@ -984,45 +982,66 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 
 </Column>
 
-
 </Columns>
-
 
 ### Various sizes
 
+<AvatarContainer>
 
-
-<AvatarContainer>  
-
-<AvatarImage  avatarSize='xl' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
+<AvatarImage
+  avatarSize="xl"
+  avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4"
+  link
+  destination="https://github.com/Juniors017"
+/>
 <AvatarIntro>
-<AvatarName className='text--info' > Docux </AvatarName>
-<AvatarSubtitle  className='text--primary'>humble contributor on :   <a style={{ color:'white'}}  href="https://docusaurus.community/">@Doc.Community</a></AvatarSubtitle>
+  <AvatarName className="text--info"> Docux </AvatarName>
+  <AvatarSubtitle className="text--primary">
+    humble contributor on :{" "}
+    <a style={{ color: "white" }} href="https://docusaurus.community/">
+      @Doc.Community
+    </a>
+  </AvatarSubtitle>
 </AvatarIntro>
 
 </AvatarContainer>
 
+<AvatarContainer>
 
-
-<AvatarContainer>  
-
-<AvatarImage  avatarSize='lg' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
+<AvatarImage
+  avatarSize="lg"
+  avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4"
+  link
+  destination="https://github.com/Juniors017"
+/>
 <AvatarIntro>
-<AvatarName className='text--info' > Docux </AvatarName>
-<AvatarSubtitle  className='text--primary'>humble contributor on :   <a style={{ color:'white'}}  href="https://docusaurus.community/">@Doc.Community</a></AvatarSubtitle>
+  <AvatarName className="text--info"> Docux </AvatarName>
+  <AvatarSubtitle className="text--primary">
+    humble contributor on :{" "}
+    <a style={{ color: "white" }} href="https://docusaurus.community/">
+      @Doc.Community
+    </a>
+  </AvatarSubtitle>
 </AvatarIntro>
 
 </AvatarContainer>
 
+<AvatarContainer>
 
-
-<AvatarContainer>  
-
-<AvatarImage  avatarSize='xs' avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4" link destination='https://github.com/Juniors017'/>
+<AvatarImage
+  avatarSize="xs"
+  avatarImageUrl="https://avatars.githubusercontent.com/u/97809069?v=4"
+  link
+  destination="https://github.com/Juniors017"
+/>
 <AvatarIntro>
-<AvatarName className='text--info' > Docux </AvatarName>
-<AvatarSubtitle  className='text--primary'>humble contributor on :   <a style={{ color:'white'}}  href="https://docusaurus.community/">@Doc.Community</a></AvatarSubtitle>
+  <AvatarName className="text--info"> Docux </AvatarName>
+  <AvatarSubtitle className="text--primary">
+    humble contributor on :{" "}
+    <a style={{ color: "white" }} href="https://docusaurus.community/">
+      @Doc.Community
+    </a>
+  </AvatarSubtitle>
 </AvatarIntro>
 
 </AvatarContainer>
-

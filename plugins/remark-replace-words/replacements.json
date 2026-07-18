@@ -14,10 +14,14 @@
   "blog": {
     "kiki": {
       "component": "Tooltip",
-      "props": { "text": "Appears at the bottom", "position": "bottom", "model": "teacher" },
+      "props": {
+        "text": "Appears at the bottom",
+        "position": "bottom",
+        "model": "teacher"
+      },
       "children": "my new word"
     },
-    
+
     "schema-diagram": {
       "component": "ImageOnClick",
       "props": {
@@ -31,7 +35,7 @@
     },
     "goatcounter": {
       "component": "a",
-      "props": { "href":"https://www.goatcounter.com/" },
+      "props": { "href": "https://www.goatcounter.com/" },
       "children": "Goatcounter"
     },
     "cta-docs": {

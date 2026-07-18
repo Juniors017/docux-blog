@@ -14,7 +14,17 @@ genre: "Technical Tutorial"
 inLanguage: "en"
 copyrightYear: 2025
 copyrightHolder: "Docux"
-keywords: ["docusaurus", "react", "time", "date", "conditional", "component", "utc", "fallback"]
+keywords:
+  [
+    "docusaurus",
+    "react",
+    "time",
+    "date",
+    "conditional",
+    "component",
+    "utc",
+    "fallback",
+  ]
 hide_table_of_contents: false
 series: "Design your site"
 blueSkyRecordKey: 3m4nc6jevls23
@@ -29,6 +39,7 @@ blueSkyRecordKey: 3m4nc6jevls23
 </div>
 
 ![](/img/timetimer.webp)
+
 </center>
 
 The Time Timer is an innovative visual tool designed to "materialize" the passage of time, allowing for better activity management by making the remaining time visible.
@@ -56,17 +67,20 @@ Unlike solutions that use `display: none` or `visibility: hidden`, TimeTimer use
 
 ```jsx
 // ❌ CSS approach - All content loaded, just hidden
-<div style={{ display: isActive ? 'block' : 'none' }}>
+<div style={{ display: isActive ? "block" : "none" }}>
   Heavy promotional content with images...
-</div>
+</div>;
 
 // ✅ TimeTimer - Only active content exists in DOM
-{isActive ? <PromoContent /> : null}
+{
+  isActive ? <PromoContent /> : null;
+}
 ```
 
 **What happens in the DOM:**
 
 When you use CSS to hide content, the browser still:
+
 1. Downloads all the HTML (even hidden parts)
 2. Parses and creates DOM nodes for hidden elements
 3. Loads images and resources referenced in hidden content
@@ -74,16 +88,19 @@ When you use CSS to hide content, the browser still:
 5. Just visually hides it with CSS
 
 With TimeTimer's conditional rendering:
+
 1. Only the active period's content is sent to the browser
 2. The DOM contains **only what should be visible right now**
 3. When the period changes, React replaces the old content with the new one
 4. Inactive content literally doesn't exist in the page source
 
 **Example: Inspect the page source**
+
 - With CSS: You'll see all periods (past, present, future) in the HTML
 - With TimeTimer: You'll only see the current period's content
 
 **The benefits:**
+
 - 🚀 **Performance**: Inactive content isn't downloaded or rendered at all
 - 🔍 **SEO**: Search engines only see current, relevant content
 - ♿ **Accessibility**: Screen readers skip inactive periods entirely
@@ -101,16 +118,17 @@ With TimeTimer's conditional rendering:
       </Folder>
     </Folder>
     <Folder label="theme">
-      <File label="MDXComponents.js" icon="javascript"/>
+      <File label="MDXComponents.js" icon="javascript" />
     </Folder>
   </Folder>
 </Trees>
 
-
-
 ### Create the Component
 
-<Snippet filename="src/components/TimeTimer/index.js" source="src/components/TimeTimer/index.js" />
+<Snippet
+  filename="src/components/TimeTimer/index.js"
+  source="src/components/TimeTimer/index.js"
+/>
 
 ### Register the Component in MDX
 
@@ -119,13 +137,16 @@ Add the component to `src/theme/MDXComponents.js`:
 <Snippet filename="src/theme/MDXComponents.js">
 
 ```js
-import TimeTimer, { FallbackBefore, FallbackAfter } from '@site/src/components/TimeTimer';
+import TimeTimer, {
+  FallbackBefore,
+  FallbackAfter,
+} from "@site/src/components/TimeTimer";
 
 export default {
   ...MDXComponents,
   TimeTimer,
   FallbackBefore,
-  FallbackAfter
+  FallbackAfter,
 };
 ```
 
@@ -146,6 +167,7 @@ Here's how I display content only on Christmas day:
 ```
 
 **Behavior**:
+
 - Before 25/12/2025 at 00:00 → "⏳ Not Christmas yet..."
 - All day on 25/12/2025 → "🎄 Merry Christmas!"
 - From 26/12/2025 at 00:00 → "🎁 Christmas has passed!"
@@ -162,6 +184,7 @@ To trigger display at a specific time, I use this format:
 ```
 
 **Behavior**:
+
 - Before 31/12/2025 at 23:59 → "⏰ Come back at 11:59 PM for the countdown"
 - From 31/12/2025 23:59 to 01/01/2026 23:59 → "🎉 Happy New Year!"
 - From 01/01/2026 at 23:59 → Nothing (no FallbackAfter)
@@ -179,6 +202,7 @@ For an offer lasting 30 days, I combine `start` and `duration`:
 ```
 
 **Behavior**:
+
 - Before 01/11/2025 at 10:00 → FallbackBefore message
 - From 01/11 10:00 to 01/12 10:00 (30 days) → Main content
 - From 01/12/2025 at 10:00 → FallbackAfter message
@@ -192,11 +216,9 @@ A feature I love: you can customize the start/end dates of fallback messages ind
 ```mdx
 <TimeTimer start="01/12/2025 10:00" duration="30d">
   🎉 Christmas Sale Active!
-  
   <FallbackBefore start="15/11/2025 10:00">
     📅 Get ready! The offer starts soon
   </FallbackBefore>
-  
   <FallbackAfter end="10/01/2026 23:59">
     🎄 Offer ended, thank you!
   </FallbackAfter>
@@ -204,6 +226,7 @@ A feature I love: you can customize the start/end dates of fallback messages ind
 ```
 
 **Behavior**:
+
 - Before 15/11 at 10:00 → Nothing
 - From 15/11 to 01/12 → "📅 Get ready!"
 - From 01/12 to 31/12 (30 days) → "🎉 Christmas Sale Active!"
@@ -226,6 +249,7 @@ I added a `strict` mode for worldwide events. It avoids timezone issues:
 ```
 
 What it changes concretely:
+
 - Without `strict`: each visitor sees content according to their local timezone
 - With `strict`: everyone sees the change at exactly the same moment (UTC time)
 
@@ -245,177 +269,227 @@ A handy trick: you can omit the year to create recurring content that displays e
 
 ### TimeTimer
 
-| Prop | Type | Default | Description |
-|------|------|--------|-------------|
-| `date` | `string` | - | Fixed date: `DD/MM/YYYY` or `DD/MM/YYYY HH:MM` or `DD/MM` |
-| `start` | `string` | - | Start date: `DD/MM/YYYY HH:MM` (requires `duration`) |
-| `duration` | `string` | - | Duration: `30d`, `2h`, `45m` (requires `start`) |
-| `strict` | `boolean` | `false` | Uses UTC instead of local timezone |
-| `children` | `node` | - | Main content + FallbackBefore/After |
+| Prop       | Type      | Default | Description                                               |
+| ---------- | --------- | ------- | --------------------------------------------------------- |
+| `date`     | `string`  | -       | Fixed date: `DD/MM/YYYY` or `DD/MM/YYYY HH:MM` or `DD/MM` |
+| `start`    | `string`  | -       | Start date: `DD/MM/YYYY HH:MM` (requires `duration`)      |
+| `duration` | `string`  | -       | Duration: `30d`, `2h`, `45m` (requires `start`)           |
+| `strict`   | `boolean` | `false` | Uses UTC instead of local timezone                        |
+| `children` | `node`    | -       | Main content + FallbackBefore/After                       |
 
 ### FallbackBefore
 
-| Prop | Type | Default | Description |
-|------|------|--------|-------------|
-| `start` | `string` | - | Custom start date for the fallback |
-| `children` | `node` | - | Content to display before the period |
+| Prop       | Type     | Default | Description                          |
+| ---------- | -------- | ------- | ------------------------------------ |
+| `start`    | `string` | -       | Custom start date for the fallback   |
+| `children` | `node`   | -       | Content to display before the period |
 
 ### FallbackAfter
 
-| Prop | Type | Default | Description |
-|------|------|--------|-------------|
-| `end` | `string` | - | Date until when to display the fallback (doesn't affect `duration`) |
-| `children` | `node` | - | Content to display after the period |
+| Prop       | Type     | Default | Description                                                         |
+| ---------- | -------- | ------- | ------------------------------------------------------------------- |
+| `end`      | `string` | -       | Date until when to display the fallback (doesn't affect `duration`) |
+| `children` | `node`   | -       | Content to display after the period                                 |
 
 ## Accepted Formats
 
 ### Dates
 
-| Format | Example | Behavior |
-|--------|---------|--------------|
-| `DD/MM/YYYY` | `25/12/2025` | All day long (00:00 to 23:59) |
-| `DD/MM/YYYY HH:MM` | `25/12/2025 18:00` | From 6 PM, for 24 hours |
-| `DD/MM` | `25/12` | Current year automatic |
+| Format             | Example            | Behavior                      |
+| ------------------ | ------------------ | ----------------------------- |
+| `DD/MM/YYYY`       | `25/12/2025`       | All day long (00:00 to 23:59) |
+| `DD/MM/YYYY HH:MM` | `25/12/2025 18:00` | From 6 PM, for 24 hours       |
+| `DD/MM`            | `25/12`            | Current year automatic        |
 
 ### Durations
 
 | Unit | Example | Description |
-|-------|---------|-------------|
-| `d` | `30d` | 30 days |
-| `h` | `2h` | 2 hours |
-| `m` | `45m` | 45 minutes |
+| ---- | ------- | ----------- |
+| `d`  | `30d`   | 30 days     |
+| `h`  | `2h`    | 2 hours     |
+| `m`  | `45m`   | 45 minutes  |
 
 ## Other Examples
+
 :::tip
 You'll note that I used the `jsx live` format for the interactive examples below. This allows you to test the component in real-time directly on the page!
- > Play with the dates to experiment with the component's behavior (insert a space to refresh the Live editor).
 
-To learn how to set up live mode in your articles, check out my tutorial on [integrating interactive components with Docusaurus](https://docux.dev/blog/docusaurus-live-components).    
+> Play with the dates to experiment with the component's behavior (insert a space to refresh the Live editor).
+
+To learn how to set up live mode in your articles, check out my tutorial on [integrating interactive components with Docusaurus](https://docux.dev/blog/docusaurus-live-components).  
 :::
 
 ### Today's Content
+
 ```jsx live
 <TimeTimer date="01/11/2025">
   ✅ You see this message because it's November 1st, 2025
-  
   <FallbackBefore>
     ⏳ This message will only display on November 1st
   </FallbackBefore>
-  
-  <FallbackAfter>
-    🕰️ November 1st has passed
-  </FallbackAfter>
+  <FallbackAfter>🕰️ November 1st has passed</FallbackAfter>
 </TimeTimer>
 ```
 
 ### One-Week Period
+
 ```jsx live
 <TimeTimer start="01/11/2025 00:00" duration="7d">
   📅 Week of November 1st to 8th active!
-  
-  <FallbackBefore>
-    ⏳ The week hasn't started yet
-  </FallbackBefore>
-  
-  <FallbackAfter>
-    ✔️ The week of November 1st is over
-  </FallbackAfter>
+  <FallbackBefore>⏳ The week hasn't started yet</FallbackBefore>
+  <FallbackAfter>✔️ The week of November 1st is over</FallbackAfter>
 </TimeTimer>
 ```
 
 ### With Custom Dates
+
 ```jsx live
 <TimeTimer start="01/11/2025 00:00" duration="30d">
   🎯 **Main content active**
-  
   <FallbackBefore start="25/10/2025">
     📢 Preparation in progress... Starts November 1st
   </FallbackBefore>
-  
   <FallbackAfter end="15/11/2025">
     ✅ Finished earlier than expected!
   </FallbackAfter>
 </TimeTimer>
 ```
 
-
 ```jsx live
+<TimeTimer date="01/11/2025">
+  <div
+    style={{
+      padding: "20px",
+      background: "#4CAF50",
+      color: "white",
+      borderRadius: "8px",
+    }}
+  >
+    ✅ Content displayed on November 1st, 2025
+  </div>
 
-    <TimeTimer date="01/11/2025">
-      <div style={{padding: '20px', background: '#4CAF50', color: 'white', borderRadius: '8px'}}>
-        ✅ Content displayed on November 1st, 2025
-      </div>
-      
-      <FallbackBefore>
-        <div style={{padding: '20px', background: '#FF9800', color: 'white', borderRadius: '8px'}}>
-          ⏳ Not yet November 1st
-        </div>
-      </FallbackBefore>
-      
-      <FallbackAfter>
-        <div style={{padding: '20px', background: '#2196F3', color: 'white', borderRadius: '8px'}}>
-          🕰️ November 1st has passed
-        </div>
-      </FallbackAfter>
-    </TimeTimer>
+  <FallbackBefore>
+    <div
+      style={{
+        padding: "20px",
+        background: "#FF9800",
+        color: "white",
+        borderRadius: "8px",
+      }}
+    >
+      ⏳ Not yet November 1st
+    </div>
+  </FallbackBefore>
 
+  <FallbackAfter>
+    <div
+      style={{
+        padding: "20px",
+        background: "#2196F3",
+        color: "white",
+        borderRadius: "8px",
+      }}
+    >
+      🕰️ November 1st has passed
+    </div>
+  </FallbackAfter>
+</TimeTimer>
 ```
 
 ### Customizable Duration
 
 ```jsx live
+<TimeTimer start="01/11/2025 10:00" duration="2h">
+  <div
+    style={{
+      padding: "20px",
+      background: "#E91E63",
+      color: "white",
+      borderRadius: "8px",
+    }}
+  >
+    ⚡ Flash sale active for 2 hours!
+  </div>
 
-    <TimeTimer start="01/11/2025 10:00" duration="2h">
-      <div style={{padding: '20px', background: '#E91E63', color: 'white', borderRadius: '8px'}}>
-        ⚡ Flash sale active for 2 hours!
-      </div>
-      
-      <FallbackBefore>
-        <div style={{padding: '15px', background: '#9C27B0', color: 'white', borderRadius: '8px'}}>
-          🔔 The offer starts at 10am
-        </div>
-      </FallbackBefore>
-      
-      <FallbackAfter>
-        <div style={{padding: '15px', background: '#607D8B', color: 'white', borderRadius: '8px'}}>
-          😢 Offer ended
-        </div>
-      </FallbackAfter>
-    </TimeTimer>
+  <FallbackBefore>
+    <div
+      style={{
+        padding: "15px",
+        background: "#9C27B0",
+        color: "white",
+        borderRadius: "8px",
+      }}
+    >
+      🔔 The offer starts at 10am
+    </div>
+  </FallbackBefore>
 
+  <FallbackAfter>
+    <div
+      style={{
+        padding: "15px",
+        background: "#607D8B",
+        color: "white",
+        borderRadius: "8px",
+      }}
+    >
+      😢 Offer ended
+    </div>
+  </FallbackAfter>
+</TimeTimer>
 ```
 
 ### Custom Dates in Fallbacks
 
 ```jsx live
+<TimeTimer start="01/12/2025 10:00" duration="30d">
+  <div
+    style={{
+      padding: "20px",
+      background: "#00BCD4",
+      color: "white",
+      borderRadius: "8px",
+      fontSize: "18px",
+    }}
+  >
+    🎉 Christmas offer active!
+  </div>
 
-     <TimeTimer start="01/12/2025 10:00" duration="30d">
-      <div style={{padding: '20px', background: '#00BCD4', color: 'white', borderRadius: '8px', fontSize: '18px'}}>
-        🎉 Christmas offer active!
-      </div>
-      
-      <FallbackBefore start="01/11/2025 10:00">
-        <div style={{padding: '15px', background: '#FFC107', color: '#333', borderRadius: '8px'}}>
-          📅 Get ready! The offer starts soon
-        </div>
-      </FallbackBefore>
-      
-      <FallbackAfter end="10/01/2026 23:59">
-        <div style={{padding: '15px', background: '#8BC34A', color: 'white', borderRadius: '8px'}}>
-          🎄 Offer ended, thank you!
-        </div>
-      </FallbackAfter>
-    </TimeTimer>
+  <FallbackBefore start="01/11/2025 10:00">
+    <div
+      style={{
+        padding: "15px",
+        background: "#FFC107",
+        color: "#333",
+        borderRadius: "8px",
+      }}
+    >
+      📅 Get ready! The offer starts soon
+    </div>
+  </FallbackBefore>
 
+  <FallbackAfter end="10/01/2026 23:59">
+    <div
+      style={{
+        padding: "15px",
+        background: "#8BC34A",
+        color: "white",
+        borderRadius: "8px",
+      }}
+    >
+      🎄 Offer ended, thank you!
+    </div>
+  </FallbackAfter>
+</TimeTimer>
 ```
 
-:::tip 
+:::tip
 Feel free to modify the dates and durations in the code above to experiment! A few ideas:
+
 - Change `date="01/11/2025"` to today's date to see the active content
 - Test `duration="5m"` instead of `2h` for a shorter duration
 - Customize the CSS styles to your liking
-:::
-
+  :::
 
 ## Advanced Use Cases
 
@@ -426,12 +500,8 @@ Feel free to modify the dates and durations in the code above to experiment! A f
   <FallbackBefore start="14/11/2025 20:00">
     ⚠️ Scheduled maintenance tomorrow at 2am
   </FallbackBefore>
-  
   🔧 Site under maintenance, back at 4am
-  
-  <FallbackAfter>
-    ✅ Maintenance completed, everything works!
-  </FallbackAfter>
+  <FallbackAfter>✅ Maintenance completed, everything works!</FallbackAfter>
 </TimeTimer>
 ```
 
@@ -440,7 +510,6 @@ Feel free to modify the dates and durations in the code above to experiment! A f
 ```jsx live
 <TimeTimer date="25/12/2025 00:00">
   🎄 It's Christmas! Happy Holidays to all!
-  
   <FallbackBefore start="01/12/2025">
     🎅 Just a few more days until Christmas!
   </FallbackBefore>
@@ -452,14 +521,8 @@ Feel free to modify the dates and durations in the code above to experiment! A f
 ```jsx live
 <TimeTimer start="01/11/2025 14:00" duration="2h">
   ⚡ FLASH SALE: -70% for 2 hours!
-  
-  <FallbackBefore>
-    🔔 Next flash sale at 2pm
-  </FallbackBefore>
-  
-  <FallbackAfter>
-    😢 Flash sale ended, see you tomorrow!
-  </FallbackAfter>
+  <FallbackBefore>🔔 Next flash sale at 2pm</FallbackBefore>
+  <FallbackAfter>😢 Flash sale ended, see you tomorrow!</FallbackAfter>
 </TimeTimer>
 ```
 
@@ -468,24 +531,18 @@ Feel free to modify the dates and durations in the code above to experiment! A f
 ```jsx live
 <TimeTimer start="01/11/2025 22:20" duration="10m">
   🎟️ PROMO CODE: **FLASH15** valid for 15 minutes!
-  
-  <FallbackBefore>
-    ⏰ Promo code coming in a few moments...
-  </FallbackBefore>
-  
+  <FallbackBefore>⏰ Promo code coming in a few moments...</FallbackBefore>
   <FallbackAfter end="01/11/2025 22:35">
     ⏱️ Code expired! Next code at 4pm
   </FallbackAfter>
 </TimeTimer>
 ```
 
-
 ### Temporary Message After a Sale
 
 ```jsx live
 <TimeTimer start="01/11/2025 00:00" duration="30d">
   🎉 Black Friday: -50% on everything!
-  
   <FallbackAfter end="07/12/2025 23:59">
     👋 Thank you for participating! See you next year
   </FallbackAfter>
@@ -495,6 +552,7 @@ Feel free to modify the dates and durations in the code above to experiment! A f
 ### Interactive Advent Calendar
 
 Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon to create an Advent calendar:
+
 ```jsx live
 <Columns className="margin-vert--md">
   <Column className="margin-vert--md">
@@ -532,7 +590,7 @@ Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon t
       </FallbackAfter>
     </TimeTimer>
   </Column>
-  
+
   <Column className="margin-vert--md">
     <TimeTimer date="06/11/2025">
       <Card shadow>
@@ -568,7 +626,7 @@ Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon t
       </FallbackAfter>
     </TimeTimer>
   </Column>
-  
+
   <Column className="margin-vert--md">
     <TimeTimer date="03/12/2025">
       <Card shadow>
@@ -605,21 +663,17 @@ Here's a complete example combining TimeTimer with Columns, Card, and LogoIcon t
     </TimeTimer>
   </Column>
 </Columns>
-
-
-
-
 ```
 
 :::tip Dynamic Three-State Calendar
 This calendar displays three different states for each box:
+
 - 🔒 **Before the date**: Locked box with a padlock
 - 🎁 **On the day**: Opened box with the day's gift
 - ✅ **After the date**: Box marked as "Already opened"
 
 You can easily extend it to December 24 by duplicating the structure!
 :::
-
 
 ## My Usage Recommendations
 
@@ -629,14 +683,9 @@ You can easily extend it to December 24 by duplicating the structure!
 - Test with different dates before publishing
 - Take advantage of custom dates in fallbacks—it's super flexible
 
-
-
-
 ## Resources
 
 - [React Documentation](https://react.dev/)
 - [Date MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date)
 - [UTC vs Local Time](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/UTC)
 - [Docusaurus MDX](https://docusaurus.io/docs/markdown-features/react)
-
-

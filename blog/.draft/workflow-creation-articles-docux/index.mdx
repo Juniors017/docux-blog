@@ -5,7 +5,8 @@ schemaTypes: ["HowTo", "TechArticle"]
 slug: workflow-creation-articles-docux
 image: "/img/workflow-creation.webp"
 authors: ["docux"]
-tags: ["workflow", "productivité", "automatisation", "vscode", "création-contenu"]
+tags:
+  ["workflow", "productivité", "automatisation", "vscode", "création-contenu"]
 date: 2025-08-29
 last_update:
   date: 2025-08-29
@@ -62,6 +63,7 @@ node scripts/create-article.js
 ```
 
 **Processus** :
+
 1. Sélection du type de schéma dans une liste
 2. Configuration automatique du frontmatter
 3. Génération du contenu de base
@@ -87,15 +89,15 @@ node scripts/quick-article.js howto "Comment Installer Docker"
 
 ### Types Supportés
 
-| Type | Description | Exemple d'Usage |
-|------|-------------|-----------------|
-| `blog` | Article standard | News, opinions |
-| `tech` | Guide technique | Tutorials, docs |
-| `howto` | Étapes détaillées | Instructions |
-| `faq` | Questions/réponses | Support |
-| `collection` | Pages de collection | Listes |
-| `software` | Documentation logiciel | Apps |
-| `course` | Formation | Cours |
+| Type         | Description            | Exemple d'Usage |
+| ------------ | ---------------------- | --------------- |
+| `blog`       | Article standard       | News, opinions  |
+| `tech`       | Guide technique        | Tutorials, docs |
+| `howto`      | Étapes détaillées      | Instructions    |
+| `faq`        | Questions/réponses     | Support         |
+| `collection` | Pages de collection    | Listes          |
+| `software`   | Documentation logiciel | Apps            |
+| `course`     | Formation              | Cours           |
 
 ## 📋 Méthode 2 : Snippets VS Code Intelligents
 
@@ -127,24 +129,28 @@ Les snippets sont **pré-configurés** dans `.vscode/docusaurus-snippets.json`
 ### Étape 3.1 : Stratégie par Contexte
 
 **Création Ultra-Rapide** (actualités, idées spontanées) :
+
 ```bash
 node scripts/quick-article.js blog "Breaking News React 19"
 ```
 
 **Création Détaillée** (guides, tutorials) :
+
 ```bash
 node scripts/create-article.js
 # → Configuration interactive personnalisée
 ```
 
 **Création Personnalisée** (contenu unique) :
+
 1. Nouveau fichier `.mdx`
-2. `doc-tech` + `Tab` 
+2. `doc-tech` + `Tab`
 3. Customisation manuelle avancée
 
 ### Étape 3.2 : Workflow Recommandé par Type
 
 #### Articles de Blog Quotidiens
+
 ```bash
 # Batch creation pour une semaine
 node scripts/quick-article.js blog "Lundi: Actualités JS"
@@ -153,6 +159,7 @@ node scripts/quick-article.js blog "Vendredi: Outils du Dev"
 ```
 
 #### Série de Guides Techniques
+
 ```bash
 # Mode interactif pour personnalisation
 node scripts/create-article.js
@@ -161,28 +168,32 @@ node scripts/create-article.js
 ```
 
 #### Documentation Complète
+
 ```bash
 # Combinaison scripts + snippets
 node scripts/quick-article.js faq "FAQ API"
-node scripts/quick-article.js tech "Guide API Endpoints"  
+node scripts/quick-article.js tech "Guide API Endpoints"
 # + Personnalisation manuelle avec snippets
 ```
 
 ## 🎯 Avantages de Chaque Méthode
 
 ### ⚡ Scripts CLI
+
 - ✅ **Vitesse** : 30 sec à 2 min max
 - ✅ **Automatisation** : 0% d'erreur SEO
 - ✅ **Standardisation** : Cohérence garantie
 - ✅ **Batch** : Création de masse possible
 
 ### 🎨 Snippets VS Code
+
 - ✅ **Intégration** : Workflow natif éditeur
 - ✅ **Flexibilité** : Personnalisation fine
 - ✅ **Productivité** : Navigation au clavier
 - ✅ **Créativité** : Liberté de customisation
 
 ### 🔄 Workflow Hybride
+
 - ✅ **Adaptabilité** : Méthode selon contexte
 - ✅ **Efficacité** : Optimisation par cas d'usage
 - ✅ **Évolutivité** : Scalable selon besoins
@@ -197,11 +208,11 @@ node scripts/quick-article.js tech "Guide API Endpoints"
 ```javascript
 // Ligne 15 - Configuration par défaut
 const DEFAULT_CONFIG = {
-  author: "votre-nom",        // 🔧 Changez ici
-  baseImagePath: "/img/",     // 🔧 Votre chemin
+  author: "votre-nom", // 🔧 Changez ici
+  baseImagePath: "/img/", // 🔧 Votre chemin
   defaultTags: ["votre-tag"], // 🔧 Tags par défaut
-  language: "fr-FR",          // 🔧 Langue
-  copyright: "Votre Nom"      // 🔧 Copyright
+  language: "fr-FR", // 🔧 Langue
+  copyright: "Votre Nom", // 🔧 Copyright
 };
 ```
 
@@ -215,11 +226,7 @@ const DEFAULT_CONFIG = {
     "scope": "mdx",
     "prefix": "doc-custom",
     "description": "Mon template personnalisé",
-    "body": [
-      "---",
-      "title: \"${1:Titre}\"",
-      "// ... votre configuration"
-    ]
+    "body": ["---", "title: \"${1:Titre}\"", "// ... votre configuration"]
   }
 }
 ```
@@ -276,7 +283,7 @@ Résumé et objectifs clairs
 
 Contenu structuré...
 
-## Section 2 : Développement  
+## Section 2 : Développement
 
 Code examples, images...
 
@@ -289,13 +296,13 @@ Synthèse et next steps...
 
 ### Temps de Création Comparé
 
-| Méthode | Temps Moyen | Complexité | Flexibilité |
-|---------|-------------|------------|-------------|
-| **Manuel traditionnel** | 35 min | Élevée | Maximale |
-| **Script rapide** | 30 sec | Nulle | Minimale |
-| **Script interactif** | 2 min | Faible | Moyenne |
-| **Snippets VS Code** | 1 min | Faible | Élevée |
-| **Workflow hybride** | Variable | Adaptée | Optimale |
+| Méthode                 | Temps Moyen | Complexité | Flexibilité |
+| ----------------------- | ----------- | ---------- | ----------- |
+| **Manuel traditionnel** | 35 min      | Élevée     | Maximale    |
+| **Script rapide**       | 30 sec      | Nulle      | Minimale    |
+| **Script interactif**   | 2 min       | Faible     | Moyenne     |
+| **Snippets VS Code**    | 1 min       | Faible     | Élevée      |
+| **Workflow hybride**    | Variable    | Adaptée    | Optimale    |
 
 ### ROI Mesuré
 
@@ -309,12 +316,14 @@ Synthèse et next steps...
 ### Erreurs Communes
 
 **"Directory already exists"**
+
 ```bash
 # Solution : Supprimer le dossier existant
 Remove-Item "blog/2025/08/29/article-existant/" -Recurse -Force
 ```
 
 **"Invalid schema type"**
+
 ```bash
 # Types valides seulement
 node scripts/quick-article.js tech "Mon Guide"  # ✅
@@ -322,6 +331,7 @@ node scripts/quick-article.js invalid "Test"    # ❌
 ```
 
 **Snippets non disponibles dans VS Code**
+
 ```bash
 # Vérifier l'extension MDX
 code --install-extension unifiedjs.vscode-mdx
@@ -334,7 +344,7 @@ Vous maîtrisez maintenant **3 workflows** ultra-efficaces pour créer du conten
 ### Récapitulatif des Méthodes
 
 1. **⚡ Scripts CLI** → Vitesse et automatisation
-2. **🎨 Snippets VS Code** → Intégration et flexibilité  
+2. **🎨 Snippets VS Code** → Intégration et flexibilité
 3. **🔄 Workflow Hybride** → Adaptabilité optimale
 
 ### Prochaines Étapes
@@ -350,6 +360,6 @@ Vous pouvez maintenant créer des articles SEO parfaits en **30 secondes** au li
 
 ---
 
-*Guide de workflow par **Docux** - Niveau Beginner - 29 août 2025*
+_Guide de workflow par **Docux** - Niveau Beginner - 29 août 2025_
 
-*🔗 Prochains articles : [Scripts d'Automatisation](/blog/scripts-automatisation-articles-seo) • [Architecture SEO](/blog/architecture-seo-docusaurus-guide-complet)*
+_🔗 Prochains articles : [Scripts d'Automatisation](/blog/scripts-automatisation-articles-seo) • [Architecture SEO](/blog/architecture-seo-docusaurus-guide-complet)_

@@ -33,9 +33,11 @@ export default function MyRepositories({ username }) {
       <Hero>
         <h1>My GitHub Projects</h1>
         <p>
-          Below you will find a list of my public repositories hosted on GitHub.com. They are divided into two sections: active and inactive.
+          Below you will find a list of my public repositories hosted on
+          GitHub.com. They are divided into two sections: active and inactive.
           <br />
-          Feel free to use the code and reuse it in your own project if it can be useful to you.
+          Feel free to use the code and reuse it in your own project if it can
+          be useful to you.
         </p>
       </Hero>
       <GithubProjects username={username} />

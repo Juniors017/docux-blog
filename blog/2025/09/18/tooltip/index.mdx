@@ -6,7 +6,7 @@ slug: "Tooltip-tools-docusaurus"
 image: "/img/tooltipcomponent.webp"
 authors: ["docux"]
 mainTag: Design
-tags: ["react", "component", "tooltip",  "accessibility"]
+tags: ["react", "component", "tooltip", "accessibility"]
 date: 2025-09-21
 last_update:
   date: 2025-09-21
@@ -27,11 +27,22 @@ articleSection: "Tutorial"
 copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Web Development"
-keywords: ["tooltip", "react", "component", "dynamic positioning", "flipping", "react portal", "accessibility", "docusaurus"]
+keywords:
+  [
+    "tooltip",
+    "react",
+    "component",
+    "dynamic positioning",
+    "flipping",
+    "react portal",
+    "accessibility",
+    "docusaurus",
+  ]
 hide_table_of_contents: false
 series: "Design your site"
 blueSkyRecordKey: 3lzdqemif3227
 ---
+
 <center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
@@ -40,15 +51,22 @@ blueSkyRecordKey: 3lzdqemif3227
 [![AI 0%](https://img.shields.io/badge/AI-45%-blue.svg)](https://github.com/Juniors017)
 
 ![](/img/tooltipcomponent.webp)
+
 </div>
 </center>
 
-<Tooltip model="teacher" text="Tooltips">In computing, a tooltip is a message that appears as an overlay when the mouse pointer hovers over certain elements of the graphical user interface. 
-It gets its name from its resemblance to speech bubbles in comic strips 
-[Source Wikipedia](https://en.wikipedia.org/wiki/Tooltip)</Tooltip> are everywhere on the web. They are essential for providing contextual information without cluttering the interface. But creating one that is robust, aesthetically pleasing, and above all, accessible, is a real challenge.
+<Tooltip model="teacher" text="Tooltips">
+  In computing, a tooltip is a message that appears as an overlay when the mouse
+  pointer hovers over certain elements of the graphical user interface. It gets
+  its name from its resemblance to speech bubbles in comic strips [Source
+  Wikipedia](https://en.wikipedia.org/wiki/Tooltip)
+</Tooltip>
+are everywhere on the web. They are essential for providing contextual
+information without cluttering the interface. But creating one that is robust,
+aesthetically pleasing, and above all, accessible, is a real challenge.
 
-I developed this `Tooltip` component for <Tooltip model="teacher" text="Docusaurus" >Docusaurus is a static-site generator. 
-It builds a single-page application with fast client-side navigation, leveraging the full power of React to make your site interactive. 
+I developed this `Tooltip` component for <Tooltip model="teacher" text="Docusaurus" >Docusaurus is a static-site generator.
+It builds a single-page application with fast client-side navigation, leveraging the full power of React to make your site interactive.
 It provides out-of-the-box documentation features but can be used to create any kind of site (personal website, product, blog, marketing landing pages, etc).</Tooltip>. It doesn't just display a simple information box; it integrates intelligent positioning logic, an arrow that always stays aligned, and great customization flexibility.
 
 {/* truncate */}
@@ -73,7 +91,7 @@ The `Tooltip` component comes with several predefined "models" for common use ca
 
 A good component must be accessible to everyone. The tooltip is linked to its trigger element via the `aria-describedby` attributes, it is focusable, and can be closed with the `Escape` key.
 
-##  Component Code
+## Component Code
 
 ### Files structure
 
@@ -93,9 +111,16 @@ A good component must be accessible to everyone. The tooltip is linked to its tr
 </Trees>
 
 ### Code
-<Snippet filename="/src/components/Tooltip/index.js" source="src/components/Tooltip/index.js" />
 
-<Snippet filename="/src/components/Tooltip/styles.module.css" source="src/components/Tooltip/styles.module.css" />
+<Snippet
+  filename="/src/components/Tooltip/index.js"
+  source="src/components/Tooltip/index.js"
+/>
+
+<Snippet
+  filename="/src/components/Tooltip/styles.module.css"
+  source="src/components/Tooltip/styles.module.css"
+/>
 
 ## Models Code
 
@@ -122,6 +147,7 @@ The file offers several ready-to-use models:
 ### Usage
 
 Instead of writing:
+
 ```jsx
 <Tooltip text="Message" backgroundColor="#2196F3" color="#FFFFFF">
   Hover me
@@ -129,15 +155,17 @@ Instead of writing:
 ```
 
 You can simply import the model and use it:
-```jsx
 
+```jsx
 <Tooltip text="Message" Type="info">
   Hover me
 </Tooltip>
 ```
 
-<Snippet filename="/src/components/Tooltip/models.js" source="src/components/Tooltip/models.js" />
-
+<Snippet
+  filename="/src/components/Tooltip/models.js"
+  source="src/components/Tooltip/models.js"
+/>
 
 ## Usage in Docusaurus
 
@@ -146,11 +174,11 @@ One of the great advantages of Docusaurus is its ability to "swizzle" components
 Thanks to a simple configuration in the `src/theme/MDXComponents.js` file, the component is imported and added to the list of MDX components.
 
 ```js title="src/theme/MDXComponents.js"
-import Tooltip from '@site/src/components/Tooltip';
+import Tooltip from "@site/src/components/Tooltip";
 
 export default {
   // ... other components
-  Tooltip
+  Tooltip,
 };
 ```
 
@@ -191,24 +219,27 @@ The `position` prop allows you to choose where the tooltip appears. The options 
 
 </Columns>
 
-
 ```mdx
 // Top
+
 <Tooltip text="Position Top" position="top">
   Default position.
 </Tooltip>
 
 // Bottom
+
 <Tooltip text="Position Bottom" position="bottom">
   Appears below.
 </Tooltip>
 
 // Left
+
 <Tooltip text="Position Left" position="left">
   Appears on the left.
 </Tooltip>
 
 // Right
+
 <Tooltip text="Position Right" position="right">
   Appears on the right.
 </Tooltip>
@@ -243,30 +274,34 @@ You can create your own reusable models in `models.js`
   </Column>
 </Columns>
 
-
 ```mdx
 // Info
+
 <Tooltip text="Information" model="info">
   This is useful information.
 </Tooltip>
 
 // Success
+
 <Tooltip text="Success" model="success">
   The operation was successful!
 </Tooltip>
 
 // Warning
+
 <Tooltip text="Warning" model="warning">
   Be careful here.
 </Tooltip>
 
 // Error
+
 <Tooltip text="Error" model="error">
   An error has occurred.
 </Tooltip>
-
 ```
+
 ### We can create cool models
+
 <Columns className="margin-vert--md text--center">
 <Column>
 <Tooltip model="teacher" text="DocuxLab" >
@@ -282,26 +317,25 @@ We can really make nice tooltips,
 My friend Christophe's mascot has sneaked in here.
 
 [@avonture.be](https://avonture.be/)
+
 </Tooltip>
 </Column>
 </Columns>
 
 ```mdx
-<Tooltip model="teacher" text="DocuxLab" >
-My favorite 
-and the one you will find mostly on this site.
-We can really make nice tooltips, 
- it dusts off the classic info bubble.
-<LogoIcon name="docusaurus" size='20' />
+<Tooltip model="teacher" text="DocuxLab">
+  My favorite and the one you will find mostly on this site. We can really make
+  nice tooltips, it dusts off the classic info bubble.
+  <LogoIcon name="docusaurus" size="20" />
 </Tooltip>
 
 <Tooltip model="suricate" text="But what is it doing here?" >
 My friend Christophe's mascot has sneaked in here.
 
 [@avonture.be](https://avonture.be/)
+
 </Tooltip>
 ```
-
 
 ### Rich Content and Customization
 
@@ -313,7 +347,8 @@ The true power of this component lies in its ability to accept rich content and 
 <Tooltip text="Rich Content">
   You can use <b>bold</b>, <i>italics</i>, and even links like [this link](https://docusaurus.io).
 
-  You can even include other components, and even an image.
+You can even include other components, and even an image.
+
   <center>
   ![](/img/tooltipstest.webp)
   </center>
@@ -333,46 +368,47 @@ The true power of this component lies in its ability to accept rich content and 
 </Column>
 </Columns>
 
-
-
-
 ```mdx
 // Rich Content
+
 <Tooltip text="Rich Content">
   You can use <b>bold</b>, <i>italics</i>, and even links like [this link](https://docusaurus.io).
 
-  You can even include other components, and even an image.
+You can even include other components, and even an image.
+
   <center>
   ![](/img/tooltipstest.webp)
   </center>
 </Tooltip>
 
 // Custom Style
-  <Tooltip text="Custom Style" style={{
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    color: 'white',
-    border: '2px solid white',
-    borderRadius: '10px',
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'
-  }}>
-    This tooltip has a unique style passed via the <code>style</code> prop.
-  </Tooltip>
+
+<Tooltip
+  text="Custom Style"
+  style={{
+    background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+    color: "white",
+    border: "2px solid white",
+    borderRadius: "10px",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+  }}
+>
+  This tooltip has a unique style passed via the <code>style</code> prop.
+</Tooltip>
 ```
+
 ## Play in live with tooltip
+
 ```jsx live
-
-  <div style={{display:'flex', gap:16}}>
-    <Tooltip model="teacher" text="DocuxLab">
-      My favorite
-      and the one you will find mostly on this site.
-      <br />
-      We can really make nice tooltips,
-      it dusts off the classic info bubble.
-      <LogoIcon name="docusaurus" size='20' />
-    </Tooltip>
-    <Tooltip model="suricate" text="Pépé" position="bottom">
-      A second tooltip using another model.
-    </Tooltip>
-  </div>
-
+<div style={{ display: "flex", gap: 16 }}>
+  <Tooltip model="teacher" text="DocuxLab">
+    My favorite and the one you will find mostly on this site.
+    <br />
+    We can really make nice tooltips, it dusts off the classic info bubble.
+    <LogoIcon name="docusaurus" size="20" />
+  </Tooltip>
+  <Tooltip model="suricate" text="Pépé" position="bottom">
+    A second tooltip using another model.
+  </Tooltip>
+</div>
 ```

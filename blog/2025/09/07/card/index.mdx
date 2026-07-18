@@ -6,7 +6,7 @@ slug: card-component-docusaurus-infima
 image: "/img/card-component-docusaurus-infima.webp"
 authors: ["docux"]
 mainTag: infima
-tags: [ "card", "infima", "component", "tutorial", "front-end", "css", "design"]
+tags: ["card", "infima", "component", "tutorial", "front-end", "css", "design"]
 date: 2025-09-07
 last_update:
   date: 2025-09-07
@@ -27,11 +27,24 @@ articleSection: "Tutorial"
 copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Web Development"
-keywords: ["docusaurus", "react", "card", "infima", "component", "tutorial", "front-end", "css", "ui", "design"]
+keywords:
+  [
+    "docusaurus",
+    "react",
+    "card",
+    "infima",
+    "component",
+    "tutorial",
+    "front-end",
+    "css",
+    "ui",
+    "design",
+  ]
 hide_table_of_contents: false
 series: "infima components"
 blueSkyRecordKey: 3lycislui2c2a
 ---
+
 <center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
@@ -40,22 +53,21 @@ blueSkyRecordKey: 3lycislui2c2a
 [![AI 0%](https://img.shields.io/badge/AI-no-blue.svg)](https://github.com/Juniors017)
 
 ![](/img/card-component-docusaurus-infima.webp)
+
 </div>
 </center>
-
-
-
 
 With [Infima CSS framework](https://infima.dev/), I've created a reusable card component that you can use on your Docusaurus site. With it, you'll be able to customize each card with different colors and sizes. This component allows you to generate all the cards available in Infima as well as "Custom" cards, and you'll be able to create and personalize each card independently.
 
 I designed the component as a set of small components that work together to form the complete cards.
 
 ### Card : composition of the master folder
- - Card component index.js (The container of alls parts)
- - CardHeader component (Header parts of cards)
- - CardBody component (Body parts of cards)
- - CardImage component (Image cover parts of cards)
- - CardFooter component (Footer parts of cards)
+
+- Card component index.js (The container of alls parts)
+- CardHeader component (Header parts of cards)
+- CardBody component (Body parts of cards)
+- CardImage component (Image cover parts of cards)
+- CardFooter component (Footer parts of cards)
 
 {/* truncate */}
 
@@ -82,14 +94,14 @@ I designed the component as a set of small components that work together to form
       </Folder>
     </Folder>
     <Folder label="theme" expanded={true}>
-      <File label="MDXComponents.js" icon="javascript"/>
+      <File label="MDXComponents.js" icon="javascript" />
     </Folder>
   </Folder>
 </Trees>
 
- I discovered that it pairs wonderfully with other components in my library, but this will be the subject of a dedicated page.
-## Creating the Card component 
+I discovered that it pairs wonderfully with other components in my library, but this will be the subject of a dedicated page.
 
+## Creating the Card component
 
 :::note Publication
 This article was originally published by DocuxLab on the [Docusaurus Community](https://community.docusaurus.io) and is republished here with new examples.
@@ -97,7 +109,7 @@ This article was originally published by DocuxLab on the [Docusaurus Community](
 
 Think of this component as the container of all card parts
 
-First we will create the master folder in:  `\src\components\Card\`. Next we will start by creating a new component called Card. It will be the container component of our different parts to come. Also this will give the possibility to manage className and style for each part.
+First we will create the master folder in: `\src\components\Card\`. Next we will start by creating a new component called Card. It will be the container component of our different parts to come. Also this will give the possibility to manage className and style for each part.
 
 The component will accept the following props:
 
@@ -109,25 +121,23 @@ Creating the file and adding the source code for the component.
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='\src\components\Card\index.js'
-import React, {CSSProperties} from 'react'; // CSSProperties allows inline styling with better type checking.
-import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
+import React, { CSSProperties } from "react"; // CSSProperties allows inline styling with better type checking.
+import clsx from "clsx"; // clsx helps manage conditional className names in a clean and concise manner.
 
 const Card = ({
-    className, // classNamees for the container card
-    style, // Custom styles for the container card
-    children, // for include others parts in
-    shadow, // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
+  className, // classNamees for the container card
+  style, // Custom styles for the container card
+  children, // for include others parts in
+  shadow, // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
 }) => {
-    const cardShadow = shadow
-        ? `item shadow--${shadow}`
-        : '';
-    return (
-        <div className="card-demo">
-            <div className={clsx("card", className, cardShadow)} style={style}>
-                {children}
-            </div>
-        </div>
-    );
+  const cardShadow = shadow ? `item shadow--${shadow}` : "";
+  return (
+    <div className="card-demo">
+      <div className={clsx("card", className, cardShadow)} style={style}>
+        {children}
+      </div>
+    </div>
+  );
 };
 
 export default Card;
@@ -138,117 +148,103 @@ export default Card;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
 ```tsx title='\src\components\Card\index.tsx'
-import React, {CSSProperties, ReactNode} from 'react'; // Import types for props
-import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
+import React, { CSSProperties, ReactNode } from "react"; // Import types for props
+import clsx from "clsx"; // clsx helps manage conditional className names in a clean and concise manner.
 
 // Define an interface for the component props
 interface CardProps {
-    className?: string; // Optional className names for the container card
-    style?: CSSProperties; // Optional custom styles for the container card
-    children: ReactNode; // Content to be included within the card
-    shadow?: 'lw' | 'md' | 'tl'; // Optional shadow levels: low (lw), medium (md), top-level (tl)
+  className?: string; // Optional className names for the container card
+  style?: CSSProperties; // Optional custom styles for the container card
+  children: ReactNode; // Content to be included within the card
+  shadow?: "lw" | "md" | "tl"; // Optional shadow levels: low (lw), medium (md), top-level (tl)
 }
 
 // Build the card component with the specified props
 const Card: React.FC<CardProps> = ({
-    className, // classNamees for the container card
-    style, // Custom styles for the container card
-    children, // Content to be included within the card
-    shadow, // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
+  className, // classNamees for the container card
+  style, // Custom styles for the container card
+  children, // Content to be included within the card
+  shadow, // for add shadow under your card Shadow levels: low (lw), medium (md), top-level (tl)
 }) => {
-    const cardShadow = shadow
-        ? `item shadow--${shadow}`
-        : '';
-    return (<div className = "card-demo" > <div className = {
-        clsx("card", className, cardShadow)
-    }
-    style = {
-        style
-    } > {
-        children
-    }</div></div>);
+  const cardShadow = shadow ? `item shadow--${shadow}` : "";
+  return (
+    <div className="card-demo">
+      {" "}
+      <div className={clsx("card", className, cardShadow)} style={style}>
+        {" "}
+        {children}
+      </div>
+    </div>
+  );
 };
 
 export default Card;
 ```
+
 </TabItem>
 
 </Tabs>
 
 ## Creating the CardHeader component
+
 Think of this component as the header of your future cards. Create the file and add the source code for the component. The component will accept the following props:
 
 - `textAlign`: The option for text alignment `left` `right` `center` `justify`
 - `variant`: (optional)This will be used to apply different colors to the text based on the Infima CSS utility classNamees. The default value is primary.
 - `italic`: Default value is false, it's for italic text render
-- `noDecoration`: Default value is false, it's for delete text decoration 
-- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen.  It's truncated by adding &hellip; 
+- `noDecoration`: Default value is false, it's for delete text decoration
+- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text`
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding &hellip;
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='\src\components\Card\CardHeader\index.js'
-import React, {CSSProperties} from 'react'; // CSSProperties allows inline styling with better type checking.
-import clsx from 'clsx'; // clsx helps manage conditional className names in a clean and concise manner.
-import styles from '../styles.module.css';
+import React, { CSSProperties } from "react"; // CSSProperties allows inline styling with better type checking.
+import clsx from "clsx"; // clsx helps manage conditional className names in a clean and concise manner.
+import styles from "../styles.module.css";
 
 const CardHeader = ({
-    className, // classNamees for the container card
-    style, // Custom styles for the container card
-    children, // Content to be included within the card
-    textAlign,
-    variant,
-    italic = false,
-    noDecoration = false,
-    transform,
-    truncate = false,
-    weight
+  className, // classNamees for the container card
+  style, // Custom styles for the container card
+  children, // Content to be included within the card
+  textAlign,
+  variant,
+  italic = false,
+  noDecoration = false,
+  transform,
+  truncate = false,
+  weight,
 }) => {
-    const text = textAlign
-        ? `text--${textAlign}`
-        : '';
-    const textColor = variant
-        ? `text--${variant}`
-        : '';
-    const textItalic = italic
-        ? 'text--italic'
-        : '';
-    const textDecoration = noDecoration
-        ? 'text-no-decoration'
-        : '';
-    const textType = transform
-        ? `text--${transform}`
-        : '';
-    const textTruncate = truncate
-        ? styles.truncate
-        : '';
-    const textWeight = weight
-        ? `text--${weight}`
-        : '';
-    return (
-        <div
-            className={clsx(
-                'card__header',
-                className,
-                text,
-                textType,
-                textColor,
-                textItalic,
-                textDecoration,
-                textTruncate,
-                textWeight
-            )}
-            style={style}>
-
-            {children}
-        </div>
-    );
-}
+  const text = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textTruncate = truncate ? styles.truncate : "";
+  const textWeight = weight ? `text--${weight}` : "";
+  return (
+    <div
+      className={clsx(
+        "card__header",
+        className,
+        text,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textTruncate,
+        textWeight
+      )}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default CardHeader;
-
 ```
 
 </TabItem>
@@ -256,160 +252,131 @@ export default CardHeader;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
 ```tsx title='\src\components\Card\CardHeader\index.tsx'
-import React, {CSSProperties, ReactNode} from 'react';
-import clsx from 'clsx';
-import styles from '../styles.module.css';
+import React, { CSSProperties, ReactNode } from "react";
+import clsx from "clsx";
+import styles from "../styles.module.css";
 
 interface CardHeaderProps {
-    className?: string;
-    style?: CSSProperties;
-    children: ReactNode;
-    textAlign?: string;
-    variant?: string;
-    italic?: boolean;
-    noDecoration?: boolean;
-    transform?: string;
-    truncate?: boolean;
-    weight?: string;
+  className?: string;
+  style?: CSSProperties;
+  children: ReactNode;
+  textAlign?: string;
+  variant?: string;
+  italic?: boolean;
+  noDecoration?: boolean;
+  transform?: string;
+  truncate?: boolean;
+  weight?: string;
 }
 
 const CardHeader: React.FC<CardHeaderProps> = ({
-    className,
-    style,
-    children,
-    textAlign,
-    variant,
-    italic = false,
-    noDecoration = false,
-    transform,
-    truncate = false,
-    weight
+  className,
+  style,
+  children,
+  textAlign,
+  variant,
+  italic = false,
+  noDecoration = false,
+  transform,
+  truncate = false,
+  weight,
 }) => {
-    const text = textAlign
-        ? `text--${textAlign}`
-        : '';
-    const textColor = variant
-        ? `text--${variant}`
-        : '';
-    const textItalic = italic
-        ? 'text--italic'
-        : '';
-    const textDecoration = noDecoration
-        ? 'text-no-decoration'
-        : '';
-    const textType = transform
-        ? `text--${transform}`
-        : '';
-    const textTruncate = truncate
-        ? styles.truncate
-        : '';
-    const textWeight = weight
-        ? `text--${weight}`
-        : '';
+  const text = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textTruncate = truncate ? styles.truncate : "";
+  const textWeight = weight ? `text--${weight}` : "";
 
-    return (<div className = {
-        clsx(
-            'card__header',
-            className,
-            text,
-            textType,
-            textColor,
-            textItalic,
-            textDecoration,
-            textTruncate,
-            textWeight
-        )
-    }
-    style = {
-        style
-    } > {
-        children
-    }</div>);
+  return (
+    <div
+      className={clsx(
+        "card__header",
+        className,
+        text,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textTruncate,
+        textWeight
+      )}
+      style={style}
+    >
+      {" "}
+      {children}
+    </div>
+  );
 };
 
 export default CardHeader;
-
-
 ```
+
 </TabItem>
 
 </Tabs>
 
 ## Creating the CardBody component
+
 Think of this component as the body of your futurs cards. Creating the file and adding the source code for the component.The component will accept the following props:
 
 - `textAlign`: The option for text alignment `left` `right` `center` `justify`
 - `variant`: (optional)This will be used to apply different colors to the text based on the Infima CSS utility classNamees. The default value is primary.
 - `italic`: Default value is false, it's for italic text render
-- `noDecoration`: Default value is false, it's for delete text decoration 
-- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen.  It's truncated by adding &hellip; 
+- `noDecoration`: Default value is false, it's for delete text decoration
+- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text`
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding &hellip;
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
-
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='\src\components\Card\CardBody\index.js'
-import React, {CSSProperties} from 'react';
-import clsx from 'clsx';
-import styles from '../styles.module.css';
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
+import styles from "../styles.module.css";
 
 const CardBody = ({
-    className, // classNamees for the container card
-    style, // Custom styles for the container card
-    children, // Content to be included within the card
-    textAlign,
-    variant,
-    italic = false,
-    noDecoration = false,
-    transform,
-    truncate = false,
-    weight
+  className, // classNamees for the container card
+  style, // Custom styles for the container card
+  children, // Content to be included within the card
+  textAlign,
+  variant,
+  italic = false,
+  noDecoration = false,
+  transform,
+  truncate = false,
+  weight,
 }) => {
-    const text = textAlign
-        ? `text--${textAlign}`
-        : '';
-    const textColor = variant
-        ? `text--${variant}`
-        : '';
-    const textItalic = italic
-        ? 'text--italic'
-        : '';
-    const textDecoration = noDecoration
-        ? 'text-no-decoration'
-        : '';
-    const textType = transform
-        ? `text--${transform}`
-        : '';
-    const textTruncate = truncate
-        ? styles.truncate
-        : '';
-    const textWeight = weight
-        ? `text--${weight}`
-        : '';
-    return (
-        <div
-            className={clsx(
-                'card__body',
-                className,
-                text,
-                textType,
-                textColor,
-                textItalic,
-                textDecoration,
-                textTruncate,
-                textWeight
-            )}
-            style={style}>
-            {children}
-        </div>
-    );
-}
+  const text = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textTruncate = truncate ? styles.truncate : "";
+  const textWeight = weight ? `text--${weight}` : "";
+  return (
+    <div
+      className={clsx(
+        "card__body",
+        className,
+        text,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textTruncate,
+        textWeight
+      )}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default CardBody;
-
-
 ```
 
 </TabItem>
@@ -417,119 +384,99 @@ export default CardBody;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
 ```tsx title='\src\components\Card\CardBody\index.tsx'
-import React, {CSSProperties, ReactNode} from 'react';
-import clsx from 'clsx';
-import styles from '../styles.module.css';
+import React, { CSSProperties, ReactNode } from "react";
+import clsx from "clsx";
+import styles from "../styles.module.css";
 
 interface CardBodyProps {
-    className?: string;
-    style?: CSSProperties;
-    children: ReactNode;
-    textAlign?: string;
-    variant?: string;
-    italic?: boolean;
-    noDecoration?: boolean;
-    transform?: string;
-    truncate?: boolean;
-    weight?: string;
+  className?: string;
+  style?: CSSProperties;
+  children: ReactNode;
+  textAlign?: string;
+  variant?: string;
+  italic?: boolean;
+  noDecoration?: boolean;
+  transform?: string;
+  truncate?: boolean;
+  weight?: string;
 }
 
 const CardBody: React.FC<CardBodyProps> = ({
-    className,
-    style,
-    children,
-    textAlign,
-    variant,
-    italic = false,
-    noDecoration = false,
-    transform,
-    truncate = false,
-    weight
+  className,
+  style,
+  children,
+  textAlign,
+  variant,
+  italic = false,
+  noDecoration = false,
+  transform,
+  truncate = false,
+  weight,
 }) => {
-    const text = textAlign
-        ? `text--${textAlign}`
-        : '';
-    const textColor = variant
-        ? `text--${variant}`
-        : '';
-    const textItalic = italic
-        ? 'text--italic'
-        : '';
-    const textDecoration = noDecoration
-        ? 'text-no-decoration'
-        : '';
-    const textType = transform
-        ? `text--${transform}`
-        : '';
-    const textTruncate = truncate
-        ? styles.truncate
-        : '';
-    const textWeight = weight
-        ? `text--${weight}`
-        : '';
+  const text = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textTruncate = truncate ? styles.truncate : "";
+  const textWeight = weight ? `text--${weight}` : "";
 
-    return (<div className = {
-        clsx(
-            'card__body',
-            className,
-            text,
-            textType,
-            textColor,
-            textItalic,
-            textDecoration,
-            textTruncate,
-            textWeight
-        )
-    }
-    style = {
-        style
-    } > {
-        children
-    }</div>);
+  return (
+    <div
+      className={clsx(
+        "card__body",
+        className,
+        text,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textTruncate,
+        textWeight
+      )}
+      style={style}
+    >
+      {" "}
+      {children}
+    </div>
+  );
 };
 
 export default CardBody;
-
-
-
 ```
+
 </TabItem>
 
 </Tabs>
 
-
 ## Creating the CardImage component
+
 Think of this component as the image cover of your futurs cards. Creating the file and adding the source code for the component.
-This component is optionnal, you can use image html and add ```className={clsx("card__image")}```
+This component is optionnal, you can use image html and add `className={clsx("card__image")}`
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='\src\components\Card\CardImage\index.js'
-import React, {CSSProperties} from 'react';
-import clsx from 'clsx';
-import useBaseUrl from '@docusaurus/useBaseUrl'; // Import the useBaseUrl function from Docusaurus
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
+import useBaseUrl from "@docusaurus/useBaseUrl"; // Import the useBaseUrl function from Docusaurus
 
-const CardImage = ({className, style, cardImageUrl, alt, title}) => {
+const CardImage = ({ className, style, cardImageUrl, alt, title }) => {
+  const generatedCardImageUrl = useBaseUrl(cardImageUrl);
 
-    const generatedCardImageUrl = useBaseUrl(cardImageUrl);
-
-    return (
-
-        <img
-            className={clsx("card__image", className)}
-            style={style}
-            src={generatedCardImageUrl}
-            alt={alt}
-            title={title}/>
-
-    );
-}
+  return (
+    <img
+      className={clsx("card__image", className)}
+      style={style}
+      src={generatedCardImageUrl}
+      alt={alt}
+      title={title}
+    />
+  );
+};
 
 export default CardImage;
-
-
-
 ```
 
 </TabItem>
@@ -537,132 +484,105 @@ export default CardImage;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
 ```tsx title='\src\components\Card\CardImage\index.tsx'
-import React, {CSSProperties} from 'react';
-import clsx from 'clsx';
-import useBaseUrl from '@docusaurus/useBaseUrl';
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 interface CardImageProps {
-    className?: string;
-    style?: CSSProperties;
-    cardImageUrl: string;
-    alt: string;
-    title: string;
+  className?: string;
+  style?: CSSProperties;
+  cardImageUrl: string;
+  alt: string;
+  title: string;
 }
 
-const CardImage: React.FC<CardImageProps> = (
-    {className, style, cardImageUrl, alt, title}
-) => {
-    const generatedCardImageUrl = useBaseUrl(cardImageUrl);
+const CardImage: React.FC<CardImageProps> = ({
+  className,
+  style,
+  cardImageUrl,
+  alt,
+  title,
+}) => {
+  const generatedCardImageUrl = useBaseUrl(cardImageUrl);
 
-    return (< img className = {
-        clsx("card__image", className)
-    }
-    style = {
-        style
-    }
-    src = {
-        generatedCardImageUrl
-    }
-    alt = {
-        alt
-    }
-    title = {
-        title
-    } />);
+  return (
+    <img
+      className={clsx("card__image", className)}
+      style={style}
+      src={generatedCardImageUrl}
+      alt={alt}
+      title={title}
+    />
+  );
 };
 
 export default CardImage;
-
-
 ```
+
 </TabItem>
 
 </Tabs>
 
-
-
-
-
-
-
-
-
-
 ## Creating the CardFooter component
+
 Think of this component as the Footer of your futurs cards. Creating the file and adding the source code for the component.The component will accept the following props:
 
 - `textAlign`: The option for text alignment `left` `right` `center` `justify`
 - `variant`: (optional)This will be used to apply different colors to the text based on the Infima CSS utility classNamees. The default value is primary.
 - `italic`: Default value is false, it's for italic text render
-- `noDecoration`: Default value is false, it's for delete text decoration 
-- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text` 
-- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen.  It's truncated by adding &hellip; 
+- `noDecoration`: Default value is false, it's for delete text decoration
+- `transform`: The option for transform text to `UPPERCASE TEXT` `lowercase text` or `Capitalize Text`
+- `truncate`: The option is for very long text that will be truncated if there is not enough space to display it in a single line on the screen. It's truncated by adding &hellip;
 - `weight`: The option for text weight `Bold` `Semibold` `Normal` `Light`
-
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='\src\components\Card\CardFooter\index.js'
-import React, {CSSProperties} from 'react';
-import clsx from 'clsx';
-import styles from '../styles.module.css';
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
+import styles from "../styles.module.css";
 
 const CardFooter = ({
-    className,
-    style,
-    children,
-    textAlign,
-    variant,
-    italic = false,
-    noDecoration = false,
-    transform,
-    truncate = false,
-    weight
+  className,
+  style,
+  children,
+  textAlign,
+  variant,
+  italic = false,
+  noDecoration = false,
+  transform,
+  truncate = false,
+  weight,
 }) => {
-    const text = textAlign
-        ? `text--${textAlign}`
-        : '';
-    const textColor = variant
-        ? `text--${variant}`
-        : '';
-    const textItalic = italic
-        ? 'text--italic'
-        : '';
-    const textDecoration = noDecoration
-        ? 'text-no-decoration'
-        : '';
-    const textType = transform
-        ? `text--${transform}`
-        : '';
-    const textTruncate = truncate
-        ? styles.truncate
-        : '';
-    const textWeight = weight
-        ? `text--${weight}`
-        : '';
-    return (
-        <div
-            className={clsx(
-                'card__footer',
-                className,
-                text,
-                textType,
-                textColor,
-                textItalic,
-                textDecoration,
-                textTruncate,
-                textWeight
-            )}
-            style={style}>
-            {children}
-        </div>
-    );
-}
+  const text = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textTruncate = truncate ? styles.truncate : "";
+  const textWeight = weight ? `text--${weight}` : "";
+  return (
+    <div
+      className={clsx(
+        "card__footer",
+        className,
+        text,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textTruncate,
+        textWeight
+      )}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default CardFooter;
-
-
 ```
 
 </TabItem>
@@ -670,92 +590,74 @@ export default CardFooter;
 <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
 
 ```tsx title='\src\components\Card\CardFooter\index.tsx'
-import React, {CSSProperties, ReactNode} from 'react';
-import clsx from 'clsx';
-import styles from '../styles.module.css';
+import React, { CSSProperties, ReactNode } from "react";
+import clsx from "clsx";
+import styles from "../styles.module.css";
 
 interface CardFooterProps {
-    className?: string;
-    style?: CSSProperties;
-    children: ReactNode;
-    textAlign?: string;
-    variant?: string;
-    italic?: boolean;
-    noDecoration?: boolean;
-    transform?: string;
-    truncate?: boolean;
-    weight?: string;
+  className?: string;
+  style?: CSSProperties;
+  children: ReactNode;
+  textAlign?: string;
+  variant?: string;
+  italic?: boolean;
+  noDecoration?: boolean;
+  transform?: string;
+  truncate?: boolean;
+  weight?: string;
 }
 
 const CardFooter: React.FC<CardFooterProps> = ({
-    className,
-    style,
-    children,
-    textAlign,
-    variant,
-    italic = false,
-    noDecoration = false,
-    transform,
-    truncate = false,
-    weight
+  className,
+  style,
+  children,
+  textAlign,
+  variant,
+  italic = false,
+  noDecoration = false,
+  transform,
+  truncate = false,
+  weight,
 }) => {
-    const text = textAlign
-        ? `text--${textAlign}`
-        : '';
-    const textColor = variant
-        ? `text--${variant}`
-        : '';
-    const textItalic = italic
-        ? 'text--italic'
-        : '';
-    const textDecoration = noDecoration
-        ? 'text-no-decoration'
-        : '';
-    const textType = transform
-        ? `text--${transform}`
-        : '';
-    const textTruncate = truncate
-        ? styles.truncate
-        : '';
-    const textWeight = weight
-        ? `text--${weight}`
-        : '';
+  const text = textAlign ? `text--${textAlign}` : "";
+  const textColor = variant ? `text--${variant}` : "";
+  const textItalic = italic ? "text--italic" : "";
+  const textDecoration = noDecoration ? "text-no-decoration" : "";
+  const textType = transform ? `text--${transform}` : "";
+  const textTruncate = truncate ? styles.truncate : "";
+  const textWeight = weight ? `text--${weight}` : "";
 
-    return (<div className = {
-        clsx(
-            'card__footer',
-            className,
-            text,
-            textType,
-            textColor,
-            textItalic,
-            textDecoration,
-            textTruncate,
-            textWeight
-        )
-    }
-    style = {
-        style
-    } > {
-        children
-    }</div>);
+  return (
+    <div
+      className={clsx(
+        "card__footer",
+        className,
+        text,
+        textType,
+        textColor,
+        textItalic,
+        textDecoration,
+        textTruncate,
+        textWeight
+      )}
+      style={style}
+    >
+      {" "}
+      {children}
+    </div>
+  );
 };
 
 export default CardFooter;
-
-
-
-
 ```
+
 </TabItem>
 
 </Tabs>
 
-
-
 ## MDX Component Scope
-To follow the Docusaurus documentation, we create a theme folder that will host the `MDXComponents` file. This gives us `src\theme\MDXComponents.*`. You may already have a `src\theme` folder or an `MDXComponents` file if so - merge the changes described here with yours.
 
+To follow the Docusaurus documentation, we create a theme folder that will host the `MDXComponents` file. This gives us `src\theme\MDXComponents.*`. You may already have a `src\theme` folder or an `MDXComponents` file if so - merge the changes described here with yours.
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
@@ -784,15 +686,15 @@ export default {
   <TabItem value="ts" label={<><LogoIcon name="typescript-icon" size='24' /> </>}>
     ```tsx title="src\theme\MDXComponents.tsx"
 
-import React from 'react';
+import React from "react";
 // Importing the original mapper + our components according to the Docusaurus
 // doc
-import MDXComponents from '@theme-original/MDXComponents';
-import Card from '@site/src/components/Card/Card';
-import CardBody from '@site/src/components/Card/CardBody';
-import CardFooter from '@site/src/components/Card/CardFooter';
-import CardHeader from '@site/src/components/Card/CardHeader';
-import CardImage from '@site/src/components/Card/CardImage';
+import MDXComponents from "@theme-original/MDXComponents";
+import Card from "@site/src/components/Card/Card";
+import CardBody from "@site/src/components/Card/CardBody";
+import CardFooter from "@site/src/components/Card/CardFooter";
+import CardHeader from "@site/src/components/Card/CardHeader";
+import CardImage from "@site/src/components/Card/CardImage";
 
 export default {
     // Reusing the default mapping
@@ -807,7 +709,6 @@ export default {
   </TabItem>
 </Tabs>
 
-
 ## Using the Cards Component in an MDX File
 
 ### Basic card
@@ -821,26 +722,25 @@ export default {
       <h3>Lorem Ipsum</h3>
     </CardHeader>
 
-  <CardBody> 
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Quis ipsum
-  suspendisse ultrices gravida.
-  </CardBody> 
-
+<CardBody>
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+  incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices
+  gravida.
+</CardBody>
 
   <CardFooter>
 
-    <button className="button button--secondary button--block">See All</button> 
+    <button className="button button--secondary button--block">See All</button>
 
-  </CardFooter> 
+  </CardFooter>
 
   </Card>
 
 </div>
     </div>
 
-    
     <div className="col col--6">
+
 <div className="">
   ```html
   <Card shadow='tl'>
@@ -865,10 +765,6 @@ export default {
 
 </div>
     </div>
-
-
-
-
 
 ### Feed card
 
@@ -897,16 +793,19 @@ export default {
 Welcome to DocuxLab, your space for tech discoveries, development tutorials, and tips to enhance your digital projects. Here, we break down code, explore web trends, and share practical resources for all tech enthusiasts.
 
 Explore our articles, guides, and interactive demos designed to help you stay at the forefront of innovation. Whether you are a beginner developer or an experienced pro, DocuxLab is here to inspire and support you in your digital projects.
- </CardBody> 
 
+ </CardBody>
 
-<CardFooter style={{ backgroundColor: '#205d3b' , color:'black'}} className='text--center'> 
-<div className="button-group button-group--block">
-        <button className="button button--secondary button--sm">Like</button>
-        <button className="button button--secondary button--sm">Comment</button>
-        <button className="button button--secondary button--sm">Share</button>
-      </div>
-</CardFooter> 
+<CardFooter
+  style={{ backgroundColor: "#205d3b", color: "black" }}
+  className="text--center"
+>
+  <div className="button-group button-group--block">
+    <button className="button button--secondary button--sm">Like</button>
+    <button className="button button--secondary button--sm">Comment</button>
+    <button className="button button--secondary button--sm">Share</button>
+  </div>
+</CardFooter>
 
 </Card>
 
@@ -962,10 +861,8 @@ Explore our articles, guides, and interactive demos designed to help you stay at
 </div>
     </div>
 
+### Mega Feed card
 
-
-
-### Mega Feed card 
 <div className="container">
 <div className="row padding-bottom--xl">
 <div className="col col--6">
@@ -986,25 +883,29 @@ Explore our articles, guides, and interactive demos designed to help you stay at
 </div>
  </CardHeader>
 
- <CardImage style={{ backgroundColor: 'rgb(33 126 209)' , color:'black'}} cardImageUrl="/img/learn-docker-in-avonture-blog.webp" />
+<CardImage
+  style={{ backgroundColor: "rgb(33 126 209)", color: "black" }}
+  cardImageUrl="/img/learn-docker-in-avonture-blog.webp"
+/>
 
-<CardBody style={{ backgroundColor: '#fefacb' , color:'#8f600b'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase'> 
+<CardBody style={{ backgroundColor: '#fefacb' , color:'#8f600b'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase'>
 
- <h3>New Discovery</h3>
+<h3>New Discovery</h3>
 
 Amazing discovery! I've found an incredible website: [avonture.be](https://www.avonture.be/). This comprehensive resource offers in-depth tutorials, practical examples, and expert insights into various development topics.
 
- </CardBody>  
+ </CardBody>
 
-
-
-<CardFooter style={{ backgroundColor: '#2887bf' , color:'black'}} className='text--center'> 
-<div className="button-group button-group--block">
-        <button className="button button--secondary button--sm">Like</button>
-        <button className="button button--secondary button--sm">Comment</button>
-        <button className="button button--secondary button--sm">Share</button>
-      </div>
-</CardFooter> 
+<CardFooter
+  style={{ backgroundColor: "#2887bf", color: "black" }}
+  className="text--center"
+>
+  <div className="button-group button-group--block">
+    <button className="button button--secondary button--sm">Like</button>
+    <button className="button button--secondary button--sm">Comment</button>
+    <button className="button button--secondary button--sm">Share</button>
+  </div>
+</CardFooter>
 
 </Card>
 
@@ -1061,7 +962,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 
 </Card>
 
-```
+````
 </div>
     </div>
 </div>
@@ -1069,7 +970,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 
 
 
-### Photo card 
+### Photo card
 <div className="container">
 <div className="row padding-bottom--xl">
 <div className="col col--6">
@@ -1078,19 +979,19 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 
  <CardImage cardImageUrl="/img/docux.webp" />
 
-<CardFooter style={{ backgroundColor: '#07ac2aff' , color:'#eeff00ff'}} className='text--center'> 
+<CardFooter style={{ backgroundColor: '#07ac2aff' , color:'#eeff00ff'}} className='text--center'>
 <div className="button-group button-group--block">
   <button className="button button--primary button--sm">Like</button>
   <button className="button button--secondary button--sm">Comment</button>
   <button className="button button--info button--sm">Share</button>
 </div>
-</CardFooter> 
+</CardFooter>
 
 </Card>
 
 </div>
     </div>
-    
+
     <div className="col col--6">
 <div className="">
   ```html
@@ -1109,34 +1010,37 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
     </CardFooter>
 
 </Card>
-```
-</div>
-    </div>
-</div>
-    </div>
+````
 
+</div>
+    </div>
+</div>
+    </div>
 
 ### Photo card Avatar
+
 <div className="container">
 <div className="row padding-bottom--xl">
 <div className="col col--6">
 <div className="">
   <Card className='margin-bottom--lg'>
 
- <CardImage cardImageUrl="/img/learn-docusaurus-and-react.webp" />
+<CardImage cardImageUrl="/img/learn-docusaurus-and-react.webp" />
 
-<CardFooter style={{ backgroundColor: 'white' , color:'black'}} className='text--center'> 
-<div className="avatar">
-  <img
-    className="avatar__photo avatar__photo--xs" 
-    src="https://avatars.githubusercontent.com/u/97809069?v=4" />
-  <div className="avatar__intro">
-    <div className="avatar__name">Learn Docusaurus</div>
-    
+<CardFooter
+  style={{ backgroundColor: "white", color: "black" }}
+  className="text--center"
+>
+  <div className="avatar">
+    <img
+      className="avatar__photo avatar__photo--xs"
+      src="https://avatars.githubusercontent.com/u/97809069?v=4"
+    />
+    <div className="avatar__intro">
+      <div className="avatar__name">Learn Docusaurus</div>
+    </div>
   </div>
-</div>
- 
-</CardFooter> 
+</CardFooter>
 
 </Card>
 
@@ -1166,7 +1070,7 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 
 </Card>
 
-```
+````
 </div>
     </div>
 </div>
@@ -1194,10 +1098,10 @@ Amazing discovery! I've found an incredible website: [avonture.be](https://www.a
 <div className="">
 
   <Card shadow='tl margin-bottom--lg'>
-  <CardBody style={{ backgroundColor: 'white' , color:'black'}} className="padding-vert--md "Transform= 'uppercase'> 
+  <CardBody style={{ backgroundColor: 'white' , color:'black'}} className="padding-vert--md "Transform= 'uppercase'>
 The Infima CSS  framework provides a set of utility classNames that can be used to style card in Docusaurus. This article will cover how to create a reusable card component for your Docusaurus site that can be customized with different colors and sizes.
- </CardBody> 
-  <CardFooter style={{ backgroundColor: '#7a9f3d' , color:'#d7de3d'}} > 
+ </CardBody>
+  <CardFooter style={{ backgroundColor: '#7a9f3d' , color:'#d7de3d'}} >
 
 <div className="avatar padding-top--md">
         <img
@@ -1210,7 +1114,7 @@ The Infima CSS  framework provides a set of utility classNames that can be used 
           </small>
         </div>
 </div>
-  </CardFooter> 
+  </CardFooter>
   </Card>
 
 </div>
@@ -1241,19 +1145,16 @@ The Infima CSS  framework provides a set of utility classNames that can be used 
         </div>
     </CardFooter>
 </Card>
-```
+````
+
 </div>
     </div>
 </div>
     </div>
 </div>
     </div>
-
-
-
 
 ### Multi demo card
-
 
 <div className="container">
 <div className="row padding-bottom--xl">
@@ -1275,12 +1176,20 @@ The Infima CSS  framework provides a set of utility classNames that can be used 
 </div>
  </CardHeader>
 
- <CardImage style={{ backgroundColor: '#87dfb8' , color:'#2d2f4eff'}} cardImageUrl="/img/docux-and-christophe-learn-docusaurus.webp" />
+<CardImage
+  style={{ backgroundColor: "#87dfb8", color: "#2d2f4eff" }}
+  cardImageUrl="/img/docux-and-christophe-learn-docusaurus.webp"
+/>
 
-<CardBody style={{ backgroundColor: '#87dfb8' , color:'#2d2f4eff'}} className="padding-vert--md" textAlign='right' Transform= 'uppercase' > 
- <h3>DocuxLab</h3>
-A must-visit site for developers looking to expand their knowledge and skills!
- </CardBody>  
+<CardBody
+  style={{ backgroundColor: "#87dfb8", color: "#2d2f4eff" }}
+  className="padding-vert--md"
+  textAlign="right"
+  Transform="uppercase"
+>
+  <h3>DocuxLab</h3>A must-visit site for developers looking to expand their
+  knowledge and skills!
+</CardBody>
 
 </Card>
 
@@ -1305,34 +1214,43 @@ A must-visit site for developers looking to expand their knowledge and skills!
 </div>
  </CardHeader>
 
- <CardImage style={{ backgroundColor: '#7a9f3d' , color:'#d7de3d'}} cardImageUrl="/img/docux-and-christophe-learn-docusaurus.webp" />
+<CardImage
+  style={{ backgroundColor: "#7a9f3d", color: "#d7de3d" }}
+  cardImageUrl="/img/docux-and-christophe-learn-docusaurus.webp"
+/>
 
-<CardBody style={{ backgroundColor: '#d7de3d' , color:'#3d521cff'}} className="padding-vert--md" textAlign='justify' Transform= 'uppercase'> 
- 
- <h3 className='text--center'>DocuxLab</h3>
-A must-visit site for developers looking to expand their knowledge and skills!
- </CardBody>  
+<CardBody
+  style={{ backgroundColor: "#d7de3d", color: "#3d521cff" }}
+  className="padding-vert--md"
+  textAlign="justify"
+  Transform="uppercase"
+>
+  <h3 className="text--center">DocuxLab</h3>A must-visit site for developers
+  looking to expand their knowledge and skills!
+</CardBody>
 
 </Card>
-
 
 </div>
     </div>
 
       <div className="col col--6">
+
 <div className="">
   
   <Card className='margin-top--lg'>
 
-
- <CardImage style={{ backgroundColor: 'black' , color:'black'}}cardImageUrl="/img/card-component-docusaurus-infima.webp" />
+<CardImage
+  style={{ backgroundColor: "black", color: "black" }}
+  cardImageUrl="/img/card-component-docusaurus-infima.webp"
+/>
 
 <CardBody style={{ backgroundColor: '#40c43b' , color:'#3d521cff'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase'  > 
  <h3>Docux Card component</h3>
  
 Welcome to DocuxLab, your space for tech discoveries, development tutorials, and tips to enhance your digital projects. Here, we break down code, explore web trends, and share practical resources for all tech enthusiasts. Explore our articles, guides, and interactive demos designed to help you stay at the forefront of innovation. Whether you are a beginner developer or an experienced pro, DocuxLab is here to inspire and support you in your digital projects.
  </CardBody>  
- <CardFooter style={{  backgroundColor: '#d7de3d' , color:'#3d521cff'}} > 
+ <CardFooter style={{  backgroundColor: '#d7de3d' , color:'#3d521cff'}} >
 
 <div className="avatar padding-top--md">
         <img
@@ -1347,7 +1265,6 @@ Welcome to DocuxLab, your space for tech discoveries, development tutorials, and
 </div>
   </CardFooter> 
 </Card>
-
 
 </div>
     </div>
@@ -1400,39 +1317,47 @@ The truncate functionality uses CSS Modules to provide better encapsulation and 
 ### Detailed CSS Properties Explanation:
 
 #### 1. **`display: -webkit-box;`**
+
 - Enables the WebKit flexible box model (legacy syntax)
 - Required for `-webkit-line-clamp` to function properly
 - Foundation of the multi-line truncation system
 
 #### 2. **`-webkit-line-clamp: 3;` and `line-clamp: 3;`**
+
 - Limits display to **3 lines maximum**
 - `-webkit-line-clamp`: WebKit version (Safari, Chrome)
 - `line-clamp`: Modern standard version
 - Both included for cross-browser compatibility
 
 #### 3. **`-webkit-box-orient: vertical;`**
+
 - Defines the orientation of "boxes" vertically
 - Specifies that lines stack vertically
 - Mandatory when using `-webkit-line-clamp`
 
 #### 4. **`overflow: hidden;`**
+
 - Hides any content that exceeds the container
 - Essential for concealing additional lines (beyond the 3rd)
 
 #### 5. **`text-overflow: ellipsis;`**
+
 - Adds ellipsis (`...`) at the end of truncated text
 - Only works with `overflow: hidden`
 - Provides the visual "..." effect
 
 #### 6. **`margin-bottom: 0;`**
+
 - Removes bottom margin from paragraphs
 - Prevents unwanted spacing after truncated text
 
 #### 7. **`word-wrap: break-word;`**
+
 - Allows long words to break when necessary
 - Prevents words from overflowing container width
 
 #### 8. **`max-height: 4.5em;` and `line-height: 1.5em;`**
+
 - **Fallback** for browsers that don't support `line-clamp`
 - `4.5em = 3 lines × 1.5em` per line
 - Provides height limitation if `line-clamp` fails
@@ -1448,28 +1373,32 @@ The selector specifically targets **paragraphs `<p>`** inside elements with the 
 ### basic Example:
 
 ```jsx
-<CardBody truncate> {/* = <true> */}
-  <h3>Complete Title</h3>  {/* ← Not truncated */}
-  
-  <p>                      {/* ← Will be truncated */}
-    Very long text that will be automatically 
-    truncated after 3 lines with ellipsis 
-    at the end...
+<CardBody truncate>
+  {" "}
+  {/* = <true> */}
+  <h3>Complete Title</h3> {/* ← Not truncated */}
+  <p>
+    {" "}
+    {/* ← Will be truncated */}
+    Very long text that will be automatically truncated after 3 lines with
+    ellipsis at the end...
   </p>
 </CardBody>
 ```
 
 <Card className='margin-top--lg'>
 
-
- <CardImage style={{ backgroundColor: 'black' , color:'black'}}cardImageUrl="/img/card-component-docusaurus-infima.webp" />
+<CardImage
+  style={{ backgroundColor: "black", color: "black" }}
+  cardImageUrl="/img/card-component-docusaurus-infima.webp"
+/>
 
 <CardBody style={{ backgroundColor: '#40c43b' , color:'#3d521cff'}} className="padding-vert--md" textAlign='center' Transform= 'uppercase' truncate > 
  <h3>Docux Card component</h3>
  
 Welcome to DocuxLab, your space for tech discoveries, development tutorials, and tips to enhance your digital projects. Here, we break down code, explore web trends, and share practical resources for all tech enthusiasts. Explore our articles, guides, and interactive demos designed to help you stay at the forefront of innovation. Whether you are a beginner developer or an experienced pro, DocuxLab is here to inspire and support you in your digital projects.
  </CardBody>  
- <CardFooter style={{  backgroundColor: '#d7de3d' , color:'#3d521cff'}} > 
+ <CardFooter style={{  backgroundColor: '#d7de3d' , color:'#3d521cff'}} >
 
 <div className="avatar padding-top--md padding-bott--md">
         <img
@@ -1484,7 +1413,6 @@ Welcome to DocuxLab, your space for tech discoveries, development tutorials, and
 </div>
   </CardFooter> 
 </Card>
-
 
 This modern CSS technique provides effective multi-line truncation that works across different browsers and maintains clean, readable layouts in your card components.
 

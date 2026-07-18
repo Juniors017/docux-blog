@@ -33,7 +33,7 @@ Ce composant utilise le **swizzling** de Docusaurus en mode **wrapper** :
 
 ```javascript
 // Importation du composant original
-import BlogPostPage from '@theme-original/BlogPostPage';
+import BlogPostPage from "@theme-original/BlogPostPage";
 
 // Wrapper transparent qui conserve le comportement original
 export default function BlogPostPageWrapper(props) {
@@ -46,11 +46,12 @@ export default function BlogPostPageWrapper(props) {
 ### Imports et dépendances
 
 ```javascript
-import React from 'react';
-import BlogPostPage from '@theme-original/BlogPostPage';
+import React from "react";
+import BlogPostPage from "@theme-original/BlogPostPage";
 ```
 
 **Dépendances :**
+
 - `@theme-original/BlogPostPage` : Composant Docusaurus original
 - `React` : Framework JavaScript
 
@@ -64,6 +65,7 @@ export default function BlogPostPageWrapper(props) {
 ```
 
 **Comportement :**
+
 1. Reçoit toutes les props de Docusaurus
 2. Les transmet intégralement au composant original
 3. Retourne le rendu du composant original
@@ -122,13 +124,13 @@ props = {
             <h1>Titre de l'article</h1>
             <div>Métadonnées</div>
           </header>
-          
+
           <!-- Contenu de l'article -->
           <div>
             <!-- SerieBanner (si applicable, via BlogPostItem) -->
             <!-- Contenu Markdown transformé en HTML -->
           </div>
-          
+
           <!-- Footer avec tags, navigation -->
           <footer>
             <div>Tags</div>
@@ -136,7 +138,7 @@ props = {
           </footer>
         </article>
       </div>
-      
+
       <!-- Sidebar (TOC, etc.) -->
       <div class="col col--2">
         <!-- Table des matières -->
@@ -151,10 +153,10 @@ props = {
 ### 1. Ajout de composants personnalisés
 
 ```javascript
-import React from 'react';
-import BlogPostPage from '@theme-original/BlogPostPage';
-import RelatedPosts from '@site/src/components/RelatedPosts';
-import ShareButtons from '@site/src/components/ShareButtons';
+import React from "react";
+import BlogPostPage from "@theme-original/BlogPostPage";
+import RelatedPosts from "@site/src/components/RelatedPosts";
+import ShareButtons from "@site/src/components/ShareButtons";
 
 export default function BlogPostPageWrapper(props) {
   return (
@@ -162,7 +164,7 @@ export default function BlogPostPageWrapper(props) {
       <BlogPostPage {...props} />
       {/* Composants ajoutés après l'article */}
       <RelatedPosts metadata={props.content.metadata} />
-      <ShareButtons 
+      <ShareButtons
         title={props.content.metadata.title}
         url={window.location.href}
       />
@@ -174,9 +176,9 @@ export default function BlogPostPageWrapper(props) {
 ### 2. Modification du layout
 
 ```javascript
-import React from 'react';
-import BlogPostPage from '@theme-original/BlogPostPage';
-import CustomBreadcrumb from '@site/src/components/CustomBreadcrumb';
+import React from "react";
+import BlogPostPage from "@theme-original/BlogPostPage";
+import CustomBreadcrumb from "@site/src/components/CustomBreadcrumb";
 
 export default function BlogPostPageWrapper(props) {
   return (
@@ -191,19 +193,19 @@ export default function BlogPostPageWrapper(props) {
 ### 3. Analytics et tracking
 
 ```javascript
-import React, { useEffect } from 'react';
-import BlogPostPage from '@theme-original/BlogPostPage';
+import React, { useEffect } from "react";
+import BlogPostPage from "@theme-original/BlogPostPage";
 
 export default function BlogPostPageWrapper(props) {
   const { metadata } = props.content;
-  
+
   useEffect(() => {
     // Tracking de lecture d'article
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'blog_post_view', {
+    if (typeof gtag !== "undefined") {
+      gtag("event", "blog_post_view", {
         post_title: metadata.title,
         post_date: metadata.date,
-        post_tags: metadata.tags.map(tag => tag.label).join(',')
+        post_tags: metadata.tags.map((tag) => tag.label).join(","),
       });
     }
   }, [metadata]);
@@ -215,9 +217,9 @@ export default function BlogPostPageWrapper(props) {
 ### 4. Personnalisation conditionnelle
 
 ```javascript
-import React from 'react';
-import BlogPostPage from '@theme-original/BlogPostPage';
-import PremiumBanner from '@site/src/components/PremiumBanner';
+import React from "react";
+import BlogPostPage from "@theme-original/BlogPostPage";
+import PremiumBanner from "@site/src/components/PremiumBanner";
 
 export default function BlogPostPageWrapper(props) {
   const { frontMatter } = props.content.metadata;
@@ -257,17 +259,17 @@ Contenu Markdown final
 ### Hooks Docusaurus disponibles
 
 ```javascript
-import { useBlogPost } from '@docusaurus/plugin-content-blog/client';
-import { useDocsVersion } from '@docusaurus/theme-common/internal';
+import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
+import { useDocsVersion } from "@docusaurus/theme-common/internal";
 
 export default function BlogPostPageWrapper(props) {
   // Accès aux métadonnées de l'article
   const { metadata, isBlogPostPage } = useBlogPost();
-  
+
   // Exemple d'utilisation
-  console.log('Article title:', metadata.title);
-  console.log('Is blog post page:', isBlogPostPage); // toujours true ici
-  
+  console.log("Article title:", metadata.title);
+  console.log("Is blog post page:", isBlogPostPage); // toujours true ici
+
   return <BlogPostPage {...props} />;
 }
 ```
@@ -277,9 +279,9 @@ export default function BlogPostPageWrapper(props) {
 ### 1. Modification du layout de colonnes
 
 ```javascript
-import React from 'react';
-import BlogPostPage from '@theme-original/BlogPostPage';
-import { useBlogPost } from '@docusaurus/plugin-content-blog/client';
+import React from "react";
+import BlogPostPage from "@theme-original/BlogPostPage";
+import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
 
 export default function BlogPostPageWrapper(props) {
   const { metadata } = useBlogPost();
@@ -302,14 +304,14 @@ export default function BlogPostPageWrapper(props) {
 ### 2. Ajout de métadonnées dynamiques
 
 ```javascript
-import React from 'react';
-import Head from '@docusaurus/Head';
-import BlogPostPage from '@theme-original/BlogPostPage';
-import { useBlogPost } from '@docusaurus/plugin-content-blog/client';
+import React from "react";
+import Head from "@docusaurus/Head";
+import BlogPostPage from "@theme-original/BlogPostPage";
+import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
 
 export default function BlogPostPageWrapper(props) {
   const { metadata } = useBlogPost();
-  
+
   return (
     <>
       <Head>
@@ -318,9 +320,9 @@ export default function BlogPostPageWrapper(props) {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "BlogPosting",
-            "headline": metadata.title,
-            "datePublished": metadata.date,
-            "readingTime": `${metadata.readingTime} minutes`
+            headline: metadata.title,
+            datePublished: metadata.date,
+            readingTime: `${metadata.readingTime} minutes`,
           })}
         </script>
       </Head>
@@ -373,6 +375,7 @@ serie: "Guide React"
 ### Problèmes courants
 
 1. **Props undefined** :
+
    ```javascript
    // ✅ Vérification défensive
    export default function BlogPostPageWrapper(props) {
@@ -384,10 +387,11 @@ serie: "Guide React"
    ```
 
 2. **Hooks dans le mauvais contexte** :
+
    ```javascript
    // ✅ useBlogPost() fonctionne dans ce composant
    const { metadata } = useBlogPost();
-   
+
    // ❌ Certains hooks peuvent ne pas être disponibles
    // Vérifiez la documentation Docusaurus
    ```
@@ -399,6 +403,7 @@ serie: "Guide React"
 ## 📚 Roadmap et évolutions
 
 ### Version actuelle (1.0.0)
+
 - ✅ Wrapper transparent fonctionnel
 - ✅ Compatibilité totale avec Docusaurus
 - ✅ Structure prête pour extensions
@@ -414,6 +419,7 @@ serie: "Guide React"
 ### Propositions d'amélioration
 
 Vous pouvez proposer des améliorations en créant une issue avec :
+
 - Description de la fonctionnalité souhaitée
 - Cas d'usage concrets
 - Mockups ou exemples si applicable
@@ -435,4 +441,4 @@ Vous pouvez proposer des améliorations en créant une issue avec :
 ---
 
 **Développé par l'équipe Docux**  
-*Extension transparente du système de blog Docusaurus*
+_Extension transparente du système de blog Docusaurus_

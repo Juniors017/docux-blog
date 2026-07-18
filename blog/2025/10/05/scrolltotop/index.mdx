@@ -6,7 +6,7 @@ schemaTypes: ["HowTo", "BlogPosting"]
 image: "/img/scrolltotop.webp"
 authors: ["docux"]
 mainTag: ux
-tags: ["react","scroll","component"]
+tags: ["react", "scroll", "component"]
 date: 2025-10-06
 difficulty: "easy"
 totalTime: "PT20M"
@@ -16,7 +16,7 @@ inLanguage: "en"
 readingTime: "3 min"
 copyrightYear: 2025
 copyrightHolder: "Docux"
-keywords: ["docusaurus","scroll to top","react","component","ui","scroll"]
+keywords: ["docusaurus", "scroll to top", "react", "component", "ui", "scroll"]
 hide_table_of_contents: false
 series: "Design your site"
 blueSkyRecordKey: 3m2ivzblafs2h
@@ -30,6 +30,7 @@ blueSkyRecordKey: 3m2ivzblafs2h
 [![AI 25%](https://img.shields.io/badge/AI-25%-blue.svg)](https://github.com/Juniors017)
 
 ![](/img/scrolltotop.webp)
+
 </div>
 </center>
 
@@ -40,13 +41,13 @@ I created this component to add a fixed floating Back to Top button. It becomes 
 ## Overview
 
 Implemented features:
+
 - Appears after 300px scroll (hard‑coded condition)
 - Smooth scroll to top on click
 - CSS animation on click (`fly` + `@keyframes flyUp`)
 - Show/Hide using opacity + visibility
 - Scroll listener with cleanup in `useEffect`
 - Icon image can be swapped by changing the import
-
 
 ## Component Code
 
@@ -64,11 +65,16 @@ Implemented features:
 </Trees>
 
 ### Code
-<Snippet filename="src/components/ScrollToTopButton/index.js" source="src/components/ScrollToTopButton/index.js" />
 
+<Snippet
+  filename="src/components/ScrollToTopButton/index.js"
+  source="src/components/ScrollToTopButton/index.js"
+/>
 
-<Snippet filename="src/components/ScrollToTopButton/styles.module.css" source="src/components/ScrollToTopButton/styles.module.css" />
-
+<Snippet
+  filename="src/components/ScrollToTopButton/styles.module.css"
+  source="src/components/ScrollToTopButton/styles.module.css"
+/>
 
 ## Installation
 
@@ -76,8 +82,6 @@ Implemented features:
 2. Import the component in your global layout (or a specific page)
 3. Ensure the image import works (`/static/img/buttontop.webp`)
 4. (Optional) Replace the image with your own
-
-
 
 ### Configuration
 
@@ -92,18 +96,13 @@ Implemented features:
 2. Update the import in `index.js`:
 
 ```jsx
-import buttontop from '@site/static/img/your-image.webp'
+import buttontop from "@site/static/img/your-image.webp";
 ```
 
 3. The component uses it like:
 
 ```jsx
-<img
-  src={buttontop}
-  alt="Back to top"
-  width="30"
-  height="30"
-/>
+<img src={buttontop} alt="Back to top" width="30" height="30" />
 ```
 
 ### Edit styles
@@ -124,11 +123,15 @@ Open `styles.module.css` and adjust:
 ## Animations
 
 ### Show/Hide
+
 ```css
-transition: opacity 0.4s, visibility 0.4s;
+transition:
+  opacity 0.4s,
+  visibility 0.4s;
 ```
 
 ### Click animation (flyUp)
+
 ```css
 @keyframes flyUp {
   0% {
@@ -145,9 +148,9 @@ transition: opacity 0.4s, visibility 0.4s;
 ## Full example
 
 ```jsx
-import React from 'react';
-import Layout from '@theme-original/Layout';
-import ScrollToTopButton from '@site/src/components/ScrollToTopButton';
+import React from "react";
+import Layout from "@theme-original/Layout";
+import ScrollToTopButton from "@site/src/components/ScrollToTopButton";
 
 export default function LayoutWrapper(props) {
   return (
@@ -158,4 +161,3 @@ export default function LayoutWrapper(props) {
   );
 }
 ```
-

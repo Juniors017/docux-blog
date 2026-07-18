@@ -1,7 +1,6 @@
-Vous souhaitez intégrer [Simple Analytics](https://simpleanalytics.com/) à votre site Docusaurus et suivre efficacement la navigation des utilisateurs dans le contexte d'une application à page unique (SPA) ? 
+Vous souhaitez intégrer [Simple Analytics](https://simpleanalytics.com/) à votre site Docusaurus et suivre efficacement la navigation des utilisateurs dans le contexte d'une application à page unique (SPA) ?
 
 Ce guide vous explique comment créer un plugin local pour Docusaurus qui gère l'injection du script de suivi et le suivi des changements de page.
-
 
 Il gère l'injection du script principal ainsi que le suivi des changements de page dans le contexte d'une application à page unique (SPA), ce qui est essentiel pour Docusaurus.
 
@@ -21,26 +20,25 @@ Ce plugin est un plugin local. Il n'y a pas besoin de l'installer via npm ou yar
 ## Configuration
 
 Pour activer le plugin, ajoutez son chemin d'accès au tableau `plugins` dans votre fichier `docusaurus.config.js`.
-<Tabs> 
+<Tabs>
 <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='docusaurus.config.js'
-
 // filepath: docusaurus.config.js
 // ...existing code...
 const config = {
   // ...
   plugins: [
     // ... autres plugins
-    './plugins/simpleAnalytics',
+    "./plugins/simpleAnalytics",
   ],
   // ...
 };
 // ...existing code...
 ```
+
 </TabItem>
 </Tabs>
-
 
 ## Fonctionnement détaillé : `index.js` vs `sa-client.js`
 
@@ -61,16 +59,17 @@ function simpleAnalyticsPlugin(context, options) {
       return {
         headTags: [
           {
-            tagName: 'script',
+            tagName: "script",
             attributes: {
-              src: 'https://scripts.simpleanalyticscdn.com/latest.js',
+              src: "https://scripts.simpleanalyticscdn.com/latest.js",
               async: true,
-              'data-hostname': 'docuxlab.com', // Configuration pour localhost
+              "data-hostname": "docuxlab.com", // Configuration pour localhost
             },
           },
           {
-            tagName: 'noscript',
-            innerHTML: '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />',
+            tagName: "noscript",
+            innerHTML:
+              '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />',
           },
         ],
       };
@@ -80,10 +79,9 @@ function simpleAnalyticsPlugin(context, options) {
 
 module.exports = simpleAnalyticsPlugin;
 ```
+
 </TabItem>
 </Tabs>
-
-
 
 Son rôle est de s'intégrer au processus de construction de Docusaurus :
 
@@ -94,6 +92,7 @@ Son rôle est de s'intégrer au processus de construction de Docusaurus :
 En résumé, `index.js` s'occupe de la configuration initiale et statique.
 
 ### `sa-client.js` (Côté Client / Navigateur)
+
 <Tabs> 
  <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
@@ -127,11 +126,10 @@ if (typeof window !== "undefined") {
     loadSimpleAnalytics();
   }
 }
-
 ```
+
 </TabItem>
 </Tabs>
-
 
 Ce fichier s'exécute **uniquement dans le navigateur de l'utilisateur**. Son existence est cruciale car Docusaurus fonctionne comme une Application à Page Unique (SPA).
 
@@ -149,8 +147,7 @@ Une autre méthode pour suivre la navigation dans une application à page unique
 
 Cependant, cette approche présente des inconvénients :
 
-*   **Couplage fort** : Elle mélange la logique de suivi analytique avec la logique de présentation de votre thème.
-*   **Moins de robustesse** : Toute modification majeure de votre thème ou du composant `Layout` pourrait casser le suivi.
+- **Couplage fort** : Elle mélange la logique de suivi analytique avec la logique de présentation de votre thème.
+- **Moins de robustesse** : Toute modification majeure de votre thème ou du composant `Layout` pourrait casser le suivi.
 
 L'approche de ce plugin, utilisant `getClientModules`, est la méthode recommandée par Docusaurus. Elle est plus propre et plus robuste car elle découple complètement la fonctionnalité de suivi du thème et des composants React. Votre suivi continue de fonctionner même si vous changez radicalement l'apparence de votre site.
-

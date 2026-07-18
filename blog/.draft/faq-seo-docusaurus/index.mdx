@@ -2,7 +2,7 @@
 title: "FAQ SEO Docusaurus - Questions Fréquentes"
 description: "Réponses aux questions les plus courantes sur l'optimisation SEO avec Docusaurus : schémas JSON-LD, métadonnées, Rich Results et bonnes pratiques"
 # 🎯 Configuration Schémas Multiples v2.1.4
-schemaTypes: ["BlogPosting", "FAQPage"]  # Article + Page FAQ
+schemaTypes: ["BlogPosting", "FAQPage"] # Article + Page FAQ
 slug: faq-seo-docusaurus-questions-frequentes
 image: "/img/docux.webp"
 authors: ["docux"]
@@ -22,7 +22,8 @@ articleSection: "Support"
 copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Support"
-keywords: ["FAQ Docusaurus", "SEO questions", "Support technique", "Aide Docusaurus"]
+keywords:
+  ["FAQ Docusaurus", "SEO questions", "Support technique", "Aide Docusaurus"]
 # Configuration FAQ Schema
 faq:
   - question: "Comment installer le composant SEO sur Docusaurus ?"
@@ -57,9 +58,9 @@ Cette page répond aux **questions les plus courantes** sur l'implémentation SE
 3. **Configurez les métadonnées** via frontmatter
 
 ```jsx title="src/theme/Layout/index.js"
-import React from 'react';
-import Layout from '@theme-original/Layout';
-import Seo from '@site/src/components/Seo';
+import React from "react";
+import Layout from "@theme-original/Layout";
+import Seo from "@site/src/components/Seo";
 
 export default function LayoutWrapper(props) {
   return (
@@ -73,7 +74,8 @@ export default function LayoutWrapper(props) {
 
 ### Quels sont les prérequis système ?
 
-**Réponse :** 
+**Réponse :**
+
 - **Docusaurus 3.8+** (versions antérieures non testées)
 - **React 18+** pour les hooks modernes
 - **Node.js 18+** pour le build
@@ -85,14 +87,14 @@ export default function LayoutWrapper(props) {
 
 **Réponse :** La version 2.1.4 supporte :
 
-| Schéma | Usage | Configuration |
-|--------|--------|---------------|
-| **BlogPosting** | Articles de blog | `schemaTypes: ["BlogPosting"]` |
-| **TechArticle** | Contenu technique | `schemaTypes: ["TechArticle"]` |
-| **HowTo** | Guides pratiques | `schemaTypes: ["HowTo"]` |
+| Schéma             | Usage              | Configuration                     |
+| ------------------ | ------------------ | --------------------------------- |
+| **BlogPosting**    | Articles de blog   | `schemaTypes: ["BlogPosting"]`    |
+| **TechArticle**    | Contenu technique  | `schemaTypes: ["TechArticle"]`    |
+| **HowTo**          | Guides pratiques   | `schemaTypes: ["HowTo"]`          |
 | **CollectionPage** | Listes/Collections | `schemaTypes: ["CollectionPage"]` |
-| **FAQPage** | Pages FAQ | `schemaTypes: ["FAQPage"]` |
-| **BreadcrumbList** | Navigation | Automatique |
+| **FAQPage**        | Pages FAQ          | `schemaTypes: ["FAQPage"]`        |
+| **BreadcrumbList** | Navigation         | Automatique                       |
 
 ### Comment configurer des schémas multiples ?
 
@@ -101,13 +103,14 @@ export default function LayoutWrapper(props) {
 ```yaml
 ---
 title: "Mon Article"
-schemaTypes: ["TechArticle", "BlogPosting"]  # Double schéma
+schemaTypes: ["TechArticle", "BlogPosting"] # Double schéma
 proficiencyLevel: "Advanced"
 programmingLanguage: "JavaScript"
 ---
 ```
 
 **Avantages :**
+
 - ✅ **Contrôle total** : Vous décidez exactement
 - ✅ **Prédictibilité** : Résultats garantis
 - ✅ **Performance** : Pas de détection automatique
@@ -158,6 +161,7 @@ isAccessibleForFree: true
 3. **[Schema.org Validator](https://validator.schema.org/)** : Validation technique
 
 **Workflow recommandé :**
+
 ```bash
 # 1. Test local
 npm run start
@@ -201,11 +205,10 @@ npm run serve
 title: "Mon Article"
 # Détection automatique uniquement
 ---
-
 # MAINTENANT (v2.1.4)
 ---
 title: "Mon Article"
-schemaTypes: ["TechArticle", "BlogPosting"]  # 🎯 Explicite
+schemaTypes: ["TechArticle", "BlogPosting"] # 🎯 Explicite
 proficiencyLevel: "Advanced"
 timeRequired: "PT30M"
 ---
@@ -237,4 +240,4 @@ timeRequired: "PT30M"
 Si votre question n'est pas dans cette FAQ, créez une **[Discussion GitHub](https://github.com/Juniors017/docux-blog/discussions)** ou consultez la **[documentation technique](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)**.
 :::
 
-*FAQ mise à jour pour la version 2.1.4 - Architecture SEO Docusaurus*
+_FAQ mise à jour pour la version 2.1.4 - Architecture SEO Docusaurus_

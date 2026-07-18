@@ -4,13 +4,13 @@ A React component for Docusaurus that displays a grid of related blog posts base
 
 ## 🚀 Features
 
-* 🧠 Smart filtering by `mainTag` or fallback to shared tags
-* 🧹 Excludes the current post from results
-* 🎲 Randomizes post order for variety
-* 📦 Configurable post count
-* 📝 Optional description display
-* 📅 Shows post date
-* 🖼️ Displays post image if available
+- 🧠 Smart filtering by `mainTag` or fallback to shared tags
+- 🧹 Excludes the current post from results
+- 🎲 Randomizes post order for variety
+- 📦 Configurable post count
+- 📝 Optional description display
+- 📅 Shows post date
+- 🖼️ Displays post image if available
 
 ## Example
 
@@ -33,29 +33,29 @@ Ensure you have a `getBlogMetadata()` utility that returns blog metadata includi
 ```jsx
 import RelatedPosts from "@site/src/components/RelatedPosts";
 
-<RelatedPosts count={3} description={true} />
+<RelatedPosts count={3} description={true} />;
 ```
 
 ## 🧾 Props
 
-| Prop | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `count` | number | ❌ | `3` | Maximum number of related posts to display |
-| `description` | boolean | ❌ | false | Whether to show post descriptions if available |
+| Prop          | Type    | Required | Default | Description                                    |
+| ------------- | ------- | -------- | ------- | ---------------------------------------------- |
+| `count`       | number  | ❌       | `3`     | Maximum number of related posts to display     |
+| `description` | boolean | ❌       | false   | Whether to show post descriptions if available |
 
 ## 🛠️ Requirements
 
-* Docusaurus v3+
-* Blog metadata utility: `getBlogMetadata()`
-* Blog posts must include `tags`, `mainTag`, `title`, `date`, `permalink` and optionally `description` and `image`
+- Docusaurus v3+
+- Blog metadata utility: `getBlogMetadata()`
+- Blog posts must include `tags`, `mainTag`, `title`, `date`, `permalink` and optionally `description` and `image`
 
 ## 🎨 Styling
 
 Uses Docusaurus grid and card classes. Inline styles are applied for:
 
-* Card layout and spacing
-* Image sizing and border radius
-* Typography and color accents
+- Card layout and spacing
+- Image sizing and border radius
+- Typography and color accents
 
 You can override styles using your own CSS or classNames.
 

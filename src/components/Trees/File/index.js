@@ -7,12 +7,12 @@ import TreeItem from "../utils/TreeItem";
  */
 export default function File({ icon, iconSize = 20, badge, label, level = 0 }) {
   return (
-    <TreeItem 
-      icon={icon} 
-      iconSize={iconSize} 
-      badge={badge} 
+    <TreeItem
+      icon={icon}
+      iconSize={iconSize}
+      badge={badge}
       label={label}
-      expanded={false} 
+      expanded={false}
       level={level}
       defaultEmoji="📄"
     />

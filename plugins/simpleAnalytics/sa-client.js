@@ -18,9 +18,7 @@ export function loadSimpleAnalytics() {
   };
 }
 
-
 if (typeof window !== "undefined") {
-
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", loadSimpleAnalytics);
   } else {

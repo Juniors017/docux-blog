@@ -1,17 +1,27 @@
 ---
 title: "Architecture SEO Avancée pour Docusaurus - Guide Complet"
 description: "Découvrez un outil pour avoir une architecture SEO complète développée par Docux : composants SEO intelligents, SeoDebugPanel professionnel et support Schema.org étendu pour optimiser vos sites Docusaurus"
-schemaTypes: ["TechArticle"]  # 🆕 Support des schémas multiples
-proficiencyLevel: "Advanced"  # Pour TechArticle
-programmingLanguage: ["JavaScript", "React", "CSS"]  # 🚀 Array pour multi-langages
+schemaTypes: ["TechArticle"] # 🆕 Support des schémas multiples
+proficiencyLevel: "Advanced" # Pour TechArticle
+programmingLanguage: ["JavaScript", "React", "CSS"] # 🚀 Array pour multi-langages
 image: "/img/timeline.webp"
 authors: ["docux"]
-tags: ["seo", "docusaurus", "schema-org", "javascript", "react", "architecture", "debug-tools", "rich-results"]
+tags:
+  [
+    "seo",
+    "docusaurus",
+    "schema-org",
+    "javascript",
+    "react",
+    "architecture",
+    "debug-tools",
+    "rich-results",
+  ]
 date: 2025-08-28
 last_update:
   date: 2025-08-29
   author: docux
-dependencies: 
+dependencies:
   - "Docusaurus 3.8+"
   - "React 18+"
   - "Node.js 18+"
@@ -19,24 +29,33 @@ version: "2.1.4"
 codeRepository: "https://github.com/Juniors017/docux-blog"
 softwareVersion: "2.1.4"
 category: "SEO Tools"
-keywords: ["SEO", "Schema.org", "Docusaurus", "métadonnées", "Rich Results", "architecture", "debug", "validation"]
+keywords:
+  [
+    "SEO",
+    "Schema.org",
+    "Docusaurus",
+    "métadonnées",
+    "Rich Results",
+    "architecture",
+    "debug",
+    "validation",
+  ]
 # 🆕 Améliorations TechArticle pour Google Rich Results
-timeRequired: "PT45M"  # 45 minutes de lecture (format ISO 8601)
-difficulty: "Advanced"  # Niveau de difficulté explicite
-applicationCategory: "DeveloperApplication"  # Catégorie d'application
-operatingSystem: ["Windows", "macOS", "Linux"]  # OS supportés
-browserRequirements: "Navigateur moderne avec support ES2020+"  # Prérequis navigateur
-audience: "Développeurs web, Architectes SEO, DevOps"  # Audience cible
-learningResourceType: "Tutorial"  # Type de ressource d'apprentissage
-educationalLevel: "Advanced"  # Niveau éducationnel
-educationalUse: "Professional Development"  # Usage éducationnel
+timeRequired: "PT45M" # 45 minutes de lecture (format ISO 8601)
+difficulty: "Advanced" # Niveau de difficulté explicite
+applicationCategory: "DeveloperApplication" # Catégorie d'application
+operatingSystem: ["Windows", "macOS", "Linux"] # OS supportés
+browserRequirements: "Navigateur moderne avec support ES2020+" # Prérequis navigateur
+audience: "Développeurs web, Architectes SEO, DevOps" # Audience cible
+learningResourceType: "Tutorial" # Type de ressource d'apprentissage
+educationalLevel: "Advanced" # Niveau éducationnel
+educationalUse: "Professional Development" # Usage éducationnel
 hide_table_of_contents: false
 slug: architecture-seo-docusaurus-guide-complet
 serie: "seo docusaurus"
 ---
 
-
-# Architecture SEO Avancée pour Docusaurus 
+# Architecture SEO Avancée pour Docusaurus
 
 <center>
 <div>
@@ -47,8 +66,8 @@ serie: "seo docusaurus"
 </div>
 
 ![SEO Rex](./images/seorex.webp)
-</center>
 
+</center>
 
 ## Vue d'ensemble
 
@@ -62,8 +81,9 @@ L'architecture SEO de DocuxLab Blog, développée avec l'accompagnement de **Git
 **Responsabilité** : Gestion des métadonnées et du référencement naturel
 
 **Fonctionnalités** :
+
 - ✅ Génération automatique des métadonnées HTML
-- ✅ Support complet Schema.org JSON-LD 
+- ✅ Support complet Schema.org JSON-LD
 - ✅ Métadonnées Open Graph et Twitter Cards
 - ✅ Gestion multi-contexte (blog, docs, pages custom)
 - ✅ Système de fallback intelligent
@@ -87,6 +107,7 @@ L'architecture SEO de DocuxLab Blog, développée avec l'accompagnement de **Git
 {/* truncate */}
 
 **Points clés** :
+
 - 🔄 Détection automatique du type de page
 - 📊 Récupération multi-hook des métadonnées (useBlogPost, useDoc, fallback pages MDX)
 - 🏷️ Support tags et keywords depuis front matter pages personnalisées
@@ -100,6 +121,7 @@ L'architecture SEO de DocuxLab Blog, développée avec l'accompagnement de **Git
 **Responsabilité** : Outils de développement et validation SEO
 
 **Fonctionnalités** :
+
 - ✅ Panel de debug en mode développement uniquement
 - ✅ Interface tabbed professionnelle (Vue, Validation, Performance)
 - ✅ Score SEO temps réel (0-100%) avec code couleur
@@ -118,6 +140,7 @@ L'architecture SEO de DocuxLab Blog, développée avec l'accompagnement de **Git
 - 🆕 **Validation des schémas multiples** : Cohérence automatique des URLs JSON-LD
 
 **Interface utilisateur** :
+
 - 🎛️ **Onglet Vue** : Aperçu des métadonnées et détections
 - ✅ **Onglet Validation** : Score SEO et validation Schema.org détaillée
 - ⚡ **Onglet Performance** : Métriques techniques et status des hooks
@@ -130,6 +153,7 @@ L'architecture SEO de DocuxLab Blog, développée avec l'accompagnement de **Git
 Cette **architecture SEO** tente d'apporter plusieurs **innovations majeures** au monde Docusaurus :
 
 #### 🤖 Intelligence Automatique
+
 - **Détection de contexte** : Reconnaissance automatique du type de page (blog, docs, accueil)
 - **Schema.org intelligent** : Sélection automatique du type Schema selon le contenu
 - **Fallbacks intelligents** : Système de secours pour garantir la qualité SEO
@@ -137,11 +161,13 @@ Cette **architecture SEO** tente d'apporter plusieurs **innovations majeures** a
 - **BreadcrumbList générique** : ⭐ Système universel pour toutes les pages avec analyse intelligente des URLs
 
 #### 🔍 Outils de Debug
+
 - **Panel intégré** : Interface de debug moderne directement dans le navigateur
 - **Score SEO temps réel** : Validation continue avec algorithme de scoring avancé
 - **Export de données** : Génération de rapports détaillés pour analyse
 
 #### 🚀 Performance et Maintenabilité
+
 - **Architecture modulaire** : Séparation claire entre SEO et Debug
 - **Intégration transparente** : Aucun impact sur l'expérience utilisateur
 - **Évolutivité** : Support extensible pour nouveaux types Schema.org
@@ -149,19 +175,22 @@ Cette **architecture SEO** tente d'apporter plusieurs **innovations majeures** a
 ### 🌟 Résultats Mesurables
 
 #### 📊 Métriques d'Amélioration
+
 - **+85% Rich Results** : Éligibilité pour les résultats enrichis Google
 - **+60% Score SEO** : Amélioration moyenne sur les pages existantes
 - **-40% Temps de Debug** : Réduction du temps de diagnostic SEO
 
 #### 🎯 Couverture Fonctionnelle
+
 - **15+ Types Schema.org** : Support étendu pour tous types de contenu
 - **100% Pages Couvertes** : SEO automatique sur l'ensemble du site
 - **3 Interfaces Debug** : Onglets Vue, Validation, Performance
 
 #### 🆕 Améliorations Récentes (Août 2025)
+
 - **🎯 Tooltips Intelligents** : Affichage des données réelles de la page au survol des éléments
 - **📍 Positionnement Auto** : Tooltips avec détection automatique du viewport
-- **🔗 Gestion Slug** : Validation et affichage des URLs personnalisées  
+- **🔗 Gestion Slug** : Validation et affichage des URLs personnalisées
 - **📚 Support Séries** : Organisation et validation du contenu par série
 - **📖 Pages Séries Automatiques** : 🆕 Détection intelligente `/series/` avec calcul dynamique
 - **🎭 CreativeWorkSeries** : Schema.org spécialisé pour collections thématiques
@@ -179,19 +208,17 @@ Cette **architecture SEO** tente d'apporter plusieurs **innovations majeures** a
 - **🔄 Schémas Multiples** : BlogPosting + TechArticle automatique avec URLs cohérentes
 - **⚙️ Normalisation URLs** : Suppression automatique des doubles slashes
 - **✅ Validation Proactive** : Correction automatique des incohérences de schémas
-- **✅Le composant SEO distingue maintenant automatiquement :
-    - **Pages de séries générales** : `/series/` (liste toutes les séries)
-    - **Pages de séries spécifiques** : `/series/series-articles/?name=seo-docusaurus` (articles d'une série)
+- \*\*✅Le composant SEO distingue maintenant automatiquement :
+  - **Pages de séries générales** : `/series/` (liste toutes les séries)
+  - **Pages de séries spécifiques** : `/series/series-articles/?name=seo-docusaurus` (articles d'une série)
 
 ---
 
-
 #### 🧠 Intelligence de Détection
-
 
 ```jsx
 // Nouvelle détection intelligente
-const isSpecificSeriesPage = isSeriesPage && location.search.includes('name=');
+const isSpecificSeriesPage = isSeriesPage && location.search.includes("name=");
 
 // Extraction du nom de série depuis l'URL
 const getSeriesNameFromUrl = (search) => {
@@ -247,14 +274,14 @@ L'approche **recommandée** est l'intégration via le Layout global qui applique
 
 ```jsx
 // src/theme/Layout/index.js - Wrapper global
-import React from 'react';
-import Layout from '@theme-original/Layout';
-import Seo from '@site/src/components/Seo';
+import React from "react";
+import Layout from "@theme-original/Layout";
+import Seo from "@site/src/components/Seo";
 
 export default function LayoutWrapper(props) {
   return (
     <>
-      <Seo />               {/* SEO appliqué à TOUTES les pages */}
+      <Seo /> {/* SEO appliqué à TOUTES les pages */}
       <Layout {...props} /> {/* Layout Docusaurus original */}
     </>
   );
@@ -262,6 +289,7 @@ export default function LayoutWrapper(props) {
 ```
 
 **Avantages de l'intégration globale :**
+
 - ✅ **Couverture 100%** : Toutes les pages bénéficient automatiquement du SEO
 - ✅ **Cohérence** : Comportement uniforme sur tout le site
 - ✅ **Simplicité** : Aucune configuration par page requise
@@ -269,6 +297,7 @@ export default function LayoutWrapper(props) {
 - ✅ **Maintenance** : Modifications centralisées
 
 **Pages concernées automatiquement (exemple):**
+
 ```
 ✅ Page d'accueil          → /
 ✅ Articles de blog        → /blog/mon-article
@@ -288,16 +317,16 @@ Si vous avez besoin d'un contrôle spécifique sur certaines pages, vous pouvez 
 
 ```jsx
 // src/pages/ma-page-speciale.jsx
-import React from 'react';
-import Layout from '@theme/Layout';
-import Seo from '@site/src/components/Seo';
+import React from "react";
+import Layout from "@theme/Layout";
+import Seo from "@site/src/components/Seo";
 
 export default function MaPageSpeciale() {
   return (
     <Layout>
       {/* SEO spécifique à cette page */}
       <Seo />
-      
+
       <div className="container">
         <h1>Ma Page Spéciale</h1>
         <p>Contenu de la page...</p>
@@ -311,10 +340,10 @@ export default function MaPageSpeciale() {
 
 ```jsx
 // src/pages/landing-produit.jsx
-import React from 'react';
-import Layout from '@theme/Layout';
-import Seo from '@site/src/components/Seo';
-import Head from '@docusaurus/Head';
+import React from "react";
+import Layout from "@theme/Layout";
+import Seo from "@site/src/components/Seo";
+import Head from "@docusaurus/Head";
 
 export default function LandingProduit() {
   return (
@@ -322,12 +351,15 @@ export default function LandingProduit() {
       {/* SEO avec métadonnées personnalisées */}
       <Head>
         <title>Produit Spécial - Landing Page</title>
-        <meta name="description" content="Page de présentation de notre produit révolutionnaire" />
+        <meta
+          name="description"
+          content="Page de présentation de notre produit révolutionnaire"
+        />
         <meta property="og:type" content="product" />
         <meta name="keywords" content="produit, landing, vente" />
       </Head>
       <Seo />
-      
+
       <div className="landing-page">
         <h1>Notre Produit Révolutionnaire</h1>
         {/* Contenu de landing */}
@@ -367,6 +399,7 @@ import MyRepositories from "@site/src/components/MyRepositories";
 ```
 
 **✅ Avantages des pages MDX :**
+
 - **Front matter automatique** : Récupération directe des métadonnées sans code supplémentaire
 - **Tags et keywords** : Support array et string dans le front matter
 - **Auteurs multiples** : Via `authors: ["author1"]` ou `author: "single"`
@@ -377,16 +410,16 @@ import MyRepositories from "@site/src/components/MyRepositories";
 
 ```jsx
 // src/pages/page-conditionnelle.jsx
-import React from 'react';
-import Layout from '@theme/Layout';
-import Seo from '@site/src/components/Seo';
+import React from "react";
+import Layout from "@theme/Layout";
+import Seo from "@site/src/components/Seo";
 
 export default function PageConditionnelle({ seoEnabled = true }) {
   return (
     <Layout>
       {/* SEO conditionnel */}
       {seoEnabled && <Seo />}
-      
+
       <div>
         <h1>Page avec SEO Optionnel</h1>
         <p>Le SEO peut être activé/désactivé selon le contexte</p>
@@ -400,17 +433,17 @@ export default function PageConditionnelle({ seoEnabled = true }) {
 
 ```jsx
 // src/pages/page-meta-custom.jsx
-import React from 'react';
-import Layout from '@theme/Layout';
-import Seo from '@site/src/components/Seo';
-import Head from '@docusaurus/Head';
+import React from "react";
+import Layout from "@theme/Layout";
+import Seo from "@site/src/components/Seo";
+import Head from "@docusaurus/Head";
 
 export default function PageMetaCustom() {
   return (
     <Layout>
       {/* SEO automatique */}
       <Seo />
-      
+
       {/* Surcharge de métadonnées spécifiques */}
       <Head>
         {/* Ces métadonnées surchargent celles du SEO automatique */}
@@ -420,11 +453,11 @@ export default function PageMetaCustom() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SpecialPage",
-            "name": "Page très spéciale"
+            name: "Page très spéciale",
           })}
         </script>
       </Head>
-      
+
       <div>
         <h1>Page avec Métadonnées Surchargées</h1>
       </div>
@@ -441,7 +474,7 @@ export default function PageMetaCustom() {
 ---
 title: "Guide complet Architecture et SEO Docusaurus"
 description: "Implémentation professionnelle du référencement avec Docusaurus 3.8+"
-schemaTypes: ["TechArticle", "BlogPosting"]  # 🎯 Configuration explicite 
+schemaTypes: ["TechArticle", "BlogPosting"] # 🎯 Configuration explicite
 authors: ["docux"]
 tags:
   - "docusaurus"
@@ -453,6 +486,7 @@ date: 2025-08-29
 ```
 
 **🚀 Résultat :** Double schéma JSON-LD généré automatiquement avec URLs cohérentes :
+
 - `TechArticle` avec `@id: "https://docux.fr/blog/seo-guide#techarticle"`
 - `BlogPosting` avec `@id: "https://docux.fr/blog/seo-guide#blogposting"`
 
@@ -462,7 +496,7 @@ date: 2025-08-29
 ---
 title: "Comment installer Docker sur Ubuntu 22.04"
 description: "Guide étape par étape pour installer Docker"
-schemaTypes: ["HowTo"]  # 🎯 Bypass complet de la détection automatique
+schemaTypes: ["HowTo"] # 🎯 Bypass complet de la détection automatique
 authors: ["docux"]
 tags: ["docker", "ubuntu", "installation", "devops"]
 ---
@@ -470,13 +504,13 @@ tags: ["docker", "ubuntu", "installation", "devops"]
 
 **💡 Avantage :** Même si le contenu ne ressemble pas à un HowTo, le schéma sera `HowTo` garanti.
 
-#### 🎓 Article  (Blog uniquement)
+#### 🎓 Article (Blog uniquement)
 
 ```yaml
 ---
 title: "Mes réflexions sur l'avenir du développement web"
 description: "Pensées personnelles et perspectives d'avenir"
-schemaTypes: ["BlogPosting"]  # 🎯 Blog personnel, pas technique
+schemaTypes: ["BlogPosting"] # 🎯 Blog personnel, pas technique
 authors: ["docux"]
 tags: ["réflexion", "web", "avenir", "philosophie"]
 ---
@@ -490,7 +524,7 @@ tags: ["réflexion", "web", "avenir", "philosophie"]
 ---
 title: "Mes Projets Open Source"
 description: "Collection de tous mes projets publics sur GitHub"
-schemaTypes: ["CollectionPage"]  # 🎯 Page de collection explicite
+schemaTypes: ["CollectionPage"] # 🎯 Page de collection explicite
 authors: ["docux"]
 tags: ["portfolio", "github", "open-source"]
 ---
@@ -507,13 +541,16 @@ export default function PageProduit({ produit }) {
     <Layout>
       <Head>
         <title>{produit.nom} - Achat en ligne</title>
-        <meta name="description" content={`Achetez ${produit.nom} au meilleur prix. ${produit.description}`} />
+        <meta
+          name="description"
+          content={`Achetez ${produit.nom} au meilleur prix. ${produit.description}`}
+        />
         <meta property="og:type" content="product" />
         <meta property="product:price:amount" content={produit.prix} />
         <meta property="product:price:currency" content="EUR" />
       </Head>
       <Seo />
-      
+
       {/* Contenu produit */}
     </Layout>
   );
@@ -524,24 +561,24 @@ export default function PageProduit({ produit }) {
 
 ```jsx
 // Page avec support multi-langue
-export default function PageMultiLangue({ langue = 'fr' }) {
+export default function PageMultiLangue({ langue = "fr" }) {
   return (
     <Layout>
       <Head>
         <html lang={langue} />
-  <link rel="alternate" hrefLang="fr" href="/fr/page-exemple" />
+        <link rel="alternate" hrefLang="fr" href="/fr/page-exemple" />
         <link rel="alternate" hrefLang="en" href="/en/my-page" />
-  <link rel="alternate" hrefLang="x-default" href="/page-exemple" />
+        <link rel="alternate" hrefLang="x-default" href="/page-exemple" />
       </Head>
       <Seo />
-      
+
       {/* Contenu adapté à la langue */}
     </Layout>
   );
 }
 ```
 
-### 🆕 Schémas Multiples Explicites et Hiérarchie des Priorités 
+### 🆕 Schémas Multiples Explicites et Hiérarchie des Priorités
 
 #### Révolution : Configuration Explicite 🚀
 
@@ -551,14 +588,14 @@ export default function PageMultiLangue({ langue = 'fr' }) {
 ---
 title: "Guide Architecture SEO Docusaurus"
 description: "Implémentation professionnelle du SEO avec Docusaurus"
-schemaTypes: ["TechArticle", "BlogPosting"]  # 🎯 Configuration explicite
+schemaTypes: ["TechArticle", "BlogPosting"] # 🎯 Configuration explicite
 ---
 ```
 
 #### 🎯 Hiérarchie des Priorités
 
 1. **Configuration Explicite** (`schemaTypes` frontmatter) - **PRIORITÉ MAXIMUM**
-2. Détection automatique basée sur le contexte  
+2. Détection automatique basée sur le contexte
 3. Schéma générique (WebPage) en dernier recours
 
 ```jsx
@@ -575,8 +612,9 @@ if (customSchemaTypes && customSchemaTypes.length > 0) {
 #### Types de Schémas Supportés
 
 **🔧 Avec Configuration Explicite :**
+
 - `TechArticle` : Articles techniques et tutoriels
-- `BlogPosting` : Articles de blog personnels  
+- `BlogPosting` : Articles de blog personnels
 - `HowTo` : Guides étape par étape
 - `CollectionPage` : Pages de séries et archives
 - `WebPage` : Pages génériques
@@ -587,7 +625,7 @@ if (customSchemaTypes && customSchemaTypes.length > 0) {
 # Article technique uniquement
 schemaTypes: ["TechArticle"]
 
-# Blog post uniquement  
+# Blog post uniquement
 schemaTypes: ["BlogPosting"]
 
 # Double schéma pour article technique de blog
@@ -647,6 +685,7 @@ proficiencyLevel: "Advanced"
 **Mots-clés déclencheurs :** `technique`, `code`, `développement`, `programmation`, `api`, `framework`, `architecture`, `react`, `javascript`, `css`, `html`, `node`, `typescript`, `docker`, `git`
 
 **📝 HowTo** - Un article devient HowTo si :
+
 - Titre contient : "Comment", "Guide", "Tutoriel", "Étapes"
 - Structure hiérarchique avec headers H2/H3
 - Contenu procédural étape par étape
@@ -656,7 +695,7 @@ proficiencyLevel: "Advanced"
 #### 🚀 Avantages SEO v2.1.4
 
 - **🎯 Contrôle total** : Configuration explicite via `schemaTypes` avec priorité maximum
-- **🔮 Prévisibilité** : Résultats garantis sans surprises de détection automatique  
+- **🔮 Prévisibilité** : Résultats garantis sans surprises de détection automatique
 - **⚡ Performance** : Évite les calculs coûteux de détection automatique
 - **🔗 Fragments intelligents** : URLs avec fragments (#blogposting, #techarticle) pour éviter les doublons
 - **✅ Validation Google** : Cohérence parfaite des URLs entre schémas multiples
@@ -667,12 +706,14 @@ proficiencyLevel: "Advanced"
 ### ⚡ Bonnes pratiques v2.1.4
 
 #### 1. Configuration Schémas Explicites (Recommandé)
+
 ```yaml
 ---
 # ✅ MEILLEURE PRATIQUE : Configuration explicite
 title: "Guide Architecture SEO Docusaurus"
 description: "Implémentation professionnelle"
-schemaTypes: ["TechArticle", "BlogPosting"]  # Contrôle total
+schemaTypes: ["TechArticle", "BlogPosting"] # Contrôle total
+
 
 # ❌ À ÉVITER : Laisser la détection automatique faire le travail
 # (pas de schemaTypes défini = résultat imprévisible)
@@ -680,6 +721,7 @@ schemaTypes: ["TechArticle", "BlogPosting"]  # Contrôle total
 ```
 
 #### 2. Ordre d'application optimal
+
 ```jsx
 // ✅ Ordre recommandé
 <Layout>
@@ -700,9 +742,10 @@ schemaTypes: ["TechArticle", "BlogPosting"]  # Contrôle total
 ```
 
 #### 2. Performance
+
 ```jsx
 // ✅ Import conditionnel pour de gros composants
-const SeoAdvance = lazy(() => import('@site/src/components/SeoAdvance'));
+const SeoAdvance = lazy(() => import("@site/src/components/SeoAdvance"));
 
 export default function PageAvecSeoAvance() {
   return (
@@ -717,20 +760,30 @@ export default function PageAvecSeoAvance() {
 ```
 
 #### 3. Debug spécifique
+
 ```jsx
 // Debug SEO sur une page spécifique
 export default function PageDebug() {
   return (
     <Layout>
       <Seo />
-      
+
       {/* Debug SEO uniquement sur cette page */}
-      {process.env.NODE_ENV === 'development' && (
-        <div style={{position: 'fixed', top: 0, left: 0, background: 'red', color: 'white', padding: '10px'}}>
+      {process.env.NODE_ENV === "development" && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            background: "red",
+            color: "white",
+            padding: "10px",
+          }}
+        >
           Debug SEO activé sur cette page
         </div>
       )}
-      
+
       {/* Contenu */}
     </Layout>
   );
@@ -740,13 +793,12 @@ export default function PageDebug() {
 ### Panel de Debug
 
 Le panel s'affiche automatiquement en mode développement (`NODE_ENV=development`) avec :
+
 - 🔍 Bouton toggle en bas à droite
 - 📊 Interface tabbed pour navigation facile
 - 🎯 Validation temps réel
 - 📋 Actions rapides intégrées
 - 💡 Retour via tooltips des infos de configuration de page
-
-
 
 ### 📋 Ressources Complémentaires
 
@@ -780,7 +832,7 @@ src/
 │       ├── Content/
 │       │   └── index.js       # Wrapper contenu articles + bannières séries
 │       └── README.md          # Documentation BlogPostItem
-│      
+│
 └── data/
     └── authors.js             # Base de données des auteurs
 ```
@@ -788,35 +840,39 @@ src/
 ### 🎯 Rôles des composants
 
 #### 🌍 Layout [(`src/theme/Layout/`)](https://github.com/Juniors017/docux-blog/tree/main/src/theme/Layout)
+
 - **Rôle principal** : Point d'entrée SEO global
 - **Couverture** : 100% des pages du site
 - **Fonctionnalité** : Intègre automatiquement le composant SEO
 - **Impact** : Métadonnées et JSON-LD sur toutes les pages
 
 #### 📊 Seo [(`src/components/Seo/`)](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)
+
 - **Rôle principal** : Génération de métadonnées intelligentes
 - **Fonctionnalité** : Schema.org, Open Graph, Twitter Cards
 - **Détection** : Type de page automatique
 - **Intégration** : SeoDebugPanel inclus en développement
 
 #### 🔍 SeoDebugPanel [(`src/components/SeoDebugPanel/`)](https://github.com/Juniors017/docux-blog/tree/main/src/components/SeoDebugPanel)
+
 - **Rôle principal** : Outils de debug et validation SEO
 - **Interface** : 3 onglets (Vue, Valid, Perf)
 - **Environnement** : Développement uniquement
 - **Fonctionnalités** : Score SEO, export, tests Google, rapports
 
 #### 📝 BlogPostItem (`src/theme/BlogPostItem/`)
+
 - **Rôle principal** : Enrichissement du contenu d'articles
 - **Fonctionnalité** : Bannières de séries automatiques
 - **Détection** : Champ `serie` dans le frontMatter
 - **Affichage** : Pages d'articles complets uniquement
 
 #### 📄 BlogPostPage (`src/theme/BlogPostPage/`)
+
 - **Rôle principal** : Wrapper de pages d'articles complets
 - **État actuel** : Transparent (prêt pour extensions)
 - **Potentiel** : Articles liés, partage social, analytics
 - **Architecture** : Swizzling en mode wrapper
-
 
 ## 🔧 Configuration
 
@@ -826,7 +882,7 @@ src/
 ---
 title: "Article Exemple"
 description: "Description de l'article"
-authors: [docux, kiki]  # Références vers authors.js
+authors: [docux, kiki] # Références vers authors.js
 image: "/img/image-exemple.webp"
 keywords: [docusaurus, seo, tutorial]
 category: "Tutoriels"
@@ -850,11 +906,11 @@ keywords: [documentation, guide]
 ```javascript
 export default {
   docux: {
-    name: 'Docux',
-    title: 'Créateur de Docux',
-    url: 'https://github.com/Juniors017',
-    imageUrl: '/img/authors/docux.jpg'
-  }
+    name: "Docux",
+    title: "Créateur de Docux",
+    url: "https://github.com/Juniors017",
+    imageUrl: "/img/authors/docux.jpg",
+  },
   // ... autres auteurs
 };
 ```
@@ -864,6 +920,7 @@ export default {
 ### Score de Qualité
 
 Le panel de debug attribue un score de 0 à 100% basé sur :
+
 - ✅ **Validations** (+points) : Champs Schema.org présents et valides
 - ⚠️ **Avertissements** (-10% par item) : Champs recommandés manquants
 - ❌ **Erreurs** (-20% par item) : Champs obligatoires manquants
@@ -885,16 +942,16 @@ Le panel de debug attribue un score de 0 à 100% basé sur :
 - **WebPage** : Pages générales avec métadonnées de base
 - **Series** : Pages de séries d'articles
 - **CollectionPage** : 🆕 **Amélioré** - Pages de collections blog + personnalisées (repository, portfolio)
-- **HowTo** : Guides step-by-step et tutoriels pratiques ✅ *Implémenté avec exemples*
-- **TechArticle** : Articles techniques et tutoriels ✅ *Implémenté avec exemples*
-- **SoftwareApplication** : Applications et projets logiciels ✅ *Implémenté avec exemples*
-- **Course** : Cours et formations en ligne ✅ *Implémenté avec exemples*
-- **CreativeWork** : Projets créatifs généraux ✅ *Implémenté avec exemples*
-- **Person** : Pages de profil auteur ✅ *Implémenté avec exemples*
-- **FAQPage** : Pages de questions/réponses ✅ *Implémenté avec exemples*
-
+- **HowTo** : Guides step-by-step et tutoriels pratiques ✅ _Implémenté avec exemples_
+- **TechArticle** : Articles techniques et tutoriels ✅ _Implémenté avec exemples_
+- **SoftwareApplication** : Applications et projets logiciels ✅ _Implémenté avec exemples_
+- **Course** : Cours et formations en ligne ✅ _Implémenté avec exemples_
+- **CreativeWork** : Projets créatifs généraux ✅ _Implémenté avec exemples_
+- **Person** : Pages de profil auteur ✅ _Implémenté avec exemples_
+- **FAQPage** : Pages de questions/réponses ✅ _Implémenté avec exemples_
 
 ##### 📁 Collections Blog (automatiques)
+
 - **Pages concernées** : `/blog/`, `/blog/tags/react/`, `/blog/authors/docux/`
 - **Détection** : Automatique via analyse d'URL
 - **Schema.org** : `CollectionPage` + `Blog` + `BreadcrumbList`
@@ -903,6 +960,7 @@ Le panel de debug attribue un score de 0 à 100% basé sur :
 ##### 🎯 Collections personnalisées (configurables)
 
 **Exemple concret - Page Repository** :
+
 ```yaml
 ---
 title: "Repositories Publics - Projets Open Source"
@@ -919,6 +977,7 @@ last_update:
 ```
 
 **📊 Métadonnées générées automatiquement** :
+
 - ✅ **MainEntity** : `ItemList` avec nombre d'éléments (`numberOfItems: 15`)
 - ✅ **Breadcrumb** : 🆕 **Optimisé Google** - Navigation structurée avec bonnes pratiques (sur tout le site)
 - ✅ **Author** : Informations depuis `src/data/authors.js`
@@ -927,9 +986,7 @@ last_update:
 - ✅ **AdditionalType** : "SoftwareSourceCode" (pour projets)
 - ✅ **Keywords** : Depuis frontMatter `keywords` + `tags`
 
-
-
-##### 🚀 Pages de Séries Enrichies (v2.1.2) 
+##### 🚀 Pages de Séries Enrichies (v2.1.2)
 
 **🎯 Mise à jour majeure** : Les pages `/series/` bénéficient maintenant d'un schéma `CollectionPage` ultra-enrichi avec calcul dynamique des séries réelles et métadonnées éducatives complètes.
 
@@ -938,7 +995,7 @@ last_update:
 ```javascript
 // Nouveau : Scan intelligent des articles
 const seriesInfo = new Map();
-blogData.default.blogPosts.forEach(post => {
+blogData.default.blogPosts.forEach((post) => {
   if (post.metadata?.frontMatter?.serie) {
     const serieName = post.metadata.frontMatter.serie;
     // Collecte automatique : nom, nombre d'articles, URLs...
@@ -947,6 +1004,7 @@ blogData.default.blogPosts.forEach(post => {
 ```
 
 **✨ Résultats automatiques :**
+
 - ✅ **Comptage précis** : Nombre réel de séries détectées (`numberOfItems: 2`)
 - ✅ **URLs fonctionnelles** : Liens directs vers chaque série avec paramètres
 - ✅ **Métadonnées par série** : Nombre d'articles, description, genre éducatif
@@ -960,7 +1018,7 @@ blogData.default.blogPosts.forEach(post => {
   "learningResourceType": "Article Series",
   "typicalAgeRange": "18-99",
   "audience": {
-    "@type": "Audience", 
+    "@type": "Audience",
     "audienceType": "Developers and Web Enthusiasts",
     "geographicArea": {
       "@type": "Country",
@@ -973,6 +1031,7 @@ blogData.default.blogPosts.forEach(post => {
 ###### 🏗️ ItemListElement avec Séries Réelles
 
 **Avant (v2.1.1)** : Structure basique sans éléments
+
 ```json
 {
   "mainEntity": {
@@ -985,6 +1044,7 @@ blogData.default.blogPosts.forEach(post => {
 ```
 
 **Maintenant (v2.1.2)** : Éléments réels avec CreativeWorkSeries
+
 ```json
 {
   "mainEntity": {
@@ -1023,7 +1083,7 @@ blogData.default.blogPosts.forEach(post => {
     "name": "DOCUX",
     "url": "https://juniors017.github.io",
     "logo": {
-      "@type": "ImageObject", 
+      "@type": "ImageObject",
       "url": "https://docuxlab.com/img/docux.png"
     }
   },
@@ -1032,8 +1092,9 @@ blogData.default.blogPosts.forEach(post => {
 ```
 
 **🎉 Impact attendu sur Google :**
+
 - 📈 **Meilleure compréhension** : Google voit maintenant le contenu réel des séries
-- 🎯 **Rich Results éligibles** : Collections éducatives peuvent apparaître enrichies  
+- 🎯 **Rich Results éligibles** : Collections éducatives peuvent apparaître enrichies
 - 🔍 **Indexation améliorée** : Hiérarchie et contexte clairs pour le crawler
 - 📊 **Métriques précises** : Données exactes dans Search Console
 
@@ -1052,7 +1113,7 @@ catch (error) {
       numberOfEpisodes: 1
     },
     {
-      name: 'SEO Docusaurus', 
+      name: 'SEO Docusaurus',
       url: '/series/series-articles/?name=seo-docusaurus',
       numberOfEpisodes: 1
     }
@@ -1067,7 +1128,8 @@ catch (error) {
 La fonction `generateGenericBreadcrumb()` révolutionne la navigation SEO en analysant automatiquement les URLs et en générant des breadcrumbs structurés pour toutes les pages de votre site.
 
 **🔍 Fonctionnalités intelligentes :**
-- ✅ **Analyse automatique des chemins** : Détection de la hiérarchie URL  
+
+- ✅ **Analyse automatique des chemins** : Détection de la hiérarchie URL
 - ✅ **Mapping des segments** : blog, series, repository, thanks, tags, authors
 - ✅ **Titre dynamique** : Utilise le titre de la page actuelle
 - ✅ **Rich Snippets** : Breadcrumbs visibles dans Google Search
@@ -1078,14 +1140,14 @@ La fonction `generateGenericBreadcrumb()` révolutionne la navigation SEO en ana
 // Page /thanks/ → "Home > Remerciements"
 {
   "@type": "BreadcrumbList",
-  "name": "Navigation - DOCUX", 
+  "name": "Navigation - DOCUX",
   "itemListElement": [
     { "position": 1, "name": "DOCUX", "item": {...} },
     { "position": 2, "name": "Remerciements", "item": {...} }
   ]
 }
 
-// Page /blog/tags/architecture/ → "Home > Blog" 
+// Page /blog/tags/architecture/ → "Home > Blog"
 {
   "@type": "BreadcrumbList",
   "name": "Navigation - Blog DOCUX",
@@ -1097,12 +1159,14 @@ La fonction `generateGenericBreadcrumb()` révolutionne la navigation SEO en ana
 ```
 
 **🎯 Impact SEO immédiat :**
+
 - 🔍 **Rich Snippets** : Navigation visible dans les résultats Google
 - 📈 **CTR amélioré** : Breadcrumbs dans les SERP augmentent les clics
 - 🎯 **Compréhension Google** : Structure de site plus claire
 - 🔗 **Maillage interne** : Liens hiérarchiques renforcés
 
 **📋 Exemple optimisé généré :**
+
 ```json
 {
   "@type": "BreadcrumbList",
@@ -1124,12 +1188,14 @@ La fonction `generateGenericBreadcrumb()` révolutionne la navigation SEO en ana
 ```
 
 **🎉 Résultat Google Rich Results** :
-- 🔍 **Avant** : "Aucun élément détecté" 
+
+- 🔍 **Avant** : "Aucun élément détecté"
 - ✅ **Après** : Page de collection enrichie avec fil d'Ariane optimisé, auteur, dates, catégorie
 
 **📍 Pages applicables** :
+
 - `/repository/` : Projets open source
-- `/portfolio/` : Portfolio professionnel  
+- `/portfolio/` : Portfolio professionnel
 - `/gallery/` : Galeries d'images
 - `/products/` : Catalogues produits
 - `/resources/` : Collections de ressources
@@ -1137,60 +1203,63 @@ La fonction `generateGenericBreadcrumb()` révolutionne la navigation SEO en ana
 #### 🚀 Types possibles pour extensions futures
 
 **Documentation et contenu :**
+
 - **Article** : Articles généraux (moins spécialisé que BlogPosting)
 - **LearningResource** : Ressources éducatives
 
 **Navigation et structure :**
+
 - **BreadcrumbList** : Fil d'Ariane pour améliorer la navigation
 - **ItemList** : Listes d'éléments (articles, projets)
 - **SiteNavigationElement** : Éléments de navigation principale
 
 **Professionnel et portfolio :**
+
 - **Organization** : Page à propos/entreprise
 - **ContactPage** : Page de contact
 - **AboutPage** : Page à propos
 - **ProfilePage** : Profils d'utilisateurs
 
 **Projets et portfolio :**
+
 - **SoftwareSourceCode** : Code source et repositories
 - **Dataset** : Jeux de données et APIs
 
 **E-commerce et produits :**
+
 - **Product** : Produits ou services
 - **Offer** : Offres commerciales
 - **Review** : Avis et évaluations
 - **Rating** : Systèmes de notation
 
 **Événements et actualités :**
+
 - **Event** : Événements, conférences, meetups
 - **NewsArticle** : Articles d'actualité
 - **LiveBlogPosting** : Articles en temps réel
 
-
-
-
-
 #### 🎯 Critères de choix
 
 **Priorité haute (facile à implémenter) :**
+
 - **TechArticle** : Très pertinent pour du contenu technique
 - **HowTo** : Excellent pour les tutoriels step-by-step
 - **BreadcrumbList** : Améliore la navigation SEO
 - **Person** : Pages auteur enrichies
 
 **Priorité moyenne (valeur ajoutée) :**
+
 - **FAQ** : Si vous avez des sections Q&R
 - **SoftwareApplication** : Pour présenter vos projets
 - **Course** : Si vous proposez des formations
 - **Organization** : Page entreprise/équipe
 
 **Priorité basse (cas spécialisés) :**
+
 - **Product/Offer** : Si orientation e-commerce
 - **Event** : Si vous organisez des événements
 - **Dataset** : Si vous partagez des données
 - **Review** : Si système d'avis utilisateurs
-
-
 
 ---
 
@@ -1203,15 +1272,18 @@ L'architecture SEO de DocuxLab supporte maintenant **automatiquement** de nombre
 #### 🎯 Méthodes de Détection
 
 **1. Par frontMatter explicite :**
+
 ```yaml
-schemaType: "HowTo"  # Force un type spécifique
+schemaType: "HowTo" # Force un type spécifique
 ```
 
 **2. Détection automatique par mots-clés :**
+
 - **HowTo** : Titres contenant "comment", "guide", "tutorial", "tuto"
 - **TechArticle** : Tags techniques (react, javascript, typescript, node, api, code, programming)
 
 **3. Détection par contexte de page :**
+
 - **BlogPosting** : Articles de blog classiques
 - **WebSite** : Page d'accueil
 - **CollectionPage** : Pages de listes et index
@@ -1224,14 +1296,14 @@ schemaType: "HowTo"  # Force un type spécifique
 ---
 title: "Comment installer Docker sur Ubuntu 22.04"
 description: "Guide complet d'installation Docker avec toutes les étapes détaillées"
-schemaType: "HowTo"  # Force le type HowTo
-estimatedTime: "PT45M"  # 45 minutes (format ISO 8601)
-difficulty: "Intermediate"  # Beginner, Intermediate, Advanced
+schemaType: "HowTo" # Force le type HowTo
+estimatedTime: "PT45M" # 45 minutes (format ISO 8601)
+difficulty: "Intermediate" # Beginner, Intermediate, Advanced
 image: "/img/docker-ubuntu-guide.webp"
 authors: ["docux"]
 tags: ["docker", "ubuntu", "installation", "devops"]
 date: 2025-08-29
-tools: 
+tools:
   - "Terminal Ubuntu"
   - "Compte administrateur"
   - "Connexion internet"
@@ -1249,7 +1321,6 @@ steps:
   - name: "Test d'installation"
     text: "Vérification avec docker run hello-world"
 ---
-
 # Comment installer Docker sur Ubuntu 22.04
 
 Ce guide vous accompagne pas à pas dans l'installation de Docker...
@@ -1261,13 +1332,13 @@ Ce guide vous accompagne pas à pas dans l'installation de Docker...
 ---
 title: "Guide avancé des React Hooks personnalisés"
 description: "Maîtrisez la création et l'optimisation de hooks React personnalisés"
-schemaType: "TechArticle"  # Force le type TechArticle
-proficiencyLevel: "Advanced"  # Beginner, Intermediate, Advanced
+schemaType: "TechArticle" # Force le type TechArticle
+proficiencyLevel: "Advanced" # Beginner, Intermediate, Advanced
 image: "/img/react-hooks-advanced.webp"
 authors: ["docux"]
 tags: ["react", "javascript", "hooks", "performance"]
 date: 2025-08-29
-dependencies: 
+dependencies:
   - "React 18+"
   - "TypeScript 4.9+"
   - "Node.js 18+"
@@ -1276,7 +1347,6 @@ programmingLanguage: "JavaScript"
 codeRepository: "https://github.com/docux/react-hooks-examples"
 softwareVersion: "1.2.0"
 ---
-
 # Guide avancé des React Hooks personnalisés
 
 Découvrez comment créer des hooks React réutilisables et performants...
@@ -1289,12 +1359,12 @@ Découvrez comment créer des hooks React réutilisables et performants...
 title: "TaskFlow - Gestionnaire de tâches React Native"
 description: "Application mobile de gestion de tâches avec synchronisation cloud"
 schemaType: "SoftwareApplication"
-applicationCategory: "ProductivityApplication"  # Ou WebApplication, MobileApplication
+applicationCategory: "ProductivityApplication" # Ou WebApplication, MobileApplication
 image: "/img/taskflow-app.webp"
 authors: ["docux"]
 tags: ["react-native", "mobile", "productivity", "app"]
 date: 2025-08-29
-operatingSystem: 
+operatingSystem:
   - "iOS 14+"
   - "Android 8+"
   - "Web Browser"
@@ -1303,14 +1373,13 @@ version: "2.1.0"
 license: "MIT"
 downloadUrl: "https://app.taskflow.com/download"
 codeRepository: "https://github.com/docux/taskflow"
-screenshots: 
+screenshots:
   - "/img/taskflow-home.webp"
   - "/img/taskflow-tasks.webp"
   - "/img/taskflow-stats.webp"
 softwareRequirements: "iOS 14+ / Android 8+"
 storageRequirements: "50MB"
 ---
-
 # TaskFlow - Gestionnaire de tâches
 
 TaskFlow est une application mobile moderne pour organiser vos tâches...
@@ -1328,22 +1397,21 @@ authors: ["docux"]
 tags: ["docusaurus", "formation", "documentation", "react"]
 date: 2025-08-29
 provider: "Docux Academy"
-courseMode: "online"  # online, offline, blended
-timeRequired: "PT8H"  # 8 heures
-educationalLevel: "Beginner"  # Beginner, Intermediate, Advanced
-coursePrerequisites: 
+courseMode: "online" # online, offline, blended
+timeRequired: "PT8H" # 8 heures
+educationalLevel: "Beginner" # Beginner, Intermediate, Advanced
+coursePrerequisites:
   - "Bases HTML/CSS"
   - "Notions JavaScript"
   - "Familiarité avec Git"
-teaches: 
+teaches:
   - "Installation et configuration Docusaurus"
   - "Personnalisation des thèmes"
   - "Déploiement automatisé"
   - "SEO et performance"
-courseWorkload: "PT1H"  # 1 heure par semaine
-courseDuration: "P8W"  # 8 semaines
+courseWorkload: "PT1H" # 1 heure par semaine
+courseDuration: "P8W" # 8 semaines
 ---
-
 # Formation Docusaurus Complète
 
 Cette formation vous guide dans la maîtrise complète de Docusaurus...
@@ -1360,7 +1428,7 @@ image: "/img/design-system.webp"
 authors: ["docux"]
 tags: ["design-system", "react", "storybook", "ui"]
 date: 2025-08-29
-creativeWorkStatus: "Published"  # Draft, Published, Archived
+creativeWorkStatus: "Published" # Draft, Published, Archived
 genre: "Design System"
 material: "Digital"
 programmingLanguage: "TypeScript"
@@ -1368,7 +1436,6 @@ codeRepository: "https://github.com/docux/design-system"
 license: "MIT"
 version: "3.0.0"
 ---
-
 # Design System Moderne
 
 Un système de design complet avec composants React...
@@ -1398,7 +1465,6 @@ email: "contact@docux.dev"
 url: "https://docux.dev"
 nationality: "French"
 ---
-
 # Profil Développeur - Docux
 
 Passionné par les technologies web modernes...
@@ -1423,7 +1489,6 @@ mainEntity:
   - question: "Comment ajouter une recherche ?"
     answer: "Plusieurs options : Algolia DocSearch (gratuit), search local, ou search custom..."
 ---
-
 # FAQ Docusaurus
 
 Trouvez rapidement des réponses à vos questions...
@@ -1432,18 +1497,20 @@ Trouvez rapidement des réponses à vos questions...
 ### ⚡ Configuration Rapide
 
 #### Détection automatique (recommandée)
+
 ```yaml
 ---
-title: "Comment créer un API REST avec Node.js"  # ← HowTo détecté
-tags: ["node", "api", "javascript"]  # ← TechArticle détecté
+title: "Comment créer un API REST avec Node.js" # ← HowTo détecté
+tags: ["node", "api", "javascript"] # ← TechArticle détecté
 ---
 ```
 
 #### Configuration explicite
+
 ```yaml
 ---
 title: "Mon Article"
-schemaType: "TechArticle"  # ← Force le type explicitement
+schemaType: "TechArticle" # ← Force le type explicitement
 proficiencyLevel: "Advanced"
 dependencies: ["Node.js 18+"]
 ---
@@ -1451,18 +1518,19 @@ dependencies: ["Node.js 18+"]
 
 ### 🎨 Propriétés par Type Schema
 
-| Type | Propriétés Spécialisées | Exemple |
-|------|-------------------------|---------|
-| **HowTo** | `estimatedTime`, `difficulty`, `tools`, `supply`, `steps` | Tutoriels |
-| **TechArticle** | `proficiencyLevel`, `dependencies`, `programmingLanguage` | Articles code |
-| **SoftwareApplication** | `applicationCategory`, `operatingSystem`, `downloadUrl` | Apps/projets |
-| **Course** | `provider`, `courseMode`, `timeRequired`, `teaches` | Formations |
-| **Person** | `jobTitle`, `worksFor`, `knowsAbout`, `sameAs` | Profils |
-| **FAQPage** | `mainEntity` (questions/réponses) | Pages FAQ |
+| Type                    | Propriétés Spécialisées                                   | Exemple       |
+| ----------------------- | --------------------------------------------------------- | ------------- |
+| **HowTo**               | `estimatedTime`, `difficulty`, `tools`, `supply`, `steps` | Tutoriels     |
+| **TechArticle**         | `proficiencyLevel`, `dependencies`, `programmingLanguage` | Articles code |
+| **SoftwareApplication** | `applicationCategory`, `operatingSystem`, `downloadUrl`   | Apps/projets  |
+| **Course**              | `provider`, `courseMode`, `timeRequired`, `teaches`       | Formations    |
+| **Person**              | `jobTitle`, `worksFor`, `knowsAbout`, `sameAs`            | Profils       |
+| **FAQPage**             | `mainEntity` (questions/réponses)                         | Pages FAQ     |
 
 ### 🔍 Validation et Debug
 
 Utilisez le **SeoDebugPanel** pour :
+
 - ✅ Vérifier la détection automatique du type
 - 📊 Valider le schema généré
 - 🎯 Optimiser le score SEO
@@ -1473,6 +1541,7 @@ Utilisez le **SeoDebugPanel** pour :
 #### 🆕 Test CollectionPage (exemple)
 
 **Tester la nouvelle fonctionnalité** :
+
 1. Démarrez le site : `npm start`
 2. Naviguez vers `/exemple/`
 3. Observez le SeoDebugPanel :
@@ -1481,6 +1550,7 @@ Utilisez le **SeoDebugPanel** pour :
    - ✅ **Schema JSON-LD** : `mainEntity: ItemList`, `specialty: "Open Source Projects"`
 
 **Test Google Rich Results** :
+
 1. Cliquez sur le bouton 🔍 **Google** dans le panel
 2. Ou allez sur [Google Rich Results Test](https://search.google.com/test/rich-results)
 3. Testez l'URL : `https://docuxlab.com/exemple/`
@@ -1508,7 +1578,6 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - Taille des données JSON-LD
 - Status des hooks React
 
-
 ## 📞 Support et Documentation
 
 ### 📖 Documentation Complète
@@ -1534,7 +1603,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 
 1. **Panel de debug** : Vérifiez le SeoDebugPanel en mode développement
 2. **Documentation détaillée** : Guide complet
-3. **Console** : Utilisez le bouton "📋 Rapport" pour les logs détaillés  
+3. **Console** : Utilisez le bouton "📋 Rapport" pour les logs détaillés
 4. **Google Test** : Bouton "🔍 Google" pour validation Rich Results
 5. **Métadonnées** : Validez les frontmatter selon les exemples
 
@@ -1544,16 +1613,16 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - **Export rapports** : Bouton "💾 Export" dans le panel
 - **Test Google** : Bouton "🔍 Google" intégré
 
-
 ---
 
-##  Captures d'écran du SeoDebugPanel
+## Captures d'écran du SeoDebugPanel
 
 ### 🏠 Onglet "Vue" - Informations générales
 
 ![Onglet Vue du SeoDebugPanel](./images/panela.webp)
 
 **Informations affichées :**
+
 - **Page** : Page d'accueil
 - **Schema** : WebSite
 - **URL** : /
@@ -1566,6 +1635,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 **Score SEO Global : 69% (Bon)**
 
 **Répartition détaillée :**
+
 - Schema.org (40%) : 100% ✅
 - FrontMatter (25%) : 0% ❌
 - Contenu (20%) : 75% 🟡
@@ -1573,6 +1643,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - UX (5%) : 0% ❌
 
 **Content Management System :**
+
 - 🖼️ Image: ❌
 - 🏷️ Keywords: ❌
 - 👤 Author: ❌
@@ -1584,6 +1655,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - 📚 Série: Optionnelle
 
 **Métriques de contenu :**
+
 - Titres 5 chars (à ajuster)
 - Description: 40 chars (à ajuster)
 - Nombre de mots: 226 (trop court)
@@ -1595,6 +1667,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 ![Validations Schema.org complètes](./images/panelc.webp)
 
 **✅ Validations réussies :**
+
 - @context présent et valide
 - @type défini: WebSite
 - Titre présent et accessible
@@ -1604,6 +1677,7 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 - Langue spécifiée: fr-FR
 
 **💡 Recommandations :**
+
 - Ajouter une image dans le frontMatter pour améliorer l'engagement social
 - Ajouter des meta-clés dans le frontMatter pour améliorer la catégorisation
 - Ajouter une catégorie dans le frontMatter pour organiser le contenu
@@ -1611,24 +1685,27 @@ Le panel inclut un bouton direct vers Google Rich Results Test pour validation i
 
 ### ⚡ Onglet "Perf" - Métriques de performance
 
-
 **Métriques temps réel :**
+
 - Rendu: 361551.3ms
 - Heap: 44.3MB
 - Bundle: Optimisé
 - Component: SeoDebugPanel
 
 **Taille des données :**
+
 - JSON-LD: 781 chars
 - Blog Data: 8 chars
 - Page Meta: 91 chars
 
 **Hooks status :**
+
 - ✅ useLocation: Actif - Navigation et analyse d'URL
 - ✅ useBlogDocumentContent: Actif - Configuration et métadonnées du site
 - ✅ usePageMetadata: Actif - Métadonnées de page statique ou docs
 
 **Détections contextuelles :**
+
 - Type de page: 🏠 Page d'accueil ✅
 - Contenu statique: 📊 Métadonnées de page ✅
 - Image sociale: 🖼️ Image sociale ✅
@@ -1642,12 +1719,14 @@ L'interface du SeoDebugPanel présente une **navigation par onglets** moderne av
 3. **Onglet Perf** : Métriques de performance en temps réel
 
 **Actions rapides disponibles :**
+
 - 📋 **Rapport** : Génération d'un rapport SEO complet
 - 💾 **Export** : Export des données en format JSON
 - 📎 **URL** : Copie de l'URL dans le presse-papier
 - 🔍 **Google** : Ouverture du Google Rich Results Test
 
 **Design et ergonomie :**
+
 - Interface sombre professionnelle
 - Codes couleur intuitifs (vert/orange/rouge)
 - Informations structurées et lisibles
@@ -1664,7 +1743,7 @@ L'interface du SeoDebugPanel présente une **navigation par onglets** moderne av
 ### 🎯 Prochaines Étapes
 
 1. **Implémentation** : Suivez les guides techniques pour intégrer l'architecture
-2. **Personnalisation** : Adaptez les schemas à vos besoins spécifiques  
+2. **Personnalisation** : Adaptez les schemas à vos besoins spécifiques
 3. **Optimisation** : Utilisez le SeoDebugPanel pour perfectionner votre SEO
 4. **Monitoring** : Surveillez vos performances dans Google Search Console
 
@@ -1675,12 +1754,14 @@ L'interface du SeoDebugPanel présente une **navigation par onglets** moderne av
 ### 🧑‍💻 Développement
 
 **Développeur Principal** : [Docux](https://github.com/Juniors017)
+
 - Conception et architecture complète des composants SEO
 - Développement de l'algorithme de validation avancé
 - Interface utilisateur et expérience développeur
 - Intégration optimisée avec Docusaurus
 
 **Assistant IA** : GitHub Copilot
+
 - Accompagnement dans le développement et l'optimisation
 - Suggestions d'amélioration et debugging
 - Génération de documentation technique
@@ -1708,6 +1789,7 @@ MIT License - Copyright (c) 2025 Docux (Juniors017)
 ### 🚀 v2.1.4 (30 août 2025) - Révolution Schémas Multiples Explicites ⭐
 
 **Fonctionnalité Révolutionnaire :**
+
 - 🎯 **Configuration Explicite** : `schemaTypes: ["TechArticle", "BlogPosting"]` dans le frontmatter
 - 🏆 **Hiérarchie des Priorités** : Configuration explicite > Détection automatique > Fallback
 - 🧠 **Intelligence Bypassed** : Plus d'override de HowTo sur la configuration explicite
@@ -1716,38 +1798,44 @@ MIT License - Copyright (c) 2025 Docux (Juniors017)
 - 🛡️ **Prédictibilité Totale** : Résultats garantis selon la configuration
 
 **Impact Technique :**
+
 ```jsx
 // AVANT v2.1.4 : Détection automatique imprévisible
-if (detectHowTo()) return "HowTo";  // Pouvait override la config
+if (detectHowTo()) return "HowTo"; // Pouvait override la config
 
 // MAINTENANT v2.1.4 : Priorité explicite garantie
 if (customSchemaTypes && customSchemaTypes.length > 0) {
-  return customSchemaTypes;  // ✅ PRIORITÉ MAXIMUM
+  return customSchemaTypes; // ✅ PRIORITÉ MAXIMUM
 }
 ```
 
 **Exemples d'Usage :**
+
 ```yaml
 # Contrôle total avec configuration explicite
-schemaTypes: ["TechArticle", "BlogPosting"]  # Double schéma technique + blog
-schemaTypes: ["HowTo"]                       # Guide pratique uniquement
-schemaTypes: ["BlogPosting"]                 # Article personnel uniquement
+schemaTypes: ["TechArticle", "BlogPosting"] # Double schéma technique + blog
+schemaTypes: ["HowTo"] # Guide pratique uniquement
+schemaTypes: ["BlogPosting"] # Article personnel uniquement
 ```
 
 **Avantages SEO :**
+
 - 🎯 **Contrôle total** : Vous décidez exactement du type de schéma
 - 📊 **Double visibilité** : Schémas multiples = 2x plus de chances d'apparaître
 - ✅ **Validation Google** : URLs cohérentes avec fragments intelligents
 - ⚡ **Performance** : Bypass de la détection automatique coûteuse
 
 **Améliorations spécifiques séries :**
+
 - 🍞 **Breadcrumb 3 niveaux** : `Accueil > Séries > Série Spécifique` pour pages individuelles
-- 🎯 **Détection intelligente** : Distinction pages séries générales vs. spécifiques  
+- 🎯 **Détection intelligente** : Distinction pages séries générales vs. spécifiques
 - 📊 **Schema CollectionPage enrichi** : `CreativeWorkSeries` avec métadonnées complètes
 - 🔍 **SEO séries optimisé** : Rich Snippets breadcrumbs dans Google
 
-###  v2.1.2 (29 août 2025) - Pages de Séries Enrichies
+### v2.1.2 (29 août 2025) - Pages de Séries Enrichies
+
 **Améliorations majeures :**
+
 - ✨ **Pages `/series/` révolutionnées** : Calcul dynamique des séries réelles depuis les articles
 - 📊 **itemListElement avec données vraies** : Chaque série génère un `CreativeWorkSeries` avec URL fonctionnelle
 - 🎓 **Métadonnées éducatives complètes** : `educationalUse`, `learningResourceType`, audience géographique
@@ -1756,19 +1844,24 @@ schemaTypes: ["BlogPosting"]                 # Article personnel uniquement
 - 🎯 **Google Rich Results** : Optimisation maximale pour collections éducatives
 
 **Impact SEO :**
+
 - 📈 Meilleure compréhension Google des collections de séries
 - 🎯 Éligibilité Rich Results pour contenu éducatif structuré
 - 🔍 Indexation améliorée avec hiérarchie claire
 
 ### 🔗 v2.1.1 (28 août 2025) - Stabilité Production
+
 **Correctifs critiques :**
+
 - ✅ **Compatibilité SSG** : Élimination erreurs `window is not defined`
 - 🔕 **Logs silencieux** : Suppression spam console en production
 - ⚡ **Performance build** : Optimisation -15% temps compilation
 - 🎯 **GitHub Actions** : Déploiement automatique sans erreurs
 
 ### 🆕 v2.1.0 (27 août 2025) - Architecture Séparée
+
 **Nouvelles fonctionnalités :**
+
 - 🎯 **Composant SEO principal** : Nettoyé et optimisé
 - 🔍 **SeoDebugPanel dédié** : Composant séparé avec interface professionnelle
 - 📚 **Documentation exhaustive** : Guides techniques complets
@@ -1776,8 +1869,6 @@ schemaTypes: ["BlogPosting"]                 # Article personnel uniquement
 
 ---
 
-*Architecture SEO développée avec ❤️ par **DocuxLab**, accompagné par l'intelligence artificielle **GitHub Copilot***
-
+\*Architecture SEO développée avec ❤️ par **DocuxLab**, accompagné par l'intelligence artificielle **GitHub Copilot\***
 
 ---
-

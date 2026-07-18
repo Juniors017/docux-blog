@@ -1,5 +1,3 @@
-
-
 # Docux-blog
 
 Docux-blog is a technical and community blog platform built with [Docusaurus](https://docusaurus.io/). It makes it easy to share articles, tutorials, and resources about development, open source, and collaborative learning.

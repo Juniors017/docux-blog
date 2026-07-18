@@ -339,8 +339,8 @@ export default function Snippet({
     (isDockerFile
       ? "docker"
       : isDocusaurus
-      ? "docusaurus"
-      : mapLangToVariant[lang]) ||
+        ? "docusaurus"
+        : mapLangToVariant[lang]) ||
     "none";
 
   const variantClass = styles[`variant_${variantKey}`] || "";

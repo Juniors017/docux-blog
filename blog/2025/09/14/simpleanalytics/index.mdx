@@ -27,11 +27,13 @@ articleSection: "Tutorial"
 copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Web Development"
-keywords: ["simple analytics", "plugin", "docusaurus", "spa", "navigation", "analytics"]
+keywords:
+  ["simple analytics", "plugin", "docusaurus", "spa", "navigation", "analytics"]
 hide_table_of_contents: false
 series: "SEO & Analytics"
-blueSkyRecordKey: 
+blueSkyRecordKey:
 ---
+
 <center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
@@ -40,6 +42,7 @@ blueSkyRecordKey:
 [![AI 80%](https://img.shields.io/badge/AI-80%-blue.svg)](https://github.com/Juniors017)
 
 ![](/img/simpleanalyticsplugin.webp)
+
 </div>
 </center>
 
@@ -51,12 +54,29 @@ It manages the injection of the main script as well as tracking page changes in 
 
 This plugin is a local plugin. There's no need to install it via npm or yarn. Simply ensure that the `simpleAnalytics` folder is located in the `plugins` directory at the root of your project.
 
-
 <center>
-<a href="https://www.simpleanalytics.com/?utm_source=docuxlab.com&utm_content=badge&affiliate=babep" referrerpolicy="origin" target="_blank"><picture><source srcset="https://simpleanalyticsbadges.com/docuxlab.com?mode=dark" media="(prefers-color-scheme: dark)" /><img src="https://simpleanalyticsbadges.com/docuxlab.com?mode=light" loading="lazy" referrerpolicy="no-referrer" crossorigin="anonymous" /></picture></a>
+  <a
+    href="https://www.simpleanalytics.com/?utm_source=docuxlab.com&utm_content=badge&affiliate=babep"
+    referrerpolicy="origin"
+    target="_blank"
+  >
+    <picture>
+      <source
+        srcset="https://simpleanalyticsbadges.com/docuxlab.com?mode=dark"
+        media="(prefers-color-scheme: dark)"
+      />
+      <img
+        src="https://simpleanalyticsbadges.com/docuxlab.com?mode=light"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        crossorigin="anonymous"
+      />
+    </picture>
+  </a>
 </center>
 
-{/* truncate */} 
+{/* truncate */}
+
 ## Plugin Structure
 
 The plugin separates logic into two distinct files, as they run in different environments and at different times.
@@ -76,9 +96,10 @@ The plugin separates logic into two distinct files, as they run in different env
 
 This file is the core of the plugin and runs in a Node.js environment during development server startup or site compilation.
 
-<Snippet filename="plugins/simpleAnalytics/index.js" source="plugins/simpleAnalytics/index.js" />
-
-
+<Snippet
+  filename="plugins/simpleAnalytics/index.js"
+  source="plugins/simpleAnalytics/index.js"
+/>
 
 Its role is to integrate into the Docusaurus build process:
 
@@ -92,8 +113,10 @@ In summary, `index.js` handles the initial and static configuration.
 
 This file executes **only in the user's browser**. Its existence is crucial because Docusaurus functions as a Single Page Application (SPA).
 
-<Snippet filename="plugins/simpleAnalytics/sa-client.js" source="plugins/simpleAnalytics/sa-client.js" />
-
+<Snippet
+  filename="plugins/simpleAnalytics/sa-client.js"
+  source="plugins/simpleAnalytics/sa-client.js"
+/>
 
 Its role is to manage navigation tracking **after the initial page load**:
 
@@ -108,9 +131,11 @@ Its role is to manage navigation tracking **after the initial page load**:
 In the Simple Analytics plugin code, these two lines serve different but complementary purposes for tracking:
 
 ### The main script
+
 ```
 https://scripts.simpleanalyticscdn.com/latest.js
 ```
+
 This URL loads the main Simple Analytics JavaScript script which:
 
 - Collects navigation data (pages visited, time spent, etc.)
@@ -123,6 +148,7 @@ This URL loads the main Simple Analytics JavaScript script which:
 ```
 <img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" />
 ```
+
 This GIF image (1x1 pixel, invisible) serves as a fallback solution when:
 
 - JavaScript is disabled in the browser
@@ -150,20 +176,20 @@ Another method for tracking navigation in a Single Page Application (SPA) like D
 
 However, this approach has drawbacks:
 
-*   **Tight coupling**: It mixes analytics tracking logic with your theme's presentation logic.
-*   **Less robustness**: Any major modification to your theme or the `Layout` component could break tracking.
+- **Tight coupling**: It mixes analytics tracking logic with your theme's presentation logic.
+- **Less robustness**: Any major modification to your theme or the `Layout` component could break tracking.
 
 This plugin's approach, using `getClientModules`, is the method recommended by Docusaurus. It's cleaner and more robust because it completely decouples the tracking functionality from the theme and React components. Your tracking continues to work even if you radically change your site's appearance.
 
 ## Configuration
 
 To activate the plugin, add its path to the `plugins` array in your `docusaurus.config.js` file.
+
 <Tabs> 
 <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='docusaurus.config.js'
-
-import simpleAnalytics from "./plugins/simpleAnalytics/index.js"
+import simpleAnalytics from "./plugins/simpleAnalytics/index.js";
 // ...existing code...
 const config = {
   // ...
@@ -175,6 +201,7 @@ const config = {
 };
 // ...existing code...
 ```
+
 </TabItem>
 </Tabs>
 
@@ -188,4 +215,3 @@ And surely much more, however I wanted to keep it simple for this example.
 - [Official Simple Analytics Documentation](https://docs.simpleanalytics.com/)
 - [Simple Analytics Dashboard](https://simpleanalytics.com/)
 - [Docusaurus Plugin Documentation](https://docusaurus.io/docs/api/plugin-methods)
-

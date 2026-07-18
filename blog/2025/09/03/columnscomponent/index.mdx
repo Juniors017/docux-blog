@@ -6,7 +6,17 @@ slug: columns-component-docusaurus-infima
 image: "/img/columnscomponent.webp"
 authors: ["docux"]
 mainTag: infima
-tags: [ "columns", "grid", "layout", "infima", "component", "tutorial", "front-end", "customization"]
+tags:
+  [
+    "columns",
+    "grid",
+    "layout",
+    "infima",
+    "component",
+    "tutorial",
+    "front-end",
+    "customization",
+  ]
 date: 2025-09-03
 last_update:
   date: 2025-09-03
@@ -27,7 +37,19 @@ articleSection: "Tutorial"
 copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Web Development"
-keywords: ["docusaurus", "react", "columns", "grid", "layout", "infima", "component", "tutorial", "front-end", "customization"]
+keywords:
+  [
+    "docusaurus",
+    "react",
+    "columns",
+    "grid",
+    "layout",
+    "infima",
+    "component",
+    "tutorial",
+    "front-end",
+    "customization",
+  ]
 hide_table_of_contents: false
 series: "infima components"
 blueSkyRecordKey: 3lxxg43yei22z
@@ -41,6 +63,7 @@ blueSkyRecordKey: 3lxxg43yei22z
 [![Documentation](https://img.shields.io/badge/Documentation-validated-green.svg)](https://github.com/Juniors017/docux-blog/tree/main/src/components/columns)
 
 ![](/img/columnscomponent.webp)
+
 </center>
 
 :::note Publication
@@ -49,8 +72,8 @@ This article was originally published by DocuxLab on the [Docusaurus Community](
 
 I created this Columns component to leverage Infima's grid system in a flexible and reusable way. It consists of two parts:
 
-* A component for the container and the rows, 
-* The columns you want to create.
+- A component for the container and the rows,
+- The columns you want to create.
 
 {/* truncate */}
 
@@ -74,11 +97,10 @@ Docusaurus uses the Infima framework for styling layout. The components describe
       </Folder>
     </Folder>
     <Folder label="theme" expanded={true}>
-      <File label="MDXComponents.js" icon="javascript"/>
+      <File label="MDXComponents.js" icon="javascript" />
     </Folder>
   </Folder>
 </Trees>
-
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
@@ -187,8 +209,8 @@ The code for the component used for this functionality for should be placed in `
 This component is actually very simple but truly powerful because it utilizes native infima component classes to create columns in Docusaurus.
 
 ## MDX Component Scope
-To follow the Docusaurus documentation, we create a theme folder that will host the `MDXComponents` file. This gives us `src\theme\MDXComponents.*`. You may already have a `src\theme` folder or an `MDXComponents` file if so - merge the changes described here with yours.
 
+To follow the Docusaurus documentation, we create a theme folder that will host the `MDXComponents` file. This gives us `src\theme\MDXComponents.*`. You may already have a `src\theme` folder or an `MDXComponents` file if so - merge the changes described here with yours.
 
 <Tabs groupId="js-ts">
   <TabItem value="js" label={<><LogoIcon name="javascript" size={24} /> </>}>
@@ -226,70 +248,92 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
 ### Example With Text - Source
 
 ```html
-<Columns> 
-  <Column className='text--left'>
-    #### My First Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+<Columns>
+  <Column className="text--left">
+    #### My First Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
-  <Column className='text--center'>
-    #### My Second Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+  <Column className="text--center">
+    #### My Second Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
-  <Column className='text--justify'>
-    #### My Third Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+  <Column className="text--justify">
+    #### My Third Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
 </Columns>
 ```
 
 ### Example With Text - Result
 
-<Columns> 
-  <Column className='text--left'>
-    #### My First Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+<Columns>
+  <Column className="text--left">
+    #### My First Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
-  <Column className='text--center'>
-    #### My Second Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+  <Column className="text--center">
+    #### My Second Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
-  <Column className='text--justify'>
-    #### My Third Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+  <Column className="text--justify">
+    #### My Third Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
 </Columns>
 
 ### Example With Image - Source
 
 ```html
-<Columns> 
-  <Column className='text--center'>
-    ![](/img/logo.svg)
-  </Column>
-  <Column className='text--justify'> 
-    #### My text column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+<Columns>
+  <Column className="text--center"> ![](/img/logo.svg) </Column>
+  <Column className="text--justify">
+    #### My text column Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam
+    maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt
+    nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel
+    turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel
+    turpis nunc.
   </Column>
 </Columns>
 ```
 
 ### Example With Picture - Result
 
-<Columns> 
-  <Column className='text--center'>
-    ![](/img/logo.svg)
-  </Column>
-  <Column className='text--justify'> 
-    #### My text column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
+<Columns>
+  <Column className="text--center">![](/img/logo.svg)</Column>
+  <Column className="text--justify">
+    #### My text column Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam
+    maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt
+    nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel
+    turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel
+    turpis nunc.
   </Column>
 </Columns>
 
 ### Example With Code Block - Source
 
-````tsx 
-<Columns> 
-  <Column className='col--8'> 
+````tsx
+<Columns>
+  <Column className='col--8'>
     ```ts
     import React from 'react';
     import clsx from 'clsx';
@@ -306,7 +350,7 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
     return (
       <div className={clsx(styles.docusaurusButton, 'text--center')}>
         <p className="text--center">
-          <Link className={clsx(styles.docusaurusButtonButton, 
+          <Link className={clsx(styles.docusaurusButtonButton,
           'button button--secondary button--lg')} to={props.to}>
             <span className={styles.docusaurusButtonIcon}><DocusaurusLogo /></span>
             <span className={styles.docusaurusButtonText}>{props.label}</span>
@@ -318,7 +362,7 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
     ```
     </Column>
     <Column>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
     </Column>
 </Columns>
 ````
@@ -343,7 +387,7 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
     return (
       <div className={clsx(styles.docusaurusButton, 'text--center')}>
         <p className="text--center">
-          <Link className={clsx(styles.docusaurusButtonButton, 
+          <Link className={clsx(styles.docusaurusButtonButton,
           'button button--secondary button--lg')} to={props.to}>
             <span className={styles.docusaurusButtonIcon}><DocusaurusLogo /></span>
             <span className={styles.docusaurusButtonText}>{props.label}</span>
@@ -355,72 +399,80 @@ To follow the Docusaurus documentation, we create a theme folder that will host 
     ```
     </Column>
     <Column>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nuncSit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
     </Column>
+
 </Columns>
 
 ### Example Classes and Styling - Source
 
 ```html
-<Columns className='  padding--lg margin-bottom-xl '> 
-  <Column className='text--success text--bold text--justify  item shadow--tl padding--lg'> 
+<Columns className='  padding--lg margin-bottom-xl '>
+  <Column className='text--success text--bold text--justify  item shadow--tl padding--lg'>
     #### My First Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. 
-    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar.
+    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
   </Column>
   <Column className='text--success text--bold text--justify  item shadow--tl padding--lg margin-top--xl'  style={{ backgroundColor: 'green', color: 'yellow'  }}>
     #### My Second Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. 
-    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar.
+    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc.
   </Column>
 </Columns>
 ```
 
 ### Example Classes and Styling - Result
 
-<Columns className='  padding--lg margin-bottom-xl '> 
-  <Column className='text--success  text--bold text--justify  item shadow--tl padding--lg'> 
-    #### My First Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. 
-    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+<Columns className="  padding--lg margin-bottom-xl ">
+  <Column className="text--success  text--bold text--justify  item shadow--tl padding--lg">
+    #### My First Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
-  <Column className='text--success text--bold text--justify  item shadow--tl padding--lg margin-top--xl'  style={{ backgroundColor: 'green', color: 'yellow'  }}>
-    #### My Second Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. 
-    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+  <Column
+    className="text--success text--bold text--justify  item shadow--tl padding--lg margin-top--xl"
+    style={{ backgroundColor: "green", color: "yellow" }}
+  >
+    #### My Second Column Lorem ipsum dolor sit amet, consectetur adipiscing
+    elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A
+    diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa
+    tincidunt nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel
+    pharetra vel turpis nunc.
   </Column>
 </Columns>
 
 ### Example Offsets - Source
 
 ```html
-<Columns> 
-  <Column className='text--center col--2 col--offset-2'> 
+<Columns>
+  <Column className="text--center col--2 col--offset-2">
     ![](/img/logo.svg)
   </Column>
-  <Column className='text--justify col--6 col--offset-1'> 
-    #### My Text Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. 
-    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+  <Column className="text--justify col--6 col--offset-1">
+    #### My Text Column Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam
+    maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt
+    nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel
+    turpis nunc.
   </Column>
 </Columns>
 ```
 
 ### Example Offsets - Result
 
-<Columns> 
-  <Column className='text--center col--2 col--offset-2'> 
+<Columns>
+  <Column className="text--center col--2 col--offset-2">
     ![](/img/logo.svg)
   </Column>
-  <Column className='text--justify col--6 col--offset-1'> 
-    #### My Text Column
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    A diam maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt nunc pulvinar. 
-    Sit amet porttitor eget dolor morbi. Varius vel pharetra vel turpis nunc. 
+  <Column className="text--justify col--6 col--offset-1">
+    #### My Text Column Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A diam
+    maecenas sed enim ut. Sit amet mauris commodo quis imperdiet massa tincidunt
+    nunc pulvinar. Sit amet porttitor eget dolor morbi. Varius vel pharetra vel
+    turpis nunc.
   </Column>
 </Columns>

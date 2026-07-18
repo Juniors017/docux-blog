@@ -34,7 +34,7 @@ Ce composant utilise le **swizzling** de Docusaurus :
 
 ```javascript
 // Importation du composant original
-import BlogPostItemContent from '@theme-original/BlogPostItem/Content';
+import BlogPostItemContent from "@theme-original/BlogPostItem/Content";
 
 // Wrapper personnalisé qui ajoute des fonctionnalités
 export default function BlogPostItemContentWrapper(props) {
@@ -53,13 +53,14 @@ export default function BlogPostItemContentWrapper(props) {
 ### Imports et dépendances
 
 ```javascript
-import React from 'react';
-import BlogPostItemContent from '@theme-original/BlogPostItem/Content';
-import { useBlogPost } from '@docusaurus/plugin-content-blog/client';
-import SerieBanner from '@site/src/components/SerieBanner';
+import React from "react";
+import BlogPostItemContent from "@theme-original/BlogPostItem/Content";
+import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
+import SerieBanner from "@site/src/components/SerieBanner";
 ```
 
 **Dépendances :**
+
 - `@theme-original/BlogPostItem/Content` : Composant Docusaurus original
 - `@docusaurus/plugin-content-blog/client` : Hook pour accéder aux métadonnées
 - `@site/src/components/SerieBanner` : Composant personnalisé de bannière
@@ -70,16 +71,14 @@ import SerieBanner from '@site/src/components/SerieBanner';
 export default function BlogPostItemContentWrapper(props) {
   // 1. Récupération des métadonnées de l'article
   const { metadata, isBlogPostPage } = useBlogPost();
-  
+
   // 2. Extraction du nom de série depuis le frontMatter
   const serieName = metadata?.frontMatter?.serie;
 
   // 3. Rendu conditionnel
   return (
     <>
-      {serieName && isBlogPostPage && (
-        <SerieBanner serieName={serieName} />
-      )}
+      {serieName && isBlogPostPage && <SerieBanner serieName={serieName} />}
       <BlogPostItemContent {...props} />
     </>
   );
@@ -95,9 +94,8 @@ Pour qu'un article affiche une bannière de série, ajoutez le champ `serie` dan
 ```yaml
 ---
 title: "Mon article de série"
-serie: "Guide Docusaurus"  # ← Déclenche l'affichage de la bannière
+serie: "Guide Docusaurus" # ← Déclenche l'affichage de la bannière
 ---
-
 # Contenu de l'article
 ```
 
@@ -109,6 +107,7 @@ La bannière s'affiche **uniquement si** :
 - ✅ `isBlogPostPage` est `true` (page d'article complète, pas liste)
 
 **Où la bannière apparaît :**
+
 - ✅ Page d'article individuelle (`/blog/mon-article`)
 - ❌ Liste des articles (`/blog`)
 - ❌ Archive par tag (`/blog/tags/react`)
@@ -121,7 +120,7 @@ La bannière s'affiche **uniquement si** :
 <article class="blog-post">
   <!-- 🔥 SerieBanner s'affiche ici (si conditions remplies) -->
   <SerieBanner serieName="Guide Docusaurus" />
-  
+
   <!-- Contenu original de l'article -->
   <BlogPostItemContent>
     <header>
@@ -144,6 +143,7 @@ La bannière s'affiche **uniquement si** :
 ```
 
 Le composant `SerieBanner` reçoit :
+
 - **serieName** : Nom de la série (ex: "Guide Docusaurus")
 
 ### Exemple d'utilisation
@@ -153,7 +153,6 @@ Le composant `SerieBanner` reçoit :
 title: "Partie 1 : Installation"
 serie: "Maîtriser React"
 ---
-
 # Installation de React
 
 Cet article fait partie de la série "Maîtriser React"...
@@ -190,9 +189,8 @@ const { metadata, isBlogPostPage } = useBlogPost();
 const serieName = metadata?.frontMatter?.serie;
 
 // Équivalent à :
-const serieName = metadata && 
-                  metadata.frontMatter && 
-                  metadata.frontMatter.serie;
+const serieName =
+  metadata && metadata.frontMatter && metadata.frontMatter.serie;
 ```
 
 ## 🚀 Bonnes pratiques
@@ -202,12 +200,12 @@ const serieName = metadata &&
 ```yaml
 # ✅ Recommandé
 serie: "Guide Docusaurus"
-serie: "React Avancé"  
+serie: "React Avancé"
 serie: "SEO & Performance"
 
 # ❌ À éviter
-serie: "guide-docusaurus"  # Pas user-friendly
-serie: ""                  # Vide
+serie: "guide-docusaurus" # Pas user-friendly
+serie: "" # Vide
 ```
 
 ### 2. Organisation des articles
@@ -216,7 +214,7 @@ serie: ""                  # Vide
 blog/
 ├── 2025/
 │   ├── guide-docusaurus-1-installation.md     # serie: "Guide Docusaurus"
-│   ├── guide-docusaurus-2-configuration.md    # serie: "Guide Docusaurus"  
+│   ├── guide-docusaurus-2-configuration.md    # serie: "Guide Docusaurus"
 │   ├── guide-docusaurus-3-themes.md           # serie: "Guide Docusaurus"
 │   └── article-independant.md                 # pas de serie
 ```
@@ -225,15 +223,12 @@ blog/
 
 ```javascript
 // ✅ Rendu conditionnel efficace
-{serieName && isBlogPostPage && (
-  <SerieBanner serieName={serieName} />
-)}
+{
+  serieName && isBlogPostPage && <SerieBanner serieName={serieName} />;
+}
 
 // ❌ Rendu toujours (moins efficace)
-<SerieBanner 
-  serieName={serieName} 
-  show={serieName && isBlogPostPage} 
-/>
+<SerieBanner serieName={serieName} show={serieName && isBlogPostPage} />;
 ```
 
 ## 🐛 Dépannage
@@ -241,9 +236,10 @@ blog/
 ### La bannière ne s'affiche pas
 
 1. **Vérifiez le frontMatter** :
+
    ```yaml
    ---
-   serie: "Nom de la série"  # ← Bien présent et non vide
+   serie: "Nom de la série" # ← Bien présent et non vide
    ---
    ```
 
@@ -254,9 +250,9 @@ blog/
 3. **Vérifiez la console** :
    ```javascript
    // Dans les outils développeur
-   console.log('metadata:', metadata);
-   console.log('isBlogPostPage:', isBlogPostPage);
-   console.log('serieName:', serieName);
+   console.log("metadata:", metadata);
+   console.log("isBlogPostPage:", isBlogPostPage);
+   console.log("serieName:", serieName);
    ```
 
 ### Erreur "Cannot read property"
@@ -276,9 +272,10 @@ const serieName = metadata.frontMatter.serie;
 ### Fonctionnalités futures
 
 1. **Navigation inter-articles** :
+
    ```javascript
    // Ajouter des liens vers article précédent/suivant de la série
-   <SerieBanner 
+   <SerieBanner
      serieName={serieName}
      previousArticle={previousInSerie}
      nextArticle={nextInSerie}
@@ -286,18 +283,19 @@ const serieName = metadata.frontMatter.serie;
    ```
 
 2. **Indicateur de progression** :
+
    ```yaml
    ---
    serie: "Guide Docusaurus"
-   serieIndex: 2    # Article 2 de la série
-   serieTotal: 5    # 5 articles au total
+   serieIndex: 2 # Article 2 de la série
+   serieTotal: 5 # 5 articles au total
    ---
    ```
 
 3. **Séries avec descriptions** :
    ```yaml
    ---
-   serie: 
+   serie:
      name: "Guide Docusaurus"
      description: "Apprenez à maîtriser Docusaurus étape par étape"
      index: 1
@@ -321,4 +319,4 @@ const serieName = metadata.frontMatter.serie;
 ---
 
 **Développé par l'équipe Docux**  
-*Extension du système de blog Docusaurus pour les séries d'articles*
+_Extension du système de blog Docusaurus pour les séries d'articles_

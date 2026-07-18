@@ -6,7 +6,16 @@ slug: imageonclick-component-docusaurus-lightbox
 image: "/img/imageonclick2.webp"
 authors: ["docux"]
 mainTag: design
-tags: [ "lightbox", "design", "component", "tutorial", "front-end", "animation", "css"]
+tags:
+  [
+    "lightbox",
+    "design",
+    "component",
+    "tutorial",
+    "front-end",
+    "animation",
+    "css",
+  ]
 date: 2025-09-05
 last_update:
   date: 2025-09-05
@@ -27,11 +36,24 @@ articleSection: "Tutorial"
 copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Web Development"
-keywords: ["docusaurus", "react", "image", "lightbox", "modal", "component", "tutorial", "front-end", "animation", "css"]
+keywords:
+  [
+    "docusaurus",
+    "react",
+    "image",
+    "lightbox",
+    "modal",
+    "component",
+    "tutorial",
+    "front-end",
+    "animation",
+    "css",
+  ]
 hide_table_of_contents: false
 series: "Design your site"
 blueSkyRecordKey: 3ly2zavvn4c2r
 ---
+
 <center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
@@ -46,9 +68,10 @@ blueSkyRecordKey: 3ly2zavvn4c2r
 
 I created this component to display images in a lightbox on click! It's perfect for lightening up documentation presentations or blog articles - easy to implement and creates a clean, professional look.
 
-{/* truncate */} 
+{/* truncate */}
 
 ## Introduction
+
 :::note Publication
 This article was originally published by DocuxLab on the [Docusaurus Community](https://community.docusaurus.io) and is republished here but here is an improved version.
 :::
@@ -64,32 +87,42 @@ This article was originally published by DocuxLab on the [Docusaurus Community](
       </Folder>
     </Folder>
     <Folder label="theme" expanded={true}>
-      <File label="MDXComponents.js" icon="javascript"/>
+      <File label="MDXComponents.js" icon="javascript" />
     </Folder>
   </Folder>
 </Trees>
 
-<Snippet filename="src/components/ImageOnClick/index.js" source="src/components/ImageOnClick/index.js" />
-
+<Snippet
+  filename="src/components/ImageOnClick/index.js"
+  source="src/components/ImageOnClick/index.js"
+/>
 
 ## CSS
 
 To center the image and apply modern lightbox effects, we'll add some CSS:
 
-<Snippet filename="src/components/ImageOnClick/styles.module.css" source="src/components/ImageOnClick/styles.module.css" />
-
-
-
+<Snippet
+  filename="src/components/ImageOnClick/styles.module.css"
+  source="src/components/ImageOnClick/styles.module.css"
+/>
 
 ## Using the Component in an MDX File \{#using}
 
 ### Basic
 
 ```html
-<ImageOnClick imageUrl="/img/friends.webp" altText="Dinosaur" buttonName="Click me" />
+<ImageOnClick
+  imageUrl="/img/friends.webp"
+  altText="Dinosaur"
+  buttonName="Click me"
+/>
 ```
 
-<ImageOnClick imageUrl="/img/friends.webp" altText="Dinosaur" buttonName="Click me" />
+<ImageOnClick
+  imageUrl="/img/friends.webp"
+  altText="Dinosaur"
+  buttonName="Click me"
+/>
 
 ### Emoji Button
 
@@ -98,4 +131,3 @@ To center the image and apply modern lightbox effects, we'll add some CSS:
 ```
 
 Using markdown emoji: <ImageOnClick imageUrl="/img/friends.webp" altText="Dinosaur" buttonName="🔎" />
-

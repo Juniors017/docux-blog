@@ -1,4 +1,3 @@
-
 .timeline {
   position: relative;
   max-width: 1200px;
@@ -6,7 +5,7 @@
 }
 
 .timeline::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 6px;
   background-color: rgb(0, 0, 0);
@@ -26,7 +25,7 @@
 
 /* The circles on the timeline */
 .timeline__item::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 20px;
   height: 20px;
@@ -89,21 +88,18 @@
   border-radius: 6px;
 }
 
-
-
-
 /* Media queries - Responsive timeline on screens less than 600px wide */
 @media screen and (max-width: 600px) {
   .timeline::after {
     left: 31px;
   }
-  
+
   .timeline__item {
     width: 100%;
     padding-left: 70px;
     padding-right: 25px;
   }
-  
+
   .timeline__item::before {
     left: 60px;
     border: medium solid rgb(68, 68, 68);
@@ -111,10 +107,11 @@
     border-color: transparent rgb(0, 0, 0);
   }
 
-  .timeline__item--left::after, .timeline__item--right::after {
+  .timeline__item--left::after,
+  .timeline__item--right::after {
     left: 15px;
   }
-  
+
   .timeline__item--right {
     left: 0%;
   }

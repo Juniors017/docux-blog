@@ -7,8 +7,8 @@
 }
 
 /* Dark mode for heroBanner */
-[data-theme='dark'] .heroBanner {
-  background-color:rgb(22, 22, 17);
+[data-theme="dark"] .heroBanner {
+  background-color: rgb(22, 22, 17);
   color: #fff;
 }
 
@@ -45,7 +45,7 @@
 }
 
 /* Dark mode for homehero */
-[data-theme='dark'] .homehero {
+[data-theme="dark"] .homehero {
   background-color: rgb(215, 222, 77) !important;
   color: rgba(0, 0, 0, 0.8);
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
@@ -67,12 +67,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at top right, rgba(215, 222, 77, 0.5) 0%, rgba(215, 222, 77, 0) 50%);
+  background: radial-gradient(
+    circle at top right,
+    rgba(215, 222, 77, 0.5) 0%,
+    rgba(215, 222, 77, 0) 50%
+  );
   pointer-events: none;
 }
 
 /* Dark mode for homebody */
-[data-theme='dark'] .homebody {
+[data-theme="dark"] .homebody {
   background-color: rgb(142, 198, 83);
   color: rgba(0, 0, 0, 0.85);
   border-top: 2px solid rgba(170, 177, 33, 0.8);
@@ -80,7 +84,7 @@
 
 /* Animation pour la hero section */
 .homehero::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -5px;
   left: 0;
@@ -114,11 +118,12 @@
   bottom: -8px;
   border-radius: 50%;
   background: conic-gradient(
-rgb(229, 240, 20), /* On utilise les couleurs fixes au lieu des variables pour garantir la cohérence */
-rgb(132, 175, 15),
-rgb(152, 204, 10),
-rgb(185, 245, 21),
-rgb(226, 238, 8)
+    rgb(229, 240, 20),
+    /* On utilise les couleurs fixes au lieu des variables pour garantir la cohérence */
+    rgb(132, 175, 15),
+    rgb(152, 204, 10),
+    rgb(185, 245, 21),
+    rgb(226, 238, 8)
   );
   animation: spin 4s linear infinite;
   z-index: 1;
@@ -153,17 +158,11 @@ rgb(226, 238, 8)
 }
 
 /* Mode sombre - exactement les mêmes styles que le mode clair */
-[data-theme='dark'] .circleImage::before {
-  background: conic-gradient(
-    #aab121,
-    #4e9a06,
-    #d7de4d,
-    #4e9a06,
-    #aab121
-  );
+[data-theme="dark"] .circleImage::before {
+  background: conic-gradient(#aab121, #4e9a06, #d7de4d, #4e9a06, #aab121);
 }
 
-[data-theme='dark'] .circleImage::after {
+[data-theme="dark"] .circleImage::after {
   background: radial-gradient(
     circle at center,
     rgba(215, 222, 77, 0.4),
@@ -171,34 +170,62 @@ rgb(226, 238, 8)
   );
 }
 
-[data-theme='dark'] .circleImage img {
+[data-theme="dark"] .circleImage img {
   border: 4px solid white;
 }
 
 @keyframes glow {
-  from { opacity: 0.5; }
-  to { opacity: 1; }
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes border-flow {
-  0% { width: 0; left: 0; }
-  50% { width: 100%; }
-  100% { width: 0; left: 100%; }
+  0% {
+    width: 0;
+    left: 0;
+  }
+  50% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+    left: 100%;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(1.05); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
 }
 
 /* Bouton caractéristique */
@@ -210,7 +237,7 @@ rgb(226, 238, 8)
 }
 
 .featureButton::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -249,7 +276,7 @@ rgb(226, 238, 8)
 }
 
 .docsButton::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -288,7 +315,7 @@ rgb(226, 238, 8)
 }
 
 .blogButton::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -308,25 +335,22 @@ rgb(226, 238, 8)
 }
 
 /* Même style en mode sombre */
-[data-theme='dark'] .docsButton {
+[data-theme="dark"] .docsButton {
   background-color: rgb(132, 175, 15) !important;
   color: white !important;
 }
 
-[data-theme='dark'] .docsButton:hover {
+[data-theme="dark"] .docsButton:hover {
   background-color: rgb(152, 204, 10) !important;
 }
 
-[data-theme='dark'] .blogButton {
+[data-theme="dark"] .blogButton {
   background-color: transparent !important;
   color: rgb(132, 175, 15) !important;
   border: 2px solid rgb(132, 175, 15) !important;
 }
 
-[data-theme='dark'] .blogButton:hover {
+[data-theme="dark"] .blogButton:hover {
   color: rgb(152, 204, 10) !important;
   border-color: rgb(152, 204, 10) !important;
 }
-
-
-

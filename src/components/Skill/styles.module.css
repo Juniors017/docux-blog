@@ -8,29 +8,28 @@
 /* === CSS VARIABLES FOR THEMES === */
 :root {
   /* Light mode (default) */
-  --skill-track-background: #e0e0e0;    /* Bar backgrounds */
-  --skill-circle-background: #e0e0e0;   /* Circle backgrounds */
+  --skill-track-background: #e0e0e0; /* Bar backgrounds */
+  --skill-circle-background: #e0e0e0; /* Circle backgrounds */
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   /* Dark mode */
-  --skill-track-background: #333;       /* Darker bar backgrounds */
-  --skill-circle-background: #444;      /* Darker circle backgrounds */
+  --skill-track-background: #333; /* Darker bar backgrounds */
+  --skill-circle-background: #444; /* Darker circle backgrounds */
 }
-
 
 /* Main bar container */
 .skillBarContainer {
   margin: 1rem 0;
-  opacity: 0;                          /* Invisible by default */
-  transform: translateY(20px);         /* Offset downward */
+  opacity: 0; /* Invisible by default */
+  transform: translateY(20px); /* Offset downward */
   animation: fadeInUp 0.6s ease forwards; /* Appearance animation */
 }
 
 /* Header with name and percentage */
 .skillBarHeader {
   display: flex;
-  justify-content: space-between;      /* Name left, % right */
+  justify-content: space-between; /* Name left, % right */
   align-items: center;
   margin-bottom: 0.5rem;
 }
@@ -38,20 +37,20 @@
 /* Skill name */
 .skillBarName {
   font-weight: 600;
-  color: var(--ifm-color-content);     /* Theme adaptive color */
+  color: var(--ifm-color-content); /* Theme adaptive color */
 }
 
 /* Percentage value */
 .skillBarValue {
   font-weight: 500;
-  color: var(--ifm-color-primary);     /* Theme primary color */
+  color: var(--ifm-color-primary); /* Theme primary color */
 }
 
 /* Bar track (gray background) */
 .skillBarTrack {
   background-color: var(--skill-track-background); /* Adaptive CSS variable */
   position: relative;
-  overflow: hidden;                    /* Hide overflows */
+  overflow: hidden; /* Hide overflows */
 }
 
 /* Rounded borders for track */
@@ -62,7 +61,7 @@
 /* Colored bar fill */
 .skillBarFill {
   height: 100%;
-  background-color: #4CAF50;           /* Default color */
+  background-color: #4caf50; /* Default color */
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation */
 }
 
@@ -85,33 +84,32 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  white-space: nowrap;                 /* Empêche le retour à la ligne */
+  white-space: nowrap; /* Empêche le retour à la ligne */
 }
 
 /* Centered skill name on bar */
 .skillBarCenterName {
-  color: white;                        /* Contrast on colored background */
+  color: white; /* Contrast on colored background */
   font-weight: 600;
   font-size: 0.875rem;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Shadow for readability */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for readability */
 }
 
 /* Centered percentage text on bar (updated) */
 .skillBarCenterText {
-  color: white;                        /* Contrast on colored background */
+  color: white; /* Contrast on colored background */
   font-weight: bold;
   font-size: 0.875rem;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Shadow for readability */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Shadow for readability */
 }
-
 
 /* Main circle container */
 .skillCircleContainer {
   position: relative;
   display: inline-block;
   margin: 1rem;
-  opacity: 0;                          /* Invisible by default */
-  transform: translateY(20px);         /* Offset downward */
+  opacity: 0; /* Invisible by default */
+  transform: translateY(20px); /* Offset downward */
   animation: fadeInUp 0.6s ease forwards; /* Appearance animation */
 }
 
@@ -120,7 +118,7 @@
   text-align: center;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--ifm-color-content);     /* Theme adaptive color */
+  color: var(--ifm-color-content); /* Theme adaptive color */
 }
 
 /* Wrapper to position SVG */
@@ -150,7 +148,7 @@
 /* Skill name inside circle */
 .skillCircleName {
   font-weight: 600;
-  font-size: 0.875rem;                /* Default size (adjusted by JS) */
+  font-size: 0.875rem; /* Default size (adjusted by JS) */
   color: var(--ifm-color-content);
   margin-bottom: 0.25rem;
 }
@@ -158,16 +156,16 @@
 /* Percentage value inside circle */
 .skillCircleValue {
   font-weight: bold;
-  font-size: 1.25rem;                 /* Default size (adjusted by JS) */
+  font-size: 1.25rem; /* Default size (adjusted by JS) */
   color: var(--ifm-color-primary);
 }
 
 /* Container for text around circle */
 .skillCircleAround {
   position: absolute;
-  top: 100%;                          /* Below the circle */
+  top: 100%; /* Below the circle */
   left: 50%;
-  transform: translateX(-50%);        /* Horizontally centered */
+  transform: translateX(-50%); /* Horizontally centered */
   text-align: center;
   margin-top: 0.5rem;
 }
@@ -184,11 +182,10 @@
   color: var(--ifm-color-primary);
 }
 
-
 /* Bar fill animation (0% → value) */
 @keyframes fillAnimation {
   from {
-    width: 0%;                         /* Starts empty */
+    width: 0%; /* Starts empty */
   }
   /* to: width inherited from inline style */
 }
@@ -204,12 +201,12 @@
 /* Scroll appearance animation */
 @keyframes fadeInUp {
   from {
-    opacity: 0;                        /* Invisible */
-    transform: translateY(20px);       /* Offset downward */
+    opacity: 0; /* Invisible */
+    transform: translateY(20px); /* Offset downward */
   }
   to {
-    opacity: 1;                        /* Visible */
-    transform: translateY(0);          /* Normal position */
+    opacity: 1; /* Visible */
+    transform: translateY(0); /* Normal position */
   }
 }
 
@@ -220,11 +217,10 @@
 /* Mobile adaptation */
 @media (max-width: 768px) {
   .skillCircleContainer {
-    margin: 0.5rem;                    /* Reduced margins on mobile */
+    margin: 0.5rem; /* Reduced margins on mobile */
   }
-  
+
   .skillBarContainer {
-    margin: 0.75rem 0;                 /* Reduced margins on mobile */
+    margin: 0.75rem 0; /* Reduced margins on mobile */
   }
 }
-

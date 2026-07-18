@@ -6,16 +6,25 @@ schemaTypes: ["HowTo", "BlogPosting"]
 image: "/img/goatcounterviews.webp"
 authors: ["docux"]
 mainTag: analytics
-tags: ["goatcounter","analytics", "SEO","views"]
+tags: ["goatcounter", "analytics", "SEO", "views"]
 date: 2025-10-26
 difficulty: "Beginner-Intermediate"
 estimatedCost: "Free"
-tool: ["GoatCounter","Docusaurus","React","MDX"]
-supply: ["Node.js","Docusaurus","React","Hooks"]
+tool: ["GoatCounter", "Docusaurus", "React", "MDX"]
+supply: ["Node.js", "Docusaurus", "React", "Hooks"]
 genre: "Technical Tutorial"
 inLanguage: "en"
 category: "Frontend"
-keywords: ["goatcounter","view counter","analytics","json api","docusaurus","mdx","react"]
+keywords:
+  [
+    "goatcounter",
+    "view counter",
+    "analytics",
+    "json api",
+    "docusaurus",
+    "mdx",
+    "react",
+  ]
 hide_table_of_contents: false
 series: "SEO & Analytics"
 copyrightYear: 2025
@@ -30,10 +39,12 @@ copyrightHolder: "Docux"
 [![AI 65%](https://img.shields.io/badge/AI-55%-blue.svg)](https://github.com/Juniors017)
 
 ![](/img/goatcounterviews.webp)
+
 </div>
 </center>
 
 After adding GoatCounter to my blog, I wanted to display view counts for each page. My goals were to:
+
 - Display the number of views for a page
 - In the article list, show the views for each post individually
 - Avoid HTML injection and the "flash" of unparsed content (common when using JavaScript or the iframe)
@@ -41,7 +52,8 @@ After adding GoatCounter to my blog, I wanted to display view counts for each pa
 So I created this component using GoatCounter's JSON API.
 
 Official GoatCounter docs for this: [View counts](https://www.goatcounter.com/help/visitor-counter)
-	{/* truncate */}
+{/* truncate */}
+
 ## Why I chose the JSON API instead of `visit_count()`
 
 - Inline `<script>` tags aren’t well supported by MDX/Docusaurus (acorn parsing errors).
@@ -49,8 +61,6 @@ Official GoatCounter docs for this: [View counts](https://www.goatcounter.com/he
 - The JSON API only returns data (no HTML). We keep full control of the rendering: icon, localized formatting, accessibility, etc.
 
 **Conclusion:** Using JSON avoids third‑party HTML injection, removes the flash, and keeps the rendering fully under your control.
-
-
 
 ## Load GoatCounter globally
 
@@ -68,19 +78,21 @@ scripts: [
 ],
 ```
 
-
 This script records visits. The JSON API is only used to read/display them.
 
 ## React component: JSON fetch + accessible rendering
 
 ### The component
+
 - Detects the base `https://yourName.goatcounter.com` from the `data-goatcounter` attribute injected into the page;
 - Determines the target path (prop `path` takes precedence, otherwise it uses the current path);
 - Calls `/counter/<path>.json` and formats according to `navigator.language`;
 - Renders an “eyes” icon (twemoji) + the number, with `aria-label="views"`.
 
 ### Logic
+
 On errors or blockers:
+
 - Display rule: if total views < 100 → show “New!”, otherwise show the formatted number (useful for young blogs).
 - If the JSON endpoint returns 404 (page never seen by GoatCounter in prod), also show “New!”.
 - On `localhost`, GoatCounter doesn’t count, but will display whatever is already stored.
@@ -89,21 +101,25 @@ On errors or blockers:
 The 100‑views rule can be adjusted to your needs. After a chat with a Belgian meerkat, it’s true that showing low view counts can be perceived as a negative signal when the numbers are relatively small.
 
 ## Full component code
+
 ### Files structure
+
 <Trees>
   <Folder label="src" expanded={true}>
-	<Folder label="components" expanded={true}>
-	  <Folder label="GoatCountViews" expanded={true}>
-		<File label="index.js" icon="javascript" />
-	  </Folder>
-	</Folder>
+    <Folder label="components" expanded={true}>
+      <Folder label="GoatCountViews" expanded={true}>
+        <File label="index.js" icon="javascript" />
+      </Folder>
+    </Folder>
   </Folder>
 </Trees>
 
-### Code 
-<Snippet filename="src/components/GoatCountViews/index.js" source="src/components/GoatCountViews/index.js" />
+### Code
 
-
+<Snippet
+  filename="src/components/GoatCountViews/index.js"
+  source="src/components/GoatCountViews/index.js"
+/>
 
 ## Usage in an MDX page
 
@@ -114,7 +130,7 @@ The 100‑views rule can be adjusted to your needs. After a chat with a Belgian 
 title: "View counter"
 ---
 
-Seen by: <GoatCounterViews />  meerkats
+Seen by: <GoatCounterViews /> meerkats
 ```
 
 The component will display the views for the current page.
@@ -125,23 +141,23 @@ Seen by: 2600 meerkats
 
 ### On a listing page (e.g., Blog)
 
-If you display *multiple* posts, you must request the counter for **each post** by passing its exact path. For example, in a swizzled component (header of a blog post item):
+If you display _multiple_ posts, you must request the counter for **each post** by passing its exact path. For example, in a swizzled component (header of a blog post item):
 
 Provide the path `path={metadata.permalink}` for each post
-```jsx "title="src/theme/BlogPostItem/Header/index.js"
-import GoatCounterViews from '@site/src/components/GoatCountViews';
 
-export default function BlogPostItemHeader({metadata, ...props}) {
-	return (
-		<>
-			{/* ...existing code... */}
-			<GoatCounterViews path={metadata.permalink} />
-		</>
-	);
+```jsx "title="src/theme/BlogPostItem/Header/index.js"
+import GoatCounterViews from "@site/src/components/GoatCountViews";
+
+export default function BlogPostItemHeader({ metadata, ...props }) {
+  return (
+    <>
+      {/* ...existing code... */}
+      <GoatCounterViews path={metadata.permalink} />
+    </>
+  );
 }
 ```
+
 ![](/img/vuedesviewgoat.webp)
 
 **This way, each card shows the views of its own article, not the views of the listing page.**
-
-

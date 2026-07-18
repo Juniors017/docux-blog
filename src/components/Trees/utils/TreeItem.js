@@ -6,11 +6,22 @@ import LogoIcon from "../../LogoIcon";
  * TreeItem Component - Represents an individual tree element
  * Internal component shared by Folder and File
  */
-export default function TreeItem({ icon, iconSize = 24, badge, label, expanded = false, children, level = 0, defaultEmoji }) {
+export default function TreeItem({
+  icon,
+  iconSize = 24,
+  badge,
+  label,
+  expanded = false,
+  children,
+  level = 0,
+  defaultEmoji,
+}) {
   const [isExpanded, setIsExpanded] = useState(expanded);
-  
+
   // Filter valid React children (other Folder or File)
-  const childElements = Children.toArray(children).filter(child => isValidElement(child));
+  const childElements = Children.toArray(children).filter((child) =>
+    isValidElement(child)
+  );
   const hasChildren = childElements.length > 0;
 
   const toggleExpand = () => {
@@ -28,9 +39,7 @@ export default function TreeItem({ icon, iconSize = 24, badge, label, expanded =
       >
         {/* Expand/collapse icon */}
         {hasChildren && (
-          <span className={styles.expandIcon}>
-            {isExpanded ? "▼" : "▶"}
-          </span>
+          <span className={styles.expandIcon}>{isExpanded ? "▼" : "▶"}</span>
         )}
 
         {/* Node icon with label (via LogoIcon or native emoji) */}
@@ -41,7 +50,9 @@ export default function TreeItem({ icon, iconSize = 24, badge, label, expanded =
           </span>
         ) : defaultEmoji ? (
           <span className={styles.nodeIcon}>
-            <span style={{ fontSize: `${iconSize}px`, lineHeight: 1 }}>{defaultEmoji}</span>
+            <span style={{ fontSize: `${iconSize}px`, lineHeight: 1 }}>
+              {defaultEmoji}
+            </span>
             <span className={styles.nodeLabel}>{label}</span>
           </span>
         ) : (
@@ -49,9 +60,7 @@ export default function TreeItem({ icon, iconSize = 24, badge, label, expanded =
         )}
 
         {/* Optional badge */}
-        {badge && (
-          <span className={styles.nodeBadge}>{badge}</span>
-        )}
+        {badge && <span className={styles.nodeBadge}>{badge}</span>}
       </div>
 
       {/* Children (recursive) */}

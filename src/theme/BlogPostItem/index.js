@@ -1,10 +1,10 @@
-import React from 'react';
-import clsx from 'clsx';
-import {useBlogPost} from '@docusaurus/plugin-content-blog/client';
-import BlogPostItemContainer from '@theme/BlogPostItem/Container';
-import BlogPostItemHeader from '@theme/BlogPostItem/Header';
-import BlogPostItemContent from '@theme/BlogPostItem/Content';
-import BlogPostItemFooter from '@theme/BlogPostItem/Footer';
+import React from "react";
+import clsx from "clsx";
+import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
+import BlogPostItemContainer from "@theme/BlogPostItem/Container";
+import BlogPostItemHeader from "@theme/BlogPostItem/Header";
+import BlogPostItemContent from "@theme/BlogPostItem/Content";
+import BlogPostItemFooter from "@theme/BlogPostItem/Footer";
 
 // Our posts components
 import RelatedPosts from "@site/src/components/Blog/RelatedPosts/index.js";
@@ -25,28 +25,27 @@ export default function BlogPostItem({ children, className }) {
     <BlogPostItemContainer className={clsx(containerClassName, className)}>
       <BlogPostItemHeader />
 
-    
       <BlogPostItemContent>{children}</BlogPostItemContent>
       <BlogPostItemFooter />
 
       {/* Only display our RelatedPosts and BlueSky components on the post page; not the blog view */}
       {isBlogPostPage && (
         <>
-         <div style={{ marginTop: '3rem' }}>
-          <center>
-          <hr width="50%"  />
-          </center>
-          <SeriesPosts
-            series={metadata.frontMatter.series}
-            excludePermalink={metadata.permalink}
-            highlightCurrent={true}
-          />
+          <div style={{ marginTop: "3rem" }}>
+            <center>
+              <hr width="50%" />
+            </center>
+            <SeriesPosts
+              series={metadata.frontMatter.series}
+              excludePermalink={metadata.permalink}
+              highlightCurrent={true}
+            />
           </div>
-          <div style={{ marginTop: '3rem' }}>
-          <BlueSky metadata={metadata} />
-</div>
-<div style={{ marginTop: '3rem' }}>
-          <RelatedPosts count="6" description={false} />
+          <div style={{ marginTop: "3rem" }}>
+            <BlueSky metadata={metadata} />
+          </div>
+          <div style={{ marginTop: "3rem" }}>
+            <RelatedPosts count="6" description={false} />
           </div>
         </>
       )}

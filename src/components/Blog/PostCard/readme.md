@@ -13,28 +13,28 @@ src/components/Blog/PostCard/styles.module.css
 
 ## ✨ Features
 
-* Displays:
-  * Featured image (with fallback)
-  * Title (linked to the post)
-  * Short description
-* Accessible markup with semantic link and alt text
-* Customizable fallback image via `defaultImage` prop
-* Uses Infima utility classes and optional CSS module styling
+- Displays:
+  - Featured image (with fallback)
+  - Title (linked to the post)
+  - Short description
+- Accessible markup with semantic link and alt text
+- Customizable fallback image via `defaultImage` prop
+- Uses Infima utility classes and optional CSS module styling
 
 ## 🚀 Usage
 
 ```jsx
-import PostCard from '@site/src/components/Blog/PostCard';
+import PostCard from "@site/src/components/Blog/PostCard";
 
-<PostCard post={post} defaultImage="/img/fallback.jpg" />
+<PostCard post={post} defaultImage="/img/fallback.jpg" />;
 ```
 
 ## 🧾 Props
 
-| Prop | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `post` | object | ✅ | — | Blog post metadata (see structure below) |
-| `defaultImage` | string | ❌ | `/img/default.jpg` | Fallback image path if `post.image` is missing |
+| Prop           | Type   | Required | Default            | Description                                    |
+| -------------- | ------ | -------- | ------------------ | ---------------------------------------------- |
+| `post`         | object | ✅       | —                  | Blog post metadata (see structure below)       |
+| `defaultImage` | string | ❌       | `/img/default.jpg` | Fallback image path if `post.image` is missing |
 
 ### post object structure
 
@@ -49,8 +49,8 @@ import PostCard from '@site/src/components/Blog/PostCard';
 
 ## 🧠 Accessibility Notes
 
-* The title is wrapped in a `<Link>` with an aria-label for screen reader clarity.
-* The image includes alt and title attributes for better context.
+- The title is wrapped in a `<Link>` with an aria-label for screen reader clarity.
+- The image includes alt and title attributes for better context.
 
 ## 🎨 Styling
 
@@ -60,9 +60,9 @@ Example: `.description` class for paragraph styling.
 
 ## 🧩 Related Components
 
-* `Card`
-* `CardBody`
-* `CardImage`
+- `Card`
+- `CardBody`
+- `CardImage`
 
 ## 📄 License
 

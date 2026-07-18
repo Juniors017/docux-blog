@@ -32,11 +32,11 @@ Le composant utilise le système de Card réutilisable que j'ai développé spé
 3. Pour l'utilisation avec MDX, enregistrez le composant dans `src/theme/MDXComponents.js`:
 
 ```javascript
-import Contributor from '@site/src/components/Contributor';
+import Contributor from "@site/src/components/Contributor";
 
 export default {
   // ...autres composants
-  Contributor
+  Contributor,
 };
 ```
 
@@ -47,31 +47,28 @@ Ce composant peut être utilisé de deux façons différentes, selon vos préfé
 ### Méthode 1: Avec props (approche traditionnelle React)
 
 ```jsx
-import Contributor from '@site/src/components/Contributor';
+import Contributor from "@site/src/components/Contributor";
 
 <Contributor
   name="Nom du contributeur"
   github="username"
   website="https://site.com"
   avatarUrl="https://chemin/vers/avatar.jpg"
-  components={['Composant1', 'Composant2']}
+  components={["Composant1", "Composant2"]}
   description="Description de la contribution"
-/>
+/>;
 ```
 
 ### Méthode 2: Avec contenu entre balises (style MDX)
 
 ```jsx
-import Contributor from '@site/src/components/Contributor';
+import Contributor from "@site/src/components/Contributor";
 
 <Contributor>
-  name: 'Nom du contributeur',
-  github: 'username',
-  website: 'https://site.com',
-  avatarUrl: 'https://chemin/vers/avatar.jpg',
-  components: ['Composant1', 'Composant2'],
-  description: 'Description de la contribution'
-</Contributor>
+  name: 'Nom du contributeur', github: 'username', website: 'https://site.com',
+  avatarUrl: 'https://chemin/vers/avatar.jpg', components: ['Composant1',
+  'Composant2'], description: 'Description de la contribution'
+</Contributor>;
 ```
 
 Cette seconde approche est particulièrement adaptée pour les fichiers MDX où le style déclaratif est plus lisible et maintainable.
@@ -81,32 +78,31 @@ Cette seconde approche est particulièrement adaptée pour les fichiers MDX où 
 ### Dans un fichier JSX (comme une page React)
 
 ```jsx
-import React from 'react';
-import Contributor from '@site/src/components/Contributor';
+import React from "react";
+import Contributor from "@site/src/components/Contributor";
 
 function TeamPage() {
   return (
     <div className="team-container">
       <h1>Notre équipe</h1>
-      
+
       {/* Méthode 1: Avec props */}
       <Contributor
         name="Alice Durand"
         github="alice-dev"
         website="https://alice-durand.fr"
         avatarUrl="/img/team/alice.jpg"
-        components={['Authentification', 'Dashboard']}
+        components={["Authentification", "Dashboard"]}
         description="Lead developer et architecte frontend, Alice a conçu l'architecture globale de l'application."
       />
-      
+
       {/* Méthode 2: Avec contenu entre balises */}
       <Contributor>
-        name: 'Bob Martin',
-        github: 'bob-coder',
-        website: 'https://bobmartin.dev',
-        avatarUrl: '/img/team/bob.jpg',
-        components: ['API Integration', 'Data Visualization'],
-        description: 'Expert en visualisation de données et intégration API, Bob a développé les graphiques interactifs.'
+        name: 'Bob Martin', github: 'bob-coder', website:
+        'https://bobmartin.dev', avatarUrl: '/img/team/bob.jpg', components:
+        ['API Integration', 'Data Visualization'], description: 'Expert en
+        visualisation de données et intégration API, Bob a développé les
+        graphiques interactifs.'
       </Contributor>
     </div>
   );
@@ -125,21 +121,17 @@ title: Nos contributeurs
 Merci à tous ceux qui ont contribué à ce projet !
 
 <Contributor>
-  name: 'Charlie Weber',
-  github: 'charlie-dev',
-  website: 'https://charlieweb.io',
-  avatarUrl: '/img/team/charlie.jpg',
-  components: ['Documentation', 'Tests'],
-  description: 'Charlie a grandement amélioré notre documentation et mis en place la suite de tests automatisés.'
+  name: 'Charlie Weber', github: 'charlie-dev', website:
+  'https://charlieweb.io', avatarUrl: '/img/team/charlie.jpg', components:
+  ['Documentation', 'Tests'], description: 'Charlie a grandement amélioré notre
+  documentation et mis en place la suite de tests automatisés.'
 </Contributor>
 
 <Contributor>
-  name: 'Dana Lopez',
-  github: 'dana-l',
-  website: 'https://danalopez.com',
-  avatarUrl: '/img/team/dana.jpg',
-  components: ['Accessibilité', 'Design System'],
-  description: 'Designer et développeuse, Dana a veillé à l\'accessibilité et créé notre design system.'
+  name: 'Dana Lopez', github: 'dana-l', website: 'https://danalopez.com',
+  avatarUrl: '/img/team/dana.jpg', components: ['Accessibilité', 'Design
+  System'], description: 'Designer et développeuse, Dana a veillé à
+  l\'accessibilité et créé notre design system.'
 </Contributor>
 ```
 

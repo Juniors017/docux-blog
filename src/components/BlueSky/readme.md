@@ -4,11 +4,11 @@ The `BlueSky` component is a dynamic integration for Docusaurus pages that enabl
 
 ## ✨ Features
 
-* 🔗 Share button for posting the current document to a user's Bluesky profile
-* 💬 Like, repost, and comment interface for existing Bluesky posts
-* 📊 Displays number of likes and reposts
-* 🗨️ Shows comments or engagement call-to-action
-* 🧠 Behavior determined by frontmatter configuration
+- 🔗 Share button for posting the current document to a user's Bluesky profile
+- 💬 Like, repost, and comment interface for existing Bluesky posts
+- 📊 Displays number of likes and reposts
+- 🗨️ Shows comments or engagement call-to-action
+- 🧠 Behavior determined by frontmatter configuration
 
 ## Example
 
@@ -40,7 +40,7 @@ const config = {
   // ...
   customFields: {
     blueSky: {
-      handle: 'avonture.be', // Replace with your actual Bluesky handle
+      handle: "avonture.be", // Replace with your actual Bluesky handle
     },
   },
 };
@@ -51,31 +51,31 @@ const config = {
 ```jsx
 import BlueSky from "@site/src/components/BlueSky";
 
-<BlueSky metadata={props.metadata} />
+<BlueSky metadata={props.metadata} />;
 ```
 
 ## 🧾 Props
 
-| Prop | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `metadata | object | ✅ | — | Docusaurus document metadata, including frontmatter |
-| `metadata.frontMatter.blueSkyRecordKey`| string | ❌ | — | Unique key for the associated Bluesky post. Enables full interaction mode. |
+| Prop                                    | Type   | Required | Default | Description                                                                |
+| --------------------------------------- | ------ | -------- | ------- | -------------------------------------------------------------------------- |
+| `metadata                               | object | ✅       | —       | Docusaurus document metadata, including frontmatter                        |
+| `metadata.frontMatter.blueSkyRecordKey` | string | ❌       | —       | Unique key for the associated Bluesky post. Enables full interaction mode. |
 
 ## 🔀 Behavior
 
-| Scenario | Outcome |
-| --- | --- |
-| `blueSkyRecordKey` is absent | Shows a share button to post the document to user's Bluesky profile |
+| Scenario                      | Outcome                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `blueSkyRecordKey` is absent  | Shows a share button to post the document to user's Bluesky profile      |
 | `blueSkyRecordKey` is present | Displays post interaction UI: like, repost, comment, and engagement data |
 
 ## 🧩 Internal Components
 
 This component uses the following subcomponents:
 
-* `BlueSkyShare` – Share button for user-generated posts
-* `BlueSkyPost` – Interaction UI for existing posts
-* `BlueSkyLikes` – Displays like/repost counts
-* `BlueSkyComments` – Shows comments or engagement CTA
+- `BlueSkyShare` – Share button for user-generated posts
+- `BlueSkyPost` – Interaction UI for existing posts
+- `BlueSkyLikes` – Displays like/repost counts
+- `BlueSkyComments` – Shows comments or engagement CTA
 
 ## 🎨 Styling
 

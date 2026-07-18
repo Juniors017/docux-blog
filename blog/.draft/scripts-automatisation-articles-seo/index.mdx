@@ -30,39 +30,42 @@ copyrightYear: 2025
 copyrightHolder: "Docux"
 category: "Automation"
 hide_table_of_contents: false
-keywords: ["automation", "scripts", "seo", "articles", "docusaurus", "productivité"]
+keywords:
+  ["automation", "scripts", "seo", "articles", "docusaurus", "productivité"]
 ---
 
 <center>
-<div>
-[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
-[![Developer](https://img.shields.io/badge/Developement-workinprogress-orange.svg)](https://github.com/Juniors017)
-[![AI Assisted](https://img.shields.io/badge/AI%20Assisted-GitHub%20Copilot-purple.svg)](https://copilot.github.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/Documentation-workinprogress-orange.svg)](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)
-</div>
-![Automatique création d'articles SEO en 30 secondes](./images/creation-article-automatique.webp)
+  <div>
+    [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+    [![Developer](https://img.shields.io/badge/Developement-workinprogress-orange.svg)](https://github.com/Juniors017)
+    [![AI
+    Assisted](https://img.shields.io/badge/AI%20Assisted-GitHub%20Copilot-purple.svg)](https://copilot.github.com/)
+    [![License:
+    MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+    [![Documentation](https://img.shields.io/badge/Documentation-workinprogress-orange.svg)](https://github.com/Juniors017/docux-blog/tree/main/src/components/Seo)
+  </div>
+  ![Automatique création d'articles SEO en 30
+  secondes](./images/creation-article-automatique.webp)
 </center>
 
 # Scripts d'Automatisation : Créez des Articles SEO friendly en 30 Secondes
 
 :::tip 🚀 Révolution de Productivité
-Vous perdez du temps à configurer manuellement le frontmatter de vos articles ? 
+Vous perdez du temps à configurer manuellement le frontmatter de vos articles ?
 
 j'ai tenté de créer un système d'automatisation qui génère des articles **100% optimisés SEO** avec schémas Rich Results en quelques secondes !
 :::
 
-> Prérequis (pas obligatoire mais recommandé) : [Mon composant SEO](/blog/architecture-seo-docusaurus-guide-complet/) 
+> Prérequis (pas obligatoire mais recommandé) : [Mon composant SEO](/blog/architecture-seo-docusaurus-guide-complet/)
 
 {/* truncate */}
 
 ## 🎯 Le Problème : La Création Manuelle d'Articles
 
-
 Créer un article de blog optimisé SEO nécessitait jusqu'à présent :
 
 - ✅ **15 minutes** pour configurer le frontmatter
-- ✅ **Connaissance technique** des schémas JSON-LD  
+- ✅ **Connaissance technique** des schémas JSON-LD
 - ✅ **Vérification manuelle** de plus de 20 champs de métadonnées
 - ✅ **Risque d'erreurs** dans la configuration SEO
 
@@ -74,16 +77,16 @@ Un **écosystème complet** d'outils automatisés a été développé pour trans
 
 ### 🛠️ 3 Outils Complémentaires
 
-| Outil | Usage | Temps | Niveau |
-|-------|--------|--------|--------|
-| **Script Interactif** | Configuration détaillée | 2 min | Débutant |
-| **Script Rapide** | Génération instantanée | 30 sec | Tous niveaux |
-| **Snippets VS Code** | Création manuelle optimisée | 1 min | Intermédiaire |
-
+| Outil                 | Usage                       | Temps  | Niveau        |
+| --------------------- | --------------------------- | ------ | ------------- |
+| **Script Interactif** | Configuration détaillée     | 2 min  | Débutant      |
+| **Script Rapide**     | Génération instantanée      | 30 sec | Tous niveaux  |
+| **Snippets VS Code**  | Création manuelle optimisée | 1 min  | Intermédiaire |
 
 ## 📋 Script Interactif : Le Mode Guidé
 
 ### Utilisation
+
 ```bash
 node scripts/create-article.js
 ```
@@ -95,7 +98,7 @@ node scripts/create-article.js
 
 ? Choisissez le type d'article :
 ❯ BlogPosting - Article de blog standard
-  TechArticle - Guide technique approfondi  
+  TechArticle - Guide technique approfondi
   HowTo - Tutorial étape par étape
   FAQPage - Page de questions/réponses
   CollectionPage - Page de collection
@@ -113,7 +116,7 @@ node scripts/create-article.js
 ### Frontmatter Généré Automatiquement
 
 ```yaml
---- 
+---
 title: "Guide React Hooks Avancé"
 description: "Maîtrise des hooks React avancés avec des exemples pratiques"
 schemaTypes: ["TechArticle", "BlogPosting"]
@@ -133,10 +136,10 @@ audience: "Développeurs frontend"
 ---
 ```
 
-
 ## ⚡ Script Rapide : Génération Instantanée
 
 ### Syntaxe Ultra-Simple
+
 ```bash
 node scripts/quick-article.js [type] [titre]
 ```
@@ -147,7 +150,7 @@ node scripts/quick-article.js [type] [titre]
 # Article de blog en 30 secondes
 node scripts/quick-article.js blog "Les Tendances Web 2025"
 
-# Guide technique instantané  
+# Guide technique instantané
 node scripts/quick-article.js tech "Optimisation Performance React"
 
 # Tutorial HowTo rapide
@@ -159,17 +162,17 @@ node scripts/quick-article.js faq "Questions API Documentation"
 
 ### Performance Mesurée
 
-| Action | Temps Manuel | Temps Script | Gain |
-|--------|--------------|--------------|------|
-| Création fichier | 2 min | 5 sec | **96%** |
-| Configuration frontmatter | 15 min | 0 sec | **100%** |
-| Validation SEO | 10 min | 0 sec | **100%** |
-| **TOTAL** | **27 min** | **30 sec** | **🚀 98%** |
-
+| Action                    | Temps Manuel | Temps Script | Gain       |
+| ------------------------- | ------------ | ------------ | ---------- |
+| Création fichier          | 2 min        | 5 sec        | **96%**    |
+| Configuration frontmatter | 15 min       | 0 sec        | **100%**   |
+| Validation SEO            | 10 min       | 0 sec        | **100%**   |
+| **TOTAL**                 | **27 min**   | **30 sec**   | **🚀 98%** |
 
 ## 🎨 Snippets VS Code : L'Intégration Native
 
 ### Installation Automatique
+
 Les snippets sont pré-configurés dans `.vscode/docusaurus-snippets.json`
 
 ### Utilisation Intuitive
@@ -177,9 +180,10 @@ Les snippets sont pré-configurés dans `.vscode/docusaurus-snippets.json`
 1. **Créer** un nouveau fichier `.mdx`
 2. **Taper** `doc-` puis `Tab`
 3. **Choisir** le template :
-  - `doc-blog` → BlogPosting
-  - `doc-tech` → TechArticle  
-  - `doc-howto` → HowTo Guide
+
+- `doc-blog` → BlogPosting
+- `doc-tech` → TechArticle
+- `doc-howto` → HowTo Guide
 
 4. **Naviguer** avec `Tab` entre les champs
 5. **Variables automatiques** : date, année, etc.
@@ -193,6 +197,7 @@ Les snippets sont pré-configurés dans `.vscode/docusaurus-snippets.json`
 4. Navigation Tab → Tab → Tab
 5. Article prêt en 60 secondes !
 ```
+
 ```yaml
 genre: "Technology Blog"
 audience: "Développeurs web"
@@ -210,9 +215,11 @@ yield: "Application fonctionnelle"
 mainEntity: "Questions fréquentes sur..."
 questionCount: 10
 ```
+
 ## 🔍 Types de Contenu Supportés
 
 ### 1. BlogPosting - Article Standard
+
 ```yaml
 schemaTypes: ["BlogPosting"]
 genre: "Technology Blog"
@@ -223,7 +230,8 @@ articleSection: "Blog"
 
 **Usage** : Actualités, opinions, retours d'expérience
 
-### 2. TechArticle - Guide Technique  
+### 2. TechArticle - Guide Technique
+
 ```yaml
 schemaTypes: ["TechArticle", "BlogPosting"]
 proficiencyLevel: "Intermediate"
@@ -235,6 +243,7 @@ learningResourceType: "Tutorial"
 **Usage** : Tutoriels approfondis, documentation technique
 
 ### 3. HowTo - Guide Étape par Étape
+
 ```yaml
 schemaTypes: ["HowTo", "TechArticle"]
 difficulty: "Beginner"
@@ -247,6 +256,7 @@ yield: "Application fonctionnelle"
 **Usage** : Instructions précises, procédures
 
 ### 4. FAQPage - Questions/Réponses
+
 ```yaml
 schemaTypes: ["FAQPage"]
 mainEntity: "Questions fréquentes sur..."
@@ -255,25 +265,28 @@ questionCount: 10
 
 **Usage** : Support client, documentation FAQ
 
-
 ## 🎉 Avantages Concrets
 
 ### ✅ Productivité Maximale
+
 - **98% de temps économisé** sur la création d'articles
 - **Zéro erreur** de configuration SEO
 - **Workflow standardisé** pour toute l'équipe
 
 ### ✅ SEO Parfait par Défaut
+
 - **Schémas Rich Results** configurés automatiquement
 - **Métadonnées complètes** selon les standards Google
 - **Validation intégrée** avec le composant SEO
 
 ### ✅ Flexibilité Totale
+
 - **3 workflows** selon le contexte (interactif, rapide, snippets)
 - **11 types d'articles** supportés
 - **Personnalisation** facile des templates
 
 ### ✅ Intégration Native
+
 - **VS Code snippets** avec navigation intelligente
 - **Scripts Node.js** sans dépendances externes
 - **Compatible** avec l'écosystème Docusaurus
@@ -290,30 +303,35 @@ questionCount: 10
 ### Erreurs Communes
 
 **"Directory already exists"**
+
 ```bash
 # Solution : Utiliser un slug différent ou supprimer le dossier existant
 rm -rf blog/2025/08/29/mon-article/
 ```
 
 **"Invalid schema type"**
+
 ```bash
-# Types valides : BlogPosting, TechArticle, HowTo, FAQPage, CollectionPage, 
+# Types valides : BlogPosting, TechArticle, HowTo, FAQPage, CollectionPage,
 # SoftwareApplication, Course, WebPage, AboutPage, ItemListPage
 node scripts/quick-article.js TechArticle "Mon Guide"
 ```
 
 **"Permission denied"**
+
 ```bash
 # Solution : Vérifier les permissions d'écriture
 chmod 755 blog/
 ```
 
 ### Debug Mode
+
 Décommentez les lignes `console.log` dans les scripts pour activer le mode debug détaillé.
 
 ## 🛠️ Installation et Configuration
 
 ### Prérequis
+
 ```bash
 # Node.js 16+ requis
 node --version
@@ -321,11 +339,12 @@ node --version
 ```
 
 ### Utilisation Immédiate
+
 ```bash
 # Mode interactif
 node scripts/create-article.js
 
-# Mode rapide  
+# Mode rapide
 node scripts/quick-article.js blog "Nouvel Article"
 
 # Snippets VS Code (automatique)
@@ -337,18 +356,16 @@ node scripts/quick-article.js blog "Nouvel Article"
 ```javascript
 // scripts/create-article.js - Ligne 15
 const DEFAULT_CONFIG = {
-  author: "votre-nom",        // 🔧 À personnaliser
-  baseImagePath: "/images/",  // 🔧 Chemin d'images
+  author: "votre-nom", // 🔧 À personnaliser
+  baseImagePath: "/images/", // 🔧 Chemin d'images
   defaultTags: ["votre-tag"], // 🔧 Tags par défaut
-  language: "fr-FR",          // 🔧 Langue
-  copyright: "Votre Nom"      // 🔧 Copyright
+  language: "fr-FR", // 🔧 Langue
+  copyright: "Votre Nom", // 🔧 Copyright
 };
 ```
 
-
-
-
 ### Contribuer
+
 ```bash
 # Fork du repository
 git clone https://github.com/Juniors017/docux-blog.git
@@ -362,27 +379,24 @@ git checkout -b feature/nouveau-schema
 # Pull request bienvenue ! 🤝
 ```
 
-
-
-
-
 ## 🎯 Conclusion
 
 Les scripts d'automatisation facilitent la création de contenu :
 
 - ✅ **Productivité** : 98% de temps économisé
-- ✅ **Qualité** : SEO parfait par défaut  
+- ✅ **Qualité** : SEO parfait par défaut
 - ✅ **Simplicité** : 3 workflows adaptés à tous
 - ✅ **Innovation** : Premier système complet du genre
 
 **Résultat** : L'essentiel est de se concentrer sur la création de contenu de qualité, pendant que l'automatisation gère la technicité SEO !
 
 :::tip Prêt à Révolutionner le Workflow ?
+
 ```bash
 # Test immédiat
 node scripts/create-article.js
 
 # Premier article optimisé SEO en 2 minutes ! 🚀
 ```
-:::
 
+:::

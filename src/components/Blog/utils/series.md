@@ -4,11 +4,11 @@ Generates structured metadata for blog article series in Docusaurus.
 
 ## ✨ Features
 
-* Groups blog posts by their `series` field
-* Sorts posts chronologically (oldest to newest)
-* Counts published and draft articles
-* Builds a clean permalink using a customizable function
-* Returns a list of series objects with title, image, description, and link
+- Groups blog posts by their `series` field
+- Sorts posts chronologically (oldest to newest)
+- Counts published and draft articles
+- Builds a clean permalink using a customizable function
+- Returns a list of series objects with title, image, description, and link
 
 ## Location
 
@@ -17,15 +17,15 @@ Place this file in: `src/components/Blog/utils/series.js`
 ## 🚀 Usage
 
 ```js
-import { generateSeriesList } from './series';
+import { generateSeriesList } from "./series";
 
-const seriesList = generateSeriesList(posts, '/series/', '/img/fallback.jpg');
+const seriesList = generateSeriesList(posts, "/series/", "/img/fallback.jpg");
 ```
 
 ## Default behavior
 
-* Uses `/img/default.jpg` as fallback image
-* Generates permalink like: `/series/${slug}`
+- Uses `/img/default.jpg` as fallback image
+- Generates permalink like: `/series/${slug}`
 
 ## 🧩 Returned Object Structure
 
@@ -47,17 +47,17 @@ The `permalink` URL can be parametrized; see below.
 
 ## 🛠️ Parameters
 
-| Name | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `posts` | Array | ✅ | — | Array of blog post objects |
-| `permalinkFn` | Function | ❌ | `/series/${slug}` | Function to generate permalink from slug (default provided) |
-| `defaultImage` | string | ❌ | `default.jpg` | Fallback image path if no image is provided |
+| Name           | Type     | Required | Default           | Description                                                 |
+| -------------- | -------- | -------- | ----------------- | ----------------------------------------------------------- |
+| `posts`        | Array    | ✅       | —                 | Array of blog post objects                                  |
+| `permalinkFn`  | Function | ❌       | `/series/${slug}` | Function to generate permalink from slug (default provided) |
+| `defaultImage` | string   | ❌       | `default.jpg`     | Fallback image path if no image is provided                 |
 
 ## 🧠 Notes
 
-* Posts must include a series field to be grouped.
-* Drafts are counted separately in the description.
-* The first post (chronologically) is used to represent the series visually.
+- Posts must include a series field to be grouped.
+- Drafts are counted separately in the description.
+- The first post (chronologically) is used to represent the series visually.
 
 ## 🧪 Example Integration
 
@@ -67,21 +67,21 @@ Use with a component like `SeriesCards` to render a grid of series previews.
 const seriesList = generateSeriesList();
 
 if (seriesList.length === 0) {
-return (
+  return (
     <div className="text--center margin-vert--xl">
-    <h2>No article series found</h2>
+      <h2>No article series found</h2>
     </div>
-);
+  );
 }
 
 return (
-<div className="row">
+  <div className="row">
     {seriesList.map((serie) => (
-    <div key={serie.seriesName} className="col col--4 margin-bottom--lg">
+      <div key={serie.seriesName} className="col col--4 margin-bottom--lg">
         <PostCard post={serie} />
-    </div>
+      </div>
     ))}
-</div>
+  </div>
 );
 ```
 

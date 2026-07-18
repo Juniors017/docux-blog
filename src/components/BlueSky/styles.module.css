@@ -1,342 +1,341 @@
 :root {
-.blueSkyLogo {
-  width: 20px;
-  height: 20px;
-}
+  .blueSkyLogo {
+    width: 20px;
+    height: 20px;
+  }
 
-/* Will contains all BlueSky buttons and comments */
-.blueSkyContainer {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--ifm-color-emphasis-200);
-}
+  /* Will contains all BlueSky buttons and comments */
+  .blueSkyContainer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+  }
 
-/* The container for all BlueSky comments */
-.blueSkyCommentsContainer {
-  margin-top: 1rem;
-  padding: 0.4rem 0.9rem;
-}
+  /* The container for all BlueSky comments */
+  .blueSkyCommentsContainer {
+    margin-top: 1rem;
+    padding: 0.4rem 0.9rem;
+  }
 
-/* The container for one single comment */
-.blueSkyCommentContainer {
-  margin-bottom: 1rem;
-  background-color: #f9f9f9;
-  padding: 0.8rem;
-  border-radius: 6px;
-  border-left: 2px solid #e0e0e0;
-}
+  /* The container for one single comment */
+  .blueSkyCommentContainer {
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+    padding: 0.8rem;
+    border-radius: 6px;
+    border-left: 2px solid #e0e0e0;
+  }
 
-.blueSkyCommentHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+  .blueSkyCommentHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-.blueSkyCommentAuthorInfos {
-  display: flex;
-  flex-direction: column;
-}
+  .blueSkyCommentAuthorInfos {
+    display: flex;
+    flex-direction: column;
+  }
 
-.blueSkyCommentAvatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px solid #a7a5a5;  
-  margin-right: 0.5rem;
-}
+  .blueSkyCommentAvatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid #a7a5a5;
+    margin-right: 0.5rem;
+  }
 
-.blueSkyCommentAuthorDisplayName {
-  margin: 0;
-  font-weight: bold;
-}
+  .blueSkyCommentAuthorDisplayName {
+    margin: 0;
+    font-weight: bold;
+  }
 
-.blueSkyCommentAuthorHandle {
-  margin: 0;
-  font-size: smaller;
-  font-weight: normal;
-  color: #555;
-  display: block;
-}
+  .blueSkyCommentAuthorHandle {
+    margin: 0;
+    font-size: smaller;
+    font-weight: normal;
+    color: #555;
+    display: block;
+  }
 
-.blueSkyCommentDate {
-  margin-left: auto;
-  font-size: smaller;
-  color: gray;
-}
+  .blueSkyCommentDate {
+    margin-left: auto;
+    font-size: smaller;
+    color: gray;
+  }
 
-.blueSkyCommentText {
-  margin: 0.3rem 0 0;
-}
+  .blueSkyCommentText {
+    margin: 0.3rem 0 0;
+  }
 
-.blueSkyCommentFooter {
-}
+  .blueSkyCommentFooter {
+  }
 
-.blueSkyCommentLikes::before {
-  content: "♡\a0";
-  color: rgb(224, 28, 143);
-}
+  .blueSkyCommentLikes::before {
+    content: "♡\a0";
+    color: rgb(224, 28, 143);
+  }
 
-.blueSkyCommentLikes::after {
-  content: " ";
-}
+  .blueSkyCommentLikes::after {
+    content: " ";
+  }
 
-.blueSkyCommentReposts::before {
-  content: "↺\a0";
-}
+  .blueSkyCommentReposts::before {
+    content: "↺\a0";
+  }
 
-.blueSkyCommentReposts::after {
-  content: " ";
-}
+  .blueSkyCommentReposts::after {
+    content: " ";
+  }
 
-.blueSkyCommentLink::before {
-  content: "→\a0";
-}
+  .blueSkyCommentLink::before {
+    content: "→\a0";
+  }
 
-.blueSkyCommentLink::after {
-  content: " ";
-}
+  .blueSkyCommentLink::after {
+    content: " ";
+  }
 
-.blueSkyCommentLink {
-  margin-right: 0.25rem;
-  display: inline-flex;
-  align-items: center;
-  color: #666;
-  text-decoration: none;
-  margin-top: 0.25rem;
-}
+  .blueSkyCommentLink {
+    margin-right: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+    text-decoration: none;
+    margin-top: 0.25rem;
+  }
 
-img.blueSkyCommentEmbedThumb {
-  max-height: 250px;
-}
+  img.blueSkyCommentEmbedThumb {
+    max-height: 250px;
+  }
 
-.blueSkyCommentImages {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
+  .blueSkyCommentImages {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
 
-.blueSkyCommentImage {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.25rem;
-  border: 1px solid #ccc;
-}
+  .blueSkyCommentImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+  }
 
+  .blueSkyNoCommentYet {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
 
-.blueSkyNoCommentYet {
-  color: #555;
-  font-size: 1rem;
-  line-height: 1.5;
-  text-align: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin: 20px 0;
-}
+  .blueSkyNoCommentYetCTA {
+    font-weight: bold;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
 
-.blueSkyNoCommentYetCTA {
-  font-weight: bold;
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.blueSkyButton {
-  align-items: center;
-  background-color: #f5f5f5;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  box-shadow: none;
-  color: #333333;
-  display: inline-flex;
-  font-size: 0.9rem;
-  font-weight: 400;
-  gap: 0.4rem;
-  margin-right: 0.4rem;
-  padding: 0.4rem 0.9rem;
-  text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-/* Hover effect */
-.blueSkyButton:hover {
-  background-color: #0062cc;
-}
-}
-
-[data-theme='dark'] {
-.blueSkyLogo {
-  width: 20px;
-  height: 20px;
-}
-
-/* Will contains all BlueSky buttons and comments */
-.blueSkyContainer {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--ifm-color-emphasis-200);
-}
-
-/* The container for all BlueSky comments */
-.blueSkyCommentsContainer {
-  margin-top: 1rem;
-}
-
-/* The container for one single comment */
-.blueSkyCommentContainer {
-  margin-bottom: 1rem;
-  background-color: var(--ifm-link-color);
-  padding: 0.8rem;
-  border-radius: 6px;
-  border-left: 2px solid rgb(132, 175, 15) !important;
-}
-
-.blueSkyCommentHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.blueSkyCommentAuthorInfos {
-  display: flex;
-  flex-direction: column;
+  .blueSkyButton {
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    box-shadow: none;
     color: #333333;
+    display: inline-flex;
+    font-size: 0.9rem;
+    font-weight: 400;
+    gap: 0.4rem;
+    margin-right: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
 
+  /* Hover effect */
+  .blueSkyButton:hover {
+    background-color: #0062cc;
+  }
 }
 
-.blueSkyCommentAvatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px solid #a7a5a5;
-  margin-right: 0.5rem;
-}
+[data-theme="dark"] {
+  .blueSkyLogo {
+    width: 20px;
+    height: 20px;
+  }
 
-.blueSkyCommentAuthorDisplayName {
-  margin: 0;
-  font-weight: bold;
-  color: #333333;
+  /* Will contains all BlueSky buttons and comments */
+  .blueSkyContainer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+  }
 
-}
+  /* The container for all BlueSky comments */
+  .blueSkyCommentsContainer {
+    margin-top: 1rem;
+  }
 
-.blueSkyCommentAuthorHandle {
-  margin: 0;
-  font-size: smaller;
-  font-weight: normal;
-  color: #131212;
-  display: block;
-}
+  /* The container for one single comment */
+  .blueSkyCommentContainer {
+    margin-bottom: 1rem;
+    background-color: var(--ifm-link-color);
+    padding: 0.8rem;
+    border-radius: 6px;
+    border-left: 2px solid rgb(132, 175, 15) !important;
+  }
 
-.blueSkyCommentDate {
-  margin-left: auto;
-  font-size: smaller;
-  color: rgb(97, 95, 95);
-}
+  .blueSkyCommentHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-.blueSkyCommentText {
-  margin: 0.3rem 0 0;
-  color: #333333;
+  .blueSkyCommentAuthorInfos {
+    display: flex;
+    flex-direction: column;
+    color: #333333;
+  }
 
-}
+  .blueSkyCommentAvatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid #a7a5a5;
+    margin-right: 0.5rem;
+  }
 
-.blueSkyCommentFooter {
-}
+  .blueSkyCommentAuthorDisplayName {
+    margin: 0;
+    font-weight: bold;
+    color: #333333;
+  }
 
-.blueSkyCommentLikes::before {
-  content: "♡\a0";
-  color: rgb(255, 0, 119);
-}
+  .blueSkyCommentAuthorHandle {
+    margin: 0;
+    font-size: smaller;
+    font-weight: normal;
+    color: #131212;
+    display: block;
+  }
 
-.blueSkyCommentLikes::after {
-  content: " ";
-}
+  .blueSkyCommentDate {
+    margin-left: auto;
+    font-size: smaller;
+    color: rgb(97, 95, 95);
+  }
 
-.blueSkyCommentReposts::before {
-  content: "↺\a0";
-  color: #2e5a06;
-}
+  .blueSkyCommentText {
+    margin: 0.3rem 0 0;
+    color: #333333;
+  }
 
-.blueSkyCommentReposts::after {
-  content: " ";
-}
+  .blueSkyCommentFooter {
+  }
 
-.blueSkyCommentLink::before {
-  content: "→\a0";
-  color: #2e5a06;
-}
+  .blueSkyCommentLikes::before {
+    content: "♡\a0";
+    color: rgb(255, 0, 119);
+  }
 
-.blueSkyCommentLink::after {
-  content: " ";
-}
+  .blueSkyCommentLikes::after {
+    content: " ";
+  }
 
-.blueSkyCommentLink {
-  margin-right: 0.25rem;
-  display: inline-flex;
-  align-items: center;
-  color: #2e5a06;
-  text-decoration: none;
-  margin-top: 0.25rem;
-}
+  .blueSkyCommentReposts::before {
+    content: "↺\a0";
+    color: #2e5a06;
+  }
 
-img.blueSkyCommentEmbedThumb {
-  max-height: 250px;
-}
+  .blueSkyCommentReposts::after {
+    content: " ";
+  }
 
-.blueSkyCommentImages {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
+  .blueSkyCommentLink::before {
+    content: "→\a0";
+    color: #2e5a06;
+  }
 
-.blueSkyCommentImage {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.25rem;
-  border: 1px solid #ccc;
-}
+  .blueSkyCommentLink::after {
+    content: " ";
+  }
 
+  .blueSkyCommentLink {
+    margin-right: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    color: #2e5a06;
+    text-decoration: none;
+    margin-top: 0.25rem;
+  }
 
-.blueSkyNoCommentYet {
-  color: #555;
-  font-size: 1rem;
-  line-height: 1.5;
-  text-align: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin: 20px 0;
-}
+  img.blueSkyCommentEmbedThumb {
+    max-height: 250px;
+  }
 
-.blueSkyNoCommentYetCTA {
-  font-weight: bold;
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: underline;
-}
+  .blueSkyCommentImages {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
 
-.blueSkyButton {
-  align-items: center;
-  background-color: #f5f5f5;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  box-shadow: none;
-  color: #333333;
-  display: inline-flex;
-  font-size: 0.9rem;
-  font-weight: 400;
-  gap: 0.4rem;
-  margin-right: 0.4rem;
-  padding: 0.4rem 0.9rem;
-  text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
+  .blueSkyCommentImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+  }
 
-/* Hover effect */
-.blueSkyButton:hover {
-  background-color: #0062cc;
-}
+  .blueSkyNoCommentYet {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .blueSkyNoCommentYetCTA {
+    font-weight: bold;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .blueSkyButton {
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    box-shadow: none;
+    color: #333333;
+    display: inline-flex;
+    font-size: 0.9rem;
+    font-weight: 400;
+    gap: 0.4rem;
+    margin-right: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    text-decoration: none;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  /* Hover effect */
+  .blueSkyButton:hover {
+    background-color: #0062cc;
+  }
 }

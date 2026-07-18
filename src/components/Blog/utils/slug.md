@@ -5,7 +5,7 @@ This utility provides a function to convert any string into a URL-friendly slug.
 ## Usage
 
 ```js
-import { createSlug } from '@site/src/components/Blog/utils/slug';
+import { createSlug } from "@site/src/components/Blog/utils/slug";
 
 const title = "Café au lait & croissants!";
 const slug = createSlug(title); // Output: "cafe-au-lait-croissants"
@@ -13,12 +13,12 @@ const slug = createSlug(title); // Output: "cafe-au-lait-croissants"
 
 ## Features
 
-* Converts to lowercase
-* Removes accents and diacritics
-* Strips special characters
-* Replaces spaces with hyphens
-* Collapses multiple hyphens
-* Trims leading/trailing hyphens
+- Converts to lowercase
+- Removes accents and diacritics
+- Strips special characters
+- Replaces spaces with hyphens
+- Collapses multiple hyphens
+- Trims leading/trailing hyphens
 
 ## Location
 

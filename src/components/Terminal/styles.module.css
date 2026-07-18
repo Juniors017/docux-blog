@@ -1,10 +1,10 @@
 /* Terminal container */
 .terminal {
   background: #1e1e1e; /* terminal background */
-  color: #d4d4d4;      /* default text color */
+  color: #d4d4d4; /* default text color */
   border-radius: 3px;
   font-family: "Fira Code", monospace;
-  overflow-x: auto;    /* fallback for extremely long lines */
+  overflow-x: auto; /* fallback for extremely long lines */
   margin-bottom: 2rem;
   box-shadow: 0 10px 25px 5px rgba(0, 0, 0, 0.3);
   position: relative; /* Essential for absolute positioning of the button */
@@ -27,7 +27,7 @@
   align-items: center;
   gap: 0.5rem;
   white-space: nowrap; /* keep icon + title on same line */
-  overflow: hidden;    /* truncate if too long */
+  overflow: hidden; /* truncate if too long */
 }
 
 .terminal_icon {
@@ -57,16 +57,22 @@
   display: inline-block;
 }
 
-.red { background: #ff5f56; }
-.yellow { background: #ffbd2e; }
-.green { background: #27c93f; }
+.red {
+  background: #ff5f56;
+}
+.yellow {
+  background: #ffbd2e;
+}
+.green {
+  background: #27c93f;
+}
 
 /* Terminal body */
 .terminal_body {
   margin: 0;
   padding: 0.75rem 1rem;
-  white-space: pre-wrap;  /* wrap long lines */
-  word-break: break-all;  /* wrap long words or paths */
+  white-space: pre-wrap; /* wrap long lines */
+  word-break: break-all; /* wrap long words or paths */
   font-family: "Fira Code", monospace;
   background-color: #1e1e1e;
 }
@@ -84,9 +90,9 @@
 
 /* Prompt for command line */
 .prompt {
-  user-select: none;      /* not copyable */
-  pointer-events: none;  /* cannot click */
-  color: #00ff00;        /* green prompt */
+  user-select: none; /* not copyable */
+  pointer-events: none; /* cannot click */
+  color: #00ff00; /* green prompt */
   flex-shrink: 0;
 }
 
@@ -98,9 +104,9 @@
 
 /* Optional no-wrap mode */
 .no_wrap {
-  white-space: pre;      /* don't wrap lines */
-  overflow-x: auto;      /* show horizontal scrollbar if too long */
-  word-break: normal;    /* no forced breaks */
+  white-space: pre; /* don't wrap lines */
+  overflow-x: auto; /* show horizontal scrollbar if too long */
+  word-break: normal; /* no forced breaks */
 }
 
 /* ------------------ */
@@ -141,7 +147,9 @@
 
 .terminal a {
   text-decoration: none;
-  color: var(--docusaurus-color-primary); /* Use a readable color from Docusaurus */
+  color: var(
+    --docusaurus-color-primary
+  ); /* Use a readable color from Docusaurus */
 }
 
 /* ------------------ */
@@ -155,7 +163,13 @@
 }
 
 @keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

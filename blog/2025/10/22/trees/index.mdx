@@ -6,7 +6,7 @@ schemaTypes: ["HowTo", "BlogPosting"]
 image: "/img/treesmap.webp"
 authors: ["docux"]
 mainTag: Design
-tags: ["react","mdx","component","tree","file-structure","Iconify"]
+tags: ["react", "mdx", "component", "tree", "file-structure", "Iconify"]
 date: 2025-10-22
 difficulty: "intermediate"
 totalTime: "PT20M"
@@ -16,7 +16,16 @@ inLanguage: "en"
 readingTime: "10 min"
 copyrightYear: 2025
 copyrightHolder: "Docux"
-keywords: ["docusaurus","trees component","tree view","file tree","folder structure","react component","mdx"]
+keywords:
+  [
+    "docusaurus",
+    "trees component",
+    "tree view",
+    "file tree",
+    "folder structure",
+    "react component",
+    "mdx",
+  ]
 hide_table_of_contents: false
 series: "Design your site"
 blueSkyRecordKey: 3m3razakaxc2j
@@ -30,9 +39,9 @@ blueSkyRecordKey: 3m3razakaxc2j
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ![](/img/treesmap.webp)
+
 </div>
 </center>
-
 
 ## Introduction
 
@@ -48,6 +57,7 @@ I created the **Trees** component to display **interactive file and folder trees
 </Trees>
 
 {/* truncate */}
+
 ### ✨ Key Features
 
 - **Intuitive syntax**: Use natural nested JSX tags
@@ -58,8 +68,6 @@ I created the **Trees** component to display **interactive file and folder trees
 - **Dark mode**: Full dark theme support
 - **Accessible**: Keyboard navigation and smooth animations
 - **Optional badges**: Add extra information
-
-
 
 ## Installation
 
@@ -80,6 +88,7 @@ src/components/Trees/
 │   └── TreeItem.js       # Shared internal component
 └── styles.module.css     # CSS styles
 ```
+
 The component follows a **modular architecture** inspired by React best practices
 
 ## Component Architecture
@@ -93,9 +102,12 @@ The component follows a **modular architecture** inspired by React best practice
 - Manages children rendering (Folder/File)
 - Applies initial indentation level (0)
 
-<Snippet filename="src/components/Trees/index.js" source="src/components/Trees/index.js" />
+<Snippet
+  filename="src/components/Trees/index.js"
+  source="src/components/Trees/index.js"
+/>
 
-### **`Trees/Folder/index.js`** 
+### **`Trees/Folder/index.js`**
 
 #### Folder Component
 
@@ -104,11 +116,13 @@ The component follows a **modular architecture** inspired by React best practice
 - Can contain children (sub-folders and files)
 - Props: `label`, `icon`, `expanded`, `badge`, `iconSize`
 
-<Snippet filename="src/components/Trees/Folder/index.js" source="src/components/Trees/Folder/index.js" />
+<Snippet
+  filename="src/components/Trees/Folder/index.js"
+  source="src/components/Trees/Folder/index.js"
+/>
 
+### **`Trees/File/index.js`**
 
-
-### **`Trees/File/index.js`** 
 #### File Component
 
 - Represents a file in the tree
@@ -116,7 +130,10 @@ The component follows a **modular architecture** inspired by React best practice
 - Cannot contain children
 - Props: `label`, `icon`, `badge`, `iconSize`
 
-<Snippet filename="src/components/Trees/File/index.js" source="src/components/Trees/File/index.js" />
+<Snippet
+  filename="src/components/Trees/File/index.js"
+  source="src/components/Trees/File/index.js"
+/>
 
 ### File `Trees/utils/TreeItem.js`
 
@@ -132,27 +149,31 @@ The component follows a **modular architecture** inspired by React best practice
 - ✅ User interaction (click to expand/collapse)
 
 **Icon display logic**:
+
 1. If `icon` is provided → Uses LogoIcon (Iconify)
 2. If `icon` is absent → Uses `defaultEmoji` (📁 or 📄)
 3. If `icon={null}` → No icon
 
-<Snippet filename="src/components/Trees/utils/TreeItem.js" source="src/components/Trees/utils/TreeItem.js" />
+<Snippet
+  filename="src/components/Trees/utils/TreeItem.js"
+  source="src/components/Trees/utils/TreeItem.js"
+/>
 
-
-
-### File **`styles.module.css`** 
+### File **`styles.module.css`**
 
 #### Component CSS Styles File
 
 Single CSS shared by all components with:
+
 - CSS variables for colors and spacing
 - Dark mode support (`[data-theme='dark']`)
 - Smooth animations for transitions
 - Modular classes (`.treeContainer`, `.nodeContent`, etc.)
 
-<Snippet filename="src/components/Trees/styles.module.css" source="src/components/Trees/styles.module.css" />
-
-
+<Snippet
+  filename="src/components/Trees/styles.module.css"
+  source="src/components/Trees/styles.module.css"
+/>
 
 ## MDX Integration
 
@@ -161,17 +182,17 @@ Single CSS shared by all components with:
 Open the file `src/theme/MDXComponents.js` and add the imports:
 
 ```javascript title="src/theme/MDXComponents.js"
-import React from 'react';
-import MDXComponents from '@theme-original/MDXComponents';
-import Trees from '@site/src/components/Trees';
-import Folder from '@site/src/components/Trees/Folder';
-import File from '@site/src/components/Trees/File';
+import React from "react";
+import MDXComponents from "@theme-original/MDXComponents";
+import Trees from "@site/src/components/Trees";
+import Folder from "@site/src/components/Trees/Folder";
+import File from "@site/src/components/Trees/File";
 
 export default {
   ...MDXComponents,
   Trees,
   Folder,
-  File
+  File,
 };
 ```
 
@@ -179,6 +200,7 @@ export default {
 
 Once registered in MDXComponents, the components are **automatically available** in all your `.mdx` files:
 [See official documentation](https://docusaurus.io/docs/markdown-features/react#mdx-component-scope)
+
 ```mdx title="blog/my-article.mdx"
 ## Project Structure
 
@@ -190,8 +212,6 @@ Once registered in MDXComponents, the components are **automatically available**
   <File label="package.json" />
 </Trees>
 ```
-
-
 
 ## Usage Examples
 
@@ -284,20 +304,26 @@ Add the `icon` prop to use [Iconify](https://icon-sets.iconify.design/) icons vi
 </Trees>
 ```
 
-
-
 ### Example 4: Complex Tree with Badges
 
 Use the `badge` prop to display additional information.
 
 <Trees title="Backend Architecture">
   <Folder label="src" icon="vscode-icons:default-folder">
-    <Folder label="controllers" icon="vscode-icons:folder-type-controller" badge="5 files">
+    <Folder
+      label="controllers"
+      icon="vscode-icons:folder-type-controller"
+      badge="5 files"
+    >
       <File label="userController.js" icon="vscode-icons:file-type-js" />
       <File label="authController.js" icon="vscode-icons:file-type-js" />
       <File label="productController.js" icon="vscode-icons:file-type-js" />
     </Folder>
-    <Folder label="models" icon="vscode-icons:folder-type-model" badge="3 files">
+    <Folder
+      label="models"
+      icon="vscode-icons:folder-type-model"
+      badge="3 files"
+    >
       <File label="User.js" icon="vscode-icons:file-type-js" />
       <File label="Product.js" icon="vscode-icons:file-type-js" />
     </Folder>
@@ -316,11 +342,19 @@ Use the `badge` prop to display additional information.
 ```jsx
 <Trees title="Backend Architecture">
   <Folder label="src" icon="vscode-icons:default-folder">
-    <Folder label="controllers" icon="vscode-icons:folder-type-controller" badge="5 files">
+    <Folder
+      label="controllers"
+      icon="vscode-icons:folder-type-controller"
+      badge="5 files"
+    >
       <File label="userController.js" icon="vscode-icons:file-type-js" />
       <File label="authController.js" icon="vscode-icons:file-type-js" />
     </Folder>
-    <Folder label="models" icon="vscode-icons:folder-type-model" badge="3 files">
+    <Folder
+      label="models"
+      icon="vscode-icons:folder-type-model"
+      badge="3 files"
+    >
       <File label="User.js" icon="vscode-icons:file-type-js" />
     </Folder>
     <File label="server.js" icon="vscode-icons:file-type-node" badge="main" />
@@ -429,12 +463,12 @@ Realistic example of a Docusaurus structure.
 
 </center>
 
-
 ## Usage With and Without LogoIcon
 
 ### Mode 1: Native Emojis (without LogoIcon)
 
 **Advantages**:
+
 - ✅ No external dependencies
 - ✅ Works immediately
 - ✅ Lightweight and performant
@@ -454,6 +488,7 @@ Result: 📁 Documents / 📄 report.pdf
 **Prerequisites**: Have the LogoIcon component installed in your project.
 
 **Advantages**:
+
 - ✅ Specific icons by file type
 - ✅ Over 150,000 icons available
 - ✅ Professional rendering
@@ -474,8 +509,6 @@ Pass `icon={null}` to completely disable icons.
 <File label="file.txt" icon={null} />
 ```
 
-
-
 ## Dark Mode Support
 
 The component automatically supports Docusaurus **dark mode** through CSS variables:
@@ -488,12 +521,10 @@ The component automatically supports Docusaurus **dark mode** through CSS variab
 }
 
 /* Dark mode (automatic) */
-[data-theme='dark'] .nodeContent:hover {
+[data-theme="dark"] .nodeContent:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
 ```
-
-
 
 ## Best Practices
 
@@ -510,8 +541,6 @@ The component automatically supports Docusaurus **dark mode** through CSS variab
 - Avoid mixing native emojis and LogoIcon in the same tree
 - Don't overuse badges (visual pollution)
 
-
-
 ## Conclusion
 
 The **Trees** component offers a **simple and flexible** solution for displaying trees in Docusaurus:
@@ -523,6 +552,7 @@ The **Trees** component offers a **simple and flexible** solution for displaying
 - **Modular architecture** easy to maintain
 
 **Perfect for**:
+
 - Documenting project structures
 - Presenting file architectures
 - Creating installation guides

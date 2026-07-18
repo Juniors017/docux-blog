@@ -1,6 +1,6 @@
-import React, { CSSProperties } from 'react';
-import clsx from 'clsx'; 
-import useBaseUrl from '@docusaurus/useBaseUrl'; // Import the useBaseUrl function from Docusaurus for generate valide image url
+import React, { CSSProperties } from "react";
+import clsx from "clsx";
+import useBaseUrl from "@docusaurus/useBaseUrl"; // Import the useBaseUrl function from Docusaurus for generate valide image url
 
 interface AvatarImageProps {
   className?: string; // Custom classes for the component
@@ -20,25 +20,20 @@ const AvatarImage: React.FC<AvatarImageProps> = ({
   alt, // Alt text for the image
   title, // Title text for the image
   link = false, // Default to false Determines if the image should be a link
-  destination = '#', // Link URL if link = true, default value if destination is not provided
+  destination = "#", // Link URL if link = true, default value if destination is not provided
   avatarSize, // Size class for the avatar image
-}) => {   
+}) => {
   const generatedAvatarUrl = useBaseUrl(avatarImageUrl);
-  const avatarImageSizeClass = avatarSize ? `avatar__photo--${avatarSize}` : '';
-  
+  const avatarImageSizeClass = avatarSize ? `avatar__photo--${avatarSize}` : "";
+
   const imgElement = (
     <img
-      className={clsx(
-        "avatar__photo", 
-        className, 
-        avatarImageSizeClass
-      )}
+      className={clsx("avatar__photo", className, avatarImageSizeClass)}
 
       style={style}
       src={generatedAvatarUrl}
       alt={alt}
       title={title}
-
     />
   );
 

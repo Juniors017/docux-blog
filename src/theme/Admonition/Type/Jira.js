@@ -1,15 +1,16 @@
-import React from 'react';
-import clsx from 'clsx';
-import Translate from '@docusaurus/Translate';
-import AdmonitionLayout from '@theme/Admonition/Layout';
-import IconJira from '/img/icon/jira.svg';
-const infimaClassName = 'alert alert--jira';
+import React from "react";
+import clsx from "clsx";
+import Translate from "@docusaurus/Translate";
+import AdmonitionLayout from "@theme/Admonition/Layout";
+import IconJira from "/img/icon/jira.svg";
+const infimaClassName = "alert alert--jira";
 const defaultProps = {
   icon: <IconJira />,
   title: (
     <Translate
       id="theme.admonition.jira"
-      description="The default label used for the Caution admonition (:::jira)">
+      description="The default label used for the Caution admonition (:::jira)"
+    >
       jira
     </Translate>
   ),
@@ -21,7 +22,8 @@ export default function AdmonitionTypeJira(props) {
     <AdmonitionLayout
       {...defaultProps}
       {...props}
-      className={clsx(infimaClassName, props.className)}>
+      className={clsx(infimaClassName, props.className)}
+    >
       {props.children}
     </AdmonitionLayout>
   );

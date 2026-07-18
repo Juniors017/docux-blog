@@ -4,7 +4,9 @@
 
 .contributorCard {
   height: 100%;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   overflow: hidden;
   border: 1px solid var(--ifm-color-emphasis-200);
 }
@@ -95,7 +97,7 @@
   opacity: 1;
 }
 
-[data-theme='dark'] .socialIcon {
+[data-theme="dark"] .socialIcon {
   filter: invert(1);
 }
 
