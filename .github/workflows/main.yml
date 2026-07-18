@@ -36,6 +36,16 @@ jobs:
           echo "📊 Preview:"
           head -n 20 static/json/photos-data.json
 
+      # Persist already-optimized images between runs so only new/changed
+      # images are re-encoded (see plugins/docusaurus-plugin-image-optimizer).
+      - name: Cache optimized images
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/docusaurus-plugin-image-optimizer
+          key: image-optimizer-${{ github.run_id }}
+          restore-keys: |
+            image-optimizer-
+
       - name: Build Docusaurus site
         run: npm run build
 

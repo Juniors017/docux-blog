@@ -7,6 +7,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 import path from "path";
 import { fileURLToPath } from "url";
 import pluginSeriesRoute from "./plugins/docusaurus-plugin-series-route/index.cjs";
+import pluginImageOptimizer from "./plugins/docusaurus-plugin-image-optimizer/index.cjs";
 import simpleAnalytics from "./plugins/simpleAnalytics/index.js";
 import remarkReplaceWords from "./plugins/remark-replace-words/index.js";
 import remarkSnippetLoader from "./plugins/remark-snippet-loader/index.cjs";
@@ -48,6 +49,7 @@ const config = {
 
   plugins: [
     [pluginSeriesRoute, {}],
+    [pluginImageOptimizer, { quality: 80, maxWidth: 1920 }],
     [simpleAnalytics, {}],
     [
       "@docusaurus/plugin-client-redirects",
