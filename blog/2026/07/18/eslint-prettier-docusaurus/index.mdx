@@ -1,0 +1,219 @@
+---
+title: "ESLint & Prettier in a Docusaurus Blog"
+slug: eslint-prettier-docusaurus-blog
+description: "How and why I added ESLint and Prettier to my Docusaurus blog: a flat ESLint config (JS/JSX + TypeScript), Prettier formatting, npm scripts, and the real bugs the linter actually caught."
+schemaTypes: ["HowTo", "BlogPosting"]
+image: "/img/clean-code.webp"
+authors: ["docux"]
+mainTag: tooling
+tags:
+  [
+    "eslint",
+    "prettier",
+    "linting",
+    "tooling",
+    "code-quality",
+    "developer-experience",
+    "docusaurus",
+  ]
+date: 2026-07-18
+last_update:
+  date: 2026-07-18
+  author: docux
+difficulty: "intermediate"
+totalTime: "PT20M"
+estimatedCost: "Free"
+tool: ["ESLint", "Prettier", "Node.js", "VSCode"]
+supply: ["Docusaurus", "Node.js"]
+yield: "A linted, auto-formatted Docusaurus codebase"
+genre: "Technical Tutorial"
+inLanguage: "en"
+isAccessibleForFree: true
+readingTime: "12 min"
+articleSection: "Tutorial"
+copyrightYear: 2026
+copyrightHolder: "Docux"
+category: "Web Development"
+keywords:
+  [
+    "docusaurus eslint",
+    "docusaurus prettier",
+    "eslint flat config",
+    "typescript-eslint",
+    "react hooks lint",
+    "code quality",
+    "developer experience",
+  ]
+hide_table_of_contents: false
+series: Tools
+---
+
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![AI 90%](https://img.shields.io/badge/AI-90%25-blue.svg)](https://github.com/Juniors017)
+
+![](/img/clean-code.webp)
+
+</div>
+</center>
+
+<div className="text--justify">
+For a long time this blog had no linter and no formatter. Files drifted into different styles (some indented with 4 spaces and single quotes, others with 2 spaces and double quotes), and nothing was watching for the small mistakes that slip into any React codebase. So I finally added **ESLint** and **Prettier** — and to my surprise, the linter immediately found real bugs that had been hiding in plain sight.
+
+This article explains what these two tools actually do, how I configured them for a modern Docusaurus (React 19, a few TypeScript components, custom plugins), and — the fun part — the concrete issues ESLint caught in my own code.
+
+:::tip Two tools, two jobs
+Prettier handles **form** (how the code looks). ESLint handles **substance** (whether the code is correct). They complement each other; they don't compete.
+:::
+
+</div>
+{/* truncate */}
+
+## ESLint vs Prettier: who does what?
+
+It's easy to install both without knowing where one stops and the other begins.
+
+- **Prettier — the formatter.** It only cares about layout: indentation, quotes, semicolons, line length, line breaks. It never judges your logic; it rewrites your code into one consistent style. You stop thinking about formatting: you type, you save, it's aligned.
+- **ESLint — the problem detector.** It analyses the _logic_ and flags what's suspicious or broken: unused variables, React hooks called conditionally, missing `key` props, and so on.
+
+To avoid the two stepping on each other, `eslint-config-prettier` turns off every ESLint rule that is purely about style, leaving formatting entirely to Prettier.
+
+## Installing the tooling
+
+<Terminal title="user@machine: ~/yourproject">
+
+npm install -D eslint @eslint/js globals eslint-plugin-react eslint-plugin-react-hooks eslint-config-prettier prettier typescript typescript-eslint
+
+</Terminal>
+
+I use flat config (`eslint.config.mjs`), the format ESLint recommends since v9. `typescript` + `typescript-eslint` are only needed because a few of my components are written in `.tsx`.
+
+<Trees>
+  <Folder label="docux-blog" expanded={true}>
+    <File label="eslint.config.mjs" icon="eslint" />
+    <File label=".prettierrc.json" icon="prettier" />
+    <File label=".prettierignore" icon="prettier" />
+    <File label="package.json" icon="json" />
+  </Folder>
+</Trees>
+
+## Prettier configuration
+
+A tiny config file is enough. I keep Prettier's defaults and only pin a couple of choices:
+
+<Snippet filename=".prettierrc.json" source=".prettierrc.json" />
+
+The `endOfLine: "auto"` line matters on Windows: it stops `format:check` from failing when Git checks files out with CRLF endings while Prettier expects LF.
+
+And a `.prettierignore` so generated and vendored files are left alone:
+
+```ignore
+build/
+.docusaurus/
+node_modules/
+static/
+package-lock.json
+*.min.js
+```
+
+## ESLint flat configuration
+
+Here is the whole config. A few decisions are worth calling out below it:
+
+<Snippet filename="eslint.config.mjs" source="eslint.config.mjs" />
+
+The choices that make this pleasant to live with:
+
+- **Two blocks, one for JS/JSX and one for TS/TSX.** The TypeScript block uses `typescript-eslint` so type-only imports (like `CSSProperties`) aren't wrongly flagged as unused, and `.tsx` files actually parse.
+- **`ecmaVersion: "latest"`** so recent syntax such as import attributes (`import x from "./data.json" with { type: "json" }`) is understood.
+- **`react/no-unescaped-entities` is off.** In a blog, JSX prose is full of apostrophes and quotes; this rule would drown the report in noise.
+- **`no-empty` allows empty `catch`.** Swallowing an error on purpose (analytics must never break navigation) is a legitimate pattern.
+- **`no-unused-vars` with `ignoreRestSiblings`.** This lets you destructure a key out only to drop it from a `...rest` object without a false positive.
+- **`prettier` is last**, so it can disable any stylistic rule that would conflict with the formatter.
+
+## The npm scripts
+
+```json
+{
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  }
+}
+```
+
+- `npm run lint` — report problems. `npm run lint:fix` — auto-fix what it can.
+- `npm run format` — reformat everything. `npm run format:check` — verify without touching files (great for CI).
+
+## What ESLint actually caught
+
+This is the part that convinced me the effort was worth it. On a codebase that "worked fine", the linter surfaced **45 findings**. Most were harmless cleanup, but a few were genuine bugs:
+
+:::danger A React hook called conditionally
+My `BlueSkyShare` component returned early **before** calling `useDocusaurusContext()`:
+
+```jsx
+export default function BlueSkyShare({ metadata }) {
+  const key = metadata?.frontMatter?.blueSkyRecordKey;
+  if (key) return; // ⛔ early return...
+  const { siteConfig } = useDocusaurusContext(); // ...before this hook
+  // ...
+}
+```
+
+Hooks must run in the same order on every render — this can crash React. The fix is to call the hook first, unconditionally, and `return null` afterwards.
+:::
+
+Other real issues:
+
+- **A missing `key` prop** on a `<PostCard>` inside a `.map()` — the classic React warning.
+- **A comment rendered as visible text.** A `// note` written directly in JSX children was being printed on the page (with a typo, `classNamme`, that nobody had noticed).
+- **A documented-but-ignored prop.** My `Hero` component declared a `className` prop in its PropTypes and JSDoc but never applied it. ESLint flagged it as unused; the real fix was to actually use it.
+- **~30 dead imports and variables** (`clsx`, `CSSProperties`, leftover helpers) removed across the project.
+
+## Handling `react-hooks/exhaustive-deps` carefully
+
+The trickiest warnings are the exhaustive-deps ones. **Do not** blindly add every suggested dependency — it can cause infinite re-render or re-fetch loops.
+
+When an effect is intentionally keyed on a subset of values, the honest fix is an explicit, _justified_ disable comment:
+
+```jsx
+useEffect(() => {
+  // ...fetch based on `username`
+  // Keyed on `username` only: adding `fetchAllRepos` (re-created each render)
+  // would re-trigger the fetch on every render.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [username]);
+```
+
+The point isn't to silence the linter — it's to document a deliberate decision so the next reader (often future you) understands why.
+
+:::note
+Where a missing dependency is genuinely stable (a value coming from config, for example), just add it. Reach for `eslint-disable` only when adding the dependency would change behavior.
+:::
+
+## The payoff
+
+After triaging all 45 findings, `npm run lint` reports **zero problems** and `npm run format:check` passes cleanly. Concretely, this bought me:
+
+1. **A safety net** — silly bugs are caught before they reach production.
+2. **Consistency** — the codebase stays readable and uniform, even months later.
+3. **Smoother contributions** — anyone helping on GitHub is held to the same standard automatically.
+
+## Going further
+
+The natural next step is to make these checks run automatically:
+
+- **In CI** (GitHub Actions): fail the build if `lint` or `format:check` fails.
+- **On commit** (with Husky + lint-staged): format and lint only the staged files before each commit.
+
+That way the tooling protects the project without anyone having to remember to run it — a topic for a future article.
+
+:::tip Takeaway
+Prettier keeps your code _pretty_; ESLint keeps it _correct_. Adding both to a Docusaurus blog takes twenty minutes and pays for itself the moment the linter finds its first real bug.
+:::
