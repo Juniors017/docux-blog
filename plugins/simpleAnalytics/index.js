@@ -1,20 +1,21 @@
-function simpleAnalyticsPlugin(context, options) {
+function simpleAnalyticsPlugin() {
   return {
     name: "docusaurus-plugin-simple-analytics",
     injectHtmlTags() {
       return {
         headTags: [
           {
-            tagName: 'script',
+            tagName: "script",
             attributes: {
-              src: 'https://scripts.simpleanalyticscdn.com/latest.js',
+              src: "https://scripts.simpleanalyticscdn.com/latest.js",
               async: true,
-              'data-hostname': 'docuxlab.com',
+              "data-hostname": "docuxlab.com",
             },
           },
           {
-            tagName: 'noscript',
-            innerHTML: '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />',
+            tagName: "noscript",
+            innerHTML:
+              '<img src="https://queue.simpleanalyticscdn.com/noscript.gif" alt="" referrerpolicy="no-referrer-when-downgrade" style="position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;" />',
           },
         ],
       };

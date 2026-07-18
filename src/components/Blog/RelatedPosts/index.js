@@ -24,8 +24,6 @@
  */
 
 import PropTypes from "prop-types";
-import Link from "@docusaurus/Link";
-import useBaseUrl from "@docusaurus/useBaseUrl";
 import { useBlogPost } from "@docusaurus/plugin-content-blog/client";
 import { getBlogMetadata } from "@site/src/components/Blog/utils/posts";
 import PostCard from "@site/src/components/Blog/PostCard";
@@ -86,7 +84,9 @@ export default function RelatedPosts({ count = 3, description = false }) {
       <div className="row">
         {related.map((post) => {
           // Si description est false, créer une copie du post sans description
-          const postToRender = description ? post : { ...post, description: null };
+          const postToRender = description
+            ? post
+            : { ...post, description: null };
           return <PostCard key={post.id} layout="small" post={postToRender} />;
         })}
       </div>

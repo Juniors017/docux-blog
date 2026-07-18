@@ -104,7 +104,7 @@ function renderEmbed(embed) {
 
   // Handle external link preview
   if (embed.$type === "app.bsky.embed.external#view") {
-    const { uri, title, description, thumb } = embed.external;
+    const { uri, title, thumb } = embed.external;
 
     return (
       <a
@@ -301,7 +301,7 @@ export default function BlueSkyComments({ metadata }) {
       }
     }
     fetchComments();
-  }, [blueSkyRecordKey]);
+  }, [blueSkyRecordKey, blueSkyConfig.handle]);
 
   const postUrl = `https://bsky.app/profile/${blueSkyConfig.handle}/post/${blueSkyRecordKey}`;
 

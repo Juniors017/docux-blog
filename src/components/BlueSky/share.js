@@ -36,15 +36,15 @@
 
 import Icon from "./bluesky.svg";
 import PropTypes from "prop-types";
-import styles from './styles.module.css';
+import styles from "./styles.module.css";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
-export default function BlueSkyShare({ metadata}) {
+export default function BlueSkyShare({ metadata }) {
+  // Hooks must run unconditionally, before any early return.
+  const { siteConfig } = useDocusaurusContext();
   const blueSkyRecordKey = metadata?.frontMatter?.blueSkyRecordKey;
 
-  if (blueSkyRecordKey) return;
-
-  const { siteConfig } = useDocusaurusContext();
+  if (blueSkyRecordKey) return null;
 
   if (!metadata.title || !metadata.permalink) {
     console.debug("<BlueSkyShare> Missing required properties", { metadata });
@@ -58,7 +58,13 @@ export default function BlueSkyShare({ metadata}) {
     )}`;
 
   return (
-    <a href={shareLink} target="_blank" rel="noopener noreferrer" className={styles.blueSkyButton} aria-label="Share this post on BlueSky">
+    <a
+      href={shareLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={styles.blueSkyButton}
+      aria-label="Share this post on BlueSky"
+    >
       <Icon alt="Bluesky Icon" className={styles.blueSkyLogo} />
       Share on BlueSky
     </a>
@@ -70,7 +76,7 @@ BlueSkyShare.propTypes = {
     title: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
     frontMatter: PropTypes.shape({
-      blueSkyRecordKey: PropTypes.string // Optional. If present this component will not display anything
-    })
-  }).isRequired
+      blueSkyRecordKey: PropTypes.string, // Optional. If present this component will not display anything
+    }),
+  }).isRequired,
 };

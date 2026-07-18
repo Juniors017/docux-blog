@@ -48,16 +48,6 @@ const parsePx = (v) => {
   return m ? Number(m[1]) : 0;
 };
 
-// Utility to recursively extract the raw text from a React component's children.
-const extractChildrenInnerText = (node) => {
-  if (typeof node === "string") return node;
-  if (Array.isArray(node))
-    return node.map(extractChildrenInnerText).join(" ");
-  if (React.isValidElement(node))
-    return extractChildrenInnerText(node.props.children);
-  return "";
-};
-
 /**
  * A flexible and accessible Tooltip component.
  * Displays a tooltip on hover or focus of a trigger element.
@@ -137,24 +127,36 @@ const Tooltip = ({
     // If the preferred position doesn't fit in the viewport, try the opposite position.
 
     // Vertical flipping
-    if (position === 'top' && triggerRect.top - tooltipRect.height - offset < 0) {
+    if (
+      position === "top" &&
+      triggerRect.top - tooltipRect.height - offset < 0
+    ) {
       if (triggerRect.bottom + tooltipRect.height + offset <= innerHeight) {
-        bestPosition = 'bottom';
+        bestPosition = "bottom";
       }
-    } else if (position === 'bottom' && triggerRect.bottom + tooltipRect.height + offset > innerHeight) {
+    } else if (
+      position === "bottom" &&
+      triggerRect.bottom + tooltipRect.height + offset > innerHeight
+    ) {
       if (triggerRect.top - tooltipRect.height - offset >= 0) {
-        bestPosition = 'top';
+        bestPosition = "top";
       }
     }
 
     // Horizontal flipping
-    if (position === 'left' && triggerRect.left - tooltipRect.width - offset < 0) {
+    if (
+      position === "left" &&
+      triggerRect.left - tooltipRect.width - offset < 0
+    ) {
       if (triggerRect.right + tooltipRect.width + offset <= innerWidth) {
-        bestPosition = 'right';
+        bestPosition = "right";
       }
-    } else if (position === 'right' && triggerRect.right + tooltipRect.width + offset > innerWidth) {
+    } else if (
+      position === "right" &&
+      triggerRect.right + tooltipRect.width + offset > innerWidth
+    ) {
       if (triggerRect.left - tooltipRect.width - offset >= 0) {
-        bestPosition = 'left';
+        bestPosition = "left";
       }
     }
 
@@ -213,11 +215,22 @@ const Tooltip = ({
     const ARROW_WIDTH = 8;
     const ARROW_HEIGHT = 8;
     const newArrowCoords = {};
-    if (bestPosition === 'top' || bestPosition === 'bottom') {
-      const arrowLeft = (triggerRect.left + scrollX + triggerRect.width / 2) - left - (ARROW_WIDTH / 2);
+    if (bestPosition === "top" || bestPosition === "bottom") {
+      const arrowLeft =
+        triggerRect.left +
+        scrollX +
+        triggerRect.width / 2 -
+        left -
+        ARROW_WIDTH / 2;
       newArrowCoords.left = `${arrowLeft}px`;
-    } else { // 'left' or 'right'
-      const arrowTop = (triggerRect.top + scrollY + triggerRect.height / 2) - top - (ARROW_HEIGHT / 2);
+    } else {
+      // 'left' or 'right'
+      const arrowTop =
+        triggerRect.top +
+        scrollY +
+        triggerRect.height / 2 -
+        top -
+        ARROW_HEIGHT / 2;
       newArrowCoords.top = `${arrowTop}px`;
     }
     setArrowCoords(newArrowCoords);
@@ -304,10 +317,10 @@ const Tooltip = ({
       typeof model === "string"
         ? tooltipModels[model] || {}
         : typeof model === "function"
-        ? model(style) || {}
-        : typeof model === "object"
-        ? model
-        : {};
+          ? model(style) || {}
+          : typeof model === "object"
+            ? model
+            : {};
 
     const _mergedStyle = { ...modelStyle, ...style };
     const imageSize = parsePx(_mergedStyle.imageSize || 0);
@@ -325,7 +338,7 @@ const Tooltip = ({
   // Prepares the content (title and body) of the tooltip
   const { contentTop, contentMainNodes } = useMemo(() => {
     // The title is the `text` prop.
-    const _contentTop = (typeof text === "string" && text.trim()) ? text : null;
+    const _contentTop = typeof text === "string" && text.trim() ? text : null;
 
     // The main content is the `children` prop.
     const _contentMain = children;
@@ -334,13 +347,11 @@ const Tooltip = ({
     // Otherwise, render it directly (assuming it's JSX).
     const _contentMainNodes =
       typeof _contentMain === "string"
-        ? _contentMain
-            .split(/\n\s*\n/)
-            .map((p, idx) => (
-              <p key={idx} className={styles.paragraph}>
-                {p}
-              </p>
-            ))
+        ? _contentMain.split(/\n\s*\n/).map((p, idx) => (
+            <p key={idx} className={styles.paragraph}>
+              {p}
+            </p>
+          ))
         : _contentMain;
 
     return { contentTop: _contentTop, contentMainNodes: _contentMainNodes };
@@ -397,9 +408,7 @@ const Tooltip = ({
         style={{
           ...arrowCoords, // Apply the dynamic position of the arrow
           background:
-            mergedStyle.backgroundColor ||
-            mergedStyle.background ||
-            "#333",
+            mergedStyle.backgroundColor || mergedStyle.background || "#333",
           boxShadow:
             mergedStyle.boxShadow ||
             (shadow ? "0 4px 10px rgba(0,0,0,0.2)" : "none"),
@@ -429,13 +438,20 @@ Tooltip.propTypes = {
   // Pre-defined style model, custom style object, or a function returning a style object.
   // If string, must be one of the predefined models.
   model: PropTypes.oneOfType([
-    PropTypes.oneOf(['info', 'success', 'warning', 'error', 'teacher', 'suricate']),
+    PropTypes.oneOf([
+      "info",
+      "success",
+      "warning",
+      "error",
+      "teacher",
+      "suricate",
+    ]),
     PropTypes.object,
     PropTypes.func,
   ]),
 
   // Preferred position of the tooltip relative to the trigger element.
-  position: PropTypes.oneOf(['top', 'bottom', 'left', 'right']),
+  position: PropTypes.oneOf(["top", "bottom", "left", "right"]),
 
   // Delay in milliseconds before showing the tooltip.
   delay: PropTypes.number,
@@ -464,10 +480,4 @@ Tooltip.defaultProps = {
   block: false,
 };
 
-
 export default Tooltip;
-
-
-
-
-

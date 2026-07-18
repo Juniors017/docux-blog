@@ -130,6 +130,9 @@ export default function GithubProjects({ username }) {
     } else {
       fetchAllRepos();
     }
+    // Effect is intentionally keyed on `username` only: adding `fetchAllRepos`
+    // (re-created each render) would re-trigger the fetch on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   const allRepos = useMemo(

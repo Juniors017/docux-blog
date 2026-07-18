@@ -34,7 +34,7 @@ export default function SeriesCards() {
     <div className="container margin-top--lg margin-bottom--lg">
       <div className="row">
         {seriesList.map((serie) => (
-          <PostCard post={serie} />
+          <PostCard key={serie.permalink} post={serie} />
         ))}
       </div>
     </div>

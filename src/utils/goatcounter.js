@@ -4,13 +4,13 @@
 let lastCountedPath;
 
 export function onRouteDidUpdate({ location, previousLocation }) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
   // Avoid double-counting the initial load: only count when there's a previous location
   if (!previousLocation) return;
 
   const gc = window.goatcounter;
-  if (!gc || typeof gc.count !== 'function') return;
+  if (!gc || typeof gc.count !== "function") return;
 
   const path = `${location.pathname}${location.search}${location.hash}`;
   const prevPath = `${previousLocation.pathname}${previousLocation.search}${previousLocation.hash}`;
@@ -22,7 +22,7 @@ export function onRouteDidUpdate({ location, previousLocation }) {
   // Count pageview. Title is optional, but useful.
   try {
     gc.count({ path, title: document.title });
-  } catch (e) {
+  } catch {
     // Swallow errors: analytics must never break navigation
     // Optionally, retry once shortly after script load
     setTimeout(() => {

@@ -8,7 +8,10 @@ import PostCard from "@site/src/components/Blog/PostCard";
 export default function SeriesArticlesPage() {
   const location = useLocation();
 
-  const match = matchPath(location.pathname, { path: "/series/:slug", exact: true });
+  const match = matchPath(location.pathname, {
+    path: "/series/:slug",
+    exact: true,
+  });
   const slug = match?.params?.slug;
 
   if (!slug) {
@@ -31,7 +34,7 @@ export default function SeriesArticlesPage() {
   const originalSeriesName =
     seriesPosts.length > 0 ? seriesPosts[0].series : slug;
 
-  const sortedPosts = seriesPosts.sort(
+  const sortedPosts = [...seriesPosts].sort(
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 
@@ -42,7 +45,7 @@ export default function SeriesArticlesPage() {
         {sortedPosts.length > 0 ? (
           <div className="row">
             {sortedPosts.map((post) => (
-              <PostCard key={post.title} post={post} />
+              <PostCard key={post.permalink} post={post} />
             ))}
           </div>
         ) : (
