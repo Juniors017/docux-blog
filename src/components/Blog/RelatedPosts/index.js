@@ -87,7 +87,9 @@ export default function RelatedPosts({ count = 3, description = false }) {
           const postToRender = description
             ? post
             : { ...post, description: null };
-          return <PostCard key={post.id} layout="small" post={postToRender} />;
+          return (
+            <PostCard key={post.permalink} layout="small" post={postToRender} />
+          );
         })}
       </div>
     </>
