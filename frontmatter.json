@@ -114,23 +114,17 @@
     "webp",
     "workflow"
   ],
-  "frontMatter.taxonomy.fieldGroups": [
+  "frontMatter.taxonomy.customTaxonomy": [
     {
-      "id": "faqItem",
-      "labelField": "question",
-      "fields": [
-        {
-          "title": "Question",
-          "name": "question",
-          "type": "string",
-          "required": true
-        },
-        {
-          "title": "Réponse",
-          "name": "answer",
-          "type": "string",
-          "required": true
-        }
+      "id": "series",
+      "options": [
+        "Api and scripts in Docusaurus",
+        "CMS & IHM",
+        "Design your site",
+        "Docusaurus Plugins",
+        "infima components",
+        "SEO & Analytics",
+        "Tools"
       ]
     }
   ],
@@ -161,14 +155,14 @@
           "title": "Slug",
           "name": "slug",
           "type": "string",
-          "description": "URL de l'article (sans /blog/). Ex : my-article-name",
+          "description": "URL de l'article, sans /blog/. Ex : my-article-name",
           "required": true
         },
         {
           "title": "Description",
           "name": "description",
           "type": "string",
-          "description": "Résumé SEO affiché dans les résultats de recherche.",
+          "description": "Résumé SEO. Au-delà de 160 caractères, Google tronque.",
           "required": true
         },
         {
@@ -209,7 +203,10 @@
             {
               "title": "Auteur",
               "name": "author",
-              "type": "string"
+              "type": "choice",
+              "choices": [
+                "docux"
+              ]
             }
           ]
         },
@@ -235,88 +232,24 @@
         {
           "title": "Tag principal",
           "name": "mainTag",
-          "type": "string",
-          "description": "Utilisé par le composant RelatedPosts."
+          "type": "tags",
+          "taxonomyLimit": 1,
+          "singleValueAsString": true,
+          "description": "Un seul tag, utilisé par le composant RelatedPosts."
         },
         {
-          "title": "Série",
+          "title": "Séries",
           "name": "series",
-          "type": "choice",
-          "choices": [
-            "Api and scripts in Docusaurus",
-            "CMS & IHM",
-            "Design your site",
-            "Docusaurus Plugins",
-            "infima components",
-            "SEO & Analytics",
-            "Tools"
-          ],
-          "description": "Attention : le champ s'écrit bien « series » (et non « serie »)."
+          "type": "taxonomy",
+          "taxonomyId": "series",
+          "taxonomyLimit": 1,
+          "singleValueAsString": true,
+          "description": "Liste éditable depuis le dashboard Front Matter (taxonomie « series »)."
         },
         {
           "title": "Masquer le sommaire",
           "name": "hide_table_of_contents",
           "type": "boolean"
-        },
-        {
-          "title": "Niveau min. du sommaire",
-          "name": "toc_min_heading_level",
-          "type": "number"
-        },
-        {
-          "title": "Niveau max. du sommaire",
-          "name": "toc_max_heading_level",
-          "type": "number"
-        },
-        {
-          "type": "divider",
-          "name": "divider_seo"
-        },
-        {
-          "type": "heading",
-          "title": "SEO & données structurées",
-          "name": "heading_seo"
-        },
-        {
-          "title": "Types de schéma",
-          "name": "schemaTypes",
-          "type": "choice",
-          "multiple": true,
-          "choices": [
-            "BlogPosting",
-            "FAQPage",
-            "HowTo",
-            "TechArticle"
-          ]
-        },
-        {
-          "title": "FAQ",
-          "name": "faq",
-          "type": "block",
-          "fieldGroup": [
-            "faqItem"
-          ],
-          "description": "Questions/réponses pour le schéma FAQPage."
-        },
-        {
-          "title": "Mots-clés",
-          "name": "keywords",
-          "type": "list"
-        },
-        {
-          "title": "Genre",
-          "name": "genre",
-          "type": "string"
-        },
-        {
-          "title": "Catégorie",
-          "name": "category",
-          "type": "string"
-        },
-        {
-          "title": "Section d'article",
-          "name": "articleSection",
-          "type": "string"
         },
         {
           "title": "Langue",
@@ -325,167 +258,9 @@
           "choices": [
             "en",
             "fr-FR"
-          ]
-        },
-        {
-          "title": "Accessible gratuitement",
-          "name": "isAccessibleForFree",
-          "type": "boolean"
-        },
-        {
-          "title": "Temps de lecture",
-          "name": "readingTime",
-          "type": "string"
-        },
-        {
-          "title": "Nombre de mots",
-          "name": "wordCount",
-          "type": "number"
-        },
-        {
-          "title": "Audience",
-          "name": "audience",
-          "type": "string"
-        },
-        {
-          "title": "Année de copyright",
-          "name": "copyrightYear",
-          "type": "number"
-        },
-        {
-          "title": "Détenteur du copyright",
-          "name": "copyrightHolder",
-          "type": "string"
-        },
-        {
-          "type": "divider",
-          "name": "divider_howto"
-        },
-        {
-          "type": "heading",
-          "title": "Tutoriel (HowTo)",
-          "name": "heading_howto"
-        },
-        {
-          "title": "Difficulté",
-          "name": "difficulty",
-          "type": "choice",
-          "choices": [
-            "Beginner",
-            "Intermediate",
-            "Advanced"
           ],
-          "description": "Vocabulaire normalisé : évite les 8 variantes présentes historiquement."
-        },
-        {
-          "title": "Durée totale",
-          "name": "totalTime",
-          "type": "string",
-          "description": "Durée ISO 8601. Ex : PT30M pour 30 minutes."
-        },
-        {
-          "title": "Temps de préparation",
-          "name": "prepTime",
-          "type": "string"
-        },
-        {
-          "title": "Temps de réalisation",
-          "name": "performTime",
-          "type": "string"
-        },
-        {
-          "title": "Temps requis",
-          "name": "timeRequired",
-          "type": "string"
-        },
-        {
-          "title": "Coût estimé",
-          "name": "estimatedCost",
-          "type": "string"
-        },
-        {
-          "title": "Résultat obtenu",
-          "name": "yield",
-          "type": "string"
-        },
-        {
-          "title": "Outils",
-          "name": "tool",
-          "type": "list"
-        },
-        {
-          "title": "Prérequis / fournitures",
-          "name": "supply",
-          "type": "list"
-        },
-        {
-          "title": "Dépendances",
-          "name": "dependencies",
-          "type": "list"
-        },
-        {
-          "type": "divider",
-          "name": "divider_tech"
-        },
-        {
-          "type": "heading",
-          "title": "Technique & pédagogie",
-          "name": "heading_tech"
-        },
-        {
-          "title": "Niveau de maîtrise",
-          "name": "proficiencyLevel",
-          "type": "string"
-        },
-        {
-          "title": "Langage de programmation",
-          "name": "programmingLanguage",
-          "type": "string"
-        },
-        {
-          "title": "Catégorie d'application",
-          "name": "applicationCategory",
-          "type": "string"
-        },
-        {
-          "title": "Système d'exploitation",
-          "name": "operatingSystem",
-          "type": "string"
-        },
-        {
-          "title": "Navigateurs requis",
-          "name": "browserRequirements",
-          "type": "string"
-        },
-        {
-          "title": "Type de ressource pédagogique",
-          "name": "learningResourceType",
-          "type": "string"
-        },
-        {
-          "title": "Niveau pédagogique",
-          "name": "educationalLevel",
-          "type": "string"
-        },
-        {
-          "title": "Usage pédagogique",
-          "name": "educationalUse",
-          "type": "string"
-        },
-        {
-          "title": "Dépôt de code",
-          "name": "codeRepository",
-          "type": "string"
-        },
-        {
-          "title": "Version",
-          "name": "version",
-          "type": "string"
-        },
-        {
-          "title": "Version du logiciel",
-          "name": "softwareVersion",
-          "type": "string"
+          "default": "en",
+          "description": "Le blog est publié en anglais ; fr-FR sert aux brouillons en attente de traduction."
         },
         {
           "type": "divider",
