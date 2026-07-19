@@ -1,0 +1,508 @@
+{
+  "$schema": "https://frontmatter.codes/frontmatter.schema.json",
+  "frontMatter.framework.id": "docusaurus",
+  "frontMatter.content.publicFolder": "static",
+  "frontMatter.preview.host": "http://localhost:3000",
+  "frontMatter.content.defaultFileType": "mdx",
+  "frontMatter.content.pageFolders": [
+    {
+      "title": "Blog",
+      "path": "[[workspace]]/blog",
+      "contentTypes": [
+        "article"
+      ]
+    }
+  ],
+  "frontMatter.taxonomy.seoTitleLength": 60,
+  "frontMatter.taxonomy.seoDescriptionLength": 160,
+  "frontMatter.taxonomy.tags": [
+    "404",
+    "accessibility",
+    "aide",
+    "analytics",
+    "animation",
+    "animations",
+    "api",
+    "architecture",
+    "automation",
+    "automatisation",
+    "avatar",
+    "build",
+    "card",
+    "cas-pratiques",
+    "cloudflare",
+    "cms",
+    "code-quality",
+    "columns",
+    "component",
+    "components",
+    "conditional-rendering",
+    "contenu",
+    "création-contenu",
+    "css",
+    "custom-page",
+    "customization",
+    "date",
+    "debug-tools",
+    "démo",
+    "design",
+    "developer-experience",
+    "docusaurus",
+    "eslint",
+    "faq",
+    "file-structure",
+    "front-end",
+    "frontmatter-cms",
+    "github-actions",
+    "glossary",
+    "goatcounter",
+    "grid",
+    "guide",
+    "howto",
+    "icon",
+    "iconify",
+    "Iconify",
+    "icons",
+    "images",
+    "infima",
+    "javascript",
+    "layout",
+    "lightbox",
+    "linting",
+    "live",
+    "live-code",
+    "logos",
+    "mdx",
+    "metadata",
+    "navigation",
+    "optimization",
+    "outils",
+    "performance",
+    "photos",
+    "playground",
+    "plugin",
+    "prettier",
+    "privacy",
+    "productivité",
+    "progress",
+    "questions",
+    "react",
+    "remark",
+    "replacement",
+    "responsive-design",
+    "rich-results",
+    "schema-org",
+    "scripts",
+    "scroll",
+    "seo",
+    "SEO",
+    "sharp",
+    "simple-analytics",
+    "skills",
+    "spa",
+    "static",
+    "support",
+    "svg",
+    "swizzle",
+    "time",
+    "tooling",
+    "tooltip",
+    "tree",
+    "tutorial",
+    "views",
+    "vscode",
+    "webp",
+    "workflow"
+  ],
+  "frontMatter.taxonomy.fieldGroups": [
+    {
+      "id": "faqItem",
+      "labelField": "question",
+      "fields": [
+        {
+          "title": "Question",
+          "name": "question",
+          "type": "string",
+          "required": true
+        },
+        {
+          "title": "Réponse",
+          "name": "answer",
+          "type": "string",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "frontMatter.taxonomy.contentTypes": [
+    {
+      "name": "article",
+      "fileType": "mdx",
+      "pageBundle": true,
+      "defaultFileName": "index",
+      "slugTemplate": "{{title}}",
+      "filePrefix": "{{year}}/{{month}}/{{day}}/",
+      "previewPath": "blog",
+      "trailingSlash": true,
+      "clearEmpty": true,
+      "fields": [
+        {
+          "type": "heading",
+          "title": "Contenu",
+          "name": "heading_content"
+        },
+        {
+          "title": "Titre",
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "title": "Slug",
+          "name": "slug",
+          "type": "string",
+          "description": "URL de l'article (sans /blog/). Ex : my-article-name",
+          "required": true
+        },
+        {
+          "title": "Description",
+          "name": "description",
+          "type": "string",
+          "description": "Résumé SEO affiché dans les résultats de recherche.",
+          "required": true
+        },
+        {
+          "title": "Image de couverture",
+          "name": "image",
+          "type": "image",
+          "isPreviewImage": true
+        },
+        {
+          "title": "Auteurs",
+          "name": "authors",
+          "type": "choice",
+          "multiple": true,
+          "choices": [
+            "docux"
+          ],
+          "description": "Doit correspondre à une clé de blog/authors.yml."
+        },
+        {
+          "title": "Date de publication",
+          "name": "date",
+          "type": "datetime",
+          "default": "{{now}}",
+          "isPublishDate": true,
+          "required": true
+        },
+        {
+          "title": "Dernière mise à jour",
+          "name": "last_update",
+          "type": "fields",
+          "fields": [
+            {
+              "title": "Date",
+              "name": "date",
+              "type": "datetime",
+              "isModifiedDate": true
+            },
+            {
+              "title": "Auteur",
+              "name": "author",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "title": "Brouillon",
+          "name": "draft",
+          "type": "draft"
+        },
+        {
+          "type": "divider",
+          "name": "divider_taxonomy"
+        },
+        {
+          "type": "heading",
+          "title": "Classement",
+          "name": "heading_taxonomy"
+        },
+        {
+          "title": "Tags",
+          "name": "tags",
+          "type": "tags"
+        },
+        {
+          "title": "Tag principal",
+          "name": "mainTag",
+          "type": "string",
+          "description": "Utilisé par le composant RelatedPosts."
+        },
+        {
+          "title": "Série",
+          "name": "series",
+          "type": "choice",
+          "choices": [
+            "Api and scripts in Docusaurus",
+            "CMS & IHM",
+            "Design your site",
+            "Docusaurus Plugins",
+            "infima components",
+            "SEO & Analytics",
+            "Tools"
+          ],
+          "description": "Attention : le champ s'écrit bien « series » (et non « serie »)."
+        },
+        {
+          "title": "Masquer le sommaire",
+          "name": "hide_table_of_contents",
+          "type": "boolean"
+        },
+        {
+          "title": "Niveau min. du sommaire",
+          "name": "toc_min_heading_level",
+          "type": "number"
+        },
+        {
+          "title": "Niveau max. du sommaire",
+          "name": "toc_max_heading_level",
+          "type": "number"
+        },
+        {
+          "type": "divider",
+          "name": "divider_seo"
+        },
+        {
+          "type": "heading",
+          "title": "SEO & données structurées",
+          "name": "heading_seo"
+        },
+        {
+          "title": "Types de schéma",
+          "name": "schemaTypes",
+          "type": "choice",
+          "multiple": true,
+          "choices": [
+            "BlogPosting",
+            "FAQPage",
+            "HowTo",
+            "TechArticle"
+          ]
+        },
+        {
+          "title": "FAQ",
+          "name": "faq",
+          "type": "block",
+          "fieldGroup": [
+            "faqItem"
+          ],
+          "description": "Questions/réponses pour le schéma FAQPage."
+        },
+        {
+          "title": "Mots-clés",
+          "name": "keywords",
+          "type": "list"
+        },
+        {
+          "title": "Genre",
+          "name": "genre",
+          "type": "string"
+        },
+        {
+          "title": "Catégorie",
+          "name": "category",
+          "type": "string"
+        },
+        {
+          "title": "Section d'article",
+          "name": "articleSection",
+          "type": "string"
+        },
+        {
+          "title": "Langue",
+          "name": "inLanguage",
+          "type": "choice",
+          "choices": [
+            "en",
+            "fr-FR"
+          ]
+        },
+        {
+          "title": "Accessible gratuitement",
+          "name": "isAccessibleForFree",
+          "type": "boolean"
+        },
+        {
+          "title": "Temps de lecture",
+          "name": "readingTime",
+          "type": "string"
+        },
+        {
+          "title": "Nombre de mots",
+          "name": "wordCount",
+          "type": "number"
+        },
+        {
+          "title": "Audience",
+          "name": "audience",
+          "type": "string"
+        },
+        {
+          "title": "Année de copyright",
+          "name": "copyrightYear",
+          "type": "number"
+        },
+        {
+          "title": "Détenteur du copyright",
+          "name": "copyrightHolder",
+          "type": "string"
+        },
+        {
+          "type": "divider",
+          "name": "divider_howto"
+        },
+        {
+          "type": "heading",
+          "title": "Tutoriel (HowTo)",
+          "name": "heading_howto"
+        },
+        {
+          "title": "Difficulté",
+          "name": "difficulty",
+          "type": "choice",
+          "choices": [
+            "Beginner",
+            "Intermediate",
+            "Advanced"
+          ],
+          "description": "Vocabulaire normalisé : évite les 8 variantes présentes historiquement."
+        },
+        {
+          "title": "Durée totale",
+          "name": "totalTime",
+          "type": "string",
+          "description": "Durée ISO 8601. Ex : PT30M pour 30 minutes."
+        },
+        {
+          "title": "Temps de préparation",
+          "name": "prepTime",
+          "type": "string"
+        },
+        {
+          "title": "Temps de réalisation",
+          "name": "performTime",
+          "type": "string"
+        },
+        {
+          "title": "Temps requis",
+          "name": "timeRequired",
+          "type": "string"
+        },
+        {
+          "title": "Coût estimé",
+          "name": "estimatedCost",
+          "type": "string"
+        },
+        {
+          "title": "Résultat obtenu",
+          "name": "yield",
+          "type": "string"
+        },
+        {
+          "title": "Outils",
+          "name": "tool",
+          "type": "list"
+        },
+        {
+          "title": "Prérequis / fournitures",
+          "name": "supply",
+          "type": "list"
+        },
+        {
+          "title": "Dépendances",
+          "name": "dependencies",
+          "type": "list"
+        },
+        {
+          "type": "divider",
+          "name": "divider_tech"
+        },
+        {
+          "type": "heading",
+          "title": "Technique & pédagogie",
+          "name": "heading_tech"
+        },
+        {
+          "title": "Niveau de maîtrise",
+          "name": "proficiencyLevel",
+          "type": "string"
+        },
+        {
+          "title": "Langage de programmation",
+          "name": "programmingLanguage",
+          "type": "string"
+        },
+        {
+          "title": "Catégorie d'application",
+          "name": "applicationCategory",
+          "type": "string"
+        },
+        {
+          "title": "Système d'exploitation",
+          "name": "operatingSystem",
+          "type": "string"
+        },
+        {
+          "title": "Navigateurs requis",
+          "name": "browserRequirements",
+          "type": "string"
+        },
+        {
+          "title": "Type de ressource pédagogique",
+          "name": "learningResourceType",
+          "type": "string"
+        },
+        {
+          "title": "Niveau pédagogique",
+          "name": "educationalLevel",
+          "type": "string"
+        },
+        {
+          "title": "Usage pédagogique",
+          "name": "educationalUse",
+          "type": "string"
+        },
+        {
+          "title": "Dépôt de code",
+          "name": "codeRepository",
+          "type": "string"
+        },
+        {
+          "title": "Version",
+          "name": "version",
+          "type": "string"
+        },
+        {
+          "title": "Version du logiciel",
+          "name": "softwareVersion",
+          "type": "string"
+        },
+        {
+          "type": "divider",
+          "name": "divider_social"
+        },
+        {
+          "type": "heading",
+          "title": "Social",
+          "name": "heading_social"
+        },
+        {
+          "title": "Clé du post BlueSky",
+          "name": "blueSkyRecordKey",
+          "type": "string",
+          "description": "Partie après /post/ dans l'URL BlueSky. Active le fil de commentaires."
+        }
+      ]
+    }
+  ]
+}
