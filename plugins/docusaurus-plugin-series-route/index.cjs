@@ -72,7 +72,13 @@ module.exports = function pluginSeriesRoute(context) {
               parseFrontMatter: DEFAULT_PARSE_FRONT_MATTER,
               removeContentTitle: true,
             });
-            if (frontMatter && frontMatter.series) {
+            // Drafts are excluded from production builds, so their series must
+            // not create an empty route either.
+            const isDraft =
+              process.env.NODE_ENV === "production" &&
+              frontMatter &&
+              frontMatter.draft;
+            if (frontMatter && frontMatter.series && !isDraft) {
               seriesNames.add(String(frontMatter.series));
             }
           } catch {
