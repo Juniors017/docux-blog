@@ -1,0 +1,414 @@
+---
+title: "Installer et configurer Front Matter CMS sur Docusaurus"
+slug: installer-front-matter-cms-docusaurus
+description: "Brancher Front Matter CMS sur un projet Docusaurus existant : configuration, et surtout un content type calqué sur votre propre frontmatter."
+image: "/img/docux.webp"
+authors: ["docux"]
+mainTag: frontmatter-cms
+tags:
+  [
+    "docusaurus",
+    "frontmatter-cms",
+    "cms",
+    "vscode",
+    "configuration",
+    "content-types",
+  ]
+date: 2026-07-19
+last_update:
+  date: 2026-07-20
+  author: docux
+draft: true
+inLanguage: "fr-FR"
+hide_table_of_contents: false
+series: "CMS & IHM"
+---
+
+{/* 📸 IMAGE-00 (COUVERTURE) — Visuel d'en-tête : le panneau Front Matter ouvert dans VS Code à côté d'un article du blog. À reporter dans le champ `image:` du frontmatter. */}
+
+<center>
+<div>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+![](/img/docux.webp)
+
+</div>
+</center>
+
+<div className="text--justify">
+Dans l'article précédent, on a vu **pourquoi** Front Matter CMS est intéressant sur un projet Docusaurus. Passons à la pratique.
+
+L'installation prend deux minutes. Le vrai travail — celui qui fait la différence entre un gadget et un outil qu'on utilise tous les jours — c'est de faire **correspondre le CMS à votre propre schéma de frontmatter**. Et, on va le voir, d'avoir le courage de ne modéliser que ce qui sert réellement.
+
+:::tip Ce que vous saurez faire à la fin
+Brancher Front Matter sur un site Docusaurus existant, comprendre chaque réglage de `frontmatter.json`, traduire **votre** frontmatter en formulaire, et supprimer la saisie manuelle partout où c'est possible.
+:::
+
+</div>
+{/* truncate */}
+
+## 1. Installation et initialisation
+
+### Installer l'extension
+
+Front Matter CMS s'installe comme n'importe quelle extension VS Code : cherchez **Front Matter CMS** dans le Marketplace, ou passez par [frontmatter.codes](https://frontmatter.codes/).
+
+{/* 📸 IMAGE-01 — La fiche de l'extension Front Matter CMS dans le Marketplace VS Code, avec le bouton Install. */}
+
+### Initialiser le projet
+
+Une fois l'extension active, une icône Front Matter apparaît dans la barre d'activité. Ouvrez-la et lancez **Initialize project** (ou `Ctrl+Shift+P` → `Front Matter: Initialize project`).
+
+{/* 📸 IMAGE-02 — Le panneau Front Matter au premier lancement, avec le bouton « Initialize project ». */}
+
+:::caution Installer n'est pas initialiser
+C'est le premier piège : tant que l'initialisation n'a pas été menée **jusqu'au bout**, aucun fichier n'est créé. L'extension peut être installée et active sans que rien n'ait changé dans votre dépôt. Si vous ne voyez pas apparaître `frontmatter.json`, c'est que l'assistant attend encore une étape.
+:::
+
+### Ce qui apparaît dans le projet
+
+<Trees>
+  <Folder label="mon-projet-docusaurus" expanded={true}>
+    <File label="frontmatter.json" icon="json" />
+    <Folder label=".frontmatter" expanded={true}>
+      <Folder label="database" expanded={true}>
+        <File label="taxonomyDb.json" icon="json" />
+        <File label="pinnedItemsDb.json" icon="json" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Trees>
+
+### Ce que Front Matter détecte tout seul
+
+Bonne surprise : sur un projet Docusaurus, l'initialisation ne part pas de zéro.
+
+```json
+{
+  "frontMatter.framework.id": "docusaurus",
+  "frontMatter.content.publicFolder": "static",
+  "frontMatter.preview.host": "http://localhost:3000",
+  "frontMatter.content.pageFolders": [
+    { "title": "blog", "path": "[[workspace]]/blog" }
+  ]
+}
+```
+
+C'est un bon point de départ. Le **content type** généré, en revanche, ne correspondra pas à votre blog — on y vient.
+
+## 2. Anatomie de la configuration
+
+### `frontmatter.json` : le point d'entrée
+
+C'est **le** fichier de configuration, à la racine du projet. Il commence par une ligne précieuse :
+
+```json
+{ "$schema": "https://frontmatter.codes/frontmatter.schema.json" }
+```
+
+Ce `$schema` donne à VS Code l'autocomplétion et la validation en temps réel. C'est surtout **la source de vérité quand la documentation est muette** : en cas de doute sur une clé ou une valeur autorisée, le schéma tranche. J'y suis revenu plusieurs fois en écrivant cet article.
+
+### `.frontmatter/` : les données de l'extension
+
+Ce dossier stocke ce que Front Matter accumule : `database/taxonomyDb.json` (le vocabulaire de tags) et `database/pinnedItemsDb.json` (vos épingles du dashboard).
+
+### Les quatre réglages qui relient Front Matter à votre site
+
+| Réglage                | Rôle                                               | À adapter si…                                   |
+| ---------------------- | -------------------------------------------------- | ----------------------------------------------- |
+| `framework.id`         | Active les comportements propres à Docusaurus      | jamais, si la détection a fonctionné            |
+| `content.publicFolder` | Où vivent les médias (`static`)                    | votre dossier public a un autre nom             |
+| `preview.host`         | L'URL de votre serveur de dev                      | vous ne tournez pas sur le port 3000            |
+| `content.pageFolders`  | **Quels dossiers contiennent du contenu éditable** | vous avez des docs, des pages, plusieurs blogs… |
+
+`pageFolders` est le plus important : c'est lui qui dit à Front Matter où chercher, et à quel content type rattacher chaque dossier.
+
+```json
+"frontMatter.content.pageFolders": [
+  {
+    "title": "Blog",
+    "path": "[[workspace]]/blog",
+    "contentTypes": ["article"]
+  }
+]
+```
+
+Le jeton `[[workspace]]` est remplacé par la racine du projet : c'est ce qui rend la configuration partageable entre machines.
+
+## 3. Le content type : faire correspondre le CMS à votre frontmatter
+
+Un **content type** décrit les champs de vos articles ; Front Matter en déduit le formulaire. Bien fait, il rend impossible la faute de frappe qui casse un build.
+
+### Pourquoi le type par défaut ne convient jamais
+
+L'initialisation génère un type avec `title`, `description`, `date`, `preview`, `draft`, `tags` et `categories`. Comparé à un article réel de ce blog, le décalage saute aux yeux : il **invente** deux champs que je n'utilise nulle part (`preview`, `categories`) et **ignore** presque tout ce dont je me sers (`slug`, `image`, `authors`, `series`…).
+
+### Étape 1 — Inventorier vos champs existants
+
+Ne configurez pas à l'aveugle : partez de ce que vous écrivez déjà. Un court script liste tous les champs réellement présents, avec leur fréquence :
+
+```js title="scripts/audit-frontmatter.cjs"
+const fs = require("fs");
+const path = require("path");
+
+function walk(dir, acc = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(p, acc);
+    else if (/\.mdx?$/.test(entry.name)) acc.push(p);
+  }
+  return acc;
+}
+
+const counts = {};
+for (const file of walk("blog")) {
+  const match = fs
+    .readFileSync(file, "utf8")
+    .match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!match) continue;
+  for (const line of match[1].split(/\r?\n/)) {
+    const key = line.match(/^([A-Za-z_][A-Za-z0-9_]*):/);
+    if (key) counts[key[1]] = (counts[key[1]] || 0) + 1;
+  }
+}
+
+Object.entries(counts)
+  .sort((a, b) => b[1] - a[1])
+  .forEach(([k, v]) => console.log(String(v).padStart(3), k));
+```
+
+Chez moi : une cinquantaine de champs, et deux surprises.
+
+- **`difficulty` s'écrivait de 8 façons** (`Beginner`, `Débutant`, `intermediate`, `Beginner to Intermediate`…) pour quatre valeurs réelles.
+- **Deux articles utilisaient `serie:` au lieu de `series:`** — une lettre manquante qui les rendait invisibles dans les pages de séries.
+
+:::note L'audit vaut déjà le détour
+Même sans installer de CMS, ce script est utile : il révèle des incohérences qu'aucun outil ne signale, parce que le frontmatter n'est validé par personne.
+:::
+
+### Étape 2 — Ne modélisez que ce qui sert (l'étape qu'on saute toujours)
+
+Avant de traduire ces 50 champs en formulaire, une deuxième question, bien plus importante : **qui les lit ?**
+
+```bash
+grep -rn "totalTime\|proficiencyLevel\|estimatedCost" src/
+```
+
+Chez moi, la réponse a été brutale : **personne**. Ces champs venaient de schema.org, en prévision d'un composant JSON-LD… que je n'avais jamais écrit. Ils étaient donc saisis dans chaque article et ne produisaient strictement rien.
+
+Et même en écrivant ce composant, tous n'auraient pas d'intérêt. Le tri honnête :
+
+| Niveau                  | Champs                                                                                                                               | Verdict                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| **Comptent vraiment**   | `title`, `description`, `image`, `date`, `last_update`, `authors`                                                                    | `Article`/`BlogPosting` : `headline`, `image`, `datePublished`, **`dateModified`**, `author`                       |
+| **Morts depuis 2023**   | `totalTime`, `prepTime`, `tool`, `supply`, `yield`, `estimatedCost`, `faq`                                                           | Google a supprimé les résultats enrichis **HowTo**, et restreint **FAQPage** aux sites gouvernementaux et de santé |
+| **N'ont jamais compté** | `keywords`, `genre`, `category`, `articleSection`, `audience`, `wordCount`, `copyrightYear`, `proficiencyLevel`, `educationalLevel`… | Vocabulaire schema.org valide, mais Google ne l'affiche nulle part                                                 |
+
+`dateModified` est le grand sous-estimé du lot : c'est un vrai signal de fraîcheur, et il se remplit tout seul (voir plus bas).
+
+Résultat : je suis passé de **plus de 50 champs à 14**.
+
+:::warning Ces règles bougent
+Google fait évoluer ses résultats enrichis régulièrement — les suppressions HowTo et FAQ datent de 2023. Vérifiez l'état actuel sur Google Search Central avant de trancher pour votre propre site.
+:::
+
+### Étape 3 — Choisir le bon type pour chaque champ
+
+Le schéma expose **22 types**. Voici la correspondance pour les champs conservés :
+
+| Champ YAML               | Type Front Matter            | Pourquoi ce choix                                                 |
+| ------------------------ | ---------------------------- | ----------------------------------------------------------------- |
+| `title`                  | `string` + `required`        | le minimum vital                                                  |
+| `slug`                   | `string`                     | on garde la main (pas de génération automatique)                  |
+| `description`            | `string`                     | soumis à la limite SEO (§5)                                       |
+| `image`                  | `image` + `isPreviewImage`   | ouvre le sélecteur de médias **et** sert de vignette au dashboard |
+| `authors`                | `choice` + `multiple`        | limité aux clés de `blog/authors.yml`                             |
+| `date`                   | `datetime` + `isPublishDate` | désigne _la_ date de publication                                  |
+| `last_update`            | `fields`                     | un objet YAML → des sous-champs                                   |
+| `draft`                  | `draft`                      | type dédié, relié au statut                                       |
+| `tags`                   | `tags`                       | puise dans la taxonomie partagée                                  |
+| `mainTag`                | `tags` **limité à 1**        | voir l'étape 4                                                    |
+| `series`                 | `taxonomy`                   | voir l'étape 4                                                    |
+| `hide_table_of_contents` | `boolean`                    | case à cocher                                                     |
+| `inLanguage`             | `choice` + défaut            | voir l'étape 4                                                    |
+
+Un champ simple ressemble à ça :
+
+```json
+{
+  "title": "Description",
+  "name": "description",
+  "type": "string",
+  "description": "Résumé SEO. Au-delà de 160 caractères, Google tronque.",
+  "required": true
+}
+```
+
+Le `description` du champ (à ne pas confondre avec le champ `description` !) s'affiche sous l'intitulé dans le formulaire. C'est l'endroit idéal pour documenter une convention d'équipe.
+
+### Étape 4 — Supprimer la saisie manuelle
+
+C'est ici qu'un content type devient vraiment agréable. Quatre mécanismes, du plus simple au plus malin.
+
+**1. Réutiliser une liste de choix.** L'auteur d'une mise à jour est forcément un auteur du blog : autant lui donner la même liste, plutôt que de le retaper.
+
+```json
+{
+  "title": "Dernière mise à jour",
+  "name": "last_update",
+  "type": "fields",
+  "fields": [
+    {
+      "title": "Date",
+      "name": "date",
+      "type": "datetime",
+      "isModifiedDate": true
+    },
+    {
+      "title": "Auteur",
+      "name": "author",
+      "type": "choice",
+      "choices": ["docux"]
+    }
+  ]
+}
+```
+
+`isModifiedDate` fait le reste : Front Matter met la date à jour tout seul à chaque modification — et c'est précisément le `dateModified` qui compte pour le SEO.
+
+**2. Piocher dans une taxonomie existante.** Mon `mainTag` est toujours l'un de mes tags. Plutôt qu'une liste figée, on réutilise la taxonomie vivante :
+
+```json
+{
+  "title": "Tag principal",
+  "name": "mainTag",
+  "type": "tags",
+  "taxonomyLimit": 1,
+  "singleValueAsString": true
+}
+```
+
+`taxonomyLimit: 1` n'autorise qu'une valeur, et `singleValueAsString` l'écrit en chaîne (`mainTag: performance`) au lieu d'un tableau — indispensable pour que le code existant continue de fonctionner.
+
+**3. Créer une taxonomie éditable depuis l'interface.** Une liste `choices` en dur oblige à rouvrir le JSON à chaque nouvelle série. Une **taxonomie personnalisée**, elle, s'enrichit depuis le dashboard :
+
+```json
+"frontMatter.taxonomy.customTaxonomy": [
+  {
+    "id": "series",
+    "options": ["CMS & IHM", "Docusaurus Plugins", "infima components"]
+  }
+]
+```
+
+```json
+{
+  "title": "Séries",
+  "name": "series",
+  "type": "taxonomy",
+  "taxonomyId": "series",
+  "taxonomyLimit": 1,
+  "singleValueAsString": true
+}
+```
+
+C'est ce genre de détail qui aurait évité mon `serie:` mal orthographié : on ne tape plus, on choisit.
+
+**4. Donner des valeurs par défaut.** Tout champ accepte un `default`, y compris avec des placeholders :
+
+```json
+{ "name": "date", "type": "datetime", "default": "{{now}}", "isPublishDate": true },
+{ "name": "inLanguage", "type": "choice", "choices": ["en", "fr-FR"], "default": "en" }
+```
+
+Les placeholders disponibles couvrent `{{now}}`, `{{year}}`, `{{month}}`, `{{day}}`, `{{title}}`, `{{slug}}`…
+
+:::note Les défauts ne s'appliquent qu'à la création
+Un `default` remplit un champ **à la création** d'un article. Il ne corrige pas rétroactivement les articles existants.
+:::
+
+### Étape 5 — Organiser le formulaire
+
+Deux types purement visuels structurent la saisie :
+
+```json
+{ "type": "divider", "name": "divider_taxonomy" },
+{ "type": "heading", "title": "Classement", "name": "heading_taxonomy" }
+```
+
+J'ai regroupé mes 14 champs en trois sections : **Contenu**, **Classement**, **Social**.
+
+{/* 📸 IMAGE-03 — Le formulaire Front Matter sur un article, montrant les sections et les champs typés (sélecteur de série, liste d'auteurs, date). */}
+
+### Le résultat complet
+
+Voici la configuration de ce blog, telle qu'elle tourne aujourd'hui :
+
+<Snippet filename="frontmatter.json" source="frontmatter.json" />
+
+## 4. Créer son premier article
+
+Depuis le panneau Front Matter, **Create content** génère un article à partir du content type.
+
+{/* 📸 IMAGE-04 — Le bouton « Create content » et la boîte de dialogue demandant le titre du nouvel article. */}
+
+### Contrôler où le fichier atterrit
+
+Mes articles suivent une arborescence datée : `blog/2026/07/19/mon-article/index.mdx`, images à côté du texte. Quatre réglages gouvernent ça :
+
+```json
+{
+  "pageBundle": true,
+  "defaultFileName": "index",
+  "fileType": "mdx",
+  "slugTemplate": "{{title}}",
+  "filePrefix": "{{year}}/{{month}}/{{day}}/"
+}
+```
+
+:::caution Trois pièges qui m'ont pris cinq essais
+Ces réglages ne sont documentés nulle part ensemble, et chacun m'a envoyé dans le mur :
+
+1. **`defaultFileName` s'écrit sans extension.** Avec `"index.mdx"`, Front Matter slugifie la valeur (le point disparaît) puis rajoute l'extension : vous obtenez `indexmdx.mdx`.
+2. **`slugTemplate` ne sait pas créer de dossiers**, et les placeholders de date n'y sont pas résolus — malgré ce que laisse penser la documentation. Laissez-le à `{{title}}`.
+3. **Le `/` final de `filePrefix` est décisif.** Sans lui, Front Matter colle le dernier segment au titre : `blog/2026/07/19-mon-article/` au lieu de `blog/2026/07/19/mon-article/`.
+   :::
+
+## 5. Deux garde-fous à connaître
+
+### Les limites SEO
+
+Front Matter compte les caractères du titre et de la description pendant la saisie :
+
+```json
+"frontMatter.taxonomy.seoTitleLength": 60,
+"frontMatter.taxonomy.seoDescriptionLength": 160
+```
+
+{/* 📸 IMAGE-05 — Le compteur SEO de Front Matter signalant une description trop longue (198/160). */}
+
+Sur ce blog, l'avertissement a révélé **14 descriptions au-dessus de la limite** — donc tronquées dans les résultats de recherche depuis des mois, sans que rien ne le signale.
+
+### Le dialogue « différences de type de contenu »
+
+Front Matter vous prévient quand le fichier ouvert et le content type ne coïncident pas. Deux causes possibles :
+
+- **un champ oublié** dans votre modélisation — complétez le content type ;
+- **un élagage assumé**, comme le mien : mes anciens articles contiennent toujours les champs schema.org que j'ai retirés du formulaire. Le dialogue est alors le prix à payer pour un formulaire propre, tant qu'on n'a pas nettoyé les anciens articles.
+
+:::danger Ne répondez pas « créer »
+Le dialogue propose de créer, mettre à jour ou définir le type de contenu. **« Créer » ajoutera un content type en double** dans votre configuration. Complétez le type existant, ou ignorez simplement l'avertissement s'il correspond à un choix délibéré.
+:::
+
+## 6. Que versionner dans Git
+
+- **`frontmatter.json` : oui, toujours.** C'est l'argument central de Front Matter : la configuration voyage avec le code, et toute l'équipe partage le même formulaire après un `git pull`.
+- **`.frontmatter/database/` : à votre convenance.** `taxonomyDb.json` (le vocabulaire de tags) a du sens en équipe ; `pinnedItemsDb.json` n'est que de l'état d'interface local et générera du bruit dans vos diffs.
+
+---
+
+À ce stade, Front Matter n'est plus une extension générique : c'est **votre** schéma, réduit à ce qui sert, avec des listes qui s'auto-alimentent et des valeurs par défaut qui évitent la saisie.
+
+Dans le prochain article, on quitte la configuration pour l'usage quotidien : le dashboard, les filtres, la gestion des médias et l'organisation du contenu.
