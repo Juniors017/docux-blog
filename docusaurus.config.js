@@ -7,6 +7,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 import path from "path";
 import { fileURLToPath } from "url";
 import pluginSeriesRoute from "./plugins/docusaurus-plugin-series-route/index.cjs";
+import pluginBlogMetadata from "./plugins/docusaurus-plugin-blog-metadata/index.cjs";
 import pluginImageOptimizer from "./plugins/docusaurus-plugin-image-optimizer/index.cjs";
 import simpleAnalytics from "./plugins/simpleAnalytics/index.js";
 import remarkReplaceWords from "./plugins/remark-replace-words/index.js";
@@ -48,6 +49,7 @@ const config = {
   ],
 
   plugins: [
+    [pluginBlogMetadata, {}],
     [pluginSeriesRoute, {}],
     [pluginImageOptimizer, { quality: 80, maxWidth: 1920 }],
     [simpleAnalytics, {}],

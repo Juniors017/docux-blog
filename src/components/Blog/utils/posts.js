@@ -1,14 +1,13 @@
 /**
  * 🧠 getBlogMetadata
  *
- * Extracts metadata from all MDX blog posts located in the `/blog` directory.
- * Uses Webpack's `require.context` to dynamically load and parse frontmatter
- * from each post, returning a structured array of metadata objects.
+ * Returns the metadata of every blog post, read from the JSON file generated at
+ * build time by the local `docusaurus-plugin-blog-metadata` plugin.
  *
  * 🔍 Behavior:
  * - Resolves permalinks based on `slug` or folder structure
  * - Normalizes image paths for static assets
- * - Filters out invalid or missing entries
+ * - Drafts kept in `blog/.draft/` are excluded (dot-folders are ignored)
  *
  * 📦 Returned metadata includes:
  * - `title`: Post title
@@ -20,57 +19,25 @@
  * - `tags`: Array of tags
  * - `mainTag`: Primary tag (optional); used by the RelatedBlogPost component
  * - `authors`: Array of author names
- * - `date`: Publication date
+ * - `date`: Publication date (ISO string)
  * - `series`: Series name (optional); used by the SeriesBlogPost component
  *
  * 🛠️ Usage:
  * ```js
- * import { getBlogMetadata } from './getBlogMetadata';
+ * import { getBlogMetadata } from "@site/src/components/Blog/utils/posts";
  * const posts = getBlogMetadata();
  * ```
  *
  * ⚠️ Note:
- * This function is intended for use in static site generation or client-side rendering
- * where Webpack's `require.context` is available.
+ * The front matter is parsed in Node at build time rather than through
+ * Webpack's `require.context`. That keeps blog posts out of the client bundle
+ * and preserves Docusaurus' native `draft: true` support.
  */
 
-const posts = require.context("../../../../blog", true, /\.mdx?$/);
+import blogMetadata from "@generated/docusaurus-plugin-blog-metadata/default/blog-metadata.json";
 
 export function getBlogMetadata() {
-  return posts
-    .keys()
-    .map((key) => {
-      const post = posts(key);
-
-      const dir = key.replace(/\/index\.mdx?$/, "").replace(/^\.\//, "");
-
-      let permalink;
-      if (post.frontMatter.slug) {
-        permalink = post.frontMatter.slug.startsWith("/")
-          ? post.frontMatter.slug
-          : `/blog/${post.frontMatter.slug.replace(/^\//, "")}`;
-      } else {
-        permalink = `/blog/${dir}/`;
-      }
-
-      let imageUrl = post.frontMatter.image;
-      if (imageUrl && imageUrl.startsWith("./")) {
-        imageUrl = `/blog/${dir}/${imageUrl.replace("./", "")}`;
-      }
-
-      return {
-        title: post.frontMatter.title,
-        description: post.frontMatter.description,
-        image: imageUrl,
-        draft: post.frontMatter.draft || false,
-        unlisted: post.frontMatter.unlisted || false,
-        permalink,
-        tags: post.frontMatter.tags || [],
-        mainTag: post.frontMatter.mainTag || null,
-        authors: post.frontMatter.authors || [],
-        date: post.frontMatter.date,
-        series: post.frontMatter.series || null,
-      };
-    })
-    .filter(Boolean);
+  // Return a shallow copy so callers can sort/mutate freely, as they could with
+  // the previous implementation.
+  return [...blogMetadata];
 }
