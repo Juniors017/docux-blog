@@ -1,90 +1,96 @@
 ---
-title: "Pourquoi Front Matter CMS avec Docusaurus"
-slug: pourquoi-front-matter-cms-docusaurus
-description: "Front Matter CMS, l'extension VS Code qui transforme la gestion de contenu d'un projet Docusaurus : dashboard, content types, preview et médias."
-schemaTypes: ["BlogPosting"]
-image: "/img/docux.webp"
+title: "Why Front Matter CMS with Docusaurus"
+slug: why-front-matter-cms-docusaurus
+description: "Front Matter CMS, the VS Code extension that transforms content management in a Docusaurus project: dashboard, content types, preview and media."
+image: "/img/frontmatter-cms.png"
 authors: ["docux"]
 mainTag: frontmatter-cms
 tags:
-  ["docusaurus", "frontmatter-cms", "cms", "vscode", "contenu", "productivité"]
+  ["docusaurus", "frontmatter-cms", "cms", "vscode", "content", "productivity"]
 date: 2026-07-19
 last_update:
   date: 2026-07-19
   author: docux
-draft: true
-difficulty: "Débutant"
-genre: "Technical Article"
-inLanguage: "fr-FR"
-isAccessibleForFree: true
-readingTime: "8 min"
-articleSection: "CMS"
-copyrightYear: 2026
-copyrightHolder: "Docux"
-category: "Web Development"
-keywords:
-  [
-    "front matter cms",
-    "docusaurus cms",
-    "extension vscode contenu",
-    "gestion de contenu markdown",
-    "content types",
-    "frontmatter.json",
-  ]
+draft: false
+inLanguage: "en"
 hide_table_of_contents: false
-series: "CMS & IHM"
+series: "CMS & UI"
 ---
 
-{/* 📸 IMAGE-00 (COUVERTURE) — Visuel d'en-tête de l'article : logo Front Matter CMS + logo Docusaurus côte à côte, ou une capture large du panneau Front Matter ouvert dans VS Code sur ce projet. À placer aussi dans le champ `image:` du frontmatter ci-dessus. */}
-
-<center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![](/img/docux.webp)
+![Front Matter CMS paired with Docusaurus](/img/frontmatter-cms.png)
 
 </div>
-</center>
 
 <div className="text--justify">
-Si tu maintiens un site Docusaurus depuis un moment, tu connais cette scène : ouvrir un fichier `.mdx`, remonter tout en haut pour éditer le frontmatter à la main, et espérer ne pas avoir fait de faute de frappe sur `sidebar_label` ou oublié une virgule dans `tags`. Pas de validation, pas de vue d'ensemble sur ce qui est publié, en brouillon ou périmé. Et pour vérifier le rendu, il faut lancer `npm run start` et naviguer jusqu'à la bonne page.
+If you have been maintaining a Docusaurus site for a while, you know this scene: opening an `.mdx` file, scrolling all the way up to edit the front matter by hand, and hoping you did not make a typo on `sidebar_label` or forget a comma in `tags`. No validation, no overview of what is published, in draft or outdated. And to check the rendering, you have to run `npm run start` and navigate to the right page.
 
-C'est exactement le trou que comble **Front Matter CMS**.
+That is exactly the gap **Front Matter CMS** fills.
 
-:::tip Ce que tu vas trouver dans cet article
-Une présentation générale : ce qu'est Front Matter, ce qu'il apporte, à qui il s'adresse et surtout ce qu'il **ne fait pas**. C'est le premier volet d'une série où l'on ira ensuite jusqu'à la configuration réelle utilisée sur ce blog.
+:::tip What you will find in this first article of a long series about Front Matter CMS
+A general overview: what Front Matter is, what it brings, who it is for and above all what it **does not do**. This is the first part of a series that will then go all the way to the real configuration used on this blog.
 :::
 
 </div>
 {/* truncate */}
 
-## Qu'est-ce que Front Matter CMS
+## What is Front Matter CMS
 
-### Une extension VS Code, pas un service hébergé
+### A VS Code extension, not a hosted service
 
-Front Matter n'est pas un CMS classique avec un serveur, une base de données et une API. C'est une extension VS Code qui lit et écrit directement dans les fichiers de ton dépôt. Pas de compte à créer, pas d'infrastructure à maintenir, pas de risque de vendor lock-in : le jour où tu désinstalles l'extension, ton contenu reste intact, en Markdown/MDX, exactement comme avant.
+<Columns>
 
-{/* 📸 IMAGE-01 — L'extension Front Matter dans VS Code : la barre latérale avec l'icône Front Matter et son panneau ouvert, pour situer visuellement l'outil dans l'éditeur. */}
+<Column>
 
-### Qui développe Front Matter ?
+![Front Matter CMS logo](/img/fronmatterlogo.png)
 
-Front Matter CMS est le projet d'[Elio Struyf](https://www.eliostruyf.com/), Solution Architect indépendant basé en Belgique. Il cumule les reconnaissances **Microsoft MVP**, **GitHub Star** et **Google Developer Expert** — un triplé peu commun, qui en dit long sur son implication dans les communautés open source.
+</Column>
+<Column className="text--justify">
 
-L'extension est **gratuite et open source**. Le projet repose donc sur le temps de son auteur et sur le soutien de ses parrains — et ce blog en fait partie : **DocuxLab parraine Front Matter CMS**. Si l'outil te rend service, le sponsoring reste le moyen le plus direct de le faire durer.
+**Front Matter** is not a traditional CMS with a server, a database and an API. It is a **VS Code extension** that reads and writes directly in the files of your repository. No account to create, no infrastructure to maintain, no vendor lock-in risk: the day you uninstall the extension, your content remains intact, in **Markdown/MDX**, exactly as before.
 
-{/* 📸 IMAGE-02 — La page des sponsors de Front Matter CMS sur frontmatter.codes, si le logo DocuxLab y apparaît. */}
+</Column>
+</Columns>
 
-### Pas seulement pour Docusaurus
+### Who develops Front Matter?
 
-Cette série se concentre sur Docusaurus, mais Front Matter n'y est pas lié. Il prend aussi en charge **11ty, Astro, Gatsby, Hugo, Jekyll et Next.js**, entre autres.
+Front Matter CMS is the project of [Elio Struyf](https://www.eliostruyf.com/), an independent Solution Architect based in Belgium. He holds the **Microsoft MVP**, **GitHub Star** and **Google Developer Expert** recognitions — an uncommon hat-trick, which says a lot about his involvement in open source communities.
 
-Ce qu'on va voir ici — content types, taxonomies, dashboard — se transpose donc presque tel quel si tu changes un jour de générateur. C'est aussi une forme de garantie : ton apprentissage n'est pas prisonnier d'un seul écosystème.
+The extension is **free and open source**. The project therefore relies on its author's time and on the support of its sponsors — and this blog is one of them: **DocuxLab has already sponsored Front Matter CMS**. If the tool serves you well, sponsoring remains the most direct way to keep it going.
 
-### La configuration vit dans ton repo
+<center>
 
-À l'initialisation, Front Matter génère un fichier `frontmatter.json` à la racine du projet : c'est le point d'entrée de la configuration. Il est accompagné d'un dossier `.frontmatter/` qui stocke les ressources associées (templates, base de médias, taxonomie).
+**[Sponsor Front Matter CMS too, it is right here!](https://github.com/sponsors/estruyf)**
+
+![DocuxLab in the Front Matter CMS sponsors list](/img/docuxlabsponsors.png)
+
+</center>
+
+### Not just for Docusaurus
+
+This series focuses on Docusaurus, but Front Matter is not tied to it. It also supports **11ty, Astro, Gatsby, Hugo, Jekyll and Next.js**, among others.
+
+What we are going to see here — content types, taxonomies, dashboard — therefore carries over almost as is should you ever switch generators. It is also a form of guarantee: your learning is not locked into a single ecosystem.
+
+### The configuration lives in your repo
+
+The first thing to do is install the extension in VS Code from the extensions library. Then let Front Matter guide you.
+
+![Installing the Front Matter CMS extension from the VS Code Marketplace](/img/frontmattercms/post1/install.png)
+
+Everything is designed to support you: initialize the project.
+
+![Project initialization screen offered by Front Matter CMS](/img/frontmattercms/post1/initialisation.png)
+
+![Front Matter CMS configuration start wizard](/img/frontmattercms/post1/startconfiguration.png)
+
+On initialization, Front Matter generates a `frontmatter.json` file at the root of the project: this is the entry point of the configuration. It comes with a `.frontmatter/` folder that stores the associated resources (templates, media database, taxonomy).
+
+#### Project structure
 
 <Trees>
   <Folder label="mon-projet-docusaurus" expanded={true}>
@@ -99,7 +105,9 @@ Ce qu'on va voir ici — content types, taxonomies, dashboard — se transpose d
   </Folder>
 </Trees>
 
-Pour les projets plus complexes, il est aussi possible d'éclater la configuration en plusieurs fichiers sous `.frontmatter/config/`, que `frontmatter.json` référence via `frontMatter.extends` — on y reviendra dans un article suivant. Concrètement, pour un projet simple :
+For more complex projects, it is also possible to split the configuration into several files under `.frontmatter/config/`, which `frontmatter.json` references through `frontMatter.extends` — we will come back to this in a later article.
+
+Concretely, for a simple project:
 
 ```json title="frontmatter.json"
 {
@@ -114,88 +122,178 @@ Pour les projets plus complexes, il est aussi possible d'éclater la configurati
 }
 ```
 
-Ce fichier étant versionné comme le reste du code, toute l'équipe partage automatiquement la même configuration après un `git pull`. Pas de synchronisation à part, pas de réglages qui divergent d'un poste à l'autre.
+Since this file is versioned like the rest of the code, the whole team automatically shares the same configuration after a `git pull`. No separate synchronization, no settings drifting from one machine to another.
 
-### Comment ça s'articule avec un projet Docusaurus existant
+### How it fits with an existing Docusaurus project
 
-Front Matter n'impose rien à ta structure existante. Il lit le frontmatter tel qu'il est déjà défini dans tes fichiers `.md`/`.mdx` (les champs Docusaurus classiques comme `slug`, `sidebar_position`, `authors`, `tags`) et te propose une interface pour les éditer, sans jamais modifier ce que tu ne touches pas. Tu peux donc l'installer sur un projet qui a déjà des centaines d'articles, sans migration ni réécriture.
+Front Matter imposes nothing on your existing structure. It reads the front matter as it is already defined in your `.md`/`.mdx` files (the classic Docusaurus fields such as `slug`, `sidebar_position`, `authors`, `tags`) and offers you an interface to edit them, without ever modifying what you do not touch. You can therefore install it on a project that already has hundreds of articles, with no migration and no rewriting.
 
-## Ce que ça apporte concrètement
+## What it brings concretely
 
-### Un dashboard pour voir tout ton contenu d'un coup d'œil
+### A complete dashboard to see all your content at a glance
 
-Plutôt que de naviguer dans l'arborescence de fichiers, Front Matter affiche un tableau de bord listant toutes tes pages et articles, avec leur statut (brouillon, publié), leurs tags, leur date. Tu peux filtrer, trier, rechercher — ce qui devient vite indispensable passé la cinquantaine d'articles.
+#### Menu
 
-{/* 📸 IMAGE-03 — Le dashboard Front Matter ouvert sur ce blog : la liste des articles avec statut, tags et dates. Idéalement une vue montrant un volume réel d'articles, pour illustrer l'intérêt du filtrage. */}
+The menu lets you manage articles, media, snippets, data and taxonomies — as many subjects as we will discover further along in the series.
 
-### Des content types calqués sur ton propre schéma
+![Front Matter CMS menu: articles, media, snippets, data and taxonomies](/img/frontmattercms/post1/frontmattermenu.png)
 
-Tu définis un « content type » qui correspond exactement aux champs frontmatter que tu utilises (par exemple `fmContentType: Docs`, `preview`, `authors`). Front Matter génère alors un formulaire correspondant, avec les bons types de champs (liste déroulante pour les tags existants, sélecteur de date, toggle pour `draft`) — impossible d'introduire une faute de frappe qui casse le build.
+#### The dashboard
 
-{/* 📸 IMAGE-04 — Le formulaire d'édition généré par un content type : on doit y voir les champs typés (menu déroulant de tags, sélecteur de date, toggle draft) en regard du frontmatter du fichier. */}
+Rather than navigating the file tree, Front Matter displays a dashboard listing all your pages and articles, with their status (draft, published), their tags, their date. You can filter, sort, search — which quickly becomes essential past fifty articles or so.
 
-### Une preview intégrée dans VS Code
+![Front Matter CMS dashboard listing articles with their status, tags and date](/img/frontmattercms/post1/frontmatterdashboard.png)
 
-Un panneau latéral affiche le rendu de la page pendant que tu écris, connecté à ton serveur de dev Docusaurus local. Plus besoin de basculer entre l'éditeur et le navigateur pour vérifier un rendu.
+### Content types modelled on your own schema
 
-{/* 📸 IMAGE-05 — VS Code en écran partagé : le Markdown à gauche, la preview Docusaurus rendue par Front Matter à droite. */}
+You define a "content type" that matches exactly the front matter fields you use (here `slug`, `authors`, `series`, `mainTag`…). Front Matter then generates a matching form, with the right field types (dropdown for existing tags, date picker, toggle for `draft`) — making it impossible to introduce a typo that breaks the build.
 
-### Une gestion des médias sans quitter l'éditeur
+It even offers to build the configuration automatically from your current front matter:
 
-Front Matter inclut une bibliothèque média : parcourir, uploader et insérer des images depuis ton dossier `static`, avec aperçu, directement dans le panneau de l'extension.
+<Columns>
 
-{/* 📸 IMAGE-06 — La bibliothèque média de Front Matter, affichant les images du dossier `static/img` avec leurs miniatures. */}
+<Column>
 
-### Des contrôles SEO pendant que tu écris
+![Offer to automatically generate a content type from the existing front matter](/img/frontmattercms/post1/content-type.png)
 
-Front Matter compte les caractères de ton titre et de ta description au fil de la saisie, et t'avertit dès que tu dépasses les seuils au-delà desquels Google tronque. C'est trivial, mais personne ne le fait à la main : sur ce blog, l'outil a immédiatement révélé **14 descriptions trop longues**, donc coupées dans les résultats de recherche depuis des mois.
-
-{/* 📸 IMAGE-07 — Le compteur SEO de Front Matter pendant la saisie, signalant une description qui dépasse la limite. */}
-
-### Des taxonomies plutôt que de la saisie libre
-
-Tags, séries, catégories : plutôt que de retaper une valeur à chaque article — avec le risque d'orthographe qui va avec — tu choisis dans une liste que l'extension maintient. Et cette liste s'enrichit depuis l'interface, sans jamais éditer un fichier à la main.
-
-### Ouvre le projet aux profils non techniques
-
-C'est sans doute l'apport le plus sous-estimé. Un formulaire avec des champs texte, des menus déroulants et des cases à cocher ne demande aucune connaissance de Markdown, de YAML ou de Git en ligne de commande. Un rédacteur ou une personne côté marketing peut créer et modifier du contenu sur un projet Docusaurus sans jamais ouvrir un terminal — l'extension VS Code (avec son interface graphique de gestion de fichiers) suffit.
-
-## Les erreurs que ça t'évite
-
-C'est l'argument que je n'avais pas anticipé en installant l'extension. En préparant cette série, j'ai audité le frontmatter de mes propres articles. Trois découvertes, toutes invisibles jusque-là :
-
-- **Un `serie:` au lieu de `series:`** dans deux articles. Une lettre manquante, et ces articles n'apparaissaient dans aucune page de série.
-- **`difficulty` orthographié de huit façons** (`Beginner`, `Débutant`, `intermediate`, `Beginner to Intermediate`…) pour quatre valeurs réelles. Impossible de filtrer ou trier proprement là-dessus.
-- **Quatorze descriptions au-delà de la limite** de Google, donc tronquées dans les résultats de recherche.
-
-Le point commun de ces trois erreurs : **rien ne les signale**. Le frontmatter n'est validé par personne — ni par Docusaurus, ni par ton éditeur, ni par ton build. C'est un angle mort complet.
-
-Un formulaire à champs typés rend la première **impossible** (on choisit dans une liste, on ne tape pas un nom de clé), normalise la deuxième, et signale la troisième pendant la saisie. À mes yeux, c'est le meilleur argument en faveur de l'outil — bien plus convaincant que le confort du dashboard.
-
-## Pour quels usages
-
-- **Le mainteneur solo** : un gain de confort au quotidien, moins d'erreurs de frontmatter, une vue d'ensemble du contenu publié.
-- **Une équipe doc mixte** : développeurs et rédacteurs non-techniques peuvent contribuer au même dépôt, chacun avec un niveau d'interface adapté à ses compétences.
-- **Un site à fort volume de contenu** : dès que la navigation manuelle dans les fichiers devient pénible, le dashboard et les filtres deviennent un vrai gain de temps.
-
-## Ce que Front Matter CMS ne fait pas
-
-Pour éviter toute déception : Front Matter n'a pas de système de comptes ou de rôles utilisateurs comme un CMS hébergé classique (type Sanity ou Contentful). Il n'y a pas de couche d'authentification ni de permissions par utilisateur — la gestion des droits reste celle de ton dépôt Git (accès au repo, règles de branche protégée, etc.).
-
-:::caution À garder en tête
-Front Matter ne remplace pas ton workflow Git : il vient s'y greffer. Chaque modification faite via son interface est un simple changement de fichier, à committer et pousser comme n'importe quel autre.
+:::danger
+Careful: if you change a front matter along the way on a content type that is already referenced, you can break the configuration. Be cautious. I recommend going through the configuration file rather than adding a new field from the interface, then completing the missing fields.
 :::
 
-## Et sur ce blog, concrètement ?
+</Column>
+<Column>
+![Generated content type displayed in the Front Matter CMS panel](/img/frontmattercms/post1/frontmattercontenttype1.png)
+</Column>
+</Columns>
 
-Tout ce qui précède est la présentation générale de l'outil. Mais un blog Docusaurus réel, ce n'est pas un projet de démonstration : ici, le frontmatter est riche (`schemaTypes`, `series`, `mainTag`, `readingTime`, données structurées SEO…), les articles sont rangés par date, et des composants MDX maison sont utilisés partout.
+### A preview built into VS Code
 
-La vraie question devient donc : **est-ce que Front Matter sait s'adapter à _ce_ schéma-là**, et pas seulement à un `title` + `tags` d'exemple ?
+A side panel displays the rendering of the page while you write, connected to your local Docusaurus dev server. No more switching between the editor and the browser to check a rendering.
 
-C'est le fil rouge de la suite de cette série : partir de l'installation, puis construire pas à pas la configuration réelle utilisée sur ce blog — content types sur mesure, taxonomie, templates et actions personnalisées.
+:::tip
+For non-technical users, a button makes it possible to start the development server.
+:::
 
-{/* 📸 IMAGE-08 — Aperçu de "mon" Front Matter : le panneau de l'extension affichant le frontmatter riche d'un article existant de ce blog (avec series, mainTag, schemaTypes…). Sert de teaser pour la suite de la série. */}
+![Editing an article with the Docusaurus preview built into VS Code](/img/frontmattercms/post1/frontmatterediting.png)
 
----
+### Media management without leaving the editor
 
-Dans le prochain article, on installe concrètement Front Matter CMS sur un projet Docusaurus existant, et on configure les premiers content types.
+Front Matter includes a media library: browse, upload and insert images from your `static` folder, with previews, directly in the extension panel.
+
+![WYSIWYG editor built into Front Matter CMS](/img/frontmattercms/post1/frontmatterwywiwyg.png)
+
+![Front Matter CMS media library showing the images from the static folder](/img/frontmattercms/post1/mediaboard.png)
+
+:::tip
+You may have noticed that Front Matter CMS also ships a small WYSIWYG module. It saves you installing an additional extension if you are not comfortable with Markdown yet.
+:::
+
+### SEO checks while you write
+
+<Columns>
+
+<Column className="text--justify">
+
+Front Matter counts the characters of your title and your description as you type, and warns you as soon as you exceed the thresholds beyond which Google truncates.
+
+It is trivial, but nobody does it by hand: on this blog, the tool immediately revealed **14 descriptions that were too long**, therefore cut off in search results for months.
+
+:::tip
+
+You can adjust these minimum and maximum values to your liking.
+
+**Do not overlook this little tool!**
+:::
+
+</Column>
+<Column>
+![Front Matter CMS SEO counter flagging a description that is too long](/img/frontmattercms/post1/frontmatterseo.png)
+</Column>
+</Columns>
+
+### Taxonomies rather than free typing
+
+Tags, series (specific to my site), categories: rather than retyping a value on every article — with the spelling risk that comes with it — you choose from a list the extension maintains. And that list grows from the interface, without ever editing a file by hand.
+
+:::tip
+**Front Matter CMS** knows how to manage these values: you have the option to merge them and/or delete some.
+:::
+
+### The everyday Git gestures, in one click
+
+<Columns>
+
+<Column className="text--justify">
+
+Front Matter includes buttons that cover the daily cycle, without ever opening a terminal:
+
+- you fetch the changes in one click
+- you make your edits
+- you write your commit message
+- you synchronize
+
+This does not remove the need to understand Git — conflicts, branches and code reviews remain your responsibility — but it covers the essentials of a writer's daily work.
+
+</Column>
+<Column>
+
+![Git action buttons built into Front Matter CMS](/img/frontmattercms/post1/git-actions.png)
+
+</Column>
+</Columns>
+
+### It opens the project to non-technical profiles
+
+This is probably the most underrated benefit!
+
+A form with text fields, dropdowns and checkboxes requires no knowledge of Markdown, of YAML or of command-line Git.
+A writer or someone on the marketing side can create and edit content on a Docusaurus project without ever opening a terminal — the VS Code extension (with its graphical file management interface) is enough.
+
+> I have been using it in a professional setting for over a year, and the added value of the solution is real.
+
+## The mistakes it saves you from
+
+This is the argument I had not anticipated when installing the extension. While preparing this series, I audited the front matter of my own articles. Three findings, all invisible until then:
+
+- **A `serie:` instead of `series:`** in the front matter of two articles. One missing letter, and those articles appeared on no series page.
+- **`difficulty` spelled eight different ways** (`Beginner`, `Débutant`, `intermediate`, `Beginner to Intermediate`…) for four actual values. Impossible to filter or sort cleanly on that.
+- **Fourteen descriptions beyond Google's limit**, therefore truncated in search results.
+
+What these three mistakes have in common: **nothing reports them**. The front matter is validated by nobody — not by Docusaurus, not by your editor, not by your build. It is a complete blind spot.
+
+A form with typed fields makes the first one **impossible** (you choose from a list, you do not type a key name), normalizes the second, and reports the third while you type. In my view, when several writers are involved, this is the best argument in favour of the tool — far more convincing than the comfort of the dashboard.
+
+## What it is useful for
+
+- **The solo maintainer**:
+  - day-to-day comfort
+  - fewer front matter mistakes
+  - an overview of the published content
+  - a customizable interface (adding buttons that trigger scripts, etc.)
+
+- **A mixed documentation team**:
+  - developers and non-technical writers can contribute to the same repository
+  - each with an interface level suited to their skills
+
+- **A site with a high volume of content**:
+  - as soon as manually navigating the files becomes painful, the dashboard and the filters become a real time-saver.
+
+## What Front Matter CMS does not do
+
+To avoid any disappointment: Front Matter has no system of accounts or user roles like a traditional hosted CMS (such as Sanity or Contentful). There is no authentication layer nor per-user permissions — access management remains that of your Git repository (repo access, protected branch rules, etc.).
+
+:::caution Keep in mind
+Front Matter does not replace your Git workflow: it grafts onto it. Every change made through its interface is a plain file change, to be committed and pushed like any other.
+:::
+
+## And on this blog, concretely?
+
+Everything above is the general presentation of the tool. I am far from covering all of its potential: [Elio Struyf](https://www.eliostruyf.com/) does it far better than I do in his [official documentation](https://frontmatter.codes/docs).
+
+But a real Docusaurus blog is not a demo project: here, the front matter is rich (`schemaTypes`, `series`, `mainTag`, `readingTime`, structured SEO data…), articles are organized by date, and homemade MDX components are used everywhere.
+
+The real question therefore becomes: **can Front Matter adapt to _that_ schema**, and not only to a sample `title` + `tags`?
+
+That is the thread running through the rest of this series: starting from the installation, then building step by step the real configuration used on this blog — custom content types, taxonomy, templates and custom actions.
+
+**In the next article, we get concrete: the anatomy of the configuration, and a content type modelled on this blog's real front matter.**
