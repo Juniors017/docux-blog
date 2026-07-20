@@ -54,8 +54,8 @@ export default {
         loading={loading || "lazy"}
         decoding={decoding || "async"}
         className={`${className || ""}`}
-
-        // Example of how adding extra CSS
+        // Centering is handled in custom.css (`.markdown p > img`) so that
+        // images inside links — badges, inline icons — keep flowing inline.
         style={{
           borderRadius: "3px",
           ...style,

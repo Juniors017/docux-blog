@@ -244,3 +244,20 @@ pre[class*="language-"] code {
     overflow-y: auto;
   }
 }
+
+/**
+ * Center standalone images in article content.
+ *
+ * The selector deliberately targets `p > img` only: an image that is the direct
+ * child of a paragraph. Images wrapped in a link (`p > a > img`) — shields.io
+ * badges, inline icons — keep flowing inline and stay side by side.
+ *
+ * Centering is done here rather than with a <center> wrapper: <center> is a
+ * block element, and Markdown puts images inside a <p>, so wrapping produced
+ * invalid HTML (a stray </p> on every page carrying an image).
+ */
+.markdown p > img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
