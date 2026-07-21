@@ -195,6 +195,25 @@ const config = {
             xslt: true,
           },
           remarkPlugins: [remarkSnippetLoader, [remarkReplaceWords, "blog"]],
+          // Custom admonition types swizzled in src/theme/Admonition/Types.js.
+          // Registering the keywords here is what turns `:::docu` into an
+          // admonition node; the swizzle only handles how it is rendered.
+          admonitions: {
+            keywords: [
+              "jira",
+              "bug",
+              "docu",
+              "info",
+              "success",
+              "danger",
+              "note",
+              "tip",
+              "warning",
+              "important",
+              "caution",
+              "security",
+            ],
+          },
 
           editUrl: "https://github.com/Juniors017/docux-blog/tree/main/",
           onInlineTags: "warn",
@@ -203,6 +222,22 @@ const config = {
         },
         pages: {
           remarkPlugins: [remarkSnippetLoader, [remarkReplaceWords, "pages"]],
+          admonitions: {
+            keywords: [
+              "jira",
+              "bug",
+              "docu",
+              "info",
+              "success",
+              "danger",
+              "note",
+              "tip",
+              "warning",
+              "important",
+              "caution",
+              "security",
+            ],
+          },
         },
         theme: {
           customCss: "./src/css/custom.css",

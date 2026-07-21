@@ -2,7 +2,7 @@
 title: "Installer et configurer Front Matter CMS sur Docusaurus"
 slug: installer-front-matter-cms-docusaurus
 description: "Brancher Front Matter CMS sur un projet Docusaurus existant : configuration, et surtout un content type calqué sur votre propre frontmatter."
-image: "/img/docux.webp"
+image: "/img/frontmattercms/post2/frontmatterparameters.png"
 authors: ["docux"]
 mainTag: frontmatter-cms
 tags:
@@ -24,7 +24,6 @@ hide_table_of_contents: false
 series: "CMS & UI"
 ---
 
-{/* 📸 IMAGE-00 (COUVERTURE) — Visuel d'en-tête : le panneau Front Matter ouvert dans VS Code à côté d'un article du blog. À reporter dans le champ `image:` du frontmatter. */}
 
 <center>
 <div>
@@ -32,18 +31,17 @@ series: "CMS & UI"
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![](/img/docux.webp)
-
+![](/img/frontmattercms/post2/frontmatterparameters.png)
 </div>
 </center>
 
 <div className="text--justify">
 Dans l'article précédent, on a vu **pourquoi** Front Matter CMS est intéressant sur un projet Docusaurus. Passons à la pratique.
 
-L'installation prend deux minutes. Le vrai travail — celui qui fait la différence entre un gadget et un outil qu'on utilise tous les jours — c'est de faire **correspondre le CMS à votre propre schéma de frontmatter**. Et, on va le voir, d'avoir le courage de ne modéliser que ce qui sert réellement.
+L'installation prend deux minutes et nous sommes guidés par l'extension. Le vrai travail — celui qui fait la différence entre un gadget et un outil qu'on utilise tous les jours — c'est de faire **correspondre le CMS à votre propre schéma de frontmatter**. Et, on va le voir, d'avoir le courage de ne modéliser que ce qui sert réellement.
 
 :::tip Ce que vous saurez faire à la fin
-Brancher Front Matter sur un site Docusaurus existant, comprendre chaque réglage de `frontmatter.json`, traduire **votre** frontmatter en formulaire, et supprimer la saisie manuelle partout où c'est possible.
+Brancher Front Matter sur un site Docusaurus existant, comprendre les principaux réglages de `frontmatter.json`, traduire **votre** frontmatter en formulaire, et supprimer la saisie manuelle partout où c'est possible.
 :::
 
 </div>
@@ -53,13 +51,33 @@ Brancher Front Matter sur un site Docusaurus existant, comprendre chaque réglag
 
 Dans [l'article précédent](/blog/why-front-matter-cms-docusaurus/), l'extension a été installée et le projet initialisé : `frontmatter.json` est à la racine, le dossier `.frontmatter/` existe. Si ce n'est pas encore fait, c'est le moment — le reste de cet article part de là.
 
+#### un petit rappel de l'arborescence 
+<Trees>
+  <Folder label="my-docusaurus-project" expanded={true}>
+    <File label="frontmatter.json" icon="json" />
+    <Folder label=".frontmatter" expanded={true}>
+      <Folder label="database" expanded={true}>
+        <File label="taxonomyDb.json" icon="json" />
+        <File label="pinnedItemsDb.json" icon="json" />
+        <File label="mediaDb.json" icon="json" />
+      </Folder>
+    </Folder>
+    <Folder label="blog" />
+    <Folder label="static" />
+  </Folder>
+</Trees>
+
 :::caution Installer n'est pas initialiser
 Tant que l'initialisation n'a pas été menée **jusqu'au bout**, aucun fichier n'est créé. L'extension peut être installée et active sans que rien n'ait changé dans votre dépôt. Si vous ne voyez pas apparaître `frontmatter.json`, c'est que l'assistant attend encore une étape.
 :::
 
 ### Ce que Front Matter détecte tout seul
 
+:::docu
+
 Bonne surprise : sur un projet Docusaurus, l'initialisation ne part pas de zéro.
+
+:::
 
 ```json
 {
