@@ -41,46 +41,46 @@
       "fields": [
         {
           "type": "heading",
-          "title": "Contenu",
+          "title": "Content",
           "name": "heading_content"
         },
         {
-          "title": "Titre",
+          "title": "Title",
           "name": "title",
           "type": "string",
-          "description": "Titre de l'article",
+          "description": "The article title",
           "required": true
         },
         {
           "title": "Slug",
           "name": "slug",
           "type": "string",
-          "description": "URL de l'article, sans /blog/. Ex : my-article-name",
+          "description": "The article URL, without /blog/. e.g. my-article-name",
           "required": true
         },
         {
           "title": "Description",
           "name": "description",
           "type": "string",
-          "description": "Résumé SEO. Au-delà de 160 caractères, Google tronque.",
+          "description": "SEO summary. Beyond 160 characters, Google truncates it.",
           "required": false
         },
         {
-          "title": "Image de couverture",
+          "title": "Cover image",
           "name": "image",
           "type": "image",
           "isPreviewImage": true
         },
         {
-          "title": "Auteurs",
+          "title": "Authors",
           "name": "authors",
           "type": "choice",
           "multiple": true,
           "choices": ["docux"],
-          "description": "Doit correspondre à une clé de blog/authors.yml."
+          "description": "Must match a key in blog/authors.yml."
         },
         {
-          "title": "Date de publication",
+          "title": "Publication date",
           "name": "date",
           "type": "datetime",
           "default": "{{now}}",
@@ -88,7 +88,7 @@
           "required": true
         },
         {
-          "title": "Dernière mise à jour",
+          "title": "Last update",
           "name": "last_update",
           "type": "fields",
           "fields": [
@@ -99,7 +99,7 @@
               "isModifiedDate": true
             },
             {
-              "title": "Auteur",
+              "title": "Author",
               "name": "author",
               "type": "choice",
               "choices": ["docux"]
@@ -107,7 +107,7 @@
           ]
         },
         {
-          "title": "Brouillon",
+          "title": "Draft",
           "name": "draft",
           "type": "draft"
         },
@@ -117,7 +117,7 @@
         },
         {
           "type": "heading",
-          "title": "Classement",
+          "title": "Classification",
           "name": "heading_taxonomy"
         },
         {
@@ -126,34 +126,34 @@
           "type": "tags"
         },
         {
-          "title": "Tag principal",
+          "title": "Main tag",
           "name": "mainTag",
           "type": "tags",
           "taxonomyLimit": 1,
           "singleValueAsString": true,
-          "description": "Un seul tag, utilisé par le composant RelatedPosts."
+          "description": "A single tag, used by the RelatedPosts component."
         },
         {
-          "title": "Séries",
+          "title": "Series",
           "name": "series",
           "type": "taxonomy",
           "taxonomyId": "series",
           "taxonomyLimit": 1,
           "singleValueAsString": true,
-          "description": "Liste éditable depuis le dashboard Front Matter (taxonomie « series »)."
+          "description": "Editable list from the Front Matter dashboard (the \"series\" taxonomy)."
         },
         {
-          "title": "Masquer le sommaire",
+          "title": "Hide the table of contents",
           "name": "hide_table_of_contents",
           "type": "boolean"
         },
         {
-          "title": "Langue",
+          "title": "Language",
           "name": "inLanguage",
           "type": "choice",
           "choices": ["en", "fr-FR"],
           "default": "en",
-          "description": "Le blog est publié en anglais ; fr-FR sert aux brouillons en attente de traduction."
+          "description": "The blog is published in English; fr-FR is used for drafts awaiting translation."
         },
         {
           "type": "divider",
@@ -165,16 +165,16 @@
           "name": "heading_social"
         },
         {
-          "title": "Clé du post BlueSky",
+          "title": "BlueSky post key",
           "name": "blueSkyRecordKey",
           "type": "string",
-          "description": "Partie après /post/ dans l'URL BlueSky. Active le fil de commentaires."
+          "description": "The part after /post/ in the BlueSky URL. Enables the comment thread."
         }
       ]
     }
   ],
   "frontMatter.content.snippets": {
-    "Colonne": {
+    "Columns": {
       "description": "",
       "body": [
         "<Columns>",
