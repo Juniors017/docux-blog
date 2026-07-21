@@ -8,9 +8,7 @@
     {
       "title": "Blog",
       "path": "[[workspace]]/blog",
-      "contentTypes": [
-        "article"
-      ]
+      "contentTypes": ["article"]
     }
   ],
   "frontMatter.taxonomy.seoTitleLength": 60,
@@ -126,9 +124,9 @@
         "CMS & UI",
         "Design your site",
         "Docusaurus Plugins",
-        "infima components",
         "SEO & Analytics",
-        "Tools"
+        "Tools",
+        "infima components"
       ]
     }
   ],
@@ -153,6 +151,7 @@
           "title": "Titre",
           "name": "title",
           "type": "string",
+          "description": "Titre de l'article",
           "required": true
         },
         {
@@ -180,9 +179,7 @@
           "name": "authors",
           "type": "choice",
           "multiple": true,
-          "choices": [
-            "docux"
-          ],
+          "choices": ["docux"],
           "description": "Doit correspondre à une clé de blog/authors.yml."
         },
         {
@@ -208,9 +205,7 @@
               "title": "Auteur",
               "name": "author",
               "type": "choice",
-              "choices": [
-                "docux"
-              ]
+              "choices": ["docux"]
             }
           ]
         },
@@ -259,10 +254,7 @@
           "title": "Langue",
           "name": "inLanguage",
           "type": "choice",
-          "choices": [
-            "en",
-            "fr-FR"
-          ],
+          "choices": ["en", "fr-FR"],
           "default": "en",
           "description": "Le blog est publié en anglais ; fr-FR sert aux brouillons en attente de traduction."
         },
@@ -283,5 +275,20 @@
         }
       ]
     }
-  ]
+  ],
+  "frontMatter.content.snippets": {
+    "Colonne": {
+      "description": "",
+      "body": [
+        "<Columns>",
+        "<Column>",
+        "",
+        "</Column>",
+        "<Column>",
+        "</Column>",
+        "</Columns>"
+      ],
+      "fields": []
+    }
+  }
 }
