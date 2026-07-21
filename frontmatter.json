@@ -63,7 +63,7 @@
           "name": "description",
           "type": "string",
           "description": "Résumé SEO. Au-delà de 160 caractères, Google tronque.",
-          "required": true
+          "required": false
         },
         {
           "title": "Image de couverture",
