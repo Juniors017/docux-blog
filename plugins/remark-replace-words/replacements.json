@@ -51,7 +51,7 @@
       "component": "LogoIcon",
       "props": { "name": "docusaurus", "size": "124" }
     },
-    "node": {
+    "node1": {
       "component": "LogoIcon",
       "props": { "name": "logos:nodejs-icon", "size": 64 }
     }

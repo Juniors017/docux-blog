@@ -25,15 +25,15 @@ series: "CMS & UI"
 ---
 
 
-<center>
+
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![](/img/frontmattercms/post2/frontmatterparameters.png)
+![image illustant le El Dino utilisant le frontmatter cms](/img/frontmattercms/post2/frontmatterparameters.png)
 </div>
-</center>
+
 
 <div className="text--justify">
 Dans l'article précédent, on a vu **pourquoi** Front Matter CMS est intéressant sur un projet Docusaurus. Passons à la pratique.
@@ -51,7 +51,7 @@ Brancher Front Matter sur un site Docusaurus existant, comprendre les principaux
 
 Dans [l'article précédent](/blog/why-front-matter-cms-docusaurus/), l'extension a été installée et le projet initialisé : `frontmatter.json` est à la racine, le dossier `.frontmatter/` existe. Si ce n'est pas encore fait, c'est le moment — le reste de cet article part de là.
 
-#### un petit rappel de l'arborescence 
+### Un petit rappel de l'arborescence
 <Trees>
   <Folder label="my-docusaurus-project" expanded={true}>
     <File label="frontmatter.json" icon="json" />
@@ -73,24 +73,9 @@ Tant que l'initialisation n'a pas été menée **jusqu'au bout**, aucun fichier 
 
 ### Ce que Front Matter détecte tout seul
 
-:::docu
+> **Bonne surprise : sur un projet Docusaurus, l'initialisation ne part pas de zéro !**
 
-Bonne surprise : sur un projet Docusaurus, l'initialisation ne part pas de zéro.
-
-:::
-
-```json
-{
-  "frontMatter.framework.id": "docusaurus",
-  "frontMatter.content.publicFolder": "static",
-  "frontMatter.preview.host": "http://localhost:3000",
-  "frontMatter.content.pageFolders": [
-    { "title": "blog", "path": "[[workspace]]/blog" }
-  ]
-}
-```
-
-C'est un bon point de départ. Le **content type** généré, en revanche, ne correspondra pas à votre blog — on y vient.
+![Front Matter détecte automatiquement le framework Docusaurus lors de l'initialisation](/img/frontmattercms/post2/detectiondocusaurusframework.png)
 
 ## 2. Anatomie de la configuration
 
@@ -103,12 +88,48 @@ Le fichier de configuration commence par une ligne qu'on a vite fait de survoler
 ```
 
 Ce `$schema` donne à VS Code l'autocomplétion et la validation en temps réel. C'est surtout **la source de vérité quand la documentation est muette** : en cas de doute sur une clé ou une valeur autorisée, le schéma tranche. J'y suis revenu plusieurs fois en écrivant cet article.
+ 
+ 
+Un exemple concret. La documentation présente **21 types de champs**. Le schéma en déclare **22** : il y manque `json`. Ce n'est pas un reproche — le schéma est généré depuis le code, la documentation est écrite à la main. Quand les deux divergent, c'est le schéma qui a raison.
+
+:::tip Interroger le schéma plutôt que deviner
+
+```bash
+curl -s https://frontmatter.codes/frontmatter.schema.json -o schema.json
+```
+
+88 Ko qui décrivent tout ce que Front Matter accepte : content types, taxonomies, réglages du tableau de bord, intégration Git, prévisualisation, scripts personnalisés. La liste exhaustive des types de champs est là, et nulle part ailleurs.
+:::
+
+Notez qu'il existe deux urls : 
+| Schéma                                                 | Statut | Usage recommandé                       |
+| :----------------------------------------------------- | :----- | :------------------------------------- |
+| https://beta.frontmatter.codes/frontmatter.schema.json | BETA   | Tests, nouvelles features, exploration |
+| https://frontmatter.codes/frontmatter.schema.json      | Stable | Production, projets sérieux            |
 
 ### `.frontmatter/` : les données de l'extension
 
 Ce dossier stocke ce que Front Matter accumule : `database/taxonomyDb.json` (le vocabulaire de tags) et `database/pinnedItemsDb.json` (vos épingles du dashboard).
+:::tip
+On peut aussi y stocker la configuration : `.frontmatter/config/.frontmatter.json`
+Dans un cadre professionnel avec beaucoup d'intervenants, c'est ce que je fais personnellement.
+::: 
 
 ### Les quatre réglages qui relient Front Matter à votre site
+
+```json
+{
+  "frontMatter.framework.id": "docusaurus",
+  "frontMatter.content.publicFolder": "static",
+  "frontMatter.preview.host": "http://localhost:3000",
+  "frontMatter.content.pageFolders": [
+    { "title": "blog", "path": "[[workspace]]/blog" }
+  ]
+}
+```
+
+C'est un bon point de départ. Le **content type** généré, en revanche, ne correspondra pas à votre blog — on y vient, pas de panique.
+
 
 | Réglage                | Rôle                                               | À adapter si…                                   |
 | ---------------------- | -------------------------------------------------- | ----------------------------------------------- |
@@ -118,6 +139,7 @@ Ce dossier stocke ce que Front Matter accumule : `database/taxonomyDb.json` (le 
 | `content.pageFolders`  | **Quels dossiers contiennent du contenu éditable** | vous avez des docs, des pages, plusieurs blogs… |
 
 `pageFolders` est le plus important : c'est lui qui dit à Front Matter où chercher, et à quel content type rattacher chaque dossier.
+
 
 ```json
 "frontMatter.content.pageFolders": [
@@ -134,15 +156,49 @@ Le jeton `[[workspace]]` est remplacé par la racine du projet : c'est ce qui re
 ## 3. Le content type : faire correspondre le CMS à votre frontmatter
 
 Un **content type** décrit les champs de vos articles ; Front Matter en déduit le formulaire. Bien fait, il rend impossible la faute de frappe qui casse un build.
+Ainsi, pour un même blog, on peut avoir plusieurs content types (Tuto, Article, News, Unboxing…) : chacun proposera une liste de choix différente dans l'interface pour générer le frontmatter.
 
 ### Pourquoi le type par défaut ne convient jamais
 
 L'initialisation génère un type avec `title`, `description`, `date`, `preview`, `draft`, `tags` et `categories`. Comparé à un article réel de ce blog, le décalage saute aux yeux : il **invente** deux champs que je n'utilise nulle part (`preview`, `categories`) et **ignore** presque tout ce dont je me sers (`slug`, `image`, `authors`, `series`…).
+C'est une base pour vous mettre le pied à l'étrier.
+
+```json
+ "frontMatter.taxonomy.contentTypes": [
+    {
+      "name": "article",
+      "fileType": "mdx",
+      "pageBundle": true,
+      "defaultFileName": "index",
+      "slugTemplate": "{{title}}",
+      "filePrefix": "{{year}}/{{month}}/{{day}}/",
+      "previewPath": "blog",
+      "trailingSlash": true,
+      "clearEmpty": true,
+      "fields": [
+     
+        {
+          "title": "Titre",
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "title": "Description",
+          "name": "description",
+          "type": "string",
+          "required": false
+        }
+       ...
+        },
+ ]
+```
 
 ### Étape 1 — Inventorier vos champs existants
 
 Ne configurez pas à l'aveugle : partez de ce que vous écrivez déjà. Un court script liste tous les champs réellement présents, avec leur fréquence :
-
+<Columns>
+<Column>
 ```js title="scripts/audit-frontmatter.cjs"
 const fs = require("fs");
 const path = require("path");
@@ -172,8 +228,38 @@ Object.entries(counts)
   .sort((a, b) => b[1] - a[1])
   .forEach(([k, v]) => console.log(String(v).padStart(3), k));
 ```
+</Column>
 
-Chez moi : une cinquantaine de champs, et deux surprises.
+<Column>
+<Terminal title="user@machine: ~/yourproject">
+
+$ node scripts/audit-frontmatter.cjs
+ 28  title
+ 28  description
+ 28  slug
+ 28  image
+ 28  authors
+ 28  tags
+ 28  date
+ 27  inLanguage
+ 26  hide_table_of_contents
+ 25  schemaTypes
+ 25  keywords
+ 24  genre
+ 24  series
+ 23  difficulty
+ 23  copyrightYear
+ …   (34 autres)
+</Terminal>
+
+:::note
+Si vous partez d'un site web vierge, la démarche sera un peu différente : il vous faudra penser à ce que vous souhaitez dans votre `frontmatter`.
+:::
+
+
+</Column>
+</Columns>
+Chez moi : beaucoup de champs, et deux surprises.
 
 - **`difficulty` s'écrivait de 8 façons** (`Beginner`, `Débutant`, `intermediate`, `Beginner to Intermediate`…) pour quatre valeurs réelles.
 - **Deux articles utilisaient `serie:` au lieu de `series:`** — une lettre manquante qui les rendait invisibles dans les pages de séries.
@@ -184,11 +270,17 @@ Même sans installer de CMS, ce script est utile : il révèle des incohérences
 
 ### Étape 2 — Ne modélisez que ce qui sert (l'étape qu'on saute toujours)
 
-Avant de traduire ces 50 champs en formulaire, une deuxième question, bien plus importante : **qui les lit ?**
+Avant de traduire tous ces champs en formulaire, une deuxième question, bien plus importante : **qui les lit ?**
 
-```bash
-grep -rn "totalTime\|proficiencyLevel\|estimatedCost" src/
-```
+<Terminal title="user@machine: ~/yourproject">
+
+grep -rn "difficulty\|genre\|copyrightYear\|totalTime" src/
+
+
+src/pages/repository.mdx:34:genre: "Open Source Software" # Genre de contenu
+src/pages/repository.mdx:47:copyrightYear: 2025 # Année de copyright
+
+</Terminal>
 
 Chez moi, la réponse a été brutale : **personne**. Ces champs venaient de schema.org, en prévision d'un composant JSON-LD… que je n'avais jamais écrit. Ils étaient donc saisis dans chaque article et ne produisaient strictement rien.
 
@@ -202,7 +294,7 @@ Et même en écrivant ce composant, tous n'auraient pas d'intérêt. Le tri honn
 
 `dateModified` est le grand sous-estimé du lot : c'est un vrai signal de fraîcheur, et il se remplit tout seul (voir plus bas).
 
-Résultat : je suis passé de **plus de 50 champs à 14**.
+Résultat : je suis passé de **plus de 50 champs (je vous épargne la liste) à 14**.
 
 :::warning Ces règles bougent
 Google fait évoluer ses résultats enrichis régulièrement — les suppressions HowTo et FAQ datent de 2023. Vérifiez l'état actuel sur Google Search Central avant de trancher pour votre propre site.
@@ -210,7 +302,40 @@ Google fait évoluer ses résultats enrichis régulièrement — les suppression
 
 ### Étape 3 — Choisir le bon type pour chaque champ
 
-Le schéma expose **22 types**. Voici la correspondance pour les champs conservés :
+Le schéma expose **22 types**. Voici d'abord la liste complète, telle que la documentation la présente :
+
+| Type                  | Rôle                                          |
+| --------------------- | --------------------------------------------- |
+| `string`              | une ou plusieurs lignes de texte              |
+| `number`              | valeurs entières                              |
+| `datetime`            | champs de date                                |
+| `boolean`             | vrai ou faux                                  |
+| `image`               | gestion des images                            |
+| `file`                | gestion des fichiers                          |
+| `choice`              | un ensemble d'options prédéfinies             |
+| `list`                | plusieurs valeurs de texte                    |
+| `draft`               | l'état de publication du contenu              |
+| `tags`                | gestion des tags                              |
+| `categories`          | gestion des catégories                        |
+| `taxonomy`            | gestion d'une taxonomie                       |
+| `fields`              | des sous-champs imbriqués                     |
+| `fieldCollection`     | un ensemble de champs réutilisable            |
+| `block`               | blocs de contenu                              |
+| `dataFile`            | valeurs puisées dans un fichier de données    |
+| `slug`                | gestion des slugs                             |
+| `contentRelationship` | relations entre contenus                      |
+| `customField`         | champs personnalisés                          |
+
+Deux types supplémentaires ne stockent rien : ils structurent le formulaire.
+
+| Type      | Rôle                     |
+| --------- | ------------------------ |
+| `divider` | un séparateur visuel     |
+| `heading` | un titre de section      |
+
+Cela fait 21. Le vingt-deuxième, `json`, n'est déclaré que dans le schéma — voilà pourquoi il vaut mieux s'y fier.
+
+Voici maintenant la correspondance pour les champs conservés :
 
 | Champ YAML               | Type Front Matter            | Pourquoi ce choix                                                 |
 | ------------------------ | ---------------------------- | ----------------------------------------------------------------- |
