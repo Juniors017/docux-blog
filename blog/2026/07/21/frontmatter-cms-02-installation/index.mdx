@@ -15,7 +15,7 @@ tags:
   - vscode
 date: 2026-07-22
 last_update:
-  date: 2026-07-21T21:13:35.437Z
+  date: 2026-07-22T02:51:13.950Z
   author: docux
 draft: true
 inLanguage: fr-FR
@@ -74,7 +74,7 @@ Tant que l'initialisation n'a pas été menée **jusqu'au bout**, aucun fichier 
 
 ### Ce que Front Matter détecte tout seul
 
-> **Bonne surprise : sur un projet Docusaurus, l'initialisation ne part pas de zéro ! FrontMatter detect automatiquement le type de projet**
+> **Bonne surprise : sur un projet Docusaurus, l'initialisation ne part pas de zéro ! Front Matter détecte automatiquement le type de projet.**
 
 
 ![Front Matter détecte automatiquement le framework Docusaurus lors de l'initialisation](/img/frontmattercms/post2/detectiondocusaurusframework.png)
@@ -96,7 +96,7 @@ La documentation présente **21 types de champs** que nous allons découvrir.
 :::tip Interroger le schéma plutôt que deviner
 
 ```bash
-curl -s https://frontmatter.codes/frontmatter.schema.json 
+curl -s https://frontmatter.codes/frontmatter.schema.json -o schema.json
 ```
 
 88 Ko qui décrivent tout ce que Front Matter accepte : content types, taxonomies, réglages du tableau de bord, intégration Git, prévisualisation, scripts personnalisés. La liste exhaustive des types de champs est là, et nulle part ailleurs.
@@ -170,38 +170,38 @@ Bien fait, il rend impossible la faute de frappe qui casse un build.
 L'initialisation génère un type avec `title`, `description`, `date`, `preview`, `draft`, `tags` et `categories`. Comparé à un article réel comme celui de ce blog, le décalage saute aux yeux : il **ajoute** deux champs que je n'utilise nulle part (`preview`, `categories`) et **ignore** presque tout ce dont je me sers (`slug`, `image`, `authors`, `series`…).
 C'est juste une base pour vous mettre le pied à l'étrier.
 
-```json title="Un exemple simple"
- "frontMatter.taxonomy.contentTypes": [
-    {
-      "name": "article",
-      "fileType": "mdx",
-      "pageBundle": true,
-      "defaultFileName": "index",
-      "slugTemplate": "{{title}}",
-      "filePrefix": "{{year}}/{{month}}/{{day}}/",
-      "previewPath": "blog",
-      "trailingSlash": true,
-      "clearEmpty": true,
-      "fields": [
-     
-        {
-          "title": "Titre",
-          "name": "title",
-          "type": "string",
-          "required": true
-        },
-        {
-          "title": "Description",
-          "name": "description",
-          "type": "string",
-          "required": false
-        }
-       ...
-        },
- ]
+```jsonc title="Un exemple simple"
+"frontMatter.taxonomy.contentTypes": [
+  {
+    "name": "article",
+    "fileType": "mdx",
+    "pageBundle": true,
+    "defaultFileName": "index",
+    "slugTemplate": "{{title}}",
+    "filePrefix": "{{year}}/{{month}}/{{day}}/",
+    "previewPath": "blog",
+    "trailingSlash": true,
+    "clearEmpty": true,
+    "fields": [
+      {
+        "title": "Titre",
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "title": "Description",
+        "name": "description",
+        "type": "string",
+        "required": false
+      }
+      // … et les autres champs
+    ]
+  }
+]
 ```
 
-### Etape 1 - Inventorier vos champs existants
+### Étape 1 — Inventorier vos champs existants
 
 Ne configurez pas à l'aveugle : partez de ce que vous écrivez déjà. Un court script liste tous les champs réellement présents, avec leur fréquence :
 <Columns>
@@ -256,7 +256,7 @@ $ node scripts/audit-frontmatter.cjs
  24  series
  23  difficulty
  23  copyrightYear
- …   (34 autres)
+ …   (35 autres)
 </Terminal>
 
 :::info[Notez bien]
@@ -277,7 +277,7 @@ C'est une étape à ne pas négliger
 Même sans installer de CMS, ce script est utile : il révèle des incohérences qu'aucun outil ne signale, parce que le frontmatter n'est validé par personne.
 :::
 
-### Étape 2 - Ne modélisez que ce qui sert (l'étape qu'on saute toujours)
+### Étape 2 — Ne modélisez que ce qui sert (l'étape qu'on saute toujours)
 
 Avant de traduire tous ces champs en formulaire, une deuxième question, bien plus importante : **qui les lit ?**
 
@@ -292,7 +292,7 @@ src/pages/repository.mdx:47:copyrightYear: 2025 # Année de copyright
 
 </Terminal>
 
-Chez moi, la réponse a été brutale : Ces champs venaient de schema.org, en prévision d'un composant JSON-LD… que je n'avais jamais écrit, je trainais à le faire... Ils étaient donc saisis dans chaque article et ne produisaient strictement rien.
+Chez moi, la réponse a été brutale : **personne**. Ces champs venaient de schema.org, en prévision d'un composant JSON-LD… que je n'avais jamais écrit, je traînais à le faire. Ils étaient donc saisis dans chaque article et ne produisaient strictement rien.
 
 Et même en écrivant ce composant, tous n'auraient pas d'intérêt. Le tri honnête :
 
@@ -304,7 +304,7 @@ Et même en écrivant ce composant, tous n'auraient pas d'intérêt. Le tri honn
 
 `dateModified` est le grand sous-estimé du lot : c'est un vrai signal de fraîcheur, et il se remplit tout seul (voir plus bas).
 
-Résultat : je suis passé de **plus de 50 champs (je vous épargne la liste) à 14**.
+Résultat : je suis passé d'**une cinquantaine de champs (je vous épargne la liste) à 14**.
 
 :::warning Ces règles bougent
 Google fait évoluer ses résultats enrichis régulièrement — les suppressions HowTo et FAQ datent de 2023. Vérifiez l'état actuel sur Google Search Central avant de trancher pour votre propre site.
@@ -373,7 +373,7 @@ Un champ simple ressemble à ça :
   "title": "Description",
   "name": "description",
   "type": "string",
-  "description": "The description field is required"
+  "description": "Résumé SEO affiché dans Google. 160 caractères maximum."
 }
 ```
 
