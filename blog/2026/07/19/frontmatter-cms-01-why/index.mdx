@@ -17,6 +17,7 @@ hide_table_of_contents: false
 series: "CMS & UI"
 blueSkyRecordKey: 3mr4bnlu6ys2a
 ---
+
 <center>
 <div>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
@@ -89,17 +90,19 @@ Everything is designed to support you: initialize the project.
 
 ![Front Matter CMS configuration start wizard](/img/frontmattercms/post1/startconfiguration.png)
 
-On initialization, Front Matter generates a `frontmatter.json` file at the root of the project: this is the entry point of the configuration. It comes with a `.frontmatter/` folder that stores the associated resources (templates, media database, taxonomy).
+On initialization, Front Matter generates a `frontmatter.json` file at the root of the project: this is the entry point of the configuration. It comes with a `.frontmatter/` folder where the extension keeps its own data — the tag vocabulary, the media database, your pinned items.
 
 #### Project structure
 
 <Trees>
-  <Folder label="mon-projet-docusaurus" expanded={true}>
+  <Folder label="my-docusaurus-project" expanded={true}>
     <File label="frontmatter.json" icon="json" />
     <Folder label=".frontmatter" expanded={true}>
-      <Folder label="config" />
-      <Folder label="database" />
-      <Folder label="templates" />
+      <Folder label="database" expanded={true}>
+        <File label="taxonomyDb.json" icon="json" />
+        <File label="pinnedItemsDb.json" icon="json" />
+        <File label="mediaDb.json" icon="json" />
+      </Folder>
     </Folder>
     <Folder label="blog" />
     <Folder label="static" />

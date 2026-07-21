@@ -49,37 +49,13 @@ Brancher Front Matter sur un site Docusaurus existant, comprendre chaque réglag
 </div>
 {/* truncate */}
 
-## 1. Installation et initialisation
+## 1. Reprendre là où on s'est arrêté
 
-### Installer l'extension
-
-Front Matter CMS s'installe comme n'importe quelle extension VS Code : cherchez **Front Matter CMS** dans le Marketplace, ou passez par [frontmatter.codes](https://frontmatter.codes/).
-
-{/* 📸 IMAGE-01 — La fiche de l'extension Front Matter CMS dans le Marketplace VS Code, avec le bouton Install. */}
-
-### Initialiser le projet
-
-Une fois l'extension active, une icône Front Matter apparaît dans la barre d'activité. Ouvrez-la et lancez **Initialize project** (ou `Ctrl+Shift+P` → `Front Matter: Initialize project`).
-
-{/* 📸 IMAGE-02 — Le panneau Front Matter au premier lancement, avec le bouton « Initialize project ». */}
+Dans [l'article précédent](/blog/why-front-matter-cms-docusaurus/), l'extension a été installée et le projet initialisé : `frontmatter.json` est à la racine, le dossier `.frontmatter/` existe. Si ce n'est pas encore fait, c'est le moment — le reste de cet article part de là.
 
 :::caution Installer n'est pas initialiser
-C'est le premier piège : tant que l'initialisation n'a pas été menée **jusqu'au bout**, aucun fichier n'est créé. L'extension peut être installée et active sans que rien n'ait changé dans votre dépôt. Si vous ne voyez pas apparaître `frontmatter.json`, c'est que l'assistant attend encore une étape.
+Tant que l'initialisation n'a pas été menée **jusqu'au bout**, aucun fichier n'est créé. L'extension peut être installée et active sans que rien n'ait changé dans votre dépôt. Si vous ne voyez pas apparaître `frontmatter.json`, c'est que l'assistant attend encore une étape.
 :::
-
-### Ce qui apparaît dans le projet
-
-<Trees>
-  <Folder label="mon-projet-docusaurus" expanded={true}>
-    <File label="frontmatter.json" icon="json" />
-    <Folder label=".frontmatter" expanded={true}>
-      <Folder label="database" expanded={true}>
-        <File label="taxonomyDb.json" icon="json" />
-        <File label="pinnedItemsDb.json" icon="json" />
-      </Folder>
-    </Folder>
-  </Folder>
-</Trees>
 
 ### Ce que Front Matter détecte tout seul
 
@@ -100,9 +76,9 @@ C'est un bon point de départ. Le **content type** généré, en revanche, ne co
 
 ## 2. Anatomie de la configuration
 
-### `frontmatter.json` : le point d'entrée
+### `frontmatter.json` : la ligne la plus utile du fichier
 
-C'est **le** fichier de configuration, à la racine du projet. Il commence par une ligne précieuse :
+Le fichier de configuration commence par une ligne qu'on a vite fait de survoler :
 
 ```json
 { "$schema": "https://frontmatter.codes/frontmatter.schema.json" }
@@ -340,7 +316,7 @@ Deux types purement visuels structurent la saisie :
 
 J'ai regroupé mes 14 champs en trois sections : **Contenu**, **Classement**, **Social**.
 
-{/* 📸 IMAGE-03 — Le formulaire Front Matter sur un article, montrant les sections et les champs typés (sélecteur de série, liste d'auteurs, date). */}
+{/* 📸 IMAGE-01 — Le formulaire Front Matter sur un article, montrant les sections et les champs typés (sélecteur de série, liste d'auteurs, date). */}
 
 ### Le résultat complet
 
@@ -352,11 +328,11 @@ Voici la configuration de ce blog, telle qu'elle tourne aujourd'hui :
 
 Depuis le panneau Front Matter, **Create content** génère un article à partir du content type.
 
-{/* 📸 IMAGE-04 — Le bouton « Create content » et la boîte de dialogue demandant le titre du nouvel article. */}
+{/* 📸 IMAGE-02 — Le bouton « Create content » et la boîte de dialogue demandant le titre du nouvel article. */}
 
 ### Contrôler où le fichier atterrit
 
-Mes articles suivent une arborescence datée : `blog/2026/07/19/mon-article/index.mdx`, images à côté du texte. Quatre réglages gouvernent ça :
+Mes articles suivent une arborescence datée : `blog/2026/07/19/mon-article/index.mdx`, images à côté du texte. Cinq réglages gouvernent ça :
 
 ```json
 {
@@ -374,7 +350,8 @@ Ces réglages ne sont documentés nulle part ensemble, et chacun m'a envoyé dan
 1. **`defaultFileName` s'écrit sans extension.** Avec `"index.mdx"`, Front Matter slugifie la valeur (le point disparaît) puis rajoute l'extension : vous obtenez `indexmdx.mdx`.
 2. **`slugTemplate` ne sait pas créer de dossiers**, et les placeholders de date n'y sont pas résolus — malgré ce que laisse penser la documentation. Laissez-le à `{{title}}`.
 3. **Le `/` final de `filePrefix` est décisif.** Sans lui, Front Matter colle le dernier segment au titre : `blog/2026/07/19-mon-article/` au lieu de `blog/2026/07/19/mon-article/`.
-   :::
+
+:::
 
 ## 5. Deux garde-fous à connaître
 
@@ -387,7 +364,7 @@ Front Matter compte les caractères du titre et de la description pendant la sai
 "frontMatter.taxonomy.seoDescriptionLength": 160
 ```
 
-{/* 📸 IMAGE-05 — Le compteur SEO de Front Matter signalant une description trop longue (198/160). */}
+{/* 📸 IMAGE-03 — Le compteur SEO de Front Matter signalant une description trop longue (198/160). */}
 
 Sur ce blog, l'avertissement a révélé **14 descriptions au-dessus de la limite** — donc tronquées dans les résultats de recherche depuis des mois, sans que rien ne le signale.
 
@@ -405,7 +382,9 @@ Le dialogue propose de créer, mettre à jour ou définir le type de contenu. **
 ## 6. Que versionner dans Git
 
 - **`frontmatter.json` : oui, toujours.** C'est l'argument central de Front Matter : la configuration voyage avec le code, et toute l'équipe partage le même formulaire après un `git pull`.
-- **`.frontmatter/database/` : à votre convenance.** `taxonomyDb.json` (le vocabulaire de tags) a du sens en équipe ; `pinnedItemsDb.json` n'est que de l'état d'interface local et générera du bruit dans vos diffs.
+- **`.frontmatter/database/` : ça se discute.** `taxonomyDb.json` (le vocabulaire de tags) a du sens en équipe ; `pinnedItemsDb.json` n'est que de l'état d'interface local et générera du bruit dans vos diffs.
+
+Sur ce blog, j'ai choisi de **tout versionner**, y compris la base de données. La raison est simple : je suis seul à écrire, le bruit dans les diffs est donc négligeable, et je préfère qu'un `git clone` restitue l'environnement complet. À plusieurs, j'ajouterais `.frontmatter/database/pinnedItemsDb.json` au `.gitignore`.
 
 ---
 
