@@ -1,7 +1,7 @@
 ---
-title: Installer et configurer Front Matter CMS sur Docusaurus
-slug: installer-front-matter-cms-docusaurus
-description: "Brancher Front Matter CMS sur un projet Docusaurus existant : configuration, et surtout un content type calqué sur votre propre frontmatter."
+title: Install and configure Front Matter CMS on Docusaurus
+slug: install-front-matter-cms-docusaurus
+description: "Wire Front Matter CMS into an existing Docusaurus project: configuration, and above all a content type modelled on your own front matter."
 image: /img/frontmattercms/post2/frontmatterparameters.png
 authors:
   - docux
@@ -18,13 +18,11 @@ last_update:
   date: 2026-07-22T02:51:13.950Z
   author: docux
 draft: true
-inLanguage: fr-FR
+inLanguage: en
 hide_table_of_contents: false
 series: CMS & UI
 fmContentType: article
 ---
-
-
 
 <div>
 <center>
@@ -32,27 +30,26 @@ fmContentType: article
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </center>
-![image illustant le El Dino utilisant le frontmatter cms](/img/frontmattercms/post2/frontmatterparameters.png)
+![illustration of El Dino using Front Matter CMS](/img/frontmattercms/post2/frontmatterparameters.png)
 </div>
 
-
 <div className="text--justify">
-Dans l'article précédent, on a vu **pourquoi** Front Matter CMS est intéressant sur un projet Docusaurus. Passons à la pratique.
+In the previous article, we saw **why** Front Matter CMS is worthwhile on a Docusaurus project. Let's get practical.
 
-L'installation prend deux minutes et nous sommes guidés par l'extension. Le vrai travail — celui qui fait la différence entre un gadget et un outil qu'on utilise tous les jours — c'est de faire **correspondre le CMS à votre propre schéma de frontmatter**. Et, on va le voir, d'avoir le courage de ne modéliser que ce qui sert réellement.
+Installation takes two minutes and the extension guides us through it. The real work — the part that makes the difference between a gadget and a tool you use every day — is to **match the CMS to your own front matter schema**. And, as we'll see, to have the courage to model only what actually serves a purpose.
 
-:::tip Ce que vous saurez faire à la fin
-Brancher Front Matter sur un site Docusaurus existant, comprendre les principaux réglages de `frontmatter.json`, traduire **votre** frontmatter en formulaire, et supprimer la saisie manuelle partout où c'est possible.
+:::tip What you'll be able to do by the end
+Wire Front Matter into an existing Docusaurus site, understand the main `frontmatter.json` settings, translate **your** front matter into a form, and remove manual typing wherever possible.
 :::
 
 </div>
 {/* truncate */}
 
-## Reprendre là où on s'est arrêté
+## Picking up where we left off
 
-Dans [l'article précédent](/blog/why-front-matter-cms-docusaurus/), l'extension a été installée et le projet initialisé : `frontmatter.json` est à la racine, le dossier `.frontmatter/` existe. Si ce n'est pas encore fait, c'est le moment — le reste de cet article part de là.
+In the [previous article](/blog/why-front-matter-cms-docusaurus/), the extension was installed and the project initialized: `frontmatter.json` is at the root, the `.frontmatter/` folder exists. If that's not done yet, now is the time — the rest of this article starts from there.
 
-### Un petit rappel de l'arborescence
+### A quick reminder of the tree
 <Trees>
   <Folder label="my-docusaurus-project" expanded={true}>
     <File label="frontmatter.json" icon="json" />
@@ -68,59 +65,59 @@ Dans [l'article précédent](/blog/why-front-matter-cms-docusaurus/), l'extensio
   </Folder>
 </Trees>
 
-:::caution Installer n'est pas initialiser
-Tant que l'initialisation n'a pas été menée **jusqu'au bout**, aucun fichier n'est créé. L'extension peut être installée et active sans que rien n'ait changé dans votre dépôt. Si vous ne voyez pas apparaître `frontmatter.json`, c'est que l'assistant attend encore une étape.
+:::caution Installing is not initializing
+Until initialization has been carried through **to the end**, no file is created. The extension can be installed and active without anything having changed in your repository. If you don't see `frontmatter.json` appear, the wizard is still waiting on a step.
 :::
 
-### Ce que Front Matter détecte tout seul
+### What Front Matter detects on its own
 
-> **Bonne surprise : sur un projet Docusaurus, l'initialisation ne part pas de zéro ! Front Matter détecte automatiquement le type de projet.**
+> **Good surprise: on a Docusaurus project, initialization doesn't start from scratch! Front Matter automatically detects the project type.**
 
 
-![Front Matter détecte automatiquement le framework Docusaurus lors de l'initialisation](/img/frontmattercms/post2/detectiondocusaurusframework.png)
+![Front Matter automatically detects the Docusaurus framework during initialization](/img/frontmattercms/post2/detectiondocusaurusframework.png)
 
-## Anatomie de la configuration
+## Anatomy of the configuration
 
-### `frontmatter.json` : la ligne la plus utile du fichier
+### `frontmatter.json`: the most useful line in the file
 
-Le fichier de configuration commence par une ligne qu'on a vite fait de survoler :
+The configuration file starts with a line that's easy to skip over:
 
 ```json
 { "$schema": "https://frontmatter.codes/frontmatter.schema.json" }
 ```
 
-Ce `$schema` donne à VS Code l'autocomplétion et la validation en temps réel. C'est surtout **la source de vérité quand la documentation est muette** : en cas de doute sur une clé ou une valeur autorisée, le schéma tranche. J'y suis revenu plusieurs fois en écrivant cet article.
+This `$schema` gives VS Code autocompletion and real-time validation. Above all it's **the source of truth when the documentation is silent**: whenever you're unsure about a key or an allowed value, the schema settles it. I came back to it several times while writing this article.
 
-La documentation présente **21 types de champs** que nous allons découvrir.
+The documentation lists **21 field types** that we're about to discover.
 
-:::tip Interroger le schéma plutôt que deviner
+:::tip Query the schema rather than guessing
 
 ```bash
 curl -s https://frontmatter.codes/frontmatter.schema.json -o schema.json
 ```
 
-88 Ko qui décrivent tout ce que Front Matter accepte : content types, taxonomies, réglages du tableau de bord, intégration Git, prévisualisation, scripts personnalisés. La liste exhaustive des types de champs est là, et nulle part ailleurs.
+88 KB describing everything Front Matter accepts: content types, taxonomies, dashboard settings, Git integration, preview, custom scripts. The exhaustive list of field types is there, and nowhere else.
 :::
 
-Notez qu'il existe deux urls : 
-| Schéma                                                 | Statut | Usage recommandé                       |
-| :----------------------------------------------------- | :----- | :------------------------------------- |
-| https://beta.frontmatter.codes/frontmatter.schema.json | BETA   | Tests, nouvelles features, exploration |
-| https://frontmatter.codes/frontmatter.schema.json      | Stable | Production, projets sérieux            |
+Note that there are two URLs:
+| Schema                                                 | Status | Recommended use                      |
+| :----------------------------------------------------- | :----- | :----------------------------------- |
+| https://beta.frontmatter.codes/frontmatter.schema.json | BETA   | Tests, new features, exploration     |
+| https://frontmatter.codes/frontmatter.schema.json      | Stable | Production, serious projects         |
 
-### `.frontmatter/` : les données de l'extension
+### `.frontmatter/`: the extension's data
 
-Ce dossier stocke ce que Front Matter accumule : `database/taxonomyDb.json` (le vocabulaire de tags) et `database/pinnedItemsDb.json` (vos épingles du dashboard) mais aussi les templates (que nous découvrirons dans un autre article).
-:::tip[Astuce DocuxLab]
-On peut aussi y stocker la configuration : `.frontmatter/config/.frontmatter.json`
-Dans un cadre professionnel avec beaucoup d'intervenants, c'est ce que je fais personnellement.
+This folder stores what Front Matter accumulates: `database/taxonomyDb.json` (the tag vocabulary) and `database/pinnedItemsDb.json` (your dashboard pins), but also the templates (which we'll discover in another article).
+:::tip[DocuxLab tip]
+You can also store the configuration there: `.frontmatter/config/.frontmatter.json`
+In a professional setting with many contributors, that's what I do personally.
 :::
 
-### Les quatre réglages qui relient Front Matter à votre site
+### The four settings that connect Front Matter to your site
 
-```json title="La base du fichier de config"
+```json title="The base of the config file"
 {
-  "frontMatter.framework.id": "docusaurus", 
+  "frontMatter.framework.id": "docusaurus",
   "frontMatter.content.publicFolder": "static",
   "frontMatter.preview.host": "http://localhost:3000",
   "frontMatter.content.pageFolders": [
@@ -129,28 +126,23 @@ Dans un cadre professionnel avec beaucoup d'intervenants, c'est ce que je fais p
 }
 ```
 
+| Setting                | Role                                             | Adapt it if…                                     |
+| ---------------------- | ------------------------------------------------ | ------------------------------------------------ |
+| `framework.id`         | Enables Docusaurus-specific behaviors            | never, if detection worked                       |
+| `content.publicFolder` | Where the media live (`static`)                  | your public folder has another name              |
+| `preview.host`         | The URL of your dev server                       | you're not running on port 3000                  |
+| `content.pageFolders`  | **Which folders hold editable content**          | you have docs, pages, several blogs…             |
 
+`pageFolders` is the most important one: it tells Front Matter where to look, and which content type to attach to each folder.
 
-| Réglage                | Rôle                                               | À adapter si…                                   |
-| ---------------------- | -------------------------------------------------- | ----------------------------------------------- |
-| `framework.id`         | Active les comportements propres à Docusaurus      | jamais, si la détection a fonctionné            |
-| `content.publicFolder` | Où vivent les médias (`static`)                    | votre dossier public a un autre nom             |
-| `preview.host`         | L'URL de votre serveur de dev                      | vous ne tournez pas sur le port 3000            |
-| `content.pageFolders`  | **Quels dossiers contiennent du contenu éditable** | vous avez des docs, des pages, plusieurs blogs… |
+The `[[workspace]]` token is replaced by the project root: that's what makes the configuration shareable between machines.
 
-`pageFolders` est le plus important : c'est lui qui dit à Front Matter où chercher, et à quel content type rattacher chaque dossier.
+## The content type: matching the CMS to your front matter
 
+Our config file is well on its way.
+The generated **content type**, on the other hand, won't match your blog — we'll get to that, no panic.
 
-
-Le jeton `[[workspace]]` est remplacé par la racine du projet : c'est ce qui rend la configuration partageable entre machines.
-
-## Le content type : faire correspondre le CMS à votre frontmatter
-
-Notre fichier de config est en bonne voie.
-Le **content type** généré, en revanche, ne correspondra pas à votre blog — on y vient, pas de panique.
-
-
-```json title="Rattacher un dossier à un content type"
+```json title="Attaching a folder to a content type"
 "frontMatter.content.pageFolders": [
   {
     "title": "Blog",
@@ -158,19 +150,19 @@ Le **content type** généré, en revanche, ne correspondra pas à votre blog �
     "contentTypes": ["article"]
   }
 ]
-``` 
+```
 
-Un **content type** décrit les champs de vos articles ; Front Matter en déduit le formulaire qui apparaîtra dans votre interface — vous vous rappelez [celui-ci](/blog/why-front-matter-cms-docusaurus/#content-types-modelled-on-your-own-schema).
-Ainsi, pour un même blog, on peut avoir plusieurs content types (Tuto, Article, News, Unboxing…) : chacun proposera une liste de choix différente dans l'interface pour générer le frontmatter. 
+A **content type** describes the fields of your articles; Front Matter derives the form that will appear in your interface — you remember [this one](/blog/why-front-matter-cms-docusaurus/#content-types-modelled-on-your-own-schema).
+So, for a single blog, you can have several content types (Tutorial, Article, News, Unboxing…): each one offers a different set of choices in the interface to generate the front matter.
 
-Bien fait, il rend impossible la faute de frappe qui casse un build.
+Done right, it makes the typo that breaks a build impossible.
 
-### Pourquoi le type par défaut ne convient jamais
+### Why the default type never fits
 
-L'initialisation génère un type avec `title`, `description`, `date`, `preview`, `draft`, `tags` et `categories`. Comparé à un article réel comme celui de ce blog, le décalage saute aux yeux : il **ajoute** deux champs que je n'utilise nulle part (`preview`, `categories`) et **ignore** presque tout ce dont je me sers (`slug`, `image`, `authors`, `series`…).
-C'est juste une base pour vous mettre le pied à l'étrier.
+Initialization generates a type with `title`, `description`, `date`, `preview`, `draft`, `tags` and `categories`. Compared to a real article like the ones on this blog, the mismatch jumps out: it **adds** two fields I use nowhere (`preview`, `categories`) and **ignores** almost everything I actually rely on (`slug`, `image`, `authors`, `series`…).
+It's just a base to get you started.
 
-```jsonc title="Un exemple simple"
+```jsonc title="A simple example"
 "frontMatter.taxonomy.contentTypes": [
   {
     "name": "article",
@@ -184,7 +176,7 @@ C'est juste une base pour vous mettre le pied à l'étrier.
     "clearEmpty": true,
     "fields": [
       {
-        "title": "Titre",
+        "title": "Title",
         "name": "title",
         "type": "string",
         "required": true
@@ -195,15 +187,15 @@ C'est juste une base pour vous mettre le pied à l'étrier.
         "type": "string",
         "required": false
       }
-      // … et les autres champs
+      // … and the other fields
     ]
   }
 ]
 ```
 
-### Étape 1 — Inventorier vos champs existants
+### Step 1 — Inventory your existing fields
 
-Ne configurez pas à l'aveugle : partez de ce que vous écrivez déjà. Un court script liste tous les champs réellement présents, avec leur fréquence :
+Don't configure blindly: start from what you already write. A short script lists every field actually present, with its frequency:
 <Columns>
 <Column>
 ```js title="scripts/audit-frontmatter.cjs"
@@ -256,148 +248,148 @@ $ node scripts/audit-frontmatter.cjs
  24  series
  23  difficulty
  23  copyrightYear
- …   (35 autres)
+ …   (35 more)
 </Terminal>
 
-:::info[Notez bien]
-Si vous partez d'un site web vierge, la démarche sera un peu différente : il vous faudra penser à ce que vous souhaitez dans votre `frontmatter`.
-C'est une étape à ne pas négliger 
+:::info[Take note]
+If you're starting from a blank website, the approach will be a bit different: you'll have to think about what you want in your `frontmatter`.
+It's a step not to be skipped.
 :::
 
 
 </Column>
 </Columns>
 
-**Chez moi** : beaucoup de champs, et deux surprises.
+**In my case**: lots of fields, and two surprises.
 
-- **`difficulty` s'écrivait de 8 façons** (`Beginner`, `Débutant`, `intermediate`, `Beginner to Intermediate`…) pour quatre valeurs réelles.
-- **Deux articles utilisaient `serie:` au lieu de `series:`** — une lettre manquante qui les rendait invisibles dans les pages de séries.
+- **`difficulty` was written 8 different ways** (`Beginner`, `Débutant`, `intermediate`, `Beginner to Intermediate`…) for four actual values.
+- **Two articles used `serie:` instead of `series:`** — a missing letter that made them invisible on the series pages.
 
-:::note[L'audit vaut déjà le détour]
-Même sans installer de CMS, ce script est utile : il révèle des incohérences qu'aucun outil ne signale, parce que le frontmatter n'est validé par personne.
+:::note[The audit is worth it on its own]
+Even without installing a CMS, this script is useful: it reveals inconsistencies that no tool flags, because the front matter is validated by no one.
 :::
 
-### Étape 2 — Ne modélisez que ce qui sert (l'étape qu'on saute toujours)
+### Step 2 — Model only what serves a purpose (the step everyone skips)
 
-Avant de traduire tous ces champs en formulaire, une deuxième question, bien plus importante : **qui les lit ?**
+Before translating all these fields into a form, a second question, far more important: **who reads them?**
 
-L'astuce est de passer par un grep
+The trick is to run a grep:
 <Terminal title="user@machine: ~/yourproject">
 
 grep -rn "difficulty\|genre\|copyrightYear\|totalTime" src/
 
 
-src/pages/repository.mdx:34:genre: "Open Source Software" # Genre de contenu
-src/pages/repository.mdx:47:copyrightYear: 2025 # Année de copyright
+src/pages/repository.mdx:34:genre: "Open Source Software" # Content genre
+src/pages/repository.mdx:47:copyrightYear: 2025 # Copyright year
 
 </Terminal>
 
-Chez moi, la réponse a été brutale : **personne**. Ces champs venaient de schema.org, en prévision d'un composant JSON-LD… que je n'avais jamais écrit, je traînais à le faire. Ils étaient donc saisis dans chaque article et ne produisaient strictement rien.
+In my case, the answer was brutal: **no one**. These fields came from schema.org, in anticipation of a JSON-LD component… that I had never written and kept putting off. So they were typed into every article and produced strictly nothing.
 
-Et même en écrivant ce composant, tous n'auraient pas d'intérêt. Le tri honnête :
+And even if I did write that component, not all of them would be worthwhile. The honest sort:
 
-| Niveau                  | Champs                                                                                                                               | Verdict                                                                                                            |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **Comptent vraiment**   | `title`, `description`, `image`, `date`, `last_update`, `authors`                                                                    | `Article`/`BlogPosting` : `headline`, `image`, `datePublished`, **`dateModified`**, `author`                       |
-| **Morts depuis 2023**   | `totalTime`, `prepTime`, `tool`, `supply`, `yield`, `estimatedCost`, `faq`                                                           | Google a supprimé les résultats enrichis **HowTo**, et restreint **FAQPage** aux sites gouvernementaux et de santé |
-| **N'ont jamais compté** | `keywords`, `genre`, `category`, `articleSection`, `audience`, `wordCount`, `copyrightYear`, `proficiencyLevel`, `educationalLevel`… | Vocabulaire schema.org valide, mais Google ne l'affiche nulle part                                                 |
+| Level                   | Fields                                                                                                                              | Verdict                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Really count**        | `title`, `description`, `image`, `date`, `last_update`, `authors`                                                                   | `Article`/`BlogPosting`: `headline`, `image`, `datePublished`, **`dateModified`**, `author`                      |
+| **Dead since 2023**     | `totalTime`, `prepTime`, `tool`, `supply`, `yield`, `estimatedCost`, `faq`                                                          | Google removed **HowTo** rich results, and restricted **FAQPage** to government and health sites                 |
+| **Never counted**       | `keywords`, `genre`, `category`, `articleSection`, `audience`, `wordCount`, `copyrightYear`, `proficiencyLevel`, `educationalLevel`… | Valid schema.org vocabulary, but Google displays it nowhere                                                      |
 
-`dateModified` est le grand sous-estimé du lot : c'est un vrai signal de fraîcheur, et il se remplit tout seul (voir plus bas).
+`dateModified` is the great underrated one of the bunch: it's a genuine freshness signal, and it fills itself in (see below).
 
-Résultat : je suis passé d'**une cinquantaine de champs (je vous épargne la liste) à 14**.
+Result: I went from **around fifty fields (I'll spare you the list) down to 14**.
 
-:::warning Ces règles bougent
-Google fait évoluer ses résultats enrichis régulièrement — les suppressions HowTo et FAQ datent de 2023. Vérifiez l'état actuel sur Google Search Central avant de trancher pour votre propre site.
+:::warning These rules move
+Google changes its rich results regularly — the HowTo and FAQ removals date from 2023. Check the current state on Google Search Central before deciding for your own site.
 :::
 
-### Étape 3 — Choisir le bon type pour chaque champ
+### Step 3 — Choose the right type for each field
 
-Le schéma expose **22 types**. Voici d'abord la liste complète, telle que la documentation la présente :
+The schema exposes **22 types**. Here's the complete list first, as the documentation presents it:
 
-| Type                  | Rôle                                          |
-| --------------------- | --------------------------------------------- |
-| `string`              | une ou plusieurs lignes de texte              |
-| `number`              | valeurs entières                              |
-| `datetime`            | champs de date                                |
-| `boolean`             | vrai ou faux                                  |
-| `image`               | gestion des images                            |
-| `file`                | gestion des fichiers                          |
-| `choice`              | un ensemble d'options prédéfinies             |
-| `list`                | plusieurs valeurs de texte                    |
-| `draft`               | l'état de publication du contenu              |
-| `tags`                | gestion des tags                              |
-| `categories`          | gestion des catégories                        |
-| `taxonomy`            | gestion d'une taxonomie                       |
-| `fields`              | des sous-champs imbriqués                     |
-| `fieldCollection`     | un ensemble de champs réutilisable            |
-| `block`               | blocs de contenu                              |
-| `dataFile`            | valeurs puisées dans un fichier de données    |
-| `slug`                | gestion des slugs                             |
-| `contentRelationship` | relations entre contenus                      |
-| `customField`         | champs personnalisés                          |
+| Type                  | Role                                        |
+| --------------------- | ------------------------------------------- |
+| `string`              | one or several lines of text                |
+| `number`              | integer values                              |
+| `datetime`            | date fields                                 |
+| `boolean`             | true or false                               |
+| `image`               | image handling                              |
+| `file`                | file handling                               |
+| `choice`              | a set of predefined options                 |
+| `list`                | several text values                         |
+| `draft`               | the publication state of the content        |
+| `tags`                | tag handling                                |
+| `categories`          | category handling                           |
+| `taxonomy`            | handling of a taxonomy                      |
+| `fields`              | nested sub-fields                           |
+| `fieldCollection`     | a reusable set of fields                    |
+| `block`               | content blocks                              |
+| `dataFile`            | values pulled from a data file              |
+| `slug`                | slug handling                               |
+| `contentRelationship` | relationships between content               |
+| `customField`         | custom fields                               |
 
-Deux types supplémentaires ne stockent rien : ils structurent le formulaire.
+Two additional types store nothing: they structure the form.
 
-| Type      | Rôle                     |
-| --------- | ------------------------ |
-| `divider` | un séparateur visuel     |
-| `heading` | un titre de section      |
+| Type      | Role                   |
+| --------- | ---------------------- |
+| `divider` | a visual separator     |
+| `heading` | a section heading      |
 
-Cela fait 21. Le vingt-deuxième, `json`, n'est déclaré que dans le schéma — voilà pourquoi il vaut mieux s'y fier.
-Ces 22 types vous permettent de façonner l'interface pour que les champs vous conviennent au mieux, tant sur le plan ergonomique que technique.
+That makes 21. The twenty-second, `json`, is declared only in the schema — which is exactly why it's better to trust it.
+These 22 types let you shape the interface so the fields suit you best, both ergonomically and technically.
 
-Voici maintenant la correspondance pour les champs que j'ai souhaité conserver :
+Here now is the mapping for the fields I chose to keep:
 
-| Champ YAML               | Type Front Matter            | Pourquoi ce choix                                                 |
+| YAML field               | Front Matter type            | Why this choice                                                   |
 | ------------------------ | ---------------------------- | ----------------------------------------------------------------- |
-| `title`                  | `string` + `required`        | le minimum vital                                                  |
-| `slug`                   | `string`                     | on garde la main (pas de génération automatique)                  |
-| `description`            | `string`                     | soumis à la limite SEO (160)                                      |
-| `image`                  | `image` + `isPreviewImage`   | ouvre le sélecteur de médias **et** sert de vignette au dashboard |
-| `authors`                | `choice` + `multiple`        | limité aux clés de `blog/authors.yml`                             |
-| `date`                   | `datetime` + `isPublishDate` | désigne _la_ date de publication                                  |
-| `last_update`            | `fields`                     | un objet YAML → des sous-champs                                   |
-| `draft`                  | `draft`                      | type dédié, relié au statut                                       |
-| `tags`                   | `tags`                       | puise dans la taxonomie partagée                                  |
-| `mainTag`                | `tags` **limité à 1**        | voir l'étape 4                                                    |
-| `series`                 | `taxonomy`                   | voir l'étape 4                                                    |
-| `hide_table_of_contents` | `boolean`                    | case à cocher                                                     |
-| `inLanguage`             | `choice` + défaut            | voir l'étape 4                                                    |
+| `title`                  | `string` + `required`        | the bare minimum                                                  |
+| `slug`                   | `string`                     | we keep control (no automatic generation)                         |
+| `description`            | `string`                     | subject to the SEO limit (160)                                    |
+| `image`                  | `image` + `isPreviewImage`   | opens the media picker **and** serves as the dashboard thumbnail  |
+| `authors`                | `choice` + `multiple`        | restricted to the keys in `blog/authors.yml`                      |
+| `date`                   | `datetime` + `isPublishDate` | designates _the_ publication date                                 |
+| `last_update`            | `fields`                     | a YAML object → sub-fields                                        |
+| `draft`                  | `draft`                      | dedicated type, tied to the status                                |
+| `tags`                   | `tags`                       | draws from the shared taxonomy                                    |
+| `mainTag`                | `tags` **limited to 1**      | see step 4                                                        |
+| `series`                 | `taxonomy`                   | see step 4                                                        |
+| `hide_table_of_contents` | `boolean`                    | a checkbox                                                        |
+| `inLanguage`             | `choice` + default           | see step 4                                                        |
 
 <Columns>
 <Column>
-Un champ simple ressemble à ça :
+A simple field looks like this:
 
 ```json
 {
   "title": "Description",
   "name": "description",
   "type": "string",
-  "description": "Résumé SEO affiché dans Google. 160 caractères maximum."
+  "description": "SEO summary shown in Google. 160 characters maximum."
 }
 ```
 
 </Column>
 <Column className="margin-top--lg text--center">
-#### Visuel
-![Rendu d'un champ simple dans le formulaire Front Matter](/img/frontmattercms/post2/simplefield.png)
+#### Visual
+![A simple field rendered in the Front Matter form](/img/frontmattercms/post2/simplefield.png)
 </Column>
 </Columns>
-Nous verrons par la suite que nous pouvons définir des valeurs par défaut et rendre le champ obligatoire.
+We'll see later that we can set default values and make the field required.
 
-Le `description` du champ (à ne pas confondre avec le champ `description` !) s'affiche sous l'intitulé dans le formulaire. C'est l'endroit idéal pour documenter une convention d'équipe.
+The field's `description` (not to be confused with the `description` field!) appears under the label in the form. It's the ideal place to document a team convention.
 
-### Étape 4 — Supprimer la saisie manuelle
+### Step 4 — Remove manual typing
 
-C'est ici qu'un content type devient vraiment agréable. Quatre mécanismes, du plus simple au plus malin.
+This is where a content type becomes truly pleasant. Four mechanisms, from the simplest to the cleverest.
 
-**1. Réutiliser une liste de choix.** L'auteur d'une mise à jour est forcément un auteur du blog : autant lui donner la même liste, plutôt que de le retaper.
+**1. Reuse a list of choices.** The author of an update is necessarily an author of the blog: might as well give them the same list, rather than retyping it.
 
 <Columns>
 <Column>
-```json title="vue de la configuration"
+```json title="configuration view"
 {
-  "title": "Dernière mise à jour",
+  "title": "Last update",
   "name": "last_update",
   "type": "fields",
   "fields": [
@@ -408,7 +400,7 @@ C'est ici qu'un content type devient vraiment agréable. Quatre mécanismes, du 
       "isModifiedDate": true
     },
     {
-      "title": "Auteur",
+      "title": "Author",
       "name": "author",
       "type": "choice",
       "choices": ["docux"]
@@ -418,22 +410,22 @@ C'est ici qu'un content type devient vraiment agréable. Quatre mécanismes, du 
 ```
 </Column>
 <Column>
-```yaml title="vue dans le Frontmatter"
+```yaml title="front matter view"
 last_update:
   date: 2026-07-20
   author: docux
 ```
-![Le sous-champ Auteur propose la même liste que le champ authors](/img/frontmattercms/post2/updateauthors.png)
+![The Author sub-field offers the same list as the authors field](/img/frontmattercms/post2/updateauthors.png)
 </Column>
 </Columns>
-`isModifiedDate` fait le reste : Front Matter met la date à jour tout seul à chaque modification — et c'est précisément le `dateModified` qui compte pour le SEO.
+`isModifiedDate` does the rest: Front Matter updates the date on its own on every change — and it's precisely `dateModified` that matters for SEO.
 
-**2. Piocher dans une taxonomie existante.** Mon `mainTag` est toujours l'un de mes tags. Plutôt qu'une liste figée, on réutilise la taxonomie vivante :
+**2. Draw from an existing taxonomy.** My `mainTag` is always one of my tags. Rather than a fixed list, we reuse the living taxonomy:
 <Columns>
 <Column>
-```json title="vue de la configuration"
+```json title="configuration view"
 {
-  "title": "Tag principal",
+  "title": "Main tag",
   "name": "mainTag",
   "type": "tags",
   "taxonomyLimit": 1,
@@ -442,7 +434,7 @@ last_update:
 ```
 </Column>
 <Column>
-```yaml title="vue du frontmatter"
+```yaml title="front matter view"
 mainTag: frontmatter-cms
 ```
 
@@ -450,14 +442,14 @@ mainTag: frontmatter-cms
 </Columns>
 
 
-`taxonomyLimit: 1` n'autorise qu'une valeur, et `singleValueAsString` l'écrit en chaîne (`mainTag: performance`) au lieu d'un tableau — indispensable pour que le code existant continue de fonctionner.
+`taxonomyLimit: 1` allows only one value, and `singleValueAsString` writes it as a string (`mainTag: performance`) instead of an array — essential so the existing code keeps working.
 
-**3. Créer une taxonomie éditable depuis l'interface.** Une liste `choices` en dur oblige à rouvrir le JSON à chaque nouvelle série. Une **taxonomie personnalisée**, elle, s'enrichit depuis le dashboard :
+**3. Create a taxonomy editable from the interface.** A hard-coded `choices` list forces you to reopen the JSON for every new series. A **custom taxonomy**, on the other hand, grows from the dashboard:
 <Columns>
 <Column>
 
 
-```json title="vue de la configuration"
+```json title="configuration view"
 "frontMatter.taxonomy.customTaxonomy": [
   {
     "id": "series",
@@ -468,9 +460,9 @@ mainTag: frontmatter-cms
 </Column>
 <Column>
 
-```json title="vue de la configuration"
+```json title="configuration view"
 {
-  "title": "Séries",
+  "title": "Series",
   "name": "series",
   "type": "taxonomy",
   "taxonomyId": "series",
@@ -480,47 +472,47 @@ mainTag: frontmatter-cms
 ```
 </Column>
 <Column>
-**Vue de l'IHM**
-![Ajout d'une nouvelle série directement depuis le panneau Front Matter](/img/frontmattercms/post2/addsetting.png)
+**UI view**
+![Adding a new series directly from the Front Matter panel](/img/frontmattercms/post2/addsetting.png)
 </Column>
 </Columns>
-C'est ce genre de détail qui aurait évité mon `serie:` mal orthographié : on ne tape plus, on choisit.
+This is exactly the kind of detail that would have prevented my misspelled `serie:`: you no longer type, you pick.
 
-**4. Donner des valeurs par défaut.** Tout champ accepte un `default`, y compris avec des placeholders :
+**4. Provide default values.** Every field accepts a `default`, including with placeholders:
 
 ```json
 { "name": "date", "type": "datetime", "default": "{{now}}", "isPublishDate": true },
 { "name": "inLanguage", "type": "choice", "choices": ["en", "fr-FR"], "default": "en" }
 ```
 
-Les placeholders disponibles couvrent `{{now}}`, `{{year}}`, `{{month}}`, `{{day}}`, `{{title}}`, `{{slug}}`…
+The available placeholders include `{{now}}`, `{{year}}`, `{{month}}`, `{{day}}`, `{{title}}`, `{{slug}}`…
 
-:::info Les défauts ne s'appliquent qu'à la création
-Un `default` remplit un champ **à la création** d'un article. Il ne corrige pas rétroactivement les articles existants.
+:::info Defaults only apply at creation
+A `default` fills a field **when an article is created**. It does not retroactively fix existing articles.
 :::
 
-### Étape 5 — Organiser le formulaire
+### Step 5 — Organize the form
 
-Deux types purement visuels structurent la saisie :
+Two purely visual types structure the input:
 
 ```json
 { "type": "divider", "name": "divider_taxonomy" },
-{ "type": "heading", "title": "Classement", "name": "heading_taxonomy" }
+{ "type": "heading", "title": "Classification", "name": "heading_taxonomy" }
 ```
 
-J'ai regroupé mes 14 champs en trois sections : **Contenu**, **Classement**, **Social**.
+I grouped my 14 fields into three sections: **Content**, **Classification**, **Social**.
 
-{/* 📸 IMAGE-01 — Le formulaire Front Matter sur un article, montrant les sections et les champs typés (sélecteur de série, liste d'auteurs, date). */}
+{/* 📸 IMAGE-01 — The Front Matter form on an article, showing the sections and the typed fields (series picker, authors list, date). */}
 
-## Créer son premier article
+## Creating your first article
 
-Depuis le panneau Front Matter, **Create content** génère un article à partir du content type.
+From the Front Matter panel, **Create content** generates an article from the content type.
 
-{/* 📸 IMAGE-02 — Le bouton « Create content » et la boîte de dialogue demandant le titre du nouvel article. */}
+{/* 📸 IMAGE-02 — The "Create content" button and the dialog asking for the new article's title. */}
 
-### Contrôler où le fichier atterrit
+### Controlling where the file lands
 
-Mes articles suivent une arborescence datée : `blog/2026/07/19/mon-article/index.mdx`, images à côté du texte. Cinq réglages gouvernent ça :
+My articles follow a dated tree: `blog/2026/07/19/my-article/index.mdx`, with images next to the text. Five settings govern this:
 
 ```json
 {
@@ -532,56 +524,56 @@ Mes articles suivent une arborescence datée : `blog/2026/07/19/mon-article/inde
 }
 ```
 
-:::caution Trois pièges qui m'ont pris cinq essais
-Ces réglages ne sont documentés nulle part ensemble, et chacun m'a envoyé dans le mur :
+:::caution Three traps that took me five tries
+These settings are documented nowhere together, and each one sent me into the wall:
 
-1. **`defaultFileName` s'écrit sans extension.** Avec `"index.mdx"`, Front Matter slugifie la valeur (le point disparaît) puis rajoute l'extension : vous obtenez `indexmdx.mdx`.
-2. **`slugTemplate` ne sait pas créer de dossiers**, et les placeholders de date n'y sont pas résolus — malgré ce que laisse penser la documentation. Laissez-le à `{{title}}`.
-3. **Le `/` final de `filePrefix` est décisif.** Sans lui, Front Matter colle le dernier segment au titre : `blog/2026/07/19-mon-article/` au lieu de `blog/2026/07/19/mon-article/`.
+1. **`defaultFileName` is written without an extension.** With `"index.mdx"`, Front Matter slugifies the value (the dot disappears) then appends the extension: you end up with `indexmdx.mdx`.
+2. **`slugTemplate` can't create folders**, and date placeholders aren't resolved there — despite what the documentation suggests. Leave it as `{{title}}`.
+3. **The trailing `/` in `filePrefix` is decisive.** Without it, Front Matter glues the last segment to the title: `blog/2026/07/19-my-article/` instead of `blog/2026/07/19/my-article/`.
 
 :::
 
-## Deux garde-fous à connaître
+## Two safeguards to know about
 
-### Les limites SEO
+### The SEO limits
 
-Front Matter compte les caractères du titre et de la description pendant la saisie :
+Front Matter counts the characters of the title and the description as you type:
 
 ```json
 "frontMatter.taxonomy.seoTitleLength": 60,
 "frontMatter.taxonomy.seoDescriptionLength": 160
 ```
 
-{/* 📸 IMAGE-03 — Le compteur SEO de Front Matter signalant une description trop longue (198/160). */}
+{/* 📸 IMAGE-03 — Front Matter's SEO counter flagging a description that's too long (198/160). */}
 
-Sur ce blog, l'avertissement a révélé **14 descriptions au-dessus de la limite** — donc tronquées dans les résultats de recherche depuis des mois, sans que rien ne le signale.
+On this blog, the warning revealed **14 descriptions over the limit** — therefore truncated in search results for months, without anything flagging it.
 
-### Le dialogue « différences de type de contenu »
+### The "content type differences" dialog
 
-Front Matter vous prévient quand le fichier ouvert et le content type ne coïncident pas. Deux causes possibles :
+Front Matter warns you when the open file and the content type don't line up. Two possible causes:
 
-- **un champ oublié** dans votre modélisation — complétez le content type ;
-- **un élagage assumé**, comme le mien : mes anciens articles contiennent toujours les champs schema.org que j'ai retirés du formulaire. Le dialogue est alors le prix à payer pour un formulaire propre, tant qu'on n'a pas nettoyé les anciens articles.
+- **a forgotten field** in your modeling — complete the content type;
+- **a deliberate pruning**, like mine: my old articles still contain the schema.org fields I removed from the form. The dialog is then the price to pay for a clean form, until the old articles are cleaned up.
 
-:::danger Ne répondez pas « créer »
-Le dialogue propose de créer, mettre à jour ou définir le type de contenu. **« Créer » ajoutera un content type en double** dans votre configuration. Complétez le type existant, ou ignorez simplement l'avertissement s'il correspond à un choix délibéré.
+:::danger Don't answer "create"
+The dialog offers to create, update, or set the content type. **"Create" will add a duplicate content type** to your configuration. Complete the existing type, or simply ignore the warning if it matches a deliberate choice.
 :::
 
-## Que versionner dans Git
+## What to version in Git
 
-- **`frontmatter.json` : oui, toujours.** C'est l'argument central de Front Matter : la configuration voyage avec le code, et toute l'équipe partage le même formulaire après un `git pull`.
-- **`.frontmatter/database/` : ça se discute.** `taxonomyDb.json` (le vocabulaire de tags) a du sens en équipe ; `pinnedItemsDb.json` n'est que de l'état d'interface local et générera du bruit dans vos diffs.
+- **`frontmatter.json`: yes, always.** It's Front Matter's central argument: the configuration travels with the code, and the whole team shares the same form after a `git pull`.
+- **`.frontmatter/database/`: it depends.** `taxonomyDb.json` (the tag vocabulary) makes sense in a team; `pinnedItemsDb.json` is only local interface state and will generate noise in your diffs.
 
-Sur ce blog, j'ai choisi de **tout versionner**, y compris la base de données. La raison est simple : je suis seul à écrire, le bruit dans les diffs est donc négligeable, et je préfère qu'un `git clone` restitue l'environnement complet. À plusieurs, j'ajouterais `.frontmatter/database/pinnedItemsDb.json` au `.gitignore`.
+On this blog, I chose to **version everything**, including the database. The reason is simple: I'm the only one writing, so the noise in the diffs is negligible, and I'd rather a `git clone` restore the complete environment. In a team, I'd add `.frontmatter/database/pinnedItemsDb.json` to the `.gitignore`.
 
-## Le résultat complet
+## The complete result
 
-Voici la configuration de ce blog, telle qu'elle tourne aujourd'hui — tout ce qu'on vient de construire, réuni dans un seul fichier :
+Here is this blog's configuration, exactly as it runs today — everything we've just built, gathered in a single file:
 
 <Snippet filename="frontmatter.json" source="frontmatter.json" />
 
 ---
 
-À ce stade, Front Matter n'est plus une extension générique : c'est **votre** schéma, réduit à ce qui sert, avec des listes qui s'auto-alimentent et des valeurs par défaut qui évitent la saisie.
+At this stage, Front Matter is no longer a generic extension: it's **your** schema, reduced to what serves a purpose, with lists that feed themselves and default values that avoid typing.
 
-Dans le prochain article, on quitte la configuration pour l'usage quotidien : le dashboard, les filtres, la gestion des médias et l'organisation du contenu.
+In the next article, we leave configuration behind for daily use: the dashboard, the filters, media handling, and content organization.
