@@ -13,7 +13,7 @@ tags:
   - docusaurus
   - frontmatter-cms
   - vscode
-date: 2026-07-19
+date: 2026-07-22
 last_update:
   date: 2026-07-21T21:13:35.437Z
   author: docux
@@ -27,10 +27,11 @@ fmContentType: article
 
 
 <div>
+<center>
 [![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+</center>
 ![image illustant le El Dino utilisant le frontmatter cms](/img/frontmattercms/post2/frontmatterparameters.png)
 </div>
 
@@ -372,7 +373,7 @@ Un champ simple ressemble à ça :
   "title": "Description",
   "name": "description",
   "type": "string",
-  "description": "Résumé SEO. Au-delà de 160 caractères, Google tronque."
+  "description": "The description field is required"
 }
 ```
 
@@ -511,13 +512,7 @@ J'ai regroupé mes 14 champs en trois sections : **Contenu**, **Classement**, **
 
 {/* 📸 IMAGE-01 — Le formulaire Front Matter sur un article, montrant les sections et les champs typés (sélecteur de série, liste d'auteurs, date). */}
 
-### Le résultat complet
-
-Voici la configuration de ce blog, telle qu'elle tourne aujourd'hui :
-
-<Snippet filename="frontmatter.json" source="frontmatter.json" />
-
-## 4. Créer son premier article
+## Créer son premier article
 
 Depuis le panneau Front Matter, **Create content** génère un article à partir du content type.
 
@@ -546,7 +541,7 @@ Ces réglages ne sont documentés nulle part ensemble, et chacun m'a envoyé dan
 
 :::
 
-## 5. Deux garde-fous à connaître
+## Deux garde-fous à connaître
 
 ### Les limites SEO
 
@@ -572,12 +567,18 @@ Front Matter vous prévient quand le fichier ouvert et le content type ne coïnc
 Le dialogue propose de créer, mettre à jour ou définir le type de contenu. **« Créer » ajoutera un content type en double** dans votre configuration. Complétez le type existant, ou ignorez simplement l'avertissement s'il correspond à un choix délibéré.
 :::
 
-## 6. Que versionner dans Git
+## Que versionner dans Git
 
 - **`frontmatter.json` : oui, toujours.** C'est l'argument central de Front Matter : la configuration voyage avec le code, et toute l'équipe partage le même formulaire après un `git pull`.
 - **`.frontmatter/database/` : ça se discute.** `taxonomyDb.json` (le vocabulaire de tags) a du sens en équipe ; `pinnedItemsDb.json` n'est que de l'état d'interface local et générera du bruit dans vos diffs.
 
 Sur ce blog, j'ai choisi de **tout versionner**, y compris la base de données. La raison est simple : je suis seul à écrire, le bruit dans les diffs est donc négligeable, et je préfère qu'un `git clone` restitue l'environnement complet. À plusieurs, j'ajouterais `.frontmatter/database/pinnedItemsDb.json` au `.gitignore`.
+
+## Le résultat complet
+
+Voici la configuration de ce blog, telle qu'elle tourne aujourd'hui — tout ce qu'on vient de construire, réuni dans un seul fichier :
+
+<Snippet filename="frontmatter.json" source="frontmatter.json" />
 
 ---
 
