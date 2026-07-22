@@ -101,7 +101,7 @@ Pour que la prévisualisation tombe sur la bonne URL, deux réglages jouent — 
 
 `previewPath` est le chaînon manquant entre le fichier et l'URL. Nos articles vivent dans des dossiers datés (`blog/2026/07/22/…`) mais leurs URLs n'en gardent rien : c'est le `slug` qui commande. L'aperçu se construit donc ainsi : `host` + `previewPath` + `slug` — soit `http://localhost:3000/blog/mon-slug/`, avec la barre finale parce que le site est configuré en `trailingSlash: true` des deux côtés.
 
-Le panneau porte aussi le **statut de publication** : le passage brouillon → publié se bascule depuis la section métadonnées, sans ouvrir le frontmatter. Chez nous, « publier » signifie simplement `draft: false` suivi d'un commit — le déploiement fait le reste, mais ça, c'est le sujet du prochain article.
+Le panneau porte aussi le **statut de publication** : le passage brouillon → publié se bascule depuis la section métadonnées, sans ouvrir le frontmatter. Chez nous, « publier » signifie simplement `draft: false` suivi d'un commit — le déploiement fait le reste, mais ça, c'est pour plus tard dans la série.
 
 ## Retrouver un article parmi vingt (ou soixante)
 
@@ -216,6 +216,6 @@ L'arborescence datée n'a pas disparu — elle reste ce que Git versionne et ce 
 
 ---
 
-La série avance : le pourquoi, la configuration, et maintenant le quotidien. Il reste une dimension qu'on n'a pas touchée — tout ce qu'on a vu suppose une seule personne devant un seul clone du dépôt.
+La série avance : le pourquoi, la configuration, et maintenant le quotidien. Tout ce qu'on a vu jusqu'ici utilise Front Matter tel qu'il sort de la boîte — finement configuré, mais sans rien lui ajouter.
 
-Dans le prochain article, on ouvre le projet à plusieurs : ce que Front Matter change (et ne change pas) quand le blog se travaille en équipe, avec Git comme seul système de droits.
+Dans le prochain article, on pousse l'outil au-delà de sa boîte : des templates et des snippets pour ne plus partir d'une page blanche, des boutons à soi dans l'interface, l'éclatement de la configuration en plusieurs fichiers — une promesse qui date du premier article — et l'histoire du `draft: true` qui cassait le build de ce blog.
