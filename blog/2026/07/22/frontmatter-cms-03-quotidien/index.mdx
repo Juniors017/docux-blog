@@ -1,0 +1,188 @@
+---
+title: "Front Matter CMS au quotidien : dashboard, filtres et médias"
+slug: front-matter-cms-au-quotidien-docusaurus
+description: "Le dashboard Front Matter à l'usage : retrouver un article, filtrer par série, fusionner les tags en double et gérer les médias sans quitter VS Code."
+image: /img/docux.webp
+authors:
+  - docux
+mainTag: frontmatter-cms
+tags:
+  - cms
+  - docusaurus
+  - frontmatter-cms
+  - productivity
+  - vscode
+  - workflow
+date: 2026-07-22
+last_update:
+  date: 2026-07-22
+  author: docux
+draft: true
+inLanguage: fr-FR
+hide_table_of_contents: false
+series: CMS & UI
+fmContentType: article
+---
+
+{/* 📸 IMAGE-00 (COUVERTURE) — Le dashboard Front Matter ouvert en plein écran dans VS Code, avec la grille de cartes des articles du blog. À reporter dans le champ `image:` du frontmatter. */}
+
+<div>
+<center>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+</center>
+![illustration de El Dino devant le dashboard Front Matter](/img/docux.webp)
+</div>
+
+<div className="text--justify">
+Dans [l'article précédent](/blog/install-front-matter-cms-docusaurus/), on a construit un content type sur mesure : le formulaire connaît nos champs, les listes s'auto-alimentent, la saisie manuelle a presque disparu. La configuration est derrière nous.
+
+Cet article parle de ce qui vient après : **les semaines où on n'ouvre plus `frontmatter.json`**. Écrire, retrouver, classer, illustrer — la routine. C'est là que se joue la vraie question posée au début de cette série : est-ce que l'outil tient la distance une fois la nouveauté passée ?
+
+:::tip Ce que vous saurez faire à la fin
+Retrouver un article en trois clics dans le dashboard, filtrer et regrouper par **série** (pas seulement par tags), fusionner des tags en double sur tout le blog d'un coup, et gérer vos images depuis la médiathèque intégrée.
+:::
+
+</div>
+{/* truncate */}
+
+## Le dashboard, la nouvelle porte d'entrée
+
+Jusqu'ici, ma porte d'entrée dans le blog était l'explorateur de fichiers : déplier `blog/`, puis l'année, puis le mois… Une arborescence datée comme `blog/2026/07/21/mon-article/` est parfaite pour Git et pour les humains qui lisent des URLs — mais pour *naviguer*, c'est pénible. On ne se souvient jamais du mois d'un article.
+
+Le dashboard remplace tout ça. Il s'ouvre depuis l'icône Front Matter, ou par la palette de commandes :
+
+<Terminal title="VS Code — palette de commandes">
+
+Front Matter: Open dashboard
+
+</Terminal>
+
+Chaque article devient une **carte** : image de couverture (c'est le `isPreviewImage` posé sur le champ `image` dans l'article précédent qui la fournit), titre, date, statut brouillon/publié, et une rangée de tags.
+
+{/* 📸 IMAGE-01 — Le dashboard en vue cartes, avec plusieurs articles du blog visibles (couvertures, titres, dates, statuts). */}
+
+Premier réglage de confort : par défaut, la carte affiche **tous** les tags de l'article. Avec six tags par article, les cartes deviennent bavardes. Le champ affiché est configurable — j'y mets `mainTag`, un seul tag propre par carte :
+
+```json title="frontmatter.json"
+"frontMatter.dashboard.content.cardTags": "mainTag"
+```
+
+C'est un petit détail, mais c'est exactement le genre de champ qu'on a créé dans l'article précédent sans savoir encore tout ce qu'il servirait.
+
+## Retrouver un article parmi vingt (ou soixante)
+
+Ce blog compte une vingtaine d'articles publiés. Ce n'est pas énorme, mais c'est déjà assez pour que « je sais que j'en ai parlé quelque part » devienne une vraie recherche. Le dashboard offre trois outils, du plus brut au plus précis.
+
+**La recherche**, d'abord : un champ texte qui filtre les cartes au fil de la frappe.
+
+**Les filtres**, ensuite. Par défaut il y en a trois : dossier de contenu, tags, catégories. Pour ce blog, deux des trois sont inutiles — un seul dossier de contenu, et aucune catégorie. Mon vrai axe de classement, celui qui structure ce que j'écris, c'est la **série**.
+
+Et là, bonne surprise : les filtres ne sont pas limités à la liste par défaut. La clé `frontMatter.content.filters` accepte **n'importe quel champ du frontmatter**, sous la forme d'un objet `{ title, name }` :
+
+```json title="frontmatter.json"
+"frontMatter.content.filters": [
+  "contentFolders",
+  "tags",
+  { "title": "Series", "name": "series" }
+]
+```
+
+J'ai remplacé `categories` (inutilisé) par un filtre sur `series`. Le dashboard affiche maintenant un menu déroulant avec mes sept séries — celles de la taxonomie custom construite dans l'article précédent.
+
+{/* 📸 IMAGE-02 — Le menu déroulant du filtre « Series » ouvert dans le dashboard, listant les séries du blog. */}
+
+**Le statut**, enfin : un sélecteur publié / brouillon. Pendant l'écriture de cette série, c'est devenu mon filtre le plus utilisé — les trois articles en cours vivent en `draft: true` dans le dépôt, et ce filtre les isole du reste en un clic.
+
+## Regrouper et trier
+
+Le filtre répond à « montre-moi les articles de la série X ». Le **regroupement** répond à une autre question : « montre-moi tout, mais organisé ». Par défaut, le dashboard sait regrouper par année et par statut de brouillon. Là encore, n'importe quel champ peut servir :
+
+```json title="frontmatter.json"
+"frontMatter.content.grouping": [
+  { "title": "Series", "name": "series" }
+]
+```
+
+Un clic sur ce regroupement et le dashboard devient un tableau de bord éditorial : chaque série avec ses articles, les trous visibles d'un coup d'œil. C'est la vue que j'utilise pour décider quoi écrire ensuite.
+
+{/* 📸 IMAGE-03 — Le dashboard regroupé par série : les sections « CMS & UI », « Docusaurus Plugins », etc. avec leurs articles. */}
+
+Pour le tri, quatre options intégrées (`LastModifiedAsc/Desc`, `FileNameAsc/Desc`). Le tri par dernière modification descendant est celui qui colle à l'usage — on revient presque toujours à ce qu'on vient de toucher :
+
+```json title="frontmatter.json"
+"frontMatter.content.defaultSorting": "LastModifiedDesc"
+```
+
+Et si vous voulez que tout ça soit en place dès l'ouverture, l'état initial du dashboard se configure aussi — tri, regroupement, filtres pré-remplis — voire son ouverture automatique avec le projet :
+
+```json title="frontmatter.json — optionnel"
+"frontMatter.dashboard.openOnStart": true,
+"frontMatter.dashboard.content.defaults": {
+  "sorting": "LastModifiedDesc",
+  "grouping": "None"
+}
+```
+
+:::note Les épingles
+Les cartes s'épinglent : un article épinglé remonte en tête de dashboard, au-dessus de tout tri. Pratique pour les brouillons d'une série en cours. Ces épingles vivent dans `.frontmatter/database/pinnedItemsDb.json` — de l'état d'interface purement local, c'est le fichier qu'on suggérait d'ignorer dans Git en équipe dans l'article précédent.
+:::
+
+## Le grand ménage des taxonomies
+
+C'est la fonctionnalité qui m'a le plus servi, et elle ne paie pas de mine. Le dashboard a un onglet **Taxonomy** : la liste de tous vos tags, avec cinq actions — ajouter, appliquer à un contenu, renommer, **fusionner**, supprimer. Les trois dernières se propagent **dans tous les fichiers concernés**.
+
+Pourquoi c'est important ? Souvenez-vous de l'audit de l'article précédent : `difficulty` écrit de huit façons différentes, deux articles avec `serie:` au lieu de `series:`. Un frontmatter n'est validé par personne — les incohérences s'accumulent en silence.
+
+Mon vocabulaire de tags n'y échappe pas. En l'inspectant pour cet article, j'ai trouvé dans `taxonomyDb.json` :
+
+<Terminal title="user@machine: ~/yourproject">
+
+$ node -e "const t=require('./.frontmatter/database/taxonomyDb.json').taxonomy.tags; console.log(t.filter(x=>t.map(y=>y.toLowerCase()).filter(z=>z===x.toLowerCase()).length>1))"
+
+[ 'Iconify', 'SEO', 'iconify', 'seo' ]
+
+</Terminal>
+
+`SEO` et `seo`. `Iconify` et `iconify`. Et en cherchant à la main : `automation` à côté d'`automatisation`, `productivity` à côté de `productivité` — les restes d'une époque où ce blog hésitait entre deux langues. Une centaine de tags pour une vingtaine d'articles, c'est le symptôme classique du vocabulaire qui n'a jamais été tenu.
+
+Avant Front Matter, corriger ça voulait dire un chercher-remplacer prudent sur tout `blog/`, fichier par fichier. Maintenant : onglet Taxonomy, sélectionner `seo`, **Merge** vers `SEO`, et l'extension réécrit tous les articles concernés.
+
+{/* 📸 IMAGE-04 — L'onglet Taxonomy du dashboard, avec l'action Merge visible sur un tag en double. */}
+
+:::caution L'extension réécrit vos fichiers — relisez le diff
+Toute action de taxonomie (comme toute sauvegarde depuis le panneau) **réécrit le frontmatter des fichiers touchés** : style YAML normalisé, guillemets retirés, champs réordonnés. Rien de grave, mais le diff Git peut être plus gros que le changement réel. Relisez-le avant de committer — c'est un réflexe qui m'a déjà évité d'embarquer des modifications parasites.
+:::
+
+## La médiathèque
+
+Deuxième onglet du dashboard : **Media**. Il affiche tout ce que contient le dossier public — `static/` chez nous, c'est le réglage `frontMatter.content.publicFolder` posé à l'initialisation — avec aperçu, et le glisser-déposer depuis l'explorateur fonctionne.
+
+Chaque image a ses actions : copier le chemin relatif (celui qu'on colle dans le Markdown), supprimer, et surtout **éditer les métadonnées** — titre, légende, texte alternatif. Ces métadonnées vont dans `.frontmatter/database/mediaDb.json`.
+
+{/* 📸 IMAGE-05 — La vue Media du dashboard avec le panneau de métadonnées ouvert sur une image (titre, légende, alt). */}
+
+Honnêteté totale : mon `mediaDb.json` fait deux octets — `{}`. Mes images arrivent par glisser-déposer dans le dossier de l'article, et j'écris le texte alternatif directement dans le Markdown. Pour un blog mono-auteur où chaque image ne sert qu'une fois, la médiathèque est un outil de consultation plus que de gestion.
+
+Elle prend de la valeur dans deux cas : des **images réutilisées** (logos, schémas, bannières — l'alt saisi une fois dans les métadonnées est proposé à chaque insertion), et le travail **en équipe**, où « quelle image a déjà un alt ? » devient une vraie question. Notez aussi que les types de fichiers acceptés se règlent (`frontMatter.media.supportedMimeTypes`) — audio et vidéo compris.
+
+## Ce que ça change, concrètement
+
+Ma routine avant / après, sans exagération :
+
+| Geste                                | Avant                                        | Maintenant                             |
+| ------------------------------------ | -------------------------------------------- | -------------------------------------- |
+| Rouvrir l'article d'hier             | explorateur → année → mois → jour → dossier | dashboard, première carte              |
+| « Où est mon article sur X ? »       | recherche VS Code dans tout `blog/`          | recherche ou filtre du dashboard       |
+| Voir l'état d'une série              | de tête, ou en relisant la page publiée      | regroupement par série                 |
+| Renommer un tag partout              | chercher-remplacer manuel, en croisant les doigts | Taxonomy → Merge                  |
+| Vérifier ce qui est encore brouillon | `grep -r "draft: true" blog/`                | filtre de statut                       |
+
+L'arborescence datée n'a pas disparu — elle reste ce que Git versionne et ce que les URLs racontent. Simplement, **je ne la parcours plus**. Les dossiers sont pour les machines ; le dashboard est pour moi.
+
+---
+
+La série avance : le pourquoi, la configuration, et maintenant le quotidien. Il reste une dimension qu'on n'a pas touchée — tout ce qu'on a vu suppose une seule personne devant un seul clone du dépôt.
+
+Dans le prochain article, on ouvre le projet à plusieurs : ce que Front Matter change (et ne change pas) quand le blog se travaille en équipe, avec Git comme seul système de droits.

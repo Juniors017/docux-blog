@@ -13,6 +13,14 @@
   ],
   "frontMatter.taxonomy.seoTitleLength": 60,
   "frontMatter.taxonomy.seoDescriptionLength": 160,
+  "frontMatter.dashboard.content.cardTags": "mainTag",
+  "frontMatter.content.filters": [
+    "contentFolders",
+    "tags",
+    { "title": "Series", "name": "series" }
+  ],
+  "frontMatter.content.grouping": [{ "title": "Series", "name": "series" }],
+  "frontMatter.content.defaultSorting": "LastModifiedDesc",
   "frontMatter.taxonomy.customTaxonomy": [
     {
       "id": "series",
