@@ -12,11 +12,25 @@
   margin-bottom: 3rem;
 }
 
+/* Les cartes contributeurs : 1 colonne sur mobile, 2 sur tablette,
+   puis toutes sur une seule ligne à partir du desktop. */
 .contributorsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
   margin-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .contributorsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .contributorsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Ces styles sont maintenant dans le composant Contributor */

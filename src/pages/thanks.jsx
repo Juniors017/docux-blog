@@ -37,41 +37,44 @@ export default function Thanks() {
           </Column>
         </div>
 
-        <Columns>
-          <Column className="col--4">
-            <Contributor>
-              name: 'Christophe Avonture', github: 'cavo789', website:
-              'https://www.avonture.be', avatarUrl:
-              'https://avatars.githubusercontent.com/u/355999?s=200&v=4',
-              components: ['MyRepositories', 'BlueSky', 'Terminal', 'Series',
-              'Snippet'], description: "Developed the GitHub project
-              visualization components, allowing dynamic display of repositories
-              with filtering and sorting."
-            </Contributor>
-          </Column>
+        <div className={styles.contributorsGrid}>
+          <Contributor>
+            name: 'Christophe Avonture', github: 'cavo789', website:
+            'https://www.avonture.be', avatarUrl:
+            'https://avatars.githubusercontent.com/u/355999?s=200&v=4',
+            components: ['MyRepositories', 'BlueSky', 'Terminal', 'Series',
+            'Snippet'], description: "Developed the GitHub project visualization
+            components, allowing dynamic display of repositories with filtering
+            and sorting."
+          </Contributor>
 
-          <Column className="">
-            <Contributor>
-              name: 'Docusaurus Team', github: 'facebook/docusaurus', website:
-              'https://docusaurus.io', avatarUrl:
-              'https://docusaurus.io/img/docusaurus_keytar.svg', components:
-              ['Docusaurus Framework', 'Blog Plugin', 'MDX Support', 'Theming
-              System'], description: "The Docusaurus team at Meta who developed
-              the framework and its main components."
-            </Contributor>
-          </Column>
+          <Contributor>
+            name: 'Docusaurus Team', github: 'facebook/docusaurus', website:
+            'https://docusaurus.io', avatarUrl:
+            'https://docusaurus.io/img/docusaurus_keytar.svg', components:
+            ['Docusaurus Framework', 'Blog Plugin', 'MDX Support', 'Theming
+            System'], description: "The Docusaurus team at Meta who developed
+            the framework and its main components."
+          </Contributor>
 
-          <Column className="">
-            <Contributor>
-              name: 'Sébastien Lorber', github: 'slorber', website:
-              'https://sebastienlorber.com', avatarUrl:
-              'https://avatars.githubusercontent.com/u/749374?s=200&v=4',
-              components: ['maintainer of Docusaurus'], description: "Main
-              maintainer of Docusaurus, created many essential features and
-              actively contributes to the development of the project."
-            </Contributor>
-          </Column>
-        </Columns>
+          <Contributor>
+            name: 'Sébastien Lorber', github: 'slorber', website:
+            'https://sebastienlorber.com', avatarUrl:
+            'https://avatars.githubusercontent.com/u/749374?s=200&v=4',
+            components: ['maintainer of Docusaurus'], description: "Main
+            maintainer of Docusaurus, created many essential features and
+            actively contributes to the development of the project."
+          </Contributor>
+
+          <Contributor>
+            name: 'Elio Struyf', github: 'estruyf', website:
+            'https://www.eliostruyf.com', avatarUrl:
+            'https://avatars.githubusercontent.com/u/2900833?s=200&v=4',
+            components: ['Front Matter CMS'], description: "Creator of Front
+            Matter CMS, the VS Code extension that turns the editor into a
+            headless CMS to write and manage the articles of this blog."
+          </Contributor>
+        </div>
 
         <Columns>
           <Column className="col--8 col--offset-2">

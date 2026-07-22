@@ -23,7 +23,9 @@
 .contributorHeader {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  /* Le nom passe sous l'avatar quand la carte est trop étroite (grilles serrées). */
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
   background-color: var(--ifm-color-emphasis-100);
 }
 
@@ -52,6 +54,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  flex: 1 1 140px;
+  min-width: 0;
 }
 
 .contributorName {
