@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import Link from "@docusaurus/Link";
 
 import Card from "../Card";
@@ -30,77 +30,72 @@ export default function Contributor({
   description,
   children,
 }) {
-  // Si les props sont fournies directement, on les utilise
-  // Sinon on va parser le contenu fourni entre les balises
-  const [contributorData, setContributorData] = useState({
-    name: name || "",
-    github: github || "",
-    website: website || "",
-    avatarUrl: avatarUrl || "",
-    components: components || [],
-    description: description || "",
-  });
+  // Les données sont résolues pendant le rendu (et non dans un effet) pour que la
+  // carte soit aussi présente dans le HTML généré côté serveur.
+  const contributorData = useMemo(() => {
+    // Si les props sont fournies directement, on les utilise
+    // Sinon on va parser le contenu fourni entre les balises
+    const fromProps = {
+      name: name || "",
+      github: github || "",
+      website: website || "",
+      avatarUrl: avatarUrl || "",
+      components: components || [],
+      description: description || "",
+    };
 
-  // Si children est présent, on essaye de parser le contenu
-  useEffect(() => {
-    if (children && (!name || !github)) {
-      try {
-        // On extrait le contenu texte des children si c'est une chaîne
-        const content =
-          typeof children === "string"
-            ? children
-            : Array.isArray(children)
-              ? children
-                  .map((child) => (typeof child === "string" ? child : ""))
-                  .join("\n")
-              : "";
-
-        // Regex pour extraire les propriétés du format texte
-        const nameMatch = content.match(/name\s*:\s*['"]?([^'",\n]*)/);
-        const githubMatch = content.match(/github\s*:\s*['"]?([^'",\n]*)/);
-        const websiteMatch = content.match(/website\s*:\s*['"]?([^'",\n]*)/);
-        const avatarMatch = content.match(/avatarUrl\s*:\s*['"]?([^'",\n]*)/);
-
-        // Nouvelle regex améliorée pour la description qui gère mieux les guillemets et le texte multi-ligne
-        const descriptionMatch = content.match(
-          /description\s*:\s*['"](.+?)['"](?:,|\n|$)/s
-        );
-
-        // Extraction des composants
-        let componentsMatch = content.match(
-          /components\s*:\s*\[\s*(['"][^'"]*['"](?:\s*,\s*['"][^'"]*['"])*)\s*\]/
-        );
-        let componentsList = [];
-        if (componentsMatch && componentsMatch[1]) {
-          componentsList = componentsMatch[1]
-            .split(",")
-            .map((comp) => comp.trim().replace(/^['"]|['"]$/g, ""));
-        }
-
-        setContributorData({
-          name: nameMatch ? nameMatch[1].trim() : contributorData.name,
-          github: githubMatch ? githubMatch[1].trim() : contributorData.github,
-          website: websiteMatch
-            ? websiteMatch[1].trim()
-            : contributorData.website,
-          avatarUrl: avatarMatch
-            ? avatarMatch[1].trim()
-            : contributorData.avatarUrl,
-          components:
-            componentsList.length > 0
-              ? componentsList
-              : contributorData.components,
-          description: descriptionMatch
-            ? descriptionMatch[1].trim()
-            : contributorData.description,
-        });
-      } catch (error) {
-        console.error("Erreur de parsing du contenu Contributor:", error);
-      }
+    if (!children || (name && github)) {
+      return fromProps;
     }
-    // Only re-parse when the source props change. `contributorData` is read as a
-    // fallback but is set by this effect, so listing it would cause a loop.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    try {
+      // On extrait le contenu texte des children si c'est une chaîne
+      const content =
+        typeof children === "string"
+          ? children
+          : Array.isArray(children)
+            ? children
+                .map((child) => (typeof child === "string" ? child : ""))
+                .join("\n")
+            : "";
+
+      // Regex pour extraire les propriétés du format texte
+      const nameMatch = content.match(/name\s*:\s*['"]?([^'",\n]*)/);
+      const githubMatch = content.match(/github\s*:\s*['"]?([^'",\n]*)/);
+      const websiteMatch = content.match(/website\s*:\s*['"]?([^'",\n]*)/);
+      const avatarMatch = content.match(/avatarUrl\s*:\s*['"]?([^'",\n]*)/);
+
+      // Nouvelle regex améliorée pour la description qui gère mieux les guillemets et le texte multi-ligne
+      const descriptionMatch = content.match(
+        /description\s*:\s*['"](.+?)['"](?:,|\n|$)/s
+      );
+
+      // Extraction des composants
+      let componentsMatch = content.match(
+        /components\s*:\s*\[\s*(['"][^'"]*['"](?:\s*,\s*['"][^'"]*['"])*)\s*\]/
+      );
+      let componentsList = [];
+      if (componentsMatch && componentsMatch[1]) {
+        componentsList = componentsMatch[1]
+          .split(",")
+          .map((comp) => comp.trim().replace(/^['"]|['"]$/g, ""));
+      }
+
+      return {
+        name: nameMatch ? nameMatch[1].trim() : fromProps.name,
+        github: githubMatch ? githubMatch[1].trim() : fromProps.github,
+        website: websiteMatch ? websiteMatch[1].trim() : fromProps.website,
+        avatarUrl: avatarMatch ? avatarMatch[1].trim() : fromProps.avatarUrl,
+        components:
+          componentsList.length > 0 ? componentsList : fromProps.components,
+        description: descriptionMatch
+          ? descriptionMatch[1].trim()
+          : fromProps.description,
+      };
+    } catch (error) {
+      console.error("Erreur de parsing du contenu Contributor:", error);
+      return fromProps;
+    }
   }, [children, name, github, website, avatarUrl, components, description]);
 
   // Si les données ne sont pas encore extraites ou non valides, ne rien afficher
