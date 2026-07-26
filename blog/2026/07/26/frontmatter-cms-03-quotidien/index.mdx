@@ -1,7 +1,7 @@
 ---
-title: "Front Matter CMS au quotidien : dashboard, filtres et médias"
-slug: front-matter-cms-au-quotidien-docusaurus
-description: "Le dashboard Front Matter à l'usage : retrouver un article, filtrer par série, fusionner les tags en double et gérer les médias sans quitter VS Code."
+title: "Front Matter CMS day to day: dashboard, filters and media"
+slug: front-matter-cms-daily-use-docusaurus
+description: "Front Matter's dashboard in real use: find any article, filter by series, merge duplicate tags across the blog and manage media without leaving VS Code."
 image: /img/frontmatterisamazing.webp
 authors:
   - docux
@@ -18,7 +18,7 @@ last_update:
   date: 2026-07-26
   author: docux
 draft: true
-inLanguage: fr-FR
+inLanguage: en
 hide_table_of_contents: false
 series: CMS & UI
 fmContentType: article
@@ -30,131 +30,131 @@ fmContentType: article
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </center>
-![illustration de El Dino devant le dashboard Front Matter](/img/frontmatterisamazing.webp)
+![illustration of El Dino in front of the Front Matter dashboard](/img/frontmatterisamazing.webp)
 </div>
 
 <div className="text--justify">
-Dans [l'article précédent](/blog/install-front-matter-cms-docusaurus/), on a construit un content type sur mesure : le formulaire connaît nos champs, les listes s'auto-alimentent, la saisie manuelle a presque disparu. La configuration est derrière nous.
+In the [previous article](/blog/install-front-matter-cms-docusaurus/), we built a custom content type: the form knows our fields, the lists feed themselves, manual typing has almost disappeared. Configuration is behind us.
 
-Cet article parle de ce qui vient après : **les semaines où on n'ouvre plus `frontmatter.json`**. Écrire, retrouver, classer, illustrer — la routine. C'est là que se joue la vraie question posée au début de cette série : est-ce que l'outil tient la distance une fois la nouveauté passée ?
+This article is about what comes after: **the weeks when you no longer open `frontmatter.json`**. Writing, finding, classifying, illustrating — the routine. This is where the real question asked at the start of this series plays out: does the tool hold up once the novelty wears off?
 
-:::tip Ce que vous saurez faire à la fin
-Écrire et prévisualiser un article sans quitter VS Code, le retrouver en trois clics dans le dashboard, filtrer et regrouper par **série** (pas seulement par tags), fusionner des tags en double sur tout le blog d'un coup, et gérer vos images depuis la médiathèque intégrée.
+:::tip What you'll be able to do by the end
+Write and preview an article without leaving VS Code, find it again in three clicks in the dashboard, filter and group by **series** (not just by tags), merge duplicate tags across the whole blog in one go, and manage your images from the built-in media library.
 :::
 
 </div>
 {/* truncate */}
 
-## Le dashboard, la nouvelle porte d'entrée
+## The dashboard, the new front door
 
-Jusqu'ici, ma porte d'entrée dans le blog était l'explorateur de fichiers : déplier `blog/`, puis l'année, puis le mois… Une arborescence datée comme `blog/2026/07/21/mon-article/` est parfaite pour Git et pour les humains qui lisent des URLs — mais pour *naviguer*, c'est pénible. On ne se souvient jamais du mois d'un article.
+Until now, my way into the blog was the file explorer: unfold `blog/`, then the year, then the month… A dated tree like `blog/2026/07/21/my-article/` is perfect for Git and for humans reading URLs — but for *browsing*, it's painful. You never remember which month an article was.
 
-Le dashboard remplace tout ça. Il s'ouvre depuis l'icône Front Matter, ou par la palette de commandes :
+The dashboard replaces all of that. It opens from the Front Matter icon, or through the command palette:
 
-<Terminal title="VS Code — palette de commandes">
+<Terminal title="VS Code — command palette">
 
 Front Matter: Open dashboard
 
 </Terminal>
 
-Chaque article devient une **carte** : image de couverture (c'est le `isPreviewImage` posé sur le champ `image` dans l'article précédent qui la fournit), titre, date, statut brouillon/publié, et une rangée de tags.
+Every article becomes a **card**: cover image (supplied by the `isPreviewImage` we set on the `image` field in the previous article), title, date, draft/published status, and a row of tags.
 
-![Le dashboard Front Matter : les articles du blog affichés en cartes, avec couverture, titre, date et statut](/img/frontmattercms/post3/dashboard.png)
+![The Front Matter dashboard: the blog's articles shown as cards, with cover, title, date and status](/img/frontmattercms/post3/dashboard.png)
 
-Premier réglage de confort : par défaut, la carte affiche **tous** les tags de l'article. Avec six tags par article, les cartes deviennent bavardes. Le champ affiché est configurable — j'y mets `mainTag`, un seul tag propre par carte :
+First comfort tweak: by default, the card shows **all** of an article's tags. With six tags per article, the cards get chatty. The displayed field is configurable — I point it at `mainTag`, one clean tag per card:
 
 ```json title="frontmatter.json"
 "frontMatter.dashboard.content.cardTags": "mainTag"
 ```
 
-C'est un petit détail, mais c'est exactement le genre de champ qu'on a créé dans l'article précédent sans savoir encore tout ce qu'il servirait.
+It's a small detail, but it's exactly the kind of field we created in the previous article without knowing yet everything it would be good for.
 
-### Le menu caché des cartes
+### The hidden card menu
 <Columns>
 <Column className="margin-vert--lg">
-![Le menu contextuel d'une carte : Pin, View, Move to folder, Rename, Smart rename, Delete](/img/frontmattercms/post3/menucard.png)
+![A card's context menu: Pin, View, Move to folder, Rename, Smart rename, Delete](/img/frontmattercms/post3/menucard.png)
 </Column>
 <Column className="col--8">
-Chaque carte porte un menu `⋯` discret, et il vaut le détour : **Pin**, **View**, **Move to folder**, **Rename**, **Smart rename**, **Delete**.
+Every card carries a discreet `⋯` menu, and it's worth the detour: **Pin**, **View**, **Move to folder**, **Rename**, **Smart rename**, **Delete**.
 
 
-**Move to folder** déplace l'article — le dossier complet, images comprises puisqu'on est en page bundle — vers un autre dossier de contenu déclaré dans `pageFolders`. Utile le jour où un brouillon change de destination.
+**Move to folder** moves the article — the whole folder, images included since we're using page bundles — to another content folder declared in `pageFolders`. Handy the day a draft changes destination.
 
-**Smart rename** mérite une explication, parce que son nom ne dit pas ce qu'il fait. Là où **Rename** vous demande un nouveau nom, Smart rename n'en demande aucun : il **resynchronise le nom du fichier avec le frontmatter**. Il reprend le titre, régénère un nom propre, applique la logique du `filePrefix`, et renomme — le dossier entier pour un page bundle. Si tout est déjà synchro, il ne fait rien ; si la cible existe, il refuse.
+**Smart rename** deserves an explanation, because its name doesn't say what it does. Where **Rename** asks you for a new name, Smart rename asks for nothing: it **re-syncs the filename with the front matter**. It takes the title, regenerates a clean name, applies the `filePrefix` logic, and renames — the whole folder for a page bundle. If everything is already in sync, it does nothing; if the target exists, it refuses.
 
-Son cas d'usage, c'est la dérive : un titre retouché après la création, un dossier renommé à la main qui ne correspond plus… J'en sais quelque chose — pendant l'écriture de cette série, j'ai renommé et déplacé des dossiers d'articles à la main plus d'une fois. Ce bouton existait, je ne le connaissais pas.
+Its use case is drift: a title reworked after creation, a folder renamed by hand that no longer matches… I know a thing or two about that — while writing this series, I renamed and moved article folders by hand more than once. This button existed, and I didn't know it.
 
 </Column>
 </Columns>
 
-:::note Et si on l'active en cours de route ?
-Le réglage `frontMatter.taxonomy.alignFilename` rend cette synchro automatique : à chaque slug régénéré, le fichier est renommé dans la foulée. L'activer sur un site existant ne déclenche **aucun renommage en masse** — il n'est jamais rétroactif, et n'agit que sur les fichiers dont vous régénérez le slug ensuite. Pour rattraper l'existant à la demande, c'est justement Smart rename.
+:::note What if you enable it mid-project?
+The `frontMatter.taxonomy.alignFilename` setting makes this sync automatic: every time a slug is regenerated, the file is renamed along with it. Enabling it on an existing site triggers **no mass rename** — it's never retroactive, and only acts on files whose slug you regenerate afterwards. To catch up existing files on demand, that's exactly what Smart rename is for.
 
-La vraie prudence est ailleurs : sur un article déjà publié, régénérer un slug change son **URL** — c'est ça qui casse des liens, pas le nom du fichier.
+The real caution lies elsewhere: on an already-published article, regenerating a slug changes its **URL** — that's what breaks links, not the filename.
 :::
 
-## La boucle d'écriture, sans quitter VS Code
+## The writing loop, without leaving VS Code
 
-La journée type ne commence pas par un terminal. Elle commence par le panneau Front Matter, qui regroupe trois actions couvrant toute la boucle d'écriture.
+A typical day doesn't start with a terminal. It starts with the Front Matter panel, which gathers three actions covering the whole writing loop.
 
-**Create content**, d'abord — on ne s'y attarde pas : la création d'article, ses cinq réglages et ses trois pièges sont [le cœur de l'article précédent](/blog/install-front-matter-cms-docusaurus/#creating-your-first-article).
+**Create content**, first — we won't dwell on it: article creation, its five settings and its three traps are [the heart of the previous article](/blog/install-front-matter-cms-docusaurus/#creating-your-first-article).
 
-![La commande Create content du panneau Front Matter](/img/frontmattercms/post2/creatnewcontent.png)
+![The Create content command in the Front Matter panel](/img/frontmattercms/post2/creatnewcontent.png)
 
-**Start server**, ensuite. Le bouton démarre le serveur de développement — Docusaurus ayant été détecté à l'initialisation, c'est `npm start` qui part, sans rien configurer. Si votre projet démarre autrement, la commande se remplace :
+**Start server**, next. The button starts the development server — Docusaurus was detected at initialization, so `npm start` fires, with nothing to configure. If your project starts differently, the command can be replaced:
 <Columns className="margin-vert--md">
 <Column className="col--8">
-```json title="frontmatter.json — seulement si la détection ne suffit pas"
+```json title="frontmatter.json — only if detection isn't enough"
 "frontMatter.framework.startCommand": "npm run start -- --port 3001"
 ```
 
 </Column>
 <Column>
-![Le bouton Start server dans le panneau Front Matter](/img/frontmattercms/post3/startserveur.png)
+![The Start server button in the Front Matter panel](/img/frontmattercms/post3/startserveur.png)
 </Column>
 </Columns>
-**Open preview**, enfin — le geste que je fais le plus souvent. Il ouvre le rendu de l'article en cours dans un onglet à côté de l'éditeur : le Markdown à gauche, la page servie par le serveur de dev à droite.
+**Open preview**, finally — the gesture I make most often. It opens the current article's rendering in a tab next to the editor: Markdown on the left, the page served by the dev server on the right.
 
-![L'aperçu Front Matter : le Markdown à gauche, le rendu Docusaurus à droite](/img/frontmattercms/post3/demo.png)
+![The Front Matter preview: Markdown on the left, the Docusaurus rendering on the right](/img/frontmattercms/post3/demo.png)
 
-Pour que la prévisualisation tombe sur la bonne URL, deux réglages jouent — et l'un des deux traîne dans notre content type depuis l'article précédent sans avoir été expliqué :
+For the preview to land on the right URL, two settings come into play — and one of them has been sitting in our content type since the previous article without ever being explained:
 
 ```json title="frontmatter.json"
 "frontMatter.preview.host": "http://localhost:3000",
 
-// et dans le content type :
+// and in the content type:
 "previewPath": "blog",
 "trailingSlash": true
 ```
 
-`previewPath` est le chaînon manquant entre le fichier et l'URL. Nos articles vivent dans des dossiers datés (`blog/2026/07/22/…`) mais leurs URLs n'en gardent rien : c'est le `slug` qui commande. L'aperçu se construit donc ainsi : `host` + `previewPath` + `slug` — soit `http://localhost:3000/blog/mon-slug/`, avec la barre finale parce que le site est configuré en `trailingSlash: true` des deux côtés.
+`previewPath` is the missing link between the file and the URL. Our articles live in dated folders (`blog/2026/07/26/…`) but their URLs keep none of it: the `slug` is in charge. So the preview is built like this: `host` + `previewPath` + `slug` — that is `http://localhost:3000/blog/my-slug/`, with the trailing slash because the site is configured with `trailingSlash: true` on both sides.
 
-Le panneau porte aussi le **statut de publication** : le passage brouillon → publié se bascule depuis la section métadonnées, sans ouvrir le frontmatter. Chez nous, « publier » signifie simplement `draft: false` suivi d'un commit — le déploiement fait le reste, mais ça, c'est pour plus tard dans la série.
+The panel also carries the **publication status**: switching from draft to published happens from the metadata section, without opening the front matter. For us, "publishing" simply means `draft: false` followed by a commit — deployment does the rest, but that's for later in the series.
 <Columns>
 <Column>
-![Le statut brouillon dans la section métadonnées du panneau](/img/frontmattercms/post3/draft.png)
+![The draft status in the panel's metadata section](/img/frontmattercms/post3/draft.png)
 
 </Column>
 <Column>
 
-![Le badge Draft affiché sur la carte d'un article en brouillon](/img/frontmattercms/post3/draftag.png)
+![The Draft badge shown on a draft article's card](/img/frontmattercms/post3/draftag.png)
 </Column>
 
 <Column>
-![Le badge Published sur la carte une fois l'article publié](/img/frontmattercms/post3/published.png)
+![The Published badge on the card once the article is published](/img/frontmattercms/post3/published.png)
 </Column>
 </Columns>
 
 
-## Retrouver un article parmi vingt (ou soixante)
+## Finding one article among twenty (or sixty)
 
-Ce blog compte une vingtaine d'articles publiés. Ce n'est pas énorme, mais c'est déjà assez pour que « je sais que j'en ai parlé quelque part » devienne une vraie recherche. Le dashboard offre trois outils, du plus brut au plus précis.
+This blog has about twenty published articles. That's not huge, but it's already enough for "I know I wrote about this somewhere" to become a real search. The dashboard offers three tools, from the bluntest to the most precise.
 
-**La recherche**, d'abord : un champ texte qui filtre les cartes au fil de la frappe.
+**Search**, first: a text field that filters the cards as you type.
 
-**Les filtres**, ensuite. Par défaut il y en a trois : dossier de contenu, tags, catégories. Pour ce blog, deux des trois sont inutiles — un seul dossier de contenu, et aucune catégorie. Mon vrai axe de classement, celui qui structure ce que j'écris, c'est la **série**.
+**Filters**, next. There are three by default: content folder, tags, categories. For this blog, two of the three are useless — a single content folder, and no categories. My real classification axis, the one that structures what I write, is the **series**.
 
-Et là, bonne surprise : les filtres ne sont pas limités à la liste par défaut. La clé `frontMatter.content.filters` accepte **n'importe quel champ du frontmatter**, sous la forme d'un objet `{ title, name }` :
+And here's the good surprise: filters are not limited to the default list. The `frontMatter.content.filters` key accepts **any front matter field**, as a `{ title, name }` object:
 
 ```json title="frontmatter.json"
 "frontMatter.content.filters": [
@@ -164,15 +164,15 @@ Et là, bonne surprise : les filtres ne sont pas limités à la liste par défau
 ]
 ```
 
-J'ai remplacé `categories` (inutilisé) par un filtre sur `series`. Le dashboard affiche maintenant un menu déroulant avec mes sept séries — celles de la taxonomie custom construite dans l'article précédent.
+I replaced `categories` (unused) with a filter on `series`. The dashboard now shows a dropdown with my seven series — the ones from the custom taxonomy built in the previous article.
 
-![Le filtre Series déroulé dans le dashboard, avec les séries du blog](/img/frontmattercms/post3/searcharticle.png)
+![The Series filter unfolded in the dashboard, listing the blog's series](/img/frontmattercms/post3/searcharticle.png)
 
-**Le statut**, enfin : un sélecteur publié / brouillon. Pendant l'écriture de cette série, c'est devenu mon filtre le plus utilisé — les trois articles en cours vivent en `draft: true` dans le dépôt, et ce filtre les isole du reste en un clic.
+**Status**, finally: a published / draft selector. While writing this series, it became my most-used filter — the articles in progress live as `draft: true` in the repository, and this filter isolates them from the rest in one click.
 
-## Regrouper et trier
+## Grouping and sorting
 
-Le filtre répond à « montre-moi les articles de la série X ». Le **regroupement** répond à une autre question : « montre-moi tout, mais organisé ». Par défaut, le dashboard sait regrouper par année et par statut de brouillon. Là encore, n'importe quel champ peut servir :
+Filtering answers "show me the articles in series X". **Grouping** answers a different question: "show me everything, but organized". By default, the dashboard can group by year and by draft status. Here again, any field will do:
 
 ```json title="frontmatter.json"
 "frontMatter.content.grouping": [
@@ -180,19 +180,19 @@ Le filtre répond à « montre-moi les articles de la série X ». Le **regroupe
 ]
 ```
 
-Un clic sur ce regroupement et le dashboard devient un tableau de bord éditorial : chaque série avec ses articles, les trous visibles d'un coup d'œil. C'est la vue que j'utilise pour décider quoi écrire ensuite.
+One click on this grouping and the dashboard becomes an editorial board: each series with its articles, the gaps visible at a glance. It's the view I use to decide what to write next.
 
-![Le dashboard regroupé par série : chaque série avec ses articles](/img/frontmattercms/post3/groupbyserie.png)
+![The dashboard grouped by series: each series with its articles](/img/frontmattercms/post3/groupbyserie.png)
 
-Pour le tri, quatre options intégrées (`LastModifiedAsc/Desc`, `FileNameAsc/Desc`). Le tri par dernière modification descendant est celui qui colle à l'usage — on revient presque toujours à ce qu'on vient de toucher :
+For sorting, four built-in options (`LastModifiedAsc/Desc`, `FileNameAsc/Desc`). Last modified, descending, is the one that matches actual use — you almost always come back to what you just touched:
 
 ```json title="frontmatter.json"
 "frontMatter.content.defaultSorting": "LastModifiedDesc"
 ```
 
-Et si vous voulez que tout ça soit en place dès l'ouverture, l'état initial du dashboard se configure aussi — tri, regroupement, filtres pré-remplis — voire son ouverture automatique avec le projet :
+And if you want all of this in place as soon as it opens, the dashboard's initial state is configurable too — sorting, grouping, pre-filled filters — even opening automatically with the project:
 
-```json title="frontmatter.json — optionnel"
+```json title="frontmatter.json — optional"
 "frontMatter.dashboard.openOnStart": true,
 "frontMatter.dashboard.content.defaults": {
   "sorting": "LastModifiedDesc",
@@ -200,17 +200,17 @@ Et si vous voulez que tout ça soit en place dès l'ouverture, l'état initial d
 }
 ```
 
-:::note Les épingles
-Les cartes s'épinglent : un article épinglé remonte en tête de dashboard, au-dessus de tout tri. Pratique pour les brouillons d'une série en cours. Ces épingles vivent dans `.frontmatter/database/pinnedItemsDb.json` — de l'état d'interface purement local, c'est le fichier qu'on suggérait d'ignorer dans Git en équipe dans l'article précédent.
+:::note Pins
+Cards can be pinned: a pinned article rises to the top of the dashboard, above any sorting. Handy for the drafts of a series in progress. These pins live in `.frontmatter/database/pinnedItemsDb.json` — purely local interface state, the very file we suggested ignoring in Git for teams in the previous article.
 :::
 
-## Le grand ménage des taxonomies
+## The great taxonomy cleanup
 
-C'est la fonctionnalité qui m'a le plus servi, et elle ne paie pas de mine. Le dashboard a un onglet **Taxonomy** : la liste de tous vos tags, avec cinq actions — ajouter, appliquer à un contenu, renommer, **fusionner**, supprimer. Les trois dernières se propagent **dans tous les fichiers concernés**.
+This is the feature that has served me the most, and it doesn't look like much. The dashboard has a **Taxonomy** tab: the list of all your tags, with five actions — add, apply to content, rename, **merge**, delete. The last three propagate **to every affected file**.
 
-Pourquoi c'est important ? Souvenez-vous de l'audit de l'article précédent : `difficulty` écrit de huit façons différentes, deux articles avec `serie:` au lieu de `series:`. Un frontmatter n'est validé par personne — les incohérences s'accumulent en silence.
+Why does it matter? Remember the audit from the previous article: `difficulty` written eight different ways, two articles with `serie:` instead of `series:`. A front matter is validated by no one — inconsistencies pile up in silence.
 
-Mon vocabulaire de tags n'y échappe pas. En l'inspectant pour cet article, j'ai trouvé dans `taxonomyDb.json` :
+My tag vocabulary is no exception. Inspecting it for this article, here's what I found in `taxonomyDb.json`:
 
 <Terminal title="user@machine: ~/yourproject">
 
@@ -220,52 +220,52 @@ $ node -e "const t=require('./.frontmatter/database/taxonomyDb.json').taxonomy.t
 
 </Terminal>
 
-`SEO` et `seo`. `Iconify` et `iconify`. Et en cherchant à la main : `automation` à côté d'`automatisation`, `productivity` à côté de `productivité` — les restes d'une époque où ce blog hésitait entre deux langues. Une centaine de tags pour une vingtaine d'articles, c'est le symptôme classique du vocabulaire qui n'a jamais été tenu.
+`SEO` and `seo`. `Iconify` and `iconify`. And searching by hand: `automation` next to `automatisation`, `productivity` next to `productivité` — leftovers from a time when this blog hesitated between two languages. A hundred or so tags for about twenty articles: the classic symptom of a vocabulary no one ever curated.
 
-Avant Front Matter, corriger ça voulait dire un chercher-remplacer prudent sur tout `blog/`, fichier par fichier. Maintenant : onglet Taxonomy, sélectionner `seo`, **Merge** vers `SEO`, et l'extension réécrit tous les articles concernés.
+Before Front Matter, fixing this meant a careful search-and-replace across all of `blog/`, file by file. Now: Taxonomy tab, select `seo`, **Merge** into `SEO`, and the extension rewrites every affected article.
 
-![L'onglet Taxonomy du dashboard, avec les actions de renommage et de fusion sur un tag](/img/frontmattercms/post3/taxonomie.png)
+![The dashboard's Taxonomy tab, with the rename and merge actions on a tag](/img/frontmattercms/post3/taxonomie.png)
 
-:::caution L'extension réécrit vos fichiers — relisez le diff
-Toute action de taxonomie (comme toute sauvegarde depuis le panneau) **réécrit le frontmatter des fichiers touchés** : style YAML normalisé, guillemets retirés, champs réordonnés. Rien de grave, mais le diff Git peut être plus gros que le changement réel. Relisez-le avant de committer — c'est un réflexe qui m'a déjà évité d'embarquer des modifications parasites.
+:::caution The extension rewrites your files — read the diff
+Every taxonomy action (like every save from the panel) **rewrites the front matter of the affected files**: normalized YAML style, quotes removed, fields reordered. Nothing serious, but the Git diff can be bigger than the actual change. Read it before committing — a reflex that has already saved me from shipping stray modifications.
 :::
 
-## La médiathèque
+## The media library
 
-Deuxième onglet du dashboard : **Media**. Il affiche tout ce que contient le dossier public — `static/` chez nous, c'est le réglage `frontMatter.content.publicFolder` posé à l'initialisation — avec aperçu, et le glisser-déposer depuis l'explorateur fonctionne.
+Second dashboard tab: **Media**. It shows everything the public folder contains — `static/` for us, that's the `frontMatter.content.publicFolder` setting laid down at initialization — with previews, and drag and drop from the explorer works.
 
-Chaque image a ses actions : copier le chemin relatif (celui qu'on colle dans le Markdown), supprimer, et surtout **éditer les métadonnées** — titre, légende, texte alternatif. Ces métadonnées vont dans `.frontmatter/database/mediaDb.json`.
+Every image has its actions: copy the relative path (the one you paste into Markdown), delete, and above all **edit the metadata** — title, caption, alternative text. That metadata goes into `.frontmatter/database/mediaDb.json`.
 <Columns>
 <Column className="col--9">
-![La vue Media du dashboard, avec les actions disponibles sur une image](/img/frontmattercms/post3/menumedia.png)
+![The dashboard's Media view, with the actions available on an image](/img/frontmattercms/post3/menumedia.png)
 </Column>
 <Column>
-![Le panneau de métadonnées d'une image : titre, légende et texte alternatif](/img/frontmattercms/post3/renamemedia.png)
+![An image's metadata panel: title, caption and alternative text](/img/frontmattercms/post3/renamemedia.png)
 </Column>
 </Columns>
 
-Honnêteté totale : mon `mediaDb.json` fait deux octets — `{}`. Mes images arrivent par glisser-déposer dans le dossier de l'article, et j'écris le texte alternatif directement dans le Markdown. Pour un blog mono-auteur où chaque image ne sert qu'une fois, la médiathèque est un outil de consultation plus que de gestion.
+Total honesty: my `mediaDb.json` is two bytes — `{}`. My images arrive by drag and drop into the article's folder, and I write the alternative text directly in the Markdown. For a single-author blog where each image is used once, the media library is more a browsing tool than a management one.
 
-Elle prend de la valeur dans deux cas : des **images réutilisées** (logos, schémas, bannières — l'alt saisi une fois dans les métadonnées est proposé à chaque insertion), et le travail **en équipe**, où « quelle image a déjà un alt ? » devient une vraie question. Notez aussi que les types de fichiers acceptés se règlent (`frontMatter.media.supportedMimeTypes`) — audio et vidéo compris.
+It earns its keep in two cases: **reused images** (logos, diagrams, banners — the alt text entered once in the metadata is offered at every insertion), and **team** work, where "which image already has an alt?" becomes a real question. Note also that the accepted file types are configurable (`frontMatter.media.supportedMimeTypes`) — audio and video included.
 
-## Ce que ça change, concrètement
+## What it changes, concretely
 
-Ma routine avant / après, sans exagération :
+My routine before / after, without exaggeration:
 
-| Geste                                | Avant                                        | Maintenant                             |
+| Gesture                              | Before                                       | Now                                    |
 | ------------------------------------ | -------------------------------------------- | -------------------------------------- |
-| Rouvrir l'article d'hier             | explorateur → année → mois → jour → dossier | dashboard, première carte              |
-| Voir le rendu d'un brouillon         | `npm start` au terminal, puis naviguer à la main | Start server, puis Open preview    |
-| « Où est mon article sur X ? »       | recherche VS Code dans tout `blog/`          | recherche ou filtre du dashboard       |
-| Voir l'état d'une série              | de tête, ou en relisant la page publiée      | regroupement par série                 |
-| Renommer un tag partout              | chercher-remplacer manuel, en croisant les doigts | Taxonomy → Merge                  |
-| Renommer un article après son titre  | renommer fichier et dossier à la main        | Smart rename                           |
-| Vérifier ce qui est encore brouillon | `grep -r "draft: true" blog/`                | filtre de statut                       |
+| Reopen yesterday's article           | explorer → year → month → day → folder      | dashboard, first card                  |
+| See a draft rendered                 | `npm start` in a terminal, then navigate by hand | Start server, then Open preview    |
+| "Where's my article about X?"        | VS Code search across all of `blog/`         | dashboard search or filter             |
+| See the state of a series            | from memory, or by re-reading the published page | grouping by series                 |
+| Rename a tag everywhere              | manual search-and-replace, fingers crossed   | Taxonomy → Merge                       |
+| Rename an article after its title    | rename file and folder by hand               | Smart rename                           |
+| Check what's still a draft           | `grep -r "draft: true" blog/`                | status filter                          |
 
-L'arborescence datée n'a pas disparu — elle reste ce que Git versionne et ce que les URLs racontent. Simplement, **je ne la parcours plus**. Les dossiers sont pour les machines ; le dashboard est pour moi.
+The dated tree hasn't gone anywhere — it's still what Git versions and what the URLs tell. I just **don't walk it anymore**. Folders are for machines; the dashboard is for me.
 
 ---
 
-La série avance : le pourquoi, la configuration, et maintenant le quotidien. Tout ce qu'on a vu jusqu'ici utilise Front Matter tel qu'il sort de la boîte — finement configuré, mais sans rien lui ajouter.
+The series is moving: the why, the configuration, and now the day-to-day. Everything so far uses Front Matter as it comes out of the box — finely configured, but with nothing added to it.
 
-Dans le prochain article, on pousse l'outil au-delà de sa boîte : des templates et des snippets pour ne plus partir d'une page blanche, des boutons à soi dans l'interface, l'éclatement de la configuration en plusieurs fichiers.
+In the next article, we push the tool beyond its box: templates and snippets so you never start from a blank page, buttons of your own in the interface, and splitting the configuration into several files.
