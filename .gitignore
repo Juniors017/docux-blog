@@ -4,7 +4,7 @@
 # Production
 /build
 /static/img/old/
-
+.draft
 # Brouillons et notes de travail (déjà exclus du build : Docusaurus ignore les
 # dossiers commençant par un point). Sauvegardés par OneDrive, pas par Git.
 /blog/.draft/
