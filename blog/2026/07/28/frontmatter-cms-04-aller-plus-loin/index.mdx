@@ -206,17 +206,59 @@ Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on v
 Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout — accès disque, réseau, `node_modules` — mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.
 :::
 
-## Adapter le panneau : une vue minimale, une vue complète
+## Des modes : un panneau qui s'adapte à ce que vous faites
 
-À force d'ajouter des boutons, le panneau se remplit. À l'inverse, certaines actions ne vous servent jamais. Front Matter laisse **choisir ce qui s'affiche**, via une liste d'actions à masquer :
+À force d'ajouter templates, snippets et boutons, le panneau se remplit. Or, selon le moment, on n'a pas besoin de tout : quand j'**écris**, je veux le formulaire, les compteurs SEO et les boutons de publication — pas la gestion des taxonomies ni les actions Git. Quand je fais du **ménage** (comme les fusions de tags de l'article précédent), c'est l'inverse.
+
+Les **modes** répondent exactement à ça. Un mode porte un `id` et une liste de `features` — les seules parties de l'interface qui resteront visibles. On les déclare dans `frontMatter.global.modes`, et un sélecteur dans la **barre d'état** (en bas de la fenêtre) bascule de l'un à l'autre en un clic.
+
+Voici deux modes cohérents pour ce blog — un pour écrire, un pour tout maintenir :
 
 ```json title="frontmatter.json"
-"frontMatter.panel.actions.disabled": ["openOnWebsite", "startStopServer"]
+"frontMatter.global.modes": [
+  {
+    "id": "minimal",
+    "features": [
+      "panel.contentType",
+      "panel.metadata",
+      "panel.seo",
+      "panel.actions",
+      "panel.otherActions",
+      "dashboard.snippets.view"
+    ]
+  },
+  {
+    "id": "complete",
+    "features": [
+      "panel.globalSettings",
+      "panel.contentType",
+      "panel.metadata",
+      "panel.seo",
+      "panel.actions",
+      "panel.gitActions",
+      "panel.recentlyModified",
+      "panel.otherActions",
+      "dashboard.snippets.view",
+      "dashboard.snippets.manage",
+      "dashboard.data.view",
+      "dashboard.taxonomy.view"
+    ]
+  }
+],
+"frontMatter.global.activeMode": "minimal"
 ```
 
-Les identifiants disponibles sont `openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer` et `customActions`. En masquer une poignée donne une **vue minimale** — juste l'essentiel de votre flux ; ne rien masquer garde la **vue complète** par défaut.
+La logique est simple : **`minimal`** ne garde que ce qu'on touche en rédigeant — le formulaire (`panel.contentType`), les métadonnées comme le statut brouillon (`panel.metadata`), les compteurs SEO (`panel.seo`), les actions de publication (`panel.actions` et `panel.otherActions`) et l'insertion de snippets (`dashboard.snippets.view`). **`complete`** rallume tout : les réglages globaux, les actions Git, les récemment modifiés, et surtout les surfaces de gestion du dashboard — gestion des snippets, fichiers de données et **taxonomie** (là où se font les fusions de tags).
 
-L'intérêt dépasse le confort personnel : couplé au découpage de configuration de la section suivante, ça permet de livrer à une équipe un panneau **volontairement épuré** — on masque ce qui pourrait dérouter, on ne laisse que les actions du flux éditorial validé.
+{/* 📸 IMAGE-02 — Le sélecteur de mode dans la barre d'état VS Code, montrant le passage de « minimal » à « complete ». */}
+
+Les douze `features` disponibles couvrent huit sections du panneau (`panel.globalSettings`, `panel.seo`, `panel.actions`, `panel.metadata`, `panel.contentType`, `panel.gitActions`, `panel.recentlyModified`, `panel.otherActions`) et quatre vues du dashboard (`dashboard.snippets.view`, `dashboard.snippets.manage`, `dashboard.data.view`, `dashboard.taxonomy.view`). Libre à vous d'inventer un troisième mode `review`, `seo`, ou ce que dicte votre flux.
+
+:::tip Réglage plus fin, action par action
+Les modes raisonnent par **sections**. Pour masquer un **bouton précis** sans toucher au reste, `frontMatter.panel.actions.disabled` accepte les identifiants d'actions (`openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer`, `customActions`). Les deux se combinent.
+:::
+
+L'intérêt dépasse le confort personnel : couplé au découpage de configuration de la section suivante, un mode `minimal` versionné permet de livrer à une équipe un panneau **volontairement épuré** — on ne laisse que ce qui sert au flux éditorial validé.
 
 ## Éclater la configuration : la promesse de l'article 1
 
