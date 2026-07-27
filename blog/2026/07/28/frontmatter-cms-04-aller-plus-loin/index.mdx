@@ -51,7 +51,15 @@ Créer un article pré-rempli à partir d'un template, définir des snippets pou
 
 Dans [l'article 2](/blog/install-front-matter-cms-docusaurus/), **Create content** générait un article vide — juste le frontmatter déduit du content type, et un corps désespérément blanc. À chaque nouvel article, je recollais donc les mêmes éléments : le bloc de badges, le `<div className="text--justify">`, le `{/* truncate */}`. Copié depuis le dernier article, à chaque fois.
 
-Un **template** supprime ce geste. C'est un fichier Markdown complet — frontmatter **et** corps — que Front Matter recopie à la création. La façon la plus simple d'en obtenir un : partir d'un article existant qui vous plaît, et lancer la commande depuis la palette.
+Un **template** supprime ce geste. C'est un fichier Markdown complet — frontmatter **et** corps — que Front Matter recopie à la création.
+
+Premier point pratique : à l'initialisation, Front Matter **ne crée pas** le dossier `.frontmatter/templates/`. Si vous préférez partir de zéro, lancez d'abord `Front Matter: Initialize the template folder`, ou créez le dossier à la main.
+
+Le plus simple, cependant, est de partir d'un article existant qui vous plaît, puis de cliquer sur **Create template**, dans la section **Other actions** du panneau, avec l'article ouvert — l'action crée le dossier au passage et y dépose le fichier.
+
+{/* 📸 IMAGE-01 — La section « Other actions » du panneau, bouton « Create template » visible. */}
+
+Le bouton peut apparaître grisé selon le fichier au premier plan : ouvrez l'article que vous voulez transformer en template avant de cliquer. La même action existe à la palette de commandes, si vous préférez le clavier :
 
 <Terminal title="VS Code — palette de commandes">
 
@@ -59,7 +67,7 @@ Front Matter: Create a template from the current file
 
 </Terminal>
 
-L'extension écrit le fichier dans `.frontmatter/templates/`. On peut ensuite l'épurer pour ne garder que le squelette réutilisable :
+Le fichier atterrit dans `.frontmatter/templates/`. On peut ensuite l'épurer pour ne garder que le squelette réutilisable :
 
 ```markdown title=".frontmatter/templates/article.md"
 ---
@@ -88,12 +96,13 @@ series: ""
 </div>
 ```
 
-Deux réglages activent le mécanisme :
+Un seul réglage active le mécanisme — la fonctionnalité est éteinte par défaut :
 
 ```json title="frontmatter.json"
-"frontMatter.templates.enabled": true,
-"frontMatter.templates.folder": ".frontmatter/templates"
+"frontMatter.templates.enabled": true
 ```
+
+Inutile de préciser le dossier : `frontMatter.templates.folder` vaut déjà `.frontmatter/templates` par défaut, on ne le déclare que pour ranger les templates ailleurs.
 
 À partir de là, **Create content** propose de choisir un template au lieu de partir de zéro. Le lien peut même être rendu permanent : la propriété `template` posée sur un content type force chaque nouvel article de ce type à démarrer du template désigné.
 
@@ -196,6 +205,18 @@ Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on v
 :::caution Un script, pas un jouet
 Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout — accès disque, réseau, `node_modules` — mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.
 :::
+
+## Adapter le panneau : une vue minimale, une vue complète
+
+À force d'ajouter des boutons, le panneau se remplit. À l'inverse, certaines actions ne vous servent jamais. Front Matter laisse **choisir ce qui s'affiche**, via une liste d'actions à masquer :
+
+```json title="frontmatter.json"
+"frontMatter.panel.actions.disabled": ["openOnWebsite", "startStopServer"]
+```
+
+Les identifiants disponibles sont `openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer` et `customActions`. En masquer une poignée donne une **vue minimale** — juste l'essentiel de votre flux ; ne rien masquer garde la **vue complète** par défaut.
+
+L'intérêt dépasse le confort personnel : couplé au découpage de configuration de la section suivante, ça permet de livrer à une équipe un panneau **volontairement épuré** — on masque ce qui pourrait dérouter, on ne laisse que les actions du flux éditorial validé.
 
 ## Éclater la configuration : la promesse de l'article 1
 
