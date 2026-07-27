@@ -1,0 +1,268 @@
+---
+title: "Front Matter CMS : templates, snippets et actions sur mesure"
+slug: front-matter-cms-aller-plus-loin-docusaurus
+description: "Pousser Front Matter au-delà de sa configuration : templates, snippets, boutons maison dans le panneau, et une config éclatée en plusieurs fichiers."
+image: /img/docux.webp
+authors:
+  - docux
+mainTag: frontmatter-cms
+tags:
+  - cms
+  - customization
+  - docusaurus
+  - frontmatter-cms
+  - scripts
+  - vscode
+date: 2026-07-28
+last_update:
+  date: 2026-07-28
+  author: docux
+draft: true
+inLanguage: fr-FR
+hide_table_of_contents: false
+series: CMS & UI
+fmContentType: article
+---
+
+{/* 📸 IMAGE-00 (COUVERTURE) — Le panneau Front Matter avec un bouton d'action maison bien visible, ou l'arborescence .frontmatter/config éclatée. À reporter dans le champ `image:` du frontmatter. */}
+
+<div>
+<center>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+[![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+</center>
+![illustration de El Dino qui bricole Front Matter CMS](/img/docux.webp)
+</div>
+
+<div className="text--justify">
+Trois articles durant, on a pris Front Matter tel qu'il sort de la boîte : installé, configuré finement, utilisé au quotidien. Rien qu'on n'ait ajouté à l'outil lui-même.
+
+Cet article change de registre. On va **étendre** Front Matter : lui apprendre à pré-remplir des articles, à insérer des blocs tout faits, à exposer nos propres boutons dans le panneau, et à ranger sa configuration dans plusieurs fichiers plutôt qu'un seul `frontmatter.json` de 200 lignes. C'est le moment où l'extension cesse d'être un formulaire et devient une partie de l'outillage du dépôt.
+
+:::tip Ce que vous saurez faire à la fin
+Créer un article pré-rempli à partir d'un template, définir des snippets pour vos composants MDX récurrents, ajouter un bouton maison qui exécute un script Node sur l'article courant, et éclater `frontmatter.json` en fichiers thématiques sous `.frontmatter/config/`.
+:::
+
+</div>
+{/* truncate */}
+
+## Les templates : ne plus partir d'une page blanche
+
+Dans [l'article 2](/blog/install-front-matter-cms-docusaurus/), **Create content** générait un article vide — juste le frontmatter déduit du content type, et un corps désespérément blanc. À chaque nouvel article, je recollais donc les mêmes éléments : le bloc de badges, le `<div className="text--justify">`, le `{/* truncate */}`. Copié depuis le dernier article, à chaque fois.
+
+Un **template** supprime ce geste. C'est un fichier Markdown complet — frontmatter **et** corps — que Front Matter recopie à la création. La façon la plus simple d'en obtenir un : partir d'un article existant qui vous plaît, et lancer la commande depuis la palette.
+
+<Terminal title="VS Code — palette de commandes">
+
+Front Matter: Create a template from the current file
+
+</Terminal>
+
+L'extension écrit le fichier dans `.frontmatter/templates/`. On peut ensuite l'épurer pour ne garder que le squelette réutilisable :
+
+```markdown title=".frontmatter/templates/article.md"
+---
+title: ""
+slug: ""
+description: ""
+authors:
+  - docux
+mainTag: ""
+date: ""
+draft: true
+inLanguage: en
+series: ""
+---
+
+<div>
+<center>
+[![Developer](https://img.shields.io/badge/Developer-Docux-green.svg)](https://github.com/Juniors017)
+</center>
+</div>
+
+<div className="text--justify">
+
+{/* truncate */}
+
+</div>
+```
+
+Deux réglages activent le mécanisme :
+
+```json title="frontmatter.json"
+"frontMatter.templates.enabled": true,
+"frontMatter.templates.folder": ".frontmatter/templates"
+```
+
+À partir de là, **Create content** propose de choisir un template au lieu de partir de zéro. Le lien peut même être rendu permanent : la propriété `template` posée sur un content type force chaque nouvel article de ce type à démarrer du template désigné.
+
+```json title="frontmatter.json — dans le content type"
+{
+  "name": "article",
+  "template": ".frontmatter/templates/article.md",
+  "fields": [ "..." ]
+}
+```
+
+:::note Template vs content type — ne pas confondre
+Le **content type** décrit le *formulaire* (quels champs, quels types). Le **template** fournit le *contenu de départ* (valeurs par défaut **et** corps du fichier). L'un remplit le panneau, l'autre remplit la page. Ils sont complémentaires, pas concurrents.
+:::
+
+## Les snippets : vos composants MDX à portée de clic
+
+Un blog Docusaurus, c'est du MDX truffé de composants maison. Sur ce blog, je réutilise sans arrêt `<Columns>`, `<Terminal>`, `<Trees>`… et je ne me souviens jamais de la structure exacte des balises imbriquées. Résultat : je rouvre un ancien article pour copier le motif. Encore du copier-coller.
+
+Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMatter.content.snippets`, et — bonne surprise — on en a **déjà un** depuis l'article 2, glissé dans la config presque par accident :
+
+```json title="frontmatter.json"
+"frontMatter.content.snippets": {
+  "Columns": {
+    "description": "",
+    "body": [
+      "<Columns>",
+      "<Column>",
+      "",
+      "</Column>",
+      "<Column>",
+      "</Column>",
+      "</Columns>"
+    ],
+    "fields": []
+  }
+}
+```
+
+Chaque chaîne de `body` est une ligne. Depuis l'éditeur, le bouton **Insert snippet** (ou la vue Snippets du dashboard) insère le bloc au curseur. Pour `<Columns>`, aucun champ à remplir : c'est du texte fixe.
+
+Mais un snippet peut être **paramétré**. Prenons notre `<Terminal>`, qui prend un titre : on déclare un champ, et Front Matter le demande avant l'insertion.
+
+```json title="frontmatter.json"
+"Terminal": {
+  "description": "Bloc terminal avec un titre",
+  "body": [
+    "<Terminal title=\"[[title]]\">",
+    "",
+    "[[command]]",
+    "",
+    "</Terminal>"
+  ],
+  "fields": [
+    { "name": "title", "title": "Titre de la fenêtre", "type": "string" },
+    { "name": "command", "title": "Commande", "type": "string" }
+  ]
+}
+```
+
+Les jetons `[[title]]` et `[[command]]` sont remplacés par ce que vous saisissez. Les délimiteurs `[[ ]]` sont configurables (`openingTags` / `closingTags`), et les champs acceptent les types `string` et `choice` — de quoi proposer une liste fermée plutôt qu'un texte libre.
+
+:::tip Le placeholder qui change tout : `FM_SELECTED_TEXT`
+Un champ peut se pré-remplir avec le **texte sélectionné** dans l'éditeur via `FM_SELECTED_TEXT`. Vous sélectionnez un paragraphe, déclenchez le snippet, et votre sélection atterrit dans le bon emplacement — parfait pour envelopper du contenu existant dans un composant. Pour du HTML, préfixez le jeton d'un `&` (`[[&selection]]`) afin d'éviter l'échappement.
+:::
+
+Il existe aussi des **media snippets** (`"isMediaSnippet": true`) : au lieu d'apparaître dans l'éditeur, ils s'attachent aux cartes de la médiathèque et exposent des placeholders comme `mediaUrl`, `alt`, `caption`, `width`. Le jour où vos images ne sont plus de simples `![]()` mais un composant lightbox maison, c'est là que ça se règle.
+
+## Les actions sur mesure : vos boutons dans le panneau
+
+C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'ajouter **vos propres boutons** dans le panneau, chacun exécutant un script Node sur l'article courant. Le contrat se fait via le paquet `@frontmatter/extensibility` :
+
+```js title="scripts/wordcount.mjs"
+import { ContentScript } from "@frontmatter/extensibility";
+
+const { workspacePath, filePath, frontMatter, answers } =
+  ContentScript.getArguments();
+
+// filePath : le fichier courant. frontMatter : ses métadonnées, déjà parsées.
+// À vous de jouer : lire le corps, appeler une API, valider une convention…
+
+ContentScript.done("Analyse terminée ✅");
+```
+
+`getArguments()` vous livre le chemin de l'atelier, celui du fichier ouvert, son frontmatter déjà parsé, et d'éventuelles réponses saisies par l'utilisateur. `done()` renvoie un message au panneau. On déclare ensuite le bouton :
+
+```json title="frontmatter.json"
+"frontMatter.custom.scripts": [
+  {
+    "title": "Compter les mots",
+    "script": "./scripts/wordcount.mjs",
+    "command": "node",
+    "output": "notification"
+  }
+]
+```
+
+Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup. De quoi coder un vérificateur de longueur SEO, un générateur de couverture, un poussoir vers BlueSky… tout ce qui touche à *votre* flux, que l'extension ne connaîtra jamais.
+
+:::caution Un script, pas un jouet
+Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout — accès disque, réseau, `node_modules` — mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.
+:::
+
+## Éclater la configuration : la promesse de l'article 1
+
+Souvenez-vous : dès [le premier article](/blog/why-front-matter-cms-docusaurus/), j'avais promis qu'on reviendrait sur `frontMatter.extends` et le découpage de la config. Le moment est venu — et il tombe bien, parce que notre `frontmatter.json` a enflé au fil de la série : content type, filtres du dashboard, snippets, et bientôt les scripts. Un seul fichier de plus en plus long, où retrouver un réglage devient pénible.
+
+Front Matter offre deux mécanismes pour ranger ça, à ne pas confondre.
+
+### Le découpage automatique sous `.frontmatter/config/`
+
+Le premier ne demande aucune configuration : il repose sur une **convention de dossiers**. Chaque entrée de tableau peut sortir dans son propre fichier, dont le nom reprend l'`id` du réglage :
+
+<Trees>
+  <Folder label=".frontmatter" expanded={true}>
+    <Folder label="config" expanded={true}>
+      <Folder label="content" expanded={true}>
+        <Folder label="pagefolders" />
+        <Folder label="snippets" />
+      </Folder>
+      <Folder label="taxonomy" expanded={true}>
+        <Folder label="contenttypes" />
+      </Folder>
+      <Folder label="custom" expanded={true}>
+        <Folder label="scripts" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Trees>
+
+Votre content type `article` vit alors dans `taxonomy/contenttypes/article.json`, chaque snippet dans son fichier sous `content/snippets/`, et ainsi de suite. `frontmatter.json` maigrit d'autant.
+
+### `frontMatter.extends` : pointer ailleurs
+
+Le second est explicite : `frontMatter.extends` liste des fichiers — locaux **ou** distants — dont la configuration vient compléter la vôtre.
+
+```json title="frontmatter.json"
+"frontMatter.extends": [
+  "./.frontmatter/config/shared.json",
+  "https://exemple.com/frontmatter/preset.json"
+]
+```
+
+L'URL distante est ce qui rend le mécanisme intéressant à plusieurs : une équipe peut publier un preset commun — content types, snippets, conventions — que chaque dépôt étend. Chacun garde son `frontmatter.json` local pour ses spécificités.
+
+:::note Qui gagne en cas de conflit ?
+L'ordre de priorité est sans ambiguïté : le `frontmatter.json` local **écrase** le découpage `.frontmatter/config/`, qui lui-même **écrase** les configurations importées via `extends`. Autrement dit, votre fichier local a toujours le dernier mot — une base partagée ne peut jamais vous imposer un réglage que vous redéfinissez chez vous.
+:::
+
+C'est exactement le fondement du chapitre suivant : une configuration partageable est le prérequis du travail en équipe.
+
+## L'histoire du `draft: true` qui cassait le build
+
+Puisqu'on parle d'aller au fond de l'outillage, une anecdote de ce blog a toute sa place ici — parce qu'elle a failli me faire abandonner l'organisation en brouillons.
+
+Sur ce blog, les articles en cours vivent en `draft: true`. C'est la fonctionnalité native de Docusaurus : un brouillon est retiré de la production, mais reste visible en développement. Sauf que chez moi, **`draft: true` faisait planter le build**. Pas un avertissement — un échec net.
+
+La cause n'avait rien à voir avec Front Matter, et tout à voir avec un vieux réflexe : un composant maison qui listait les articles via le `require.context` de Webpack. Ce mécanisme embarque **tous** les fichiers correspondants dans le bundle client — y compris les brouillons — et court-circuitait la logique de `draft` de Docusaurus au passage.
+
+La solution a été de remplacer ce `require.context` par un petit plugin Docusaurus qui lit les métadonnées **à la compilation**, côté Node, en respectant la sémantique de `draft` :
+
+<Snippet source="plugins/docusaurus-plugin-blog-metadata/index.cjs" />
+
+Le passage décisif tient en une ligne : `if (isProduction && frontMatter.draft) return;`. En production, un brouillon est simplement ignoré ; en développement, il reste visible. Exactement le comportement natif de Docusaurus, enfin rétabli.
+
+Pourquoi raconter ça dans un article sur Front Matter ? Parce que sans ce correctif, toute la méthode de cette série — écrire en `draft: true`, relire, publier d'un `draft: false` — aurait été impossible. L'outil de contenu ne vaut que si le pipeline de build le laisse respirer.
+
+---
+
+On a poussé Front Matter au bout de sa logique solo : pré-remplissage, insertion, boutons maison, configuration modulaire. Tout ce qu'on a construit tient sur une machine, un dépôt, un auteur.
+
+Reste la question qu'on a soigneusement évitée jusqu'ici : et à plusieurs ? Dans le prochain article, on ouvre le blog à une équipe — et on verra que Front Matter, dépourvu de comptes et de rôles, s'en remet entièrement à Git pour gérer qui écrit quoi.
