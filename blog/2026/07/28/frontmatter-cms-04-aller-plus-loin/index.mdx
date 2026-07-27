@@ -166,8 +166,30 @@ Mais un snippet peut être **paramétré**. Prenons notre `<Terminal>`, qui pren
 Les jetons `[[title]]` et `[[command]]` sont remplacés par ce que vous saisissez. Les délimiteurs `[[ ]]` sont configurables (`openingTags` / `closingTags`), et les champs acceptent les types `string` et `choice` — de quoi proposer une liste fermée plutôt qu'un texte libre.
 
 :::tip Le placeholder qui change tout : `FM_SELECTED_TEXT`
-Un champ peut se pré-remplir avec le **texte sélectionné** dans l'éditeur via `FM_SELECTED_TEXT`. Vous sélectionnez un paragraphe, déclenchez le snippet, et votre sélection atterrit dans le bon emplacement — parfait pour envelopper du contenu existant dans un composant. Pour du HTML, préfixez le jeton d'un `&` (`[[&selection]]`) afin d'éviter l'échappement.
+Un champ dont la valeur par défaut est `FM_SELECTED_TEXT` se pré-remplit avec le **texte sélectionné** dans l'éditeur, et le placeholder du corps qui porte le même `name` reçoit cette sélection. Vous sélectionnez un paragraphe, déclenchez le snippet, et votre sélection atterrit au bon endroit — parfait pour envelopper du contenu existant. Pour du HTML à ne pas échapper, préfixez le jeton d'un `&` (`[[&selection]]`).
 :::
+
+Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le début de la série : il **enveloppe le texte sélectionné dans une admonition**, dont le type se choisit dans une liste — y compris le `:::docu` maison de ce blog. Un champ `choice` pour le type, un champ libre pour le titre, et la sélection récupérée automatiquement :
+
+```json title="frontmatter.json"
+"Admonition": {
+  "description": "Envelopper la sélection dans une admonition",
+  "body": ["\n:::[[type]] [[title]]", "[[selection]]", ":::\n"],
+  "fields": [
+    {
+      "name": "type",
+      "title": "Type d'encadré",
+      "type": "choice",
+      "choices": ["tip", "info", "caution", "danger", "note", "docu"],
+      "default": "tip"
+    },
+    { "name": "title", "title": "Titre (optionnel)", "type": "string" },
+    { "name": "selection", "title": "Contenu", "type": "string", "default": "FM_SELECTED_TEXT" }
+  ]
+}
+```
+
+Le geste devient : je sélectionne un paragraphe déjà écrit, je lance le snippet, je choisis _caution_ dans la liste, je tape un titre — et mon paragraphe se retrouve encadré, sans que j'aie tapé une seule fois `:::`. Trois types de valeurs (liste fermée, texte libre, sélection) dans un seul snippet : c'est là qu'on mesure que l'outil ne se contente pas d'insérer du texte mort.
 
 Il existe aussi des **media snippets** (`"isMediaSnippet": true`) : au lieu d'apparaître dans l'éditeur, ils s'attachent aux cartes de la médiathèque et exposent des placeholders comme `mediaUrl`, `alt`, `caption`, `width`. Le jour où vos images ne sont plus de simples `![]()` mais un composant lightbox maison, c'est là que ça se règle.
 
