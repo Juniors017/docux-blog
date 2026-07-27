@@ -200,15 +200,29 @@ Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le dé
 
 Le geste devient : je sélectionne un paragraphe déjà écrit, je lance le snippet, je choisis _caution_ dans la liste, je tape un titre — et mon paragraphe se retrouve encadré, sans que j'aie tapé une seule fois `:::`. Trois types de valeurs (liste fermée, texte libre, sélection) dans un seul snippet : c'est là qu'on mesure que l'outil ne se contente pas d'insérer du texte mort.
 
-:::caution Coupez le _wrapper_ sur un blog MDX
-Par défaut, Front Matter entoure chaque snippet inséré de commentaires `<!-- FM:Snippet:Start … -->` / `<!-- FM:Snippet:End -->`. Ils mémorisent l'`id` et les valeurs des champs, ce qui lui permet de **rééditer** le snippet plus tard — précieux sur un générateur en Markdown pur. Mais Docusaurus lit du **MDX**, où les commentaires HTML `<!-- -->` ne sont pas valides : ils **fuient tels quels sur la page**. La parade tient en une ligne :
+### Le piège à connaître en MDX : couper le _wrapper_
+
+Si vous ne deviez retenir qu'une chose de cette section, ce serait celle-ci — à régler **avant** d'insérer votre premier snippet. Par défaut, Front Matter entoure chaque snippet inséré de commentaires qui mémorisent son `id` et les valeurs de ses champs, pour pouvoir le **rééditer** plus tard. Votre belle admonition arrive donc emballée ainsi :
+
+```markdown title="ce que le wrapper insère… et qui s'affiche en MDX"
+<!-- FM:Snippet:Start data:{"id":"Admonition","fields":[…]} -->
+
+:::tip Astuce
+Votre contenu.
+:::
+
+<!-- FM:Snippet:End -->
+```
+
+Sur un générateur en **Markdown pur**, ces commentaires HTML sont invisibles au rendu — le mécanisme est même astucieux. Mais Docusaurus lit du **MDX**, où `<!-- -->` n'est pas un commentaire valide : les deux lignes `FM:Snippet` **s'affichent telles quelles sur la page publiée**. J'y suis tombé en testant les snippets de cet article.
+
+La parade tient en une ligne :
 
 ```json title="frontmatter.json"
 "frontMatter.snippets.wrapper.enabled": false
 ```
 
-Le prix à payer : Front Matter ne saura plus retrouver un snippet déjà inséré pour le modifier en place. Sur ce blog, où un snippet sert de tremplin puis vit sa vie en MDX, c'est un échange gagnant.
-:::
+Le seul prix : Front Matter ne saura plus retrouver un snippet déjà inséré pour le modifier en place. Sur ce blog, où un snippet sert de tremplin puis vit sa vie en MDX, c'est un échange gagnant.
 
 ### Les snippets pour vos médias
 
