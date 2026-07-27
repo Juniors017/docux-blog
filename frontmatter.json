@@ -194,6 +194,40 @@
         "</Columns>"
       ],
       "fields": []
+    },
+    "Terminal": {
+      "description": "Bloc terminal avec un titre",
+      "body": [
+        "<Terminal title=\"[[title]]\">",
+        "",
+        "[[command]]",
+        "",
+        "</Terminal>"
+      ],
+      "fields": [
+        { "name": "title", "title": "Titre de la fenêtre", "type": "string" },
+        { "name": "command", "title": "Commande", "type": "string" }
+      ]
+    },
+    "Admonition": {
+      "description": "Envelopper la sélection dans une admonition",
+      "body": ["\n:::[[type]] [[title]]", "[[selection]]", ":::\n"],
+      "fields": [
+        {
+          "name": "type",
+          "title": "Type d'encadré",
+          "type": "choice",
+          "choices": ["tip", "info", "caution", "danger", "note", "docu"],
+          "default": "tip"
+        },
+        { "name": "title", "title": "Titre (optionnel)", "type": "string" },
+        {
+          "name": "selection",
+          "title": "Contenu",
+          "type": "string",
+          "default": "FM_SELECTED_TEXT"
+        }
+      ]
     }
   }
 }

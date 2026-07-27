@@ -191,7 +191,26 @@ Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le dé
 
 Le geste devient : je sélectionne un paragraphe déjà écrit, je lance le snippet, je choisis _caution_ dans la liste, je tape un titre — et mon paragraphe se retrouve encadré, sans que j'aie tapé une seule fois `:::`. Trois types de valeurs (liste fermée, texte libre, sélection) dans un seul snippet : c'est là qu'on mesure que l'outil ne se contente pas d'insérer du texte mort.
 
-Il existe aussi des **media snippets** (`"isMediaSnippet": true`) : au lieu d'apparaître dans l'éditeur, ils s'attachent aux cartes de la médiathèque et exposent des placeholders comme `mediaUrl`, `alt`, `caption`, `width`. Le jour où vos images ne sont plus de simples `![]()` mais un composant lightbox maison, c'est là que ça se règle.
+### Les snippets pour vos médias
+
+En créant un snippet depuis le dashboard, une option intrigue : **« Is a media snippet? »**, décrite par _« Use the current snippet for inserting media files into your content »_. C'est le champ `isMediaSnippet` du JSON. Cochée, elle change complètement le point d'entrée du snippet : au lieu d'apparaître dans l'éditeur pour envelopper du texte, le snippet **s'attache aux cartes de la médiathèque** — on l'applique à une image plutôt qu'à une sélection.
+
+Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média : `mediaUrl`, `alt`, `caption`, `filename`, `title`, `mediaWidth`, `mediaHeight`. De quoi remplacer le `![]()` par votre propre composant — une lightbox, une figure légendée — sans jamais recopier un chemin d'image à la main :
+
+```json title="frontmatter.json"
+"Figure": {
+  "description": "Image légendée maison",
+  "isMediaSnippet": true,
+  "body": ["<Figure src=\"[[mediaUrl]]\" alt=\"[[alt]]\" caption=\"[[caption]]\" />"],
+  "fields": []
+}
+```
+
+Front Matter tient une [documentation dédiée aux placeholders de media snippets](https://frontmatter.codes/docs/snippets) — la liste exacte y évolue avec les versions.
+
+:::note Créer des snippets ≠ les utiliser
+Ces deux capacités sont séparées, et c'est précisément à quoi servent les deux _features_ de la section modes : `dashboard.snippets.view` **utilise** les snippets (les insérer), `dashboard.snippets.manage` permet de les **créer et éditer**. Un mode qui garde `view` sans `manage` — comme notre mode `minimal` plus haut — laisse toute l'équipe insérer les snippets validés, mais **empêche d'en créer de nouveaux à la volée**. La bibliothèque reste maîtrisée, versionnée dans `frontmatter.json`.
+:::
 
 ## Les actions sur mesure : vos boutons dans le panneau
 
