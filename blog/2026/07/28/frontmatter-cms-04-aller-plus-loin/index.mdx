@@ -268,15 +268,16 @@ C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'a
 
 Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup.
 
-Le bouton « Compter les mots » est exactement le script ci-dessus — rien de caché. Mais c'est le principe qui compte : **tout ce qui touche à votre flux et que l'extension ne connaîtra jamais** devient un bouton. Quelques idées que ce blog gagnerait à câbler, toutes à portée d'un petit script Node :
+Le bouton « Compter les mots » est exactement le script ci-dessus — rien de caché.
 
-- **Vérifier les longueurs SEO** — titre ≤ 60, description ≤ 160 — et refuser en notification si ça déborde, au lieu de le découvrir au build.
-- **Contrôler les conventions** : la série est-elle bien dans la taxonomie ? chaque image a-t-elle un `alt` ? le `slug` est-il en anglais ?
-- **Optimiser la couverture** en la passant dans le même `sharp` que [le plugin d'images du blog](/blog/), et réécrire le champ `image` (`output: "editor"`).
-- **Poster sur BlueSky** depuis le panneau, puis réinjecter le `blueSkyRecordKey` dans le frontmatter — le geste manuel de fin de chaque publication de cette série.
-- **Synchroniser les tags** entre `taxonomyDb.json` et un éventuel fichier source, en une action groupée (`bulk: true`).
+Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Il compte les longueurs de titre et de description, valide le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Un bouton maison n'a de valeur que pour ce que l'extension **ne peut pas** connaître : votre pipeline, vos services externes, vos conventions à vous. Quatre exemples que ce blog gagnerait vraiment à câbler :
 
-Aucune de ces idées n'est dans Front Matter — et c'est le propos : l'extension fournit le bouton, vous fournissez le métier.
+- **Rédiger le post BlueSky.** À chaque publication, j'écris à la main une accroche de 300 caractères max qui pointe vers l'article. Un script part du `title` et de la `description`, assemble le texte, vérifie la limite, et le dépose dans le presse-papier — la corvée devient un clic.
+- **Publier sur BlueSky, puis réinjecter le `blueSkyRecordKey`.** Le prolongement logique : le script poste via l'API, récupère l'identifiant du post et l'écrit dans le frontmatter (`output: "editor"`). C'est précisément le geste manuel qui clôt chaque article de cette série.
+- **Fabriquer la carte sociale.** Générer l'image Open Graph — titre incrusté sur un gabarit — avec le même `sharp` que [le plugin d'images du blog](/blog/), l'enregistrer dans `static/`, et poser le champ `image`. De quoi ne plus jamais publier avec une couverture placeholder.
+- **Amorcer la traduction anglaise.** Le cœur du flux de ce blog : le script envoie le corps français à une API de traduction, crée le fichier anglais dans le bon dossier daté et range la source dans `.draft/`. Front Matter ignore tout de cette mécanique bilingue — c'est exactement le genre de métier qu'on lui greffe.
+
+Aucune de ces quatre idées n'existe dans Front Matter, et aucune ne peut y exister : elles parlent à _votre_ hébergeur social, _votre_ chaîne d'images, _votre_ organisation bilingue. L'extension fournit le bouton ; vous fournissez le métier.
 
 :::caution Un script, pas un jouet
 Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout — accès disque, réseau, `node_modules` — mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.
