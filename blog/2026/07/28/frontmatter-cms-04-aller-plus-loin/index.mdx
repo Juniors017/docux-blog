@@ -249,21 +249,11 @@ Ces deux capacités sont séparées, et c'est précisément à quoi servent les 
 
 ## Les actions sur mesure : vos boutons dans le panneau
 
-C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'ajouter **vos propres boutons** dans le panneau, chacun exécutant un script Node sur l'article courant. Le contrat se fait via le paquet `@frontmatter/extensibility` :
+C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'ajouter **vos propres boutons** dans le panneau, chacun exécutant un script Node sur l'article courant, via le paquet `@frontmatter/extensibility`. Du concret tout de suite — voici le compteur de mots qui tourne réellement sur ce blog :
 
-```js title="scripts/wordcount.mjs"
-import { ContentScript } from "@frontmatter/extensibility";
+<Snippet source="scripts/wordcount.mjs" />
 
-const { workspacePath, filePath, frontMatter, answers } =
-  ContentScript.getArguments();
-
-// filePath : le fichier courant. frontMatter : ses métadonnées, déjà parsées.
-// À vous de jouer : lire le corps, appeler une API, valider une convention…
-
-ContentScript.done("Analyse terminée ✅");
-```
-
-`getArguments()` vous livre le chemin de l'atelier, celui du fichier ouvert, son frontmatter déjà parsé, et d'éventuelles réponses saisies par l'utilisateur. `done()` renvoie un message au panneau. On déclare ensuite le bouton :
+`ContentScript.getArguments()` livre le contexte de l'appel : on ne prend ici que `filePath`, mais il expose aussi `workspacePath`, le `frontMatter` déjà parsé et les `answers` d'éventuelles questions posées à l'utilisateur. `ContentScript.done()` renvoie le message affiché au panneau. Reste à déclarer le bouton :
 
 ```json title="frontmatter.json"
 "frontMatter.custom.scripts": [
@@ -276,7 +266,17 @@ ContentScript.done("Analyse terminée ✅");
 ]
 ```
 
-Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup. De quoi coder un vérificateur de longueur SEO, un générateur de couverture, un poussoir vers BlueSky… tout ce qui touche à *votre* flux, que l'extension ne connaîtra jamais.
+Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup.
+
+Le bouton « Compter les mots » est exactement le script ci-dessus — rien de caché. Mais c'est le principe qui compte : **tout ce qui touche à votre flux et que l'extension ne connaîtra jamais** devient un bouton. Quelques idées que ce blog gagnerait à câbler, toutes à portée d'un petit script Node :
+
+- **Vérifier les longueurs SEO** — titre ≤ 60, description ≤ 160 — et refuser en notification si ça déborde, au lieu de le découvrir au build.
+- **Contrôler les conventions** : la série est-elle bien dans la taxonomie ? chaque image a-t-elle un `alt` ? le `slug` est-il en anglais ?
+- **Optimiser la couverture** en la passant dans le même `sharp` que [le plugin d'images du blog](/blog/), et réécrire le champ `image` (`output: "editor"`).
+- **Poster sur BlueSky** depuis le panneau, puis réinjecter le `blueSkyRecordKey` dans le frontmatter — le geste manuel de fin de chaque publication de cette série.
+- **Synchroniser les tags** entre `taxonomyDb.json` et un éventuel fichier source, en une action groupée (`bulk: true`).
+
+Aucune de ces idées n'est dans Front Matter — et c'est le propos : l'extension fournit le bouton, vous fournissez le métier.
 
 :::caution Un script, pas un jouet
 Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout — accès disque, réseau, `node_modules` — mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.

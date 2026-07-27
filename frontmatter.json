@@ -181,6 +181,14 @@
       ]
     }
   ],
+  "frontMatter.custom.scripts": [
+    {
+      "title": "Compter les mots",
+      "script": "./scripts/wordcount.mjs",
+      "command": "node",
+      "output": "notification"
+    }
+  ],
   "frontMatter.snippets.wrapper.enabled": false,
   "frontMatter.content.snippets": {
     "Columns": {
