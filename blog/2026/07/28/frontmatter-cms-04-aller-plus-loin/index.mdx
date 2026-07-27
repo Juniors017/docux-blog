@@ -142,32 +142,41 @@ Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMa
 }
 ```
 
-Chaque chaîne de `body` est une ligne. Depuis l'éditeur, le bouton **Insert snippet** (ou la vue Snippets du dashboard) insère le bloc au curseur. Pour `<Columns>`, aucun champ à remplir : c'est du texte fixe.
+Chaque chaîne de `body` est une ligne ; le bouton **Insert snippet** (ou la vue Snippets du dashboard) colle le bloc au curseur. Tel quel, c'est du texte fixe — pratique, mais un snippet donne sa pleine mesure dès qu'on lui ajoute des **champs**.
 
-Mais un snippet peut être **paramétré**. Prenons notre `<Terminal>`, qui prend un titre : on déclare un champ, et Front Matter le demande avant l'insertion.
+Reprenons donc ce même `<Columns>` et donnons-lui deux pouvoirs : choisir la largeur de la colonne de gauche dans une liste, et y **verser directement le texte sélectionné** dans l'éditeur.
 
-```json title="frontmatter.json"
-"Terminal": {
-  "description": "Bloc terminal avec un titre",
+```json title="frontmatter.json — version améliorée"
+"Columns": {
+  "description": "Deux colonnes — largeur de gauche au choix, contenu pré-rempli avec la sélection",
   "body": [
-    "<Terminal title=\"[[title]]\">",
+    "<Columns>",
+    "<Column className=\"[[width]]\">",
+    "[[selection]]",
+    "</Column>",
+    "<Column>",
     "",
-    "[[command]]",
-    "",
-    "</Terminal>"
+    "</Column>",
+    "</Columns>"
   ],
   "fields": [
-    { "name": "title", "title": "Titre de la fenêtre", "type": "string" },
-    { "name": "command", "title": "Commande", "type": "string" }
+    {
+      "name": "width",
+      "title": "Largeur de la colonne de gauche",
+      "type": "choice",
+      "choices": ["col--6", "col--8", "col--4"],
+      "default": "col--6"
+    },
+    { "name": "selection", "title": "Contenu de gauche", "type": "string", "default": "FM_SELECTED_TEXT" }
   ]
 }
 ```
 
-Les jetons `[[title]]` et `[[command]]` sont remplacés par ce que vous saisissez. Les délimiteurs `[[ ]]` sont configurables (`openingTags` / `closingTags`), et les champs acceptent les types `string` et `choice` — de quoi proposer une liste fermée plutôt qu'un texte libre.
+Trois idées se lisent dans ce petit bloc :
 
-:::tip Le placeholder qui change tout : `FM_SELECTED_TEXT`
-Un champ dont la valeur par défaut est `FM_SELECTED_TEXT` se pré-remplit avec le **texte sélectionné** dans l'éditeur, et le placeholder du corps qui porte le même `name` reçoit cette sélection. Vous sélectionnez un paragraphe, déclenchez le snippet, et votre sélection atterrit au bon endroit — parfait pour envelopper du contenu existant. Pour du HTML à ne pas échapper, préfixez le jeton d'un `&` (`[[&selection]]`).
-:::
+- **Les placeholders** `[[width]]` et `[[selection]]` reçoivent les valeurs saisies ; leurs délimiteurs `[[ ]]` sont réglables (`openingTags` / `closingTags`).
+- **Un champ `choice`** impose une liste fermée — ici `col--6`, `col--8`, `col--4`, les classes de grille Infima que notre composant `<Column>` transmet tel quel — plutôt qu'un texte libre.
+- **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` : votre texte remplit une large colonne de gauche, la droite attend la suite. (Pour du HTML à ne pas échapper : `[[&selection]]`.)
 
 Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le début de la série : il **enveloppe le texte sélectionné dans une admonition**, dont le type se choisit dans une liste — y compris le `:::docu` maison de ce blog. Un champ `choice` pour le type, un champ libre pour le titre, et la sélection récupérée automatiquement :
 
@@ -190,6 +199,16 @@ Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le dé
 ```
 
 Le geste devient : je sélectionne un paragraphe déjà écrit, je lance le snippet, je choisis _caution_ dans la liste, je tape un titre — et mon paragraphe se retrouve encadré, sans que j'aie tapé une seule fois `:::`. Trois types de valeurs (liste fermée, texte libre, sélection) dans un seul snippet : c'est là qu'on mesure que l'outil ne se contente pas d'insérer du texte mort.
+
+:::caution Coupez le _wrapper_ sur un blog MDX
+Par défaut, Front Matter entoure chaque snippet inséré de commentaires `<!-- FM:Snippet:Start … -->` / `<!-- FM:Snippet:End -->`. Ils mémorisent l'`id` et les valeurs des champs, ce qui lui permet de **rééditer** le snippet plus tard — précieux sur un générateur en Markdown pur. Mais Docusaurus lit du **MDX**, où les commentaires HTML `<!-- -->` ne sont pas valides : ils **fuient tels quels sur la page**. La parade tient en une ligne :
+
+```json title="frontmatter.json"
+"frontMatter.snippets.wrapper.enabled": false
+```
+
+Le prix à payer : Front Matter ne saura plus retrouver un snippet déjà inséré pour le modifier en place. Sur ce blog, où un snippet sert de tremplin puis vit sa vie en MDX, c'est un échange gagnant.
+:::
 
 ### Les snippets pour vos médias
 

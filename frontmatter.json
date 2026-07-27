@@ -181,19 +181,35 @@
       ]
     }
   ],
+  "frontMatter.snippets.wrapper.enabled": false,
   "frontMatter.content.snippets": {
     "Columns": {
-      "description": "",
+      "description": "Deux colonnes — largeur de gauche au choix, contenu pré-rempli avec la sélection",
       "body": [
         "<Columns>",
+        "<Column className=\"[[width]]\">",
+        "[[selection]]",
+        "</Column>",
         "<Column>",
         "",
         "</Column>",
-        "<Column>",
-        "</Column>",
         "</Columns>"
       ],
-      "fields": []
+      "fields": [
+        {
+          "name": "width",
+          "title": "Largeur de la colonne de gauche",
+          "type": "choice",
+          "choices": ["col--6", "col--8", "col--4"],
+          "default": "col--6"
+        },
+        {
+          "name": "selection",
+          "title": "Contenu de gauche",
+          "type": "string",
+          "default": "FM_SELECTED_TEXT"
+        }
+      ]
     },
     "Terminal": {
       "description": "Bloc terminal avec un titre",
