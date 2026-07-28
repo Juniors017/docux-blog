@@ -17,19 +17,27 @@
   "frontMatter.content.filters": [
     "contentFolders",
     "tags",
-    { "title": "Series", "name": "series" }
+    {
+      "title": "Series",
+      "name": "series"
+    }
   ],
-  "frontMatter.content.grouping": [{ "title": "Series", "name": "series" }],
+  "frontMatter.content.grouping": [
+    {
+      "title": "Series",
+      "name": "series"
+    }
+  ],
   "frontMatter.content.defaultSorting": "LastModifiedDesc",
   "frontMatter.taxonomy.customTaxonomy": [
     {
       "id": "series",
       "options": [
         "Api and scripts in Docusaurus",
-        "CMS & UI",
+        "CMS UI",
         "Design your site",
         "Docusaurus Plugins",
-        "SEO & Analytics",
+        "SEO Analytics",
         "Tools",
         "infima components"
       ]
@@ -371,8 +379,16 @@
         "</Terminal>"
       ],
       "fields": [
-        { "name": "title", "title": "Titre de la fenêtre", "type": "string" },
-        { "name": "command", "title": "Commande", "type": "string" }
+        {
+          "name": "title",
+          "title": "Titre de la fenêtre",
+          "type": "string"
+        },
+        {
+          "name": "command",
+          "title": "Commande",
+          "type": "string"
+        }
       ]
     },
     "Admonition": {
@@ -386,7 +402,11 @@
           "choices": ["tip", "info", "caution", "danger", "note", "docu"],
           "default": "tip"
         },
-        { "name": "title", "title": "Titre (optionnel)", "type": "string" },
+        {
+          "name": "title",
+          "title": "Titre (optionnel)",
+          "type": "string"
+        },
         {
           "name": "selection",
           "title": "Contenu",
