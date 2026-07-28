@@ -144,36 +144,41 @@ Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMa
 
 Chaque chaîne de `body` est une ligne ; le bouton **Insert snippet** (ou la vue Snippets du dashboard) colle le bloc au curseur. Tel quel, c'est du texte fixe — pratique, mais un snippet donne sa pleine mesure dès qu'on lui ajoute des **champs**.
 
-Reprenons donc ce même `<Columns>` et donnons-lui deux pouvoirs : choisir la largeur de **chaque** colonne dans une liste, et **verser directement le texte sélectionné** dans celle de gauche.
+Reprenons donc ce même `<Columns>` et poussons-le jusqu'au bout : **largeur, marge, padding et contenu, réglables de chaque côté**. Huit champs, et plus une seule classe à se rappeler.
 
-```json title="frontmatter.json — version améliorée"
+```json title="frontmatter.json — version complète"
 "Columns": {
-  "description": "Deux colonnes — largeurs au choix, gauche pré-remplie avec la sélection",
+  "description": "Deux colonnes — largeur, marge et padding réglables de chaque côté",
   "body": [
     "<Columns>",
-    "<Column className=\"[[leftWidth]]\">",
-    "[[selection]]",
+    "<Column className=\"[[leftWidth]] [[leftMargin]] [[leftPadding]]\">",
+    "[[leftContent]]",
     "</Column>",
-    "<Column className=\"[[rightWidth]]\">",
-    "",
+    "<Column className=\"[[rightWidth]] [[rightMargin]] [[rightPadding]]\">",
+    "[[rightContent]]",
     "</Column>",
     "</Columns>"
   ],
   "fields": [
-    { "name": "leftWidth", "title": "Largeur — gauche", "type": "choice", "choices": ["col--6", "col--8", "col--4"], "default": "col--6" },
-    { "name": "rightWidth", "title": "Largeur — droite", "type": "choice", "choices": ["col--6", "col--4", "col--8"], "default": "col--6" },
-    { "name": "selection", "title": "Contenu de gauche", "type": "string", "default": "FM_SELECTED_TEXT" }
+    { "name": "leftWidth", "title": "Gauche — largeur", "type": "choice", "choices": ["col--6", "col--8", "col--4", "col--3", "col--9"], "default": "col--6" },
+    { "name": "leftMargin", "title": "Gauche — marge", "type": "choice", "choices": ["margin--none", "margin--sm", "margin--md", "margin--lg", "margin-vert--md"], "default": "margin--none" },
+    { "name": "leftPadding", "title": "Gauche — padding", "type": "choice", "choices": ["padding--none", "padding--sm", "padding--md", "padding--lg"], "default": "padding--none" },
+    { "name": "leftContent", "title": "Gauche — contenu", "type": "string", "default": "FM_SELECTED_TEXT" },
+    { "name": "rightWidth", "title": "Droite — largeur", "type": "choice", "choices": ["col--6", "col--4", "col--8", "col--9", "col--3"], "default": "col--6" },
+    { "name": "rightMargin", "title": "Droite — marge", "type": "choice", "choices": ["margin--none", "margin--sm", "margin--md", "margin--lg", "margin-vert--md"], "default": "margin--none" },
+    { "name": "rightPadding", "title": "Droite — padding", "type": "choice", "choices": ["padding--none", "padding--sm", "padding--md", "padding--lg"], "default": "padding--none" },
+    { "name": "rightContent", "title": "Droite — contenu", "type": "string" }
   ]
 }
 ```
 
-Trois idées se lisent dans ce petit bloc :
+Trois idées se lisent dans ce bloc :
 
-- **Les placeholders** `[[leftWidth]]`, `[[rightWidth]]` et `[[selection]]` reçoivent les valeurs saisies ; leurs délimiteurs `[[ ]]` sont réglables (`openingTags` / `closingTags`).
-- **Un champ `choice`** impose une liste fermée — ici `col--6`, `col--8`, `col--4`, les classes de grille Infima que notre composant `<Column>` transmet tel quel — plutôt qu'un texte libre.
+- **Les placeholders** reçoivent les valeurs saisies, et rien n'empêche d'en concaténer plusieurs dans un même attribut : `className="[[leftWidth]] [[leftMargin]] [[leftPadding]]"` compose la classe finale à partir de trois menus. Les délimiteurs `[[ ]]` sont d'ailleurs réglables (`openingTags` / `closingTags`).
+- **Un champ `choice`** impose une liste fermée — ici les classes de grille et d'espacement d'Infima, que notre composant `<Column>` transmet tel quel. Fini le `col--7` tapé de travers : on choisit dans une liste. Les variantes `--none` servent d'option « rien », pour ne pas laisser de classe vide.
 - **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` puis `col--4` : votre texte remplit une large colonne de gauche, une étroite l'attend à droite. (Pour du HTML à ne pas échapper : `[[&selection]]`.)
 
-Une limite à connaître : la sélection est **unique**, elle ne peut alimenter qu'une seule colonne. La droite reste donc vide — c'est voulu, on y met souvent du code ou une image, mal servis par un champ texte d'une ligne.
+Une limite quand même : la sélection est **unique**, elle n'alimente qu'un seul champ. Le contenu de droite reste donc à saisir — et pour du code ou une image, mieux vaut laisser le champ vide et écrire directement dans l'éditeur, où l'on respire.
 
 Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le début de la série : il **enveloppe le texte sélectionné dans une admonition**, dont le type se choisit dans une liste — y compris le `:::docu` maison de ce blog. Un champ `choice` pour le type, un champ libre pour le titre, et la sélection récupérée automatiquement :
 
