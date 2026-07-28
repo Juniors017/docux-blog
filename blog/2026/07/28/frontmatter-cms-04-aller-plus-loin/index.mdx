@@ -234,7 +234,7 @@ Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média 
 
 ```json title="frontmatter.json"
 "Lightbox": {
-  "description": "Insérer une image dans notre lightbox maison",
+  "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
   "isMediaSnippet": true,
   "body": [
     "<ImageOnClick imageUrl=\"[[mediaUrl]]\" altText=\"[[alt]]\" buttonName=\"[[caption]]\" />"
@@ -242,6 +242,8 @@ Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média 
   "fields": []
 }
 ```
+
+Les placeholders se branchent directement sur les props du composant : `mediaUrl` sur `imageUrl`, `alt` sur `altText`, `caption` sur `buttonName` — le libellé cliquable qui ouvre la lightbox. Aucun champ à déclarer, tout vient du média.
 
 Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à une balise : **son corps peut être une mise en page entière**. Le motif que j'utilise sans arrêt dans cette série — une capture d'un côté, du texte ou du code de l'autre — devient alors un seul clic depuis la carte de l'image :
 

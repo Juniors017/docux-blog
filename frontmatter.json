@@ -304,6 +304,14 @@
         }
       ]
     },
+    "Lightbox": {
+      "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
+      "isMediaSnippet": true,
+      "body": [
+        "<ImageOnClick imageUrl=\"[[mediaUrl]]\" altText=\"[[alt]]\" buttonName=\"[[caption]]\" />"
+      ],
+      "fields": []
+    },
     "Image + colonnes": {
       "description": "Depuis une carte média : insère l'image dans une colonne, texte à droite",
       "isMediaSnippet": true,
