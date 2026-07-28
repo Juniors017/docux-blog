@@ -365,7 +365,7 @@ Le schéma d'une action expose `id`, `title`, `script`, `command`, `output`, `ou
 
 Vider le cache Docusaurus tient en trois lignes utiles — le geste qu'on répète après chaque ajout d'article :
 
-<Snippet source="scripts/clear-cache.mjs" />
+<Snippet source="scripts/clear-cache.mjs"   filename="scripts/clear-cache.mjs" />
 
 Le `workspacePath` livré par `getArguments()` sert de répertoire de travail : le script s'exécute à la racine du projet, quel que soit le fichier ouvert. Le `try/catch` renvoie l'erreur en notification plutôt que d'échouer en silence. Le jumeau pour npm est identique, à la commande près.
 
@@ -384,7 +384,7 @@ La parade est plus robuste **et** plus rapide : appeler le binaire directement a
 
 Le bouton de test de build va un cran plus loin : il lance la compilation complète et répond **OK** ou **KO**, en comptant au passage les avertissements — la règle des zéro warning de ce blog devient vérifiable d'un clic.
 
-<Snippet source="scripts/test-build.mjs" />
+<Snippet source="scripts/test-build.mjs" filename="scripts/test-build.mjs" />
 
 :::caution Un bouton qui prend deux minutes
 Un build Docusaurus complet n'est pas instantané. Pendant l'exécution, la notification se fait attendre et rien ne l'indique clairement : c'est le prix d'une vérification sérieuse. À réserver au moment de publier, pas à chaque sauvegarde.
@@ -459,7 +459,7 @@ Les douze `features` disponibles couvrent huit sections du panneau (`panel.globa
 Les modes raisonnent par **sections**. Pour masquer un **bouton précis** sans toucher au reste, `frontMatter.panel.actions.disabled` accepte les identifiants d'actions (`openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer`, `customActions`). Les deux se combinent.
 :::
 
-L'intérêt dépasse le confort personnel : couplé au découpage de configuration de la section suivante, un mode `minimal` versionné permet de livrer à une équipe un panneau **volontairement épuré** — on ne laisse que ce qui sert au flux éditorial validé.
+L'intérêt dépasse le confort personnel. Les modes étant **définis dans `frontmatter.json`**, ils voyagent avec le dépôt : arriver sur le projet, c'est hériter d'un `minimal` et d'un `complete` déjà pensés, sans les inventer. Couplé au découpage de configuration de la section suivante, ça permet de livrer à une équipe un panneau **volontairement épuré** — on ne laisse en avant que ce qui sert au flux éditorial validé, chacun restant libre de basculer quand il en a besoin.
 
 ## Éclater la configuration : la promesse de l'article 1
 
@@ -519,7 +519,7 @@ La cause n'avait rien à voir avec Front Matter, et tout à voir avec un vieux r
 
 La solution a été de remplacer ce `require.context` par un petit plugin Docusaurus qui lit les métadonnées **à la compilation**, côté Node, en respectant la sémantique de `draft` :
 
-<Snippet source="plugins/docusaurus-plugin-blog-metadata/index.cjs" />
+<Snippet source="plugins/docusaurus-plugin-blog-metadata/index.cjs" filename="plugins/docusaurus-plugin-blog-metadata/index.cjs" />
 
 Le passage décisif tient en une ligne : `if (isProduction && frontMatter.draft) return;`. En production, un brouillon est simplement ignoré ; en développement, il reste visible. Exactement le comportement natif de Docusaurus, enfin rétabli.
 

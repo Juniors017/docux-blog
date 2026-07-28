@@ -1,5 +1,36 @@
 {
   "$schema": "https://frontmatter.codes/frontmatter.schema.json",
+  "frontMatter.global.modes": [
+    {
+      "id": "minimal",
+      "features": [
+        "panel.contentType",
+        "panel.metadata",
+        "panel.seo",
+        "panel.actions",
+        "panel.otherActions",
+        "dashboard.snippets.view"
+      ]
+    },
+    {
+      "id": "complete",
+      "features": [
+        "panel.globalSettings",
+        "panel.contentType",
+        "panel.metadata",
+        "panel.seo",
+        "panel.actions",
+        "panel.gitActions",
+        "panel.recentlyModified",
+        "panel.otherActions",
+        "dashboard.snippets.view",
+        "dashboard.snippets.manage",
+        "dashboard.data.view",
+        "dashboard.taxonomy.view"
+      ]
+    }
+  ],
+  "frontMatter.global.activeMode": "complete",
   "frontMatter.framework.id": "docusaurus",
   "frontMatter.content.publicFolder": "static",
   "frontMatter.preview.host": "http://localhost:3000",
