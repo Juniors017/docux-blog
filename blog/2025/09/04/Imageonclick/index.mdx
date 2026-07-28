@@ -18,7 +18,7 @@ tags:
   ]
 date: 2025-09-05
 last_update:
-  date: 2025-09-05
+  date: 2026-07-28
   author: docux
 difficulty: "Beginner"
 totalTime: "PT15M"
@@ -131,3 +131,32 @@ To center the image and apply modern lightbox effects, we'll add some CSS:
 ```
 
 Using markdown emoji: <ImageOnClick imageUrl="/img/friends.webp" altText="Dinosaur" buttonName="🔎" />
+
+### Styling the image with `className`
+
+The component takes an optional `className`, applied to the image itself. Anything goes — your own CSS, or the [Infima utility classes](https://infima.dev/docs/utilities/spacing) that ship with Docusaurus, such as spacing (`margin-vert--md`) and shadows (`shadow--lw`, `shadow--md`, `shadow--tl`):
+
+```html
+<ImageOnClick
+  imageUrl="/img/friends.webp"
+  altText="Dinosaur"
+  buttonName="Click me"
+  className="shadow--tl margin-vert--md"
+/>
+```
+
+<ImageOnClick
+  imageUrl="/img/friends.webp"
+  altText="Dinosaur"
+  buttonName="Click me"
+  className="shadow--tl margin-vert--md"
+/>
+
+Leaving it out changes nothing, so every existing usage keeps working exactly as before.
+
+| Prop         | Required | Role                                              |
+| ------------ | -------- | ------------------------------------------------- |
+| `imageUrl`   | yes      | Path to the image, resolved through `useBaseUrl`  |
+| `altText`    | yes      | Alternative text carried by the image             |
+| `buttonName` | yes      | The clickable label that opens the lightbox       |
+| `className`  | no       | Extra classes applied to the image                |
