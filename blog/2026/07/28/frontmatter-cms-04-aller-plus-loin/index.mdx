@@ -327,23 +327,23 @@ Un script reçoit son contexte de `ContentScript.getArguments()` — `filePath` 
 
 Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup.
 
-Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Le panneau SEO compte les mots de l'article — `frontMatter.taxonomy.seoContentLengh` permet même de fixer la longueur visée — ainsi que les caractères du titre et de la description. L'extension valide aussi le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Elle sait même vider son propre cache.
+Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Exemple : le panneau SEO compte les mots de l'article — `frontMatter.taxonomy.seoContentLengh` permet même de fixer la longueur visée — ainsi que les caractères du titre et de la description. L'extension valide aussi le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Elle sait même vider son propre cache.
 
 Une action maison n'a donc de valeur que pour ce que l'extension **ne peut pas** connaître : votre outillage, vos services, vos conventions.
 
-**À portée de main, ce soir.** Un `execSync` et trois lignes suffisent pour rapatrier dans le panneau les commandes qu'on tape sans arrêt au terminal :
+**Exemple rapide à mettre en place** Quelques lignes suffisent pour rapatrier dans le panneau les commandes qu'on tape sans arrêt au terminal :
 
 - **Vider le cache Docusaurus** — le fameux `npm run clear`, réflexe obligatoire après avoir ajouté un article ou touché à un plugin. Le script l'exécute dans le dossier du projet et renvoie une notification.
 - **Vider le cache npm** — `npm cache clean --force`, pour le jour où une dépendance refuse de s'installer proprement.
 - **Copier l'URL de production** — reconstruire `https://votre-site/blog/<slug>/` à partir du frontmatter, pour la coller ailleurs sans la retaper.
 - **Vérifier les textes alternatifs** — une regex sur le corps qui compte les images sans `alt`. Content Health ne couvre pas ce point, et c'est une convention à laquelle je tiens.
 
-**Plus ambitieux, pour un week-end.** Là, on branche des services externes — et on sort définitivement du périmètre de l'extension :
+**Plus ambitieux, pour un week-end chill** Là, on branche des services externes — et on sort définitivement du périmètre de l'extension :
 
 - **Rédiger le post BlueSky.** À chaque publication, j'écris à la main une accroche de 300 caractères qui pointe vers l'article. Un script part du `title` et de la `description`, assemble le texte et vérifie la limite.
 - **Publier sur BlueSky, puis réinjecter le `blueSkyRecordKey`.** Le prolongement logique : poster via l'API, récupérer l'identifiant du post et l'écrire dans le frontmatter (`output: "editor"`). C'est précisément le geste manuel qui clôt chaque article de cette série.
 - **Fabriquer la carte sociale.** Générer l'image Open Graph — titre incrusté sur un gabarit — avec le même `sharp` que [le plugin d'images du blog](/blog/), l'enregistrer dans `static/`, et poser le champ `image`.
-- **Amorcer la traduction anglaise.** Le cœur du flux de ce blog : envoyer le corps français à une API de traduction, créer le fichier anglais dans le bon dossier daté et ranger la source dans `.draft/`. Front Matter ignore tout de cette mécanique bilingue.
+
 
 Aucune de ces idées n'existe dans l'extension, et les dernières ne peuvent pas y exister : elles parlent à _votre_ hébergeur social, _votre_ chaîne d'images, _votre_ organisation bilingue. L'extension fournit le bouton ; vous fournissez le métier.
 
@@ -367,7 +367,20 @@ Vider le cache Docusaurus tient en trois lignes utiles — le geste qu'on répè
 
 <Snippet source="scripts/clear-cache.mjs" />
 
-Le `workspacePath` livré par `getArguments()` sert de répertoire de travail : le script s'exécute à la racine du projet, quel que soit le fichier ouvert. Le `try/catch` renvoie l'erreur en notification plutôt que d'échouer en silence. Le jumeau pour npm est identique, à la commande près (`npm cache clean --force`).
+Le `workspacePath` livré par `getArguments()` sert de répertoire de travail : le script s'exécute à la racine du projet, quel que soit le fichier ouvert. Le `try/catch` renvoie l'erreur en notification plutôt que d'échouer en silence. Le jumeau pour npm est identique, à la commande près.
+
+:::caution N'appelez pas `npm` depuis le script
+Ma première version faisait un `execSync("npm run clear")`. Au terminal, impeccable ; depuis le bouton, échec sec :
+
+```text
+Command failed: node "…\scripts\test-build.mjs"
+La syntaxe du nom de fichier, de répertoire ou de volume est incorrecte.
+```
+
+La raison : `execSync` passe par un shell — `cmd.exe` sous Windows — et le script n'est pas lancé depuis un terminal mais par l'extension, avec un environnement réduit où `npm` n'est plus résolu de la même façon.
+
+La parade est plus robuste **et** plus rapide : appeler le binaire directement avec le node courant, sans shell du tout. `execFileSync` au lieu de `execSync`, `process.execPath` pour node, et le chemin du binaire reconstruit depuis `workspacePath`. Plus de PATH, plus de `cmd.exe`, plus de guillemets à échapper. Même logique pour npm, dont l'entrée JS se trouve à côté de l'exécutable node (`node_modules/npm/bin/npm-cli.js`).
+:::
 
 Le bouton de test de build va un cran plus loin : il lance la compilation complète et répond **OK** ou **KO**, en comptant au passage les avertissements — la règle des zéro warning de ce blog devient vérifiable d'un clic.
 
