@@ -311,7 +311,7 @@ Un script reçoit son contexte de `ContentScript.getArguments()` — `filePath` 
 
 Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup.
 
-Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Mon tout premier bouton comptait les mots de l'article — je l'ai supprimé en écrivant ces lignes : le panneau SEO le fait déjà, et `frontMatter.taxonomy.seoContentLengh` permet même de fixer la longueur d'article visée. L'extension compte aussi les caractères du titre et de la description, valide le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Elle sait même vider son propre cache.
+Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Le panneau SEO compte les mots de l'article — `frontMatter.taxonomy.seoContentLengh` permet même de fixer la longueur visée — ainsi que les caractères du titre et de la description. L'extension valide aussi le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Elle sait même vider son propre cache.
 
 Une action maison n'a donc de valeur que pour ce que l'extension **ne peut pas** connaître : votre outillage, vos services, vos conventions.
 
