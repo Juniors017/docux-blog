@@ -360,6 +360,19 @@ Le bouton de test de build va un cran plus loin : il lance la compilation compl�
 Un build Docusaurus complet n'est pas instantané. Pendant l'exécution, la notification se fait attendre et rien ne l'indique clairement : c'est le prix d'une vérification sérieuse. À réserver au moment de publier, pas à chaque sauvegarde.
 :::
 
+Manque un quatrième bouton à cet ensemble : vider le cache de Front Matter lui-même. Il n'existera pas, et pour une raison instructive — **une action custom est un script Node, exécuté hors de VS Code**. Elle peut lancer une commande système, lire et écrire des fichiers du projet… mais pas déclencher une commande de l'éditeur. Or ce cache-là ne vit pas dans le dépôt, mais dans le stockage de l'extension.
+
+La bonne réponse n'est donc pas un bouton, c'est un **raccourci clavier** — plus rapide encore. La commande s'appelle `frontMatter.cache.clear` ; il suffit de la lier dans `keybindings.json` :
+
+```json title="keybindings.json (VS Code)"
+{
+  "key": "ctrl+alt+c",
+  "command": "frontMatter.cache.clear"
+}
+```
+
+C'est un réflexe qui vaut pour toutes les commandes de l'extension : ce que le panneau n'expose pas en bouton, la palette le connaît — et tout ce que la palette connaît peut recevoir un raccourci.
+
 :::caution Un script, pas un jouet
 Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout — accès disque, réseau, `node_modules` — mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.
 :::
