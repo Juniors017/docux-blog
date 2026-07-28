@@ -1,0 +1,24 @@
+{
+  "description": "Bloc terminal avec un titre",
+  "body": [
+    "<Terminal title=\"[[title]]\">",
+    "",
+    "[[command]]",
+    "",
+    "</Terminal>"
+  ],
+  "fields": [
+    {
+      "name": "title",
+      "title": "Titre de la fenêtre",
+      "type": "string"
+    },
+    {
+      "name": "command",
+      "title": "Commande",
+      "type": "string"
+    }
+  ],
+  "id": "Terminal",
+  "title": "Terminal"
+}

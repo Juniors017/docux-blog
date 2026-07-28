@@ -1,0 +1,26 @@
+{
+  "description": "Envelopper la sélection dans une admonition",
+  "body": ["\n:::[[type]] [[title]]", "[[selection]]", ":::\n"],
+  "fields": [
+    {
+      "name": "type",
+      "title": "Type d'encadré",
+      "type": "choice",
+      "choices": ["tip", "info", "caution", "danger", "note", "docu"],
+      "default": "tip"
+    },
+    {
+      "name": "title",
+      "title": "Titre (optionnel)",
+      "type": "string"
+    },
+    {
+      "name": "selection",
+      "title": "Contenu",
+      "type": "string",
+      "default": "FM_SELECTED_TEXT"
+    }
+  ],
+  "id": "Admonition",
+  "title": "Admonition"
+}

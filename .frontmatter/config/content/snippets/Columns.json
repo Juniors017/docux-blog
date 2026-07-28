@@ -1,0 +1,100 @@
+{
+  "description": "Deux colonnes — largeur, marge et padding réglables de chaque côté",
+  "body": [
+    "<Columns>",
+    "<Column className=\"[[leftWidth]] [[leftMargin]] [[leftPadding]]\">",
+    "[[leftContent]]",
+    "</Column>",
+    "<Column className=\"[[rightWidth]] [[rightMargin]] [[rightPadding]]\">",
+    "[[rightContent]]",
+    "</Column>",
+    "</Columns>"
+  ],
+  "fields": [
+    {
+      "name": "leftWidth",
+      "title": "Gauche — largeur",
+      "type": "choice",
+      "choices": ["col--6", "col--8", "col--4", "col--3", "col--9"],
+      "default": "col--6"
+    },
+    {
+      "name": "leftMargin",
+      "title": "Gauche — marge",
+      "type": "choice",
+      "choices": [
+        "margin--none",
+        "margin--sm",
+        "margin--md",
+        "margin--lg",
+        "margin-vert--md",
+        "margin-vert--lg",
+        "margin-horiz--md"
+      ],
+      "default": "margin--none"
+    },
+    {
+      "name": "leftPadding",
+      "title": "Gauche — padding",
+      "type": "choice",
+      "choices": [
+        "padding--none",
+        "padding--sm",
+        "padding--md",
+        "padding--lg",
+        "padding-vert--md",
+        "padding-horiz--md"
+      ],
+      "default": "padding--none"
+    },
+    {
+      "name": "leftContent",
+      "title": "Gauche — contenu",
+      "type": "string",
+      "default": "FM_SELECTED_TEXT"
+    },
+    {
+      "name": "rightWidth",
+      "title": "Droite — largeur",
+      "type": "choice",
+      "choices": ["col--6", "col--4", "col--8", "col--9", "col--3"],
+      "default": "col--6"
+    },
+    {
+      "name": "rightMargin",
+      "title": "Droite — marge",
+      "type": "choice",
+      "choices": [
+        "margin--none",
+        "margin--sm",
+        "margin--md",
+        "margin--lg",
+        "margin-vert--md",
+        "margin-vert--lg",
+        "margin-horiz--md"
+      ],
+      "default": "margin--none"
+    },
+    {
+      "name": "rightPadding",
+      "title": "Droite — padding",
+      "type": "choice",
+      "choices": [
+        "padding--none",
+        "padding--sm",
+        "padding--md",
+        "padding--lg",
+        "padding-vert--md",
+        "padding-horiz--md"
+      ],
+      "default": "padding--none"
+    },
+    {
+      "name": "rightContent",
+      "title": "Droite — contenu",
+      "type": "string"
+    }
+  ],
+  "id": "Columns",
+  "title": "Columns"
+}

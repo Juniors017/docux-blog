@@ -1,0 +1,7 @@
+{
+  "id": "maintenance-cache-docusaurus",
+  "title": "Maintenance · Vider le cache Docusaurus",
+  "script": "[[workspace]]/scripts/clear-cache.mjs",
+  "command": "node",
+  "output": "notification"
+}

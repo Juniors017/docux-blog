@@ -1,0 +1,7 @@
+{
+  "id": "maintenance-build",
+  "title": "Maintenance · Tester le build",
+  "script": "[[workspace]]/scripts/test-build.mjs",
+  "command": "node",
+  "output": "notification"
+}
