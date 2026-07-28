@@ -1,9 +1,12 @@
 import React, { useState } from "react"; // Import React and useState hook
+import clsx from "clsx"; // Import clsx library for conditional classes
 import useBaseUrl from "@docusaurus/useBaseUrl"; // Import the useBaseUrl function from Docusaurus
 import styles from "./styles.module.css"; // Import styles from CSS module
 
 // Define the ImageOnClick component as a functional component
-const ImageOnClick = ({ imageUrl, altText, buttonName }) => {
+// `className` is applied to the image itself, so callers can pass Infima
+// utility classes (spacing, shadows…) without touching the component.
+const ImageOnClick = ({ imageUrl, altText, buttonName, className }) => {
   const [showImg, setShowImg] = useState(false); // State to track whether image should be shown or hidden
 
   const generatedImageUrl = useBaseUrl(imageUrl); // Use the useBaseUrl function to generate the image URL
@@ -32,6 +35,7 @@ const ImageOnClick = ({ imageUrl, altText, buttonName }) => {
           <img
             src={generatedImageUrl}
             alt={altText}
+            className={clsx(className)}
             onClick={(e) => e.stopPropagation()}
           />
         </div>
