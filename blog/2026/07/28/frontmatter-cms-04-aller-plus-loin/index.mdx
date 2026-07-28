@@ -459,7 +459,13 @@ Les douze `features` disponibles couvrent huit sections du panneau (`panel.globa
 Les modes raisonnent par **sections**. Pour masquer un **bouton précis** sans toucher au reste, `frontMatter.panel.actions.disabled` accepte les identifiants d'actions (`openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer`, `customActions`). Les deux se combinent.
 :::
 
-L'intérêt dépasse le confort personnel. Les modes étant **définis dans `frontmatter.json`**, ils voyagent avec le dépôt : arriver sur le projet, c'est hériter d'un `minimal` et d'un `complete` déjà pensés, sans les inventer. Couplé au découpage de configuration de la section suivante, ça permet de livrer à une équipe un panneau **volontairement épuré** — on ne laisse en avant que ce qui sert au flux éditorial validé, chacun restant libre de basculer quand il en a besoin.
+:::tip Pas de bouton ? C'est normal
+Tant qu'aucun mode n'est déclaré, l'extension n'a rien à proposer : **le sélecteur n'apparaît pas**. Ajoutez les deux modes ci-dessus, rechargez la fenêtre, et il se montre en bas à gauche.
+:::
+
+Le partage des rôles est bien pensé, et je l'ai vérifié en basculant : **la définition des modes est versionnée, le mode actif ne l'est pas**. Les modes vivent dans `frontmatter.json` et voyagent donc avec le dépôt — arriver sur le projet, c'est hériter d'un `minimal` et d'un `complete` déjà pensés. Mais quand vous cliquez sur le sélecteur, aucun fichier suivi ne bouge : le choix atterrit dans le stockage local de VS Code (`workspaceStorage`). `frontMatter.global.activeMode` ne fixe que le mode **par défaut**, pour qui ouvre le projet sans avoir jamais choisi.
+
+Le résultat est exactement ce qu'on veut en équipe : une configuration commune, un panneau volontairement épuré pour le flux éditorial validé — et chacun libre de basculer quand il veut, **sans polluer les diffs Git** de ses préférences d'affichage.
 
 ## Éclater la configuration : la promesse de l'article 1
 
