@@ -311,14 +311,54 @@ Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on v
 
 Le bouton « Compter les mots » est exactement le script ci-dessus — rien de caché.
 
-Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Il compte les longueurs de titre et de description, valide le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Un bouton maison n'a de valeur que pour ce que l'extension **ne peut pas** connaître : votre pipeline, vos services externes, vos conventions à vous. Quatre exemples que ce blog gagnerait vraiment à câbler :
+Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Il compte les longueurs de titre et de description, valide le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Il sait même vider son propre cache — la commande `Front Matter: Clear cache` existe, inutile de lui fabriquer un bouton. Une action maison n'a de valeur que pour ce que l'extension **ne peut pas** connaître : votre outillage, vos services, vos conventions.
 
-- **Rédiger le post BlueSky.** À chaque publication, j'écris à la main une accroche de 300 caractères max qui pointe vers l'article. Un script part du `title` et de la `description`, assemble le texte, vérifie la limite, et le dépose dans le presse-papier — la corvée devient un clic.
-- **Publier sur BlueSky, puis réinjecter le `blueSkyRecordKey`.** Le prolongement logique : le script poste via l'API, récupère l'identifiant du post et l'écrit dans le frontmatter (`output: "editor"`). C'est précisément le geste manuel qui clôt chaque article de cette série.
-- **Fabriquer la carte sociale.** Générer l'image Open Graph — titre incrusté sur un gabarit — avec le même `sharp` que [le plugin d'images du blog](/blog/), l'enregistrer dans `static/`, et poser le champ `image`. De quoi ne plus jamais publier avec une couverture placeholder.
-- **Amorcer la traduction anglaise.** Le cœur du flux de ce blog : le script envoie le corps français à une API de traduction, crée le fichier anglais dans le bon dossier daté et range la source dans `.draft/`. Front Matter ignore tout de cette mécanique bilingue — c'est exactement le genre de métier qu'on lui greffe.
+**À portée de main, ce soir.** Un `execSync` et trois lignes suffisent pour rapatrier dans le panneau les commandes qu'on tape sans arrêt au terminal :
 
-Aucune de ces quatre idées n'existe dans Front Matter, et aucune ne peut y exister : elles parlent à _votre_ hébergeur social, _votre_ chaîne d'images, _votre_ organisation bilingue. L'extension fournit le bouton ; vous fournissez le métier.
+- **Vider le cache Docusaurus** — le fameux `npm run clear`, réflexe obligatoire après avoir ajouté un article ou touché à un plugin. Le script l'exécute dans le dossier du projet et renvoie une notification.
+- **Vider le cache npm** — `npm cache clean --force`, pour le jour où une dépendance refuse de s'installer proprement.
+- **Copier l'URL de production** — reconstruire `https://votre-site/blog/<slug>/` à partir du frontmatter, pour la coller ailleurs sans la retaper.
+- **Vérifier les textes alternatifs** — une regex sur le corps qui compte les images sans `alt`. Content Health ne couvre pas ce point, et c'est une convention à laquelle je tiens.
+
+**Plus ambitieux, pour un week-end.** Là, on branche des services externes — et on sort définitivement du périmètre de l'extension :
+
+- **Rédiger le post BlueSky.** À chaque publication, j'écris à la main une accroche de 300 caractères qui pointe vers l'article. Un script part du `title` et de la `description`, assemble le texte et vérifie la limite.
+- **Publier sur BlueSky, puis réinjecter le `blueSkyRecordKey`.** Le prolongement logique : poster via l'API, récupérer l'identifiant du post et l'écrire dans le frontmatter (`output: "editor"`). C'est précisément le geste manuel qui clôt chaque article de cette série.
+- **Fabriquer la carte sociale.** Générer l'image Open Graph — titre incrusté sur un gabarit — avec le même `sharp` que [le plugin d'images du blog](/blog/), l'enregistrer dans `static/`, et poser le champ `image`.
+- **Amorcer la traduction anglaise.** Le cœur du flux de ce blog : envoyer le corps français à une API de traduction, créer le fichier anglais dans le bon dossier daté et ranger la source dans `.draft/`. Front Matter ignore tout de cette mécanique bilingue.
+
+Aucune de ces idées n'existe dans l'extension, et les dernières ne peuvent pas y exister : elles parlent à _votre_ hébergeur social, _votre_ chaîne d'images, _votre_ organisation bilingue. L'extension fournit le bouton ; vous fournissez le métier.
+
+### Un espace « Maintenance » dans le panneau
+
+Les trois premières idées de la liste accessible sont maintenant dans ma configuration, regroupées sous un même préfixe :
+
+```json title="frontmatter.json"
+"frontMatter.custom.scripts": [
+  { "title": "Compter les mots", "script": "./scripts/wordcount.mjs", "command": "node", "output": "notification" },
+  { "id": "maintenance-build", "title": "Maintenance · Tester le build", "script": "./scripts/test-build.mjs", "command": "node", "output": "notification" },
+  { "id": "maintenance-cache-docusaurus", "title": "Maintenance · Vider le cache Docusaurus", "script": "./scripts/clear-cache.mjs", "command": "node", "output": "notification" },
+  { "id": "maintenance-cache-npm", "title": "Maintenance · Vider le cache npm", "script": "./scripts/clear-npm-cache.mjs", "command": "node", "output": "notification" }
+]
+```
+
+:::note Pas de vraies catégories — un préfixe suffit
+Le schéma d'une action expose `id`, `title`, `script`, `command`, `output`, `outputType`, `type`, `bulk`, `hidden`, `nodeBin`, `environments` et `contentTypes` — mais **aucune notion de groupe**. Le préfixe `Maintenance · ` dans le `title` est donc une simple convention de nommage : les boutons se rangent visuellement les uns sous les autres, sans que l'extension n'en sache rien. Efficace, et gratuit.
+:::
+
+Vider le cache Docusaurus tient en trois lignes utiles — le geste qu'on répète après chaque ajout d'article :
+
+<Snippet source="scripts/clear-cache.mjs" />
+
+Le `workspacePath` livré par `getArguments()` sert de répertoire de travail : le script s'exécute à la racine du projet, quel que soit le fichier ouvert. Le `try/catch` renvoie l'erreur en notification plutôt que d'échouer en silence. Le jumeau pour npm est identique, à la commande près (`npm cache clean --force`).
+
+Le bouton de test de build va un cran plus loin : il lance la compilation complète et répond **OK** ou **KO**, en comptant au passage les avertissements — la règle des zéro warning de ce blog devient vérifiable d'un clic.
+
+<Snippet source="scripts/test-build.mjs" />
+
+:::caution Un bouton qui prend deux minutes
+Un build Docusaurus complet n'est pas instantané. Pendant l'exécution, la notification se fait attendre et rien ne l'indique clairement : c'est le prix d'une vérification sérieuse. À réserver au moment de publier, pas à chaque sauvegarde.
+:::
 
 :::caution Un script, pas un jouet
 Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout — accès disque, réseau, `node_modules` — mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.

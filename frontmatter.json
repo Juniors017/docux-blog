@@ -187,6 +187,27 @@
       "script": "./scripts/wordcount.mjs",
       "command": "node",
       "output": "notification"
+    },
+    {
+      "id": "maintenance-build",
+      "title": "Maintenance · Tester le build",
+      "script": "./scripts/test-build.mjs",
+      "command": "node",
+      "output": "notification"
+    },
+    {
+      "id": "maintenance-cache-docusaurus",
+      "title": "Maintenance · Vider le cache Docusaurus",
+      "script": "./scripts/clear-cache.mjs",
+      "command": "node",
+      "output": "notification"
+    },
+    {
+      "id": "maintenance-cache-npm",
+      "title": "Maintenance · Vider le cache npm",
+      "script": "./scripts/clear-npm-cache.mjs",
+      "command": "node",
+      "output": "notification"
     }
   ],
   "frontMatter.snippets.wrapper.enabled": false,
