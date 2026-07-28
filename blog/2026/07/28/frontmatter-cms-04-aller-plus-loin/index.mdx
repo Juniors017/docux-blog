@@ -290,17 +290,19 @@ Ces deux capacités sont séparées, et c'est précisément à quoi servent les 
 
 ## Les actions sur mesure : vos boutons dans le panneau
 
-C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'ajouter **vos propres boutons** dans le panneau, chacun exécutant un script Node sur l'article courant, via le paquet `@frontmatter/extensibility`. Du concret tout de suite — voici le compteur de mots qui tourne réellement sur ce blog :
+C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'ajouter **vos propres boutons** dans le panneau, chacun exécutant un script Node, via le paquet `@frontmatter/extensibility` :
 
-<Snippet source="scripts/wordcount.mjs" />
+```bash
+npm i -D @frontmatter/extensibility
+```
 
-`ContentScript.getArguments()` livre le contexte de l'appel : on ne prend ici que `filePath`, mais il expose aussi `workspacePath`, le `frontMatter` déjà parsé et les `answers` d'éventuelles questions posées à l'utilisateur. `ContentScript.done()` renvoie le message affiché au panneau. Reste à déclarer le bouton :
+Un script reçoit son contexte de `ContentScript.getArguments()` — `filePath` (le fichier ouvert), `workspacePath` (la racine du projet), le `frontMatter` déjà parsé, et les `answers` d'éventuelles questions posées à l'utilisateur. Il rend la main avec `ContentScript.done()`, dont le message s'affiche dans le panneau. La déclaration du bouton tient en quatre clés :
 
 ```json title="frontmatter.json"
 "frontMatter.custom.scripts": [
   {
-    "title": "Compter les mots",
-    "script": "./scripts/wordcount.mjs",
+    "title": "Vider le cache Docusaurus",
+    "script": "./scripts/clear-cache.mjs",
     "command": "node",
     "output": "notification"
   }
@@ -309,9 +311,9 @@ C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'a
 
 Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup.
 
-Le bouton « Compter les mots » est exactement le script ci-dessus — rien de caché.
+Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Mon tout premier bouton comptait les mots de l'article — je l'ai supprimé en écrivant ces lignes : le panneau SEO le fait déjà, et `frontMatter.taxonomy.seoContentLengh` permet même de fixer la longueur d'article visée. L'extension compte aussi les caractères du titre et de la description, valide le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Elle sait même vider son propre cache.
 
-Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Il compte les longueurs de titre et de description, valide le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Il sait même vider son propre cache — la commande `Front Matter: Clear cache` existe, inutile de lui fabriquer un bouton. Une action maison n'a de valeur que pour ce que l'extension **ne peut pas** connaître : votre outillage, vos services, vos conventions.
+Une action maison n'a donc de valeur que pour ce que l'extension **ne peut pas** connaître : votre outillage, vos services, vos conventions.
 
 **À portée de main, ce soir.** Un `execSync` et trois lignes suffisent pour rapatrier dans le panneau les commandes qu'on tape sans arrêt au terminal :
 
@@ -331,11 +333,10 @@ Aucune de ces idées n'existe dans l'extension, et les dernières ne peuvent pas
 
 ### Un espace « Maintenance » dans le panneau
 
-Les trois premières idées de la liste accessible sont maintenant dans ma configuration, regroupées sous un même préfixe :
+Les deux premières idées de la liste accessible sont maintenant dans ma configuration, avec un test de build, regroupées sous un même préfixe :
 
 ```json title="frontmatter.json"
 "frontMatter.custom.scripts": [
-  { "title": "Compter les mots", "script": "./scripts/wordcount.mjs", "command": "node", "output": "notification" },
   { "id": "maintenance-build", "title": "Maintenance · Tester le build", "script": "./scripts/test-build.mjs", "command": "node", "output": "notification" },
   { "id": "maintenance-cache-docusaurus", "title": "Maintenance · Vider le cache Docusaurus", "script": "./scripts/clear-cache.mjs", "command": "node", "output": "notification" },
   { "id": "maintenance-cache-npm", "title": "Maintenance · Vider le cache npm", "script": "./scripts/clear-npm-cache.mjs", "command": "node", "output": "notification" }

@@ -183,12 +183,6 @@
   ],
   "frontMatter.custom.scripts": [
     {
-      "title": "Compter les mots",
-      "script": "./scripts/wordcount.mjs",
-      "command": "node",
-      "output": "notification"
-    },
-    {
       "id": "maintenance-build",
       "title": "Maintenance · Tester le build",
       "script": "./scripts/test-build.mjs",
