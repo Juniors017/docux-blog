@@ -192,11 +192,47 @@
   "frontMatter.snippets.wrapper.enabled": false,
   "frontMatter.content.snippets": {
     "Columns": {
-      "description": "Deux colonnes — largeur de gauche au choix, contenu pré-rempli avec la sélection",
+      "description": "Deux colonnes — largeurs au choix, gauche pré-remplie avec la sélection",
       "body": [
         "<Columns>",
-        "<Column className=\"[[width]]\">",
+        "<Column className=\"[[leftWidth]]\">",
         "[[selection]]",
+        "</Column>",
+        "<Column className=\"[[rightWidth]]\">",
+        "",
+        "</Column>",
+        "</Columns>"
+      ],
+      "fields": [
+        {
+          "name": "leftWidth",
+          "title": "Largeur — colonne de gauche",
+          "type": "choice",
+          "choices": ["col--6", "col--8", "col--4"],
+          "default": "col--6"
+        },
+        {
+          "name": "rightWidth",
+          "title": "Largeur — colonne de droite",
+          "type": "choice",
+          "choices": ["col--6", "col--4", "col--8"],
+          "default": "col--6"
+        },
+        {
+          "name": "selection",
+          "title": "Contenu de gauche",
+          "type": "string",
+          "default": "FM_SELECTED_TEXT"
+        }
+      ]
+    },
+    "Image + colonnes": {
+      "description": "Depuis une carte média : insère l'image dans une colonne, texte à droite",
+      "isMediaSnippet": true,
+      "body": [
+        "<Columns>",
+        "<Column className=\"[[imageWidth]]\">",
+        "<img src=\"[[mediaUrl]]\" alt=\"[[alt]]\" />",
         "</Column>",
         "<Column>",
         "",
@@ -205,17 +241,11 @@
       ],
       "fields": [
         {
-          "name": "width",
-          "title": "Largeur de la colonne de gauche",
+          "name": "imageWidth",
+          "title": "Largeur de la colonne image",
           "type": "choice",
-          "choices": ["col--6", "col--8", "col--4"],
+          "choices": ["col--6", "col--4", "col--8"],
           "default": "col--6"
-        },
-        {
-          "name": "selection",
-          "title": "Contenu de gauche",
-          "type": "string",
-          "default": "FM_SELECTED_TEXT"
         }
       ]
     },

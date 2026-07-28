@@ -144,29 +144,24 @@ Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMa
 
 Chaque chaîne de `body` est une ligne ; le bouton **Insert snippet** (ou la vue Snippets du dashboard) colle le bloc au curseur. Tel quel, c'est du texte fixe — pratique, mais un snippet donne sa pleine mesure dès qu'on lui ajoute des **champs**.
 
-Reprenons donc ce même `<Columns>` et donnons-lui deux pouvoirs : choisir la largeur de la colonne de gauche dans une liste, et y **verser directement le texte sélectionné** dans l'éditeur.
+Reprenons donc ce même `<Columns>` et donnons-lui deux pouvoirs : choisir la largeur de **chaque** colonne dans une liste, et **verser directement le texte sélectionné** dans celle de gauche.
 
 ```json title="frontmatter.json — version améliorée"
 "Columns": {
-  "description": "Deux colonnes — largeur de gauche au choix, contenu pré-rempli avec la sélection",
+  "description": "Deux colonnes — largeurs au choix, gauche pré-remplie avec la sélection",
   "body": [
     "<Columns>",
-    "<Column className=\"[[width]]\">",
+    "<Column className=\"[[leftWidth]]\">",
     "[[selection]]",
     "</Column>",
-    "<Column>",
+    "<Column className=\"[[rightWidth]]\">",
     "",
     "</Column>",
     "</Columns>"
   ],
   "fields": [
-    {
-      "name": "width",
-      "title": "Largeur de la colonne de gauche",
-      "type": "choice",
-      "choices": ["col--6", "col--8", "col--4"],
-      "default": "col--6"
-    },
+    { "name": "leftWidth", "title": "Largeur — gauche", "type": "choice", "choices": ["col--6", "col--8", "col--4"], "default": "col--6" },
+    { "name": "rightWidth", "title": "Largeur — droite", "type": "choice", "choices": ["col--6", "col--4", "col--8"], "default": "col--6" },
     { "name": "selection", "title": "Contenu de gauche", "type": "string", "default": "FM_SELECTED_TEXT" }
   ]
 }
@@ -174,9 +169,11 @@ Reprenons donc ce même `<Columns>` et donnons-lui deux pouvoirs : choisir la la
 
 Trois idées se lisent dans ce petit bloc :
 
-- **Les placeholders** `[[width]]` et `[[selection]]` reçoivent les valeurs saisies ; leurs délimiteurs `[[ ]]` sont réglables (`openingTags` / `closingTags`).
+- **Les placeholders** `[[leftWidth]]`, `[[rightWidth]]` et `[[selection]]` reçoivent les valeurs saisies ; leurs délimiteurs `[[ ]]` sont réglables (`openingTags` / `closingTags`).
 - **Un champ `choice`** impose une liste fermée — ici `col--6`, `col--8`, `col--4`, les classes de grille Infima que notre composant `<Column>` transmet tel quel — plutôt qu'un texte libre.
-- **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` : votre texte remplit une large colonne de gauche, la droite attend la suite. (Pour du HTML à ne pas échapper : `[[&selection]]`.)
+- **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` puis `col--4` : votre texte remplit une large colonne de gauche, une étroite l'attend à droite. (Pour du HTML à ne pas échapper : `[[&selection]]`.)
+
+Une limite à connaître : la sélection est **unique**, elle ne peut alimenter qu'une seule colonne. La droite reste donc vide — c'est voulu, on y met souvent du code ou une image, mal servis par un champ texte d'une ligne.
 
 Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le début de la série : il **enveloppe le texte sélectionné dans une admonition**, dont le type se choisit dans une liste — y compris le `:::docu` maison de ce blog. Un champ `choice` pour le type, un champ libre pour le titre, et la sélection récupérée automatiquement :
 
@@ -240,6 +237,32 @@ Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média 
   "fields": []
 }
 ```
+
+Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à une balise : **son corps peut être une mise en page entière**. Le motif que j'utilise sans arrêt dans cette série — une capture d'un côté, du texte ou du code de l'autre — devient alors un seul clic depuis la carte de l'image :
+
+```json title="frontmatter.json"
+"Image + colonnes": {
+  "description": "Depuis une carte média : insère l'image dans une colonne, texte à droite",
+  "isMediaSnippet": true,
+  "body": [
+    "<Columns>",
+    "<Column className=\"[[imageWidth]]\">",
+    "<img src=\"[[mediaUrl]]\" alt=\"[[alt]]\" />",
+    "</Column>",
+    "<Column>",
+    "",
+    "</Column>",
+    "</Columns>"
+  ],
+  "fields": [
+    { "name": "imageWidth", "title": "Largeur de la colonne image", "type": "choice", "choices": ["col--6", "col--4", "col--8"], "default": "col--6" }
+  ]
+}
+```
+
+Le geste complet : curseur dans l'article, direction le dashboard **Media**, on déclenche le snippet depuis la carte de l'image voulue — et la structure à deux colonnes s'insère au curseur, **image déjà en place, chemin jamais tapé**. Il ne reste qu'à écrire à droite.
+
+Notez que `mediaUrl` et `alt` ne sont pas déclarés dans `fields` : ils viennent du média lui-même. L'`alt` puise dans les métadonnées de l'image (`mediaDb.json`) — si, comme moi, vous ne les remplissez pas, il arrivera vide et restera à compléter à la main. Une bonne raison de s'y mettre.
 
 La liste complète des placeholders vit dans la [documentation des snippets](https://frontmatter.codes/docs/snippets) — elle évolue avec les versions.
 
@@ -406,3 +429,5 @@ Pourquoi raconter ça dans un article sur Front Matter ? Parce que sans ce corre
 On a poussé Front Matter au bout de sa logique solo : pré-remplissage, insertion, boutons maison, configuration modulaire. Tout ce qu'on a construit tient sur une machine, un dépôt, un auteur.
 
 Reste la question qu'on a soigneusement évitée jusqu'ici : et à plusieurs ? Dans le prochain article, on ouvre le blog à une équipe — et on verra que Front Matter, dépourvu de comptes et de rôles, s'en remet entièrement à Git pour gérer qui écrit quoi.
+
+
