@@ -120,9 +120,9 @@ Le **content type** décrit le *formulaire* (quels champs, quels types). Le **te
 
 ## Les snippets : vos composants MDX à portée de clic
 
-Un blog Docusaurus, c'est du MDX truffé de composants maison. Sur ce blog, je réutilise sans arrêt `<Columns>`, `<Terminal>`, `<Trees>`… et je ne me souviens jamais de la structure exacte des balises imbriquées. Résultat : je rouvre un ancien article pour copier le motif. Encore du copier-coller.
+Un blog Docusaurus, c'est du MDX truffé de composants maison. Sur ce blog, je réutilise sans arrêt `<Columns>`, `<Terminal>`, `<Trees>`… et j'ai la flemme de tout écrire voir parfois je ne me souviens plus de la structure exacte des balises imbriquées alors que la majorité sont des composants créés par moi même. Résultat : je rouvre un ancien article pour copier le motif. Encore du copier-coller.
 
-Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMatter.content.snippets`, et — bonne surprise — on en a **déjà un** depuis l'article 2, glissé dans la config presque par accident :
+Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMatter.content.snippets`, et — bonne surprise — on en a **déjà un** depuis l'article 2, glissé secretement pour me faciliter la redation.
 
 ```json title="frontmatter.json"
 "frontMatter.content.snippets": {
@@ -178,7 +178,7 @@ Trois idées se lisent dans ce bloc :
 - **Un champ `choice`** impose une liste fermée — ici les classes de grille et d'espacement d'Infima, que notre composant `<Column>` transmet tel quel. Fini le `col--7` tapé de travers : on choisit dans une liste. Les variantes `--none` servent d'option « rien », pour ne pas laisser de classe vide.
 - **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` puis `col--4` : votre texte remplit une large colonne de gauche, une étroite l'attend à droite. (Pour du HTML à ne pas échapper : `[[&selection]]`.)
 
-Une limite quand même : la sélection est **unique**, elle n'alimente qu'un seul champ. Le contenu de droite reste donc à saisir — et pour du code ou une image, mieux vaut laisser le champ vide et écrire directement dans l'éditeur, où l'on respire.
+Une limite quand même : la sélection est **unique**, elle n'alimente qu'un seul champ. Le contenu de droite reste donc à saisir — et pour du code ou une image, mieux vaut laisser le champ vide et écrire directement dans l'éditeur, où l'on est plus à laise pour rédiger.
 
 Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le début de la série : il **enveloppe le texte sélectionné dans une admonition**, dont le type se choisit dans une liste — y compris le `:::docu` maison de ce blog. Un champ `choice` pour le type, un champ libre pour le titre, et la sélection récupérée automatiquement :
 
@@ -216,7 +216,7 @@ Votre contenu.
 <!-- FM:Snippet:End -->
 ```
 
-Sur un générateur en **Markdown pur**, ces commentaires HTML sont invisibles au rendu — le mécanisme est même astucieux. Mais Docusaurus lit du **MDX**, où `<!-- -->` n'est pas un commentaire valide : les deux lignes `FM:Snippet` **s'affichent telles quelles sur la page publiée**. J'y suis tombé en testant les snippets de cet article.
+Sur un générateur en **Markdown pur**, ces commentaires HTML sont invisibles au rendu — le mécanisme est même astucieux. Mais Docusaurus **dans mon contexte** lit du **MDX**, où `<!-- -->` n'est pas un commentaire valide : les deux lignes `FM:Snippet` **s'affichent telles quelles sur la page publiée**. J'y suis tombé en testant les snippets de cet article.
 
 La parade tient en une ligne :
 
