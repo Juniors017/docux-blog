@@ -265,9 +265,22 @@ Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à
 }
 ```
 
-Le geste complet : curseur dans l'article, direction le dashboard **Media**, on déclenche le snippet depuis la carte de l'image voulue — et la structure à deux colonnes s'insère au curseur, **image déjà en place, chemin jamais tapé**. Il ne reste qu'à écrire à droite.
+:::tip Où est passé mon snippet ? Le mode d'emploi
+Premier réflexe après l'avoir déclaré : ouvrir un article, chercher **Insert snippet**… et ne rien trouver. C'est normal, et la documentation est formelle : _« You cannot insert media snippets into your content like you can with content snippets. Instead, you will find them on the media cards. »_ Un media snippet vit **sur les cartes de la médiathèque**, jamais dans la liste de l'éditeur.
+
+Le geste, dans l'ordre :
+
+1. **Ouvrez l'article** et placez le curseur là où l'image doit atterrir.
+2. Passez au **dashboard → onglet Media**.
+3. Sur la **carte de l'image** voulue, déclenchez le snippet.
+4. Renseignez vos champs — ici la largeur de colonne.
+
+La structure à deux colonnes s'insère alors au curseur de l'article resté ouvert, **image en place, chemin jamais tapé**. Il ne reste qu'à écrire à droite.
+:::
 
 Notez que `mediaUrl` et `alt` ne sont pas déclarés dans `fields` : ils viennent du média lui-même. L'`alt` puise dans les métadonnées de l'image (`mediaDb.json`) — si, comme moi, vous ne les remplissez pas, il arrivera vide et restera à compléter à la main. Une bonne raison de s'y mettre.
+
+{/* 📸 IMAGE-02 — Une carte de la médiathèque avec le media snippet « Image + colonnes » proposé dessus. */}
 
 La liste complète des placeholders vit dans la [documentation des snippets](https://frontmatter.codes/docs/snippets) — elle évolue avec les versions.
 
@@ -355,7 +368,7 @@ Voici deux modes cohérents pour ce blog — un pour écrire, un pour tout maint
 
 La logique est simple : **`minimal`** ne garde que ce qu'on touche en rédigeant — le formulaire (`panel.contentType`), les métadonnées comme le statut brouillon (`panel.metadata`), les compteurs SEO (`panel.seo`), les actions de publication (`panel.actions` et `panel.otherActions`) et l'insertion de snippets (`dashboard.snippets.view`). **`complete`** rallume tout : les réglages globaux, les actions Git, les récemment modifiés, et surtout les surfaces de gestion du dashboard — gestion des snippets, fichiers de données et **taxonomie** (là où se font les fusions de tags).
 
-{/* 📸 IMAGE-02 — Le sélecteur de mode dans la barre d'état VS Code, montrant le passage de « minimal » à « complete ». */}
+{/* 📸 IMAGE-03 — Le sélecteur de mode dans la barre d'état VS Code, montrant le passage de « minimal » à « complete ». */}
 
 Les douze `features` disponibles couvrent huit sections du panneau (`panel.globalSettings`, `panel.seo`, `panel.actions`, `panel.metadata`, `panel.contentType`, `panel.gitActions`, `panel.recentlyModified`, `panel.otherActions`) et quatre vues du dashboard (`dashboard.snippets.view`, `dashboard.snippets.manage`, `dashboard.data.view`, `dashboard.taxonomy.view`). Libre à vous d'inventer un troisième mode `review`, `seo`, ou ce que dicte votre flux.
 
