@@ -237,13 +237,26 @@ Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média 
   "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
   "isMediaSnippet": true,
   "body": [
-    "<ImageOnClick imageUrl=\"[[mediaUrl]]\" altText=\"[[alt]]\" buttonName=\"[[caption]]\" />"
+    "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[altText]]\" buttonName=\"[[buttonName]]\" />"
   ],
-  "fields": []
+  "fields": [
+    { "name": "altText", "title": "Texte alternatif", "type": "string" },
+    { "name": "buttonName", "title": "Libellé du lien", "type": "string", "default": "Voir l'image" }
+  ]
 }
 ```
 
-Les placeholders se branchent directement sur les props du composant : `mediaUrl` sur `imageUrl`, `alt` sur `altText`, `caption` sur `buttonName` — le libellé cliquable qui ouvre la lightbox. Aucun champ à déclarer, tout vient du média.
+Deux détails valent le détour, et je les ai appris en me plantant.
+
+**L'esperluette n'est pas décorative.** Ma première version écrivait `[[mediaUrl]]`, et le résultat inséré ressemblait à ça :
+
+```jsx
+<ImageOnClick imageUrl="&#x2F;img&#x2F;post3&#x2F;menucard.png" />
+```
+
+Chaque `/` échappé en entité HTML, et le chemin inutilisable. Front Matter échappe les valeurs par défaut ; le préfixe `&` — `[[&mediaUrl]]` — demande la valeur brute. Réflexe à prendre pour **tout placeholder qui transporte un chemin, une URL ou du balisage**.
+
+**Les champs média ne remplissent que ce qui existe.** `alt` et `caption` puisent dans les métadonnées de l'image (`mediaDb.json`) ; le mien étant vide, ils arrivaient vides. D'où le choix ici de déclarer `altText` et `buttonName` comme **champs à saisir**, avec un défaut pour le libellé. Seul `mediaUrl` reste automatique — c'est de toute façon le seul qu'on ne veut jamais taper.
 
 Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à une balise : **son corps peut être une mise en page entière**. Le motif que j'utilise sans arrêt dans cette série — une capture d'un côté, du texte ou du code de l'autre — devient alors un seul clic depuis la carte de l'image :
 
@@ -254,7 +267,7 @@ Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à
   "body": [
     "<Columns>",
     "<Column className=\"[[imageWidth]]\">",
-    "<img src=\"[[mediaUrl]]\" alt=\"[[alt]]\" />",
+    "<img src=\"[[&mediaUrl]]\" alt=\"[[altText]]\" />",
     "</Column>",
     "<Column>",
     "",
@@ -262,7 +275,8 @@ Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à
     "</Columns>"
   ],
   "fields": [
-    { "name": "imageWidth", "title": "Largeur de la colonne image", "type": "choice", "choices": ["col--6", "col--4", "col--8"], "default": "col--6" }
+    { "name": "imageWidth", "title": "Largeur de la colonne image", "type": "choice", "choices": ["col--6", "col--4", "col--8"], "default": "col--6" },
+    { "name": "altText", "title": "Texte alternatif", "type": "string" }
   ]
 }
 ```

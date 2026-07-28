@@ -308,9 +308,21 @@
       "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
       "isMediaSnippet": true,
       "body": [
-        "<ImageOnClick imageUrl=\"[[mediaUrl]]\" altText=\"[[alt]]\" buttonName=\"[[caption]]\" />"
+        "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[altText]]\" buttonName=\"[[buttonName]]\" />"
       ],
-      "fields": []
+      "fields": [
+        {
+          "name": "altText",
+          "title": "Texte alternatif",
+          "type": "string"
+        },
+        {
+          "name": "buttonName",
+          "title": "Libellé du lien",
+          "type": "string",
+          "default": "Voir l'image"
+        }
+      ]
     },
     "Image + colonnes": {
       "description": "Depuis une carte média : insère l'image dans une colonne, texte à droite",
@@ -318,7 +330,7 @@
       "body": [
         "<Columns>",
         "<Column className=\"[[imageWidth]]\">",
-        "<img src=\"[[mediaUrl]]\" alt=\"[[alt]]\" />",
+        "<img src=\"[[&mediaUrl]]\" alt=\"[[altText]]\" />",
         "</Column>",
         "<Column>",
         "",
@@ -332,6 +344,11 @@
           "type": "choice",
           "choices": ["col--6", "col--4", "col--8"],
           "default": "col--6"
+        },
+        {
+          "name": "altText",
+          "title": "Texte alternatif",
+          "type": "string"
         }
       ]
     },
