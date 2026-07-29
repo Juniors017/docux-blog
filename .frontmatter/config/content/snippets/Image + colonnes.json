@@ -4,7 +4,7 @@
   "body": [
     "<Columns>",
     "<Column className=\"[[imageWidth]]\">",
-    "<img src=\"[[&mediaUrl]]\" alt=\"[[altText]]\" />",
+    "<img src=\"[[&mediaUrl]]\" alt=\"[[&altText]]\" />",
     "</Column>",
     "<Column>",
     "",

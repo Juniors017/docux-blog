@@ -1,6 +1,6 @@
 {
   "description": "Envelopper la sélection dans une admonition",
-  "body": ["\n:::[[type]] [[title]]", "[[selection]]", ":::\n"],
+  "body": ["", ":::[[type]] [[&title]]", "[[&selection]]", ":::", ""],
   "fields": [
     {
       "name": "type",

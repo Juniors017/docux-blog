@@ -2,7 +2,7 @@
   "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
   "isMediaSnippet": true,
   "body": [
-    "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[&alt]]\" buttonName=\"[[buttonName]]\" className=\"[[imageClass]]\" />"
+    "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[&alt]]\" buttonName=\"[[&buttonName]]\" className=\"[[imageClass]]\" />"
   ],
   "fields": [
     {

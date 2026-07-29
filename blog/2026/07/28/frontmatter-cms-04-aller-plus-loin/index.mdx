@@ -2,7 +2,7 @@
 title: "Front Matter CMS : templates, snippets et actions sur mesure"
 slug: front-matter-cms-aller-plus-loin-docusaurus
 description: "Pousser Front Matter au-delà de sa configuration : templates, snippets, boutons maison dans le panneau, et une config éclatée en plusieurs fichiers."
-image: /img/docux.webp
+image: /img/boosfrontmatter.webp
 authors:
   - docux
 mainTag: frontmatter-cms
@@ -24,7 +24,7 @@ series: CMS UI
 fmContentType: article
 ---
 
-{/* 📸 IMAGE-00 (COUVERTURE) — Le panneau Front Matter avec un bouton d'action maison bien visible, ou l'arborescence .frontmatter/config éclatée. À reporter dans le champ `image:` du frontmatter. */}
+
 
 <div>
 <center>
@@ -32,7 +32,7 @@ fmContentType: article
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </center>
-![illustration de El Dino qui bricole Front Matter CMS](/img/docux.webp)
+![illustration de El Dino poussant Front Matter CMS au-delà de sa configuration](/img/boosfrontmatter.webp)
 </div>
 
 <div className="text--justify">
@@ -48,7 +48,8 @@ Créer un article pré-rempli à partir d'un template, définir des snippets pou
 {/* truncate */}
 
 ## Les templates : ne plus partir d'une page blanche
-
+<Columns className="text--justify">
+<Column>
 Dans [l'article 2](/blog/install-front-matter-cms-docusaurus/), **Create content** générait un article vide — juste le frontmatter déduit du content type, et un corps désespérément blanc. À chaque nouvel article, je recollais donc les mêmes éléments : le bloc de badges, le `<div className="text--justify">`, le `{/* truncate */}`. Copié depuis le dernier article, à chaque fois.
 
 Un **template** supprime ce geste. C'est un fichier Markdown complet — frontmatter **et** corps — que Front Matter recopie à la création.
@@ -56,9 +57,9 @@ Un **template** supprime ce geste. C'est un fichier Markdown complet — frontma
 Premier point pratique : à l'initialisation, Front Matter **ne crée pas** le dossier `.frontmatter/templates/`. Si vous préférez partir de zéro, lancez d'abord `Front Matter: Initialize the template folder`, ou créez le dossier à la main.
 
 Le plus simple, cependant, est de partir d'un article existant qui vous plaît, puis de cliquer sur **Create template**, dans la section **Other actions** du panneau, avec l'article ouvert — l'action crée le dossier au passage et y dépose le fichier.
-
-{/* 📸 IMAGE-01 — La section « Other actions » du panneau, bouton « Create template » visible. */}
-
+</Column>
+<Column className="margin-vert--lg">
+![Le bouton Create template dans la section Other actions du panneau](/img/frontmattercms/post4/create-template.png)
 Le bouton peut apparaître grisé selon le fichier au premier plan : ouvrez l'article que vous voulez transformer en template avant de cliquer. La même action existe à la palette de commandes, si vous préférez le clavier :
 
 <Terminal title="VS Code — palette de commandes">
@@ -66,8 +67,22 @@ Le bouton peut apparaître grisé selon le fichier au premier plan : ouvrez l'ar
 Front Matter: Create a template from the current file
 
 </Terminal>
+</Column>
+</Columns>
 
-Le fichier atterrit dans `.frontmatter/templates/`. On peut ensuite l'épurer pour ne garder que le squelette réutilisable :
+Le fichier atterrit dans `.frontmatter/templates/`, aux côtés de la configuration :
+
+<Trees>
+  <Folder label=".frontmatter" expanded={true}>
+    <Folder label="config" />
+    <Folder label="database" />
+    <Folder label="templates" expanded={true}>
+      <File label="article.md" icon="markdown" />
+    </Folder>
+  </Folder>
+</Trees>
+
+On peut ensuite l'épurer pour ne garder que le squelette réutilisable :
 
 ```markdown title=".frontmatter/templates/article.md"
 ---
@@ -120,9 +135,14 @@ Le **content type** décrit le *formulaire* (quels champs, quels types). Le **te
 
 ## Les snippets : vos composants MDX à portée de clic
 
-Un blog Docusaurus, c'est du MDX truffé de composants maison. Sur ce blog, je réutilise sans arrêt `<Columns>`, `<Terminal>`, `<Trees>`… et j'ai la flemme de tout écrire voir parfois je ne me souviens plus de la structure exacte des balises imbriquées alors que la majorité sont des composants créés par moi même. Résultat : je rouvre un ancien article pour copier le motif. Encore du copier-coller.
+Un blog Docusaurus, c'est du MDX truffé de composants maison. Sur ce blog, je réutilise sans arrêt `<Columns>`, `<Terminal>`, `<Trees>`… et j'ai la flemme de tout écrire — voire, parfois, je ne me souviens plus de la structure exacte des balises imbriquées, alors que la majorité sont des composants que j'ai moi-même créés. Résultat : je rouvre un ancien article pour copier le motif. Encore du copier-coller.
 
-Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMatter.content.snippets`, et — bonne surprise — on en a **déjà un** depuis l'article 2, glissé secretement pour me faciliter la redation.
+
+Les **snippets** (l'icône ciseaux dans l'interface) répondent exactement à ça. Ils se définissent dans `frontMatter.content.snippets`, et — bonne surprise — on en a **déjà un** depuis l'article 2, glissé secrètement pour me faciliter la rédaction.
+
+![L'icône ciseaux du panneau, qui donne accès aux snippets](/img/frontmattercms/post4/snippets.png)
+
+Chaque chaîne de `body` est une ligne ; le bouton **Insert snippet** (ou la vue Snippets du dashboard) colle le bloc au curseur. Tel quel, c'est du texte fixe — pratique, mais un snippet donne sa pleine mesure dès qu'on lui ajoute des **champs**.
 
 ```json title="frontmatter.json"
 "frontMatter.content.snippets": {
@@ -142,7 +162,7 @@ Les **snippets** répondent exactement à ça. Ils se définissent dans `frontMa
 }
 ```
 
-Chaque chaîne de `body` est une ligne ; le bouton **Insert snippet** (ou la vue Snippets du dashboard) colle le bloc au curseur. Tel quel, c'est du texte fixe — pratique, mais un snippet donne sa pleine mesure dès qu'on lui ajoute des **champs**.
+
 
 Reprenons donc ce même `<Columns>` et poussons-le jusqu'au bout : **largeur, marge, padding et contenu, réglables de chaque côté**. Huit champs, et plus une seule classe à se rappeler.
 
@@ -152,10 +172,10 @@ Reprenons donc ce même `<Columns>` et poussons-le jusqu'au bout : **largeur, ma
   "body": [
     "<Columns>",
     "<Column className=\"[[leftWidth]] [[leftMargin]] [[leftPadding]]\">",
-    "[[leftContent]]",
+    "[[&leftContent]]",
     "</Column>",
     "<Column className=\"[[rightWidth]] [[rightMargin]] [[rightPadding]]\">",
-    "[[rightContent]]",
+    "[[&rightContent]]",
     "</Column>",
     "</Columns>"
   ],
@@ -176,16 +196,30 @@ Trois idées se lisent dans ce bloc :
 
 - **Les placeholders** reçoivent les valeurs saisies, et rien n'empêche d'en concaténer plusieurs dans un même attribut : `className="[[leftWidth]] [[leftMargin]] [[leftPadding]]"` compose la classe finale à partir de trois menus. Les délimiteurs `[[ ]]` sont d'ailleurs réglables (`openingTags` / `closingTags`).
 - **Un champ `choice`** impose une liste fermée — ici les classes de grille et d'espacement d'Infima, que notre composant `<Column>` transmet tel quel. Fini le `col--7` tapé de travers : on choisit dans une liste. Les variantes `--none` servent d'option « rien », pour ne pas laisser de classe vide.
-- **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` puis `col--4` : votre texte remplit une large colonne de gauche, une étroite l'attend à droite. (Pour du HTML à ne pas échapper : `[[&selection]]`.)
+- **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` puis `col--4` : votre texte remplit une large colonne de gauche, une étroite l'attend à droite.
+- **L'esperluette devant le nom** — `[[&leftContent]]` et non `[[leftContent]]` — n'est pas décorative, et c'est le sujet du prochain encadré.
 
-Une limite quand même : la sélection est **unique**, elle n'alimente qu'un seul champ. Le contenu de droite reste donc à saisir — et pour du code ou une image, mieux vaut laisser le champ vide et écrire directement dans l'éditeur, où l'on est plus à laise pour rédiger.
+:::caution Mettez une esperluette dès qu'il y a du texte libre
+Front Matter **échappe en entités HTML** tout ce qu'un placeholder insère. Mon premier `Columns` écrivait `[[leftContent]]` : j'ai sélectionné un paragraphe de cet article même, inséré le snippet, et récupéré ceci dans mon MDX —
+
+```text
+Un blog Docusaurus, c&#39;est du MDX truffé de composants maison…
+&#x60;&lt;Columns&gt;&#x60;, &#x60;&lt;Terminal&gt;&#x60;…
+```
+
+Chaque apostrophe, chaque backtick, chaque chevron transformé. Le paragraphe s'affichait tel quel sur la page, entités comprises.
+
+Le préfixe `&` réclame la valeur brute : `[[&leftContent]]`. À poser sur **tout placeholder qui transporte du texte libre, un chemin ou du balisage** — en pratique, tous vos champs `string`. Les champs `choice` qui ne servent qu'à des noms de classes n'en ont pas besoin.
+:::
+
+Une limite quand même : la sélection est **unique**, elle n'alimente qu'un seul champ. Le contenu de droite reste donc à saisir — et pour du code ou une image, mieux vaut laisser le champ vide et écrire directement dans l'éditeur, où l'on est plus à l'aise pour rédiger.
 
 Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le début de la série : il **enveloppe le texte sélectionné dans une admonition**, dont le type se choisit dans une liste — y compris le `:::docu` maison de ce blog. Un champ `choice` pour le type, un champ libre pour le titre, et la sélection récupérée automatiquement :
 
 ```json title="frontmatter.json"
 "Admonition": {
   "description": "Envelopper la sélection dans une admonition",
-  "body": ["\n:::[[type]] [[title]]", "[[selection]]", ":::\n"],
+  "body": ["\n:::[[type]] [[&title]]", "[[&selection]]", ":::\n"],
   "fields": [
     {
       "name": "type",
@@ -237,7 +271,7 @@ Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média 
   "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
   "isMediaSnippet": true,
   "body": [
-    "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[altText]]\" buttonName=\"[[buttonName]]\" />"
+    "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[&alt]]\" buttonName=\"[[&buttonName]]\" />"
   ],
   "fields": [
     { "name": "altText", "title": "Texte alternatif", "type": "string" },
@@ -246,17 +280,13 @@ Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média 
 }
 ```
 
-Deux détails valent le détour, et je les ai appris en me plantant.
-
-**L'esperluette n'est pas décorative.** Ma première version écrivait `[[mediaUrl]]`, et le résultat inséré ressemblait à ça :
+Ici encore, **l'esperluette est indispensable** : sans elle, `[[mediaUrl]]` produit un chemin inutilisable, chaque `/` transformé en `&#x2F;`.
 
 ```jsx
 <ImageOnClick imageUrl="&#x2F;img&#x2F;post3&#x2F;menucard.png" />
 ```
 
-Chaque `/` échappé en entité HTML, et le chemin inutilisable. Front Matter échappe les valeurs par défaut ; le préfixe `&` — `[[&mediaUrl]]` — demande la valeur brute. Réflexe à prendre pour **tout placeholder qui transporte un chemin, une URL ou du balisage**.
-
-**Les champs média ne remplissent que ce qui existe.** `alt` et `caption` puisent dans les métadonnées de l'image (`mediaDb.json`) ; le mien étant vide, ils arrivaient vides. D'où le choix ici de déclarer `altText` et `buttonName` comme **champs à saisir**, avec un défaut pour le libellé. Seul `mediaUrl` reste automatique — c'est de toute façon le seul qu'on ne veut jamais taper.
+Autre détail à connaître : **les champs média ne remplissent que ce qui existe**. `alt` et `caption` puisent dans les métadonnées de l'image (`mediaDb.json`) — le mien étant vide, ils arrivent vides. D'où le `buttonName` déclaré ici comme **champ à saisir**, avec un défaut. Seul `mediaUrl` est toujours automatique : c'est de toute façon le seul qu'on ne veut jamais taper.
 
 Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à une balise : **son corps peut être une mise en page entière**. Le motif que j'utilise sans arrêt dans cette série — une capture d'un côté, du texte ou du code de l'autre — devient alors un seul clic depuis la carte de l'image :
 
@@ -267,7 +297,7 @@ Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à
   "body": [
     "<Columns>",
     "<Column className=\"[[imageWidth]]\">",
-    "<img src=\"[[&mediaUrl]]\" alt=\"[[altText]]\" />",
+    "<img src=\"[[&mediaUrl]]\" alt=\"[[&altText]]\" />",
     "</Column>",
     "<Column>",
     "",
@@ -295,9 +325,16 @@ La structure à deux colonnes s'insère alors au curseur de l'article resté ouv
 :::
 
 Notez que `mediaUrl` et `alt` ne sont pas déclarés dans `fields` : ils viennent du média lui-même. L'`alt` puise dans les métadonnées de l'image (`mediaDb.json`) — si, comme moi, vous ne les remplissez pas, il arrivera vide et restera à compléter à la main. Une bonne raison de s'y mettre.
+<Columns>
+<Column className="col--9 margin--none padding--none">
+![Le formulaire de création d'un snippet, avec l'option « Is a media snippet? »](/img/frontmattercms/post4/media-snippet.png)
 
-{/* 📸 IMAGE-02 — Une carte de la médiathèque avec le media snippet « Image + colonnes » proposé dessus. */}
 
+</Column>
+<Column className="col--2 margin--none padding--none">
+![Le media snippet proposé sur la carte d'une image de la médiathèque](/img/frontmattercms/post4/insert-snippets.png)
+</Column>
+</Columns>
 La liste complète des placeholders vit dans la [documentation des snippets](https://frontmatter.codes/docs/snippets) — elle évolue avec les versions.
 
 :::note Créer des snippets ≠ les utiliser
@@ -331,18 +368,18 @@ Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter
 
 Une action maison n'a donc de valeur que pour ce que l'extension **ne peut pas** connaître : votre outillage, vos services, vos conventions.
 
-**Exemple rapide à mettre en place** Quelques lignes suffisent pour rapatrier dans le panneau les commandes qu'on tape sans arrêt au terminal :
+**Exemples rapides à mettre en place.** Quelques lignes suffisent pour rapatrier dans le panneau les commandes qu'on tape sans arrêt au terminal :
 
 - **Vider le cache Docusaurus** — le fameux `npm run clear`, réflexe obligatoire après avoir ajouté un article ou touché à un plugin. Le script l'exécute dans le dossier du projet et renvoie une notification.
 - **Vider le cache npm** — `npm cache clean --force`, pour le jour où une dépendance refuse de s'installer proprement.
 - **Copier l'URL de production** — reconstruire `https://votre-site/blog/<slug>/` à partir du frontmatter, pour la coller ailleurs sans la retaper.
 - **Vérifier les textes alternatifs** — une regex sur le corps qui compte les images sans `alt`. Content Health ne couvre pas ce point, et c'est une convention à laquelle je tiens.
 
-**Plus ambitieux, pour un week-end chill** Là, on branche des services externes — et on sort définitivement du périmètre de l'extension :
+**Plus ambitieux, pour un week-end tranquille.** Là, on branche des services externes — et on sort définitivement du périmètre de l'extension :
 
 - **Rédiger le post BlueSky.** À chaque publication, j'écris à la main une accroche de 300 caractères qui pointe vers l'article. Un script part du `title` et de la `description`, assemble le texte et vérifie la limite.
 - **Publier sur BlueSky, puis réinjecter le `blueSkyRecordKey`.** Le prolongement logique : poster via l'API, récupérer l'identifiant du post et l'écrire dans le frontmatter (`output: "editor"`). C'est précisément le geste manuel qui clôt chaque article de cette série.
-- **Fabriquer la carte sociale.** Générer l'image Open Graph — titre incrusté sur un gabarit — avec le même `sharp` que [le plugin d'images du blog](/blog/), l'enregistrer dans `static/`, et poser le champ `image`.
+- **Fabriquer la carte sociale.** Générer l'image Open Graph — titre incrusté sur un gabarit — avec le même `sharp` que [le plugin d'images du blog](/blog/image-optimizer-docusaurus-plugin/), l'enregistrer dans `static/`, et poser le champ `image`.
 
 
 Aucune de ces idées n'existe dans l'extension, et les dernières ne peuvent pas y exister : elles parlent à _votre_ hébergeur social, _votre_ chaîne d'images, _votre_ organisation bilingue. L'extension fournit le bouton ; vous fournissez le métier.
@@ -350,7 +387,8 @@ Aucune de ces idées n'existe dans l'extension, et les dernières ne peuvent pas
 ### Un espace « Maintenance » dans le panneau
 
 Les deux premières idées de la liste accessible sont maintenant dans ma configuration, avec un test de build, regroupées sous un même préfixe :
-
+<Columns>
+<Column className="col--8 margin--none padding--none">
 ```json title="frontmatter.json"
 "frontMatter.custom.scripts": [
   { "id": "maintenance-build", "title": "Maintenance · Tester le build", "script": "./scripts/test-build.mjs", "command": "node", "output": "notification" },
@@ -362,6 +400,12 @@ Les deux premières idées de la liste accessible sont maintenant dans ma config
 :::note Pas de vraies catégories — un préfixe suffit
 Le schéma d'une action expose `id`, `title`, `script`, `command`, `output`, `outputType`, `type`, `bulk`, `hidden`, `nodeBin`, `environments` et `contentTypes` — mais **aucune notion de groupe**. Le préfixe `Maintenance · ` dans le `title` est donc une simple convention de nommage : les boutons se rangent visuellement les uns sous les autres, sans que l'extension n'en sache rien. Efficace, et gratuit.
 :::
+</Column>
+<Column className="col--4 margin--none padding--none">
+![Les trois boutons Maintenance regroupés dans le panneau](/img/frontmattercms/post4/new-button.png)
+</Column>
+</Columns>
+
 
 Vider le cache Docusaurus tient en trois lignes utiles — le geste qu'on répète après chaque ajout d'article :
 
@@ -372,10 +416,10 @@ Le `workspacePath` livré par `getArguments()` sert de répertoire de travail : 
 :::caution N'appelez pas `npm` depuis le script
 Ma première version faisait un `execSync("npm run clear")`. Au terminal, impeccable ; depuis le bouton, échec sec :
 
-```text
+<Terminal title="Terminal">
 Command failed: node "…\scripts\test-build.mjs"
 La syntaxe du nom de fichier, de répertoire ou de volume est incorrecte.
-```
+</Terminal>
 
 La raison : `execSync` passe par un shell — `cmd.exe` sous Windows — et le script n'est pas lancé depuis un terminal mais par l'extension, avec un environnement réduit où `npm` n'est plus résolu de la même façon.
 
@@ -385,6 +429,7 @@ La parade est plus robuste **et** plus rapide : appeler le binaire directement a
 Le bouton de test de build va un cran plus loin : il lance la compilation complète et répond **OK** ou **KO**, en comptant au passage les avertissements — la règle des zéro warning de ce blog devient vérifiable d'un clic.
 
 <Snippet source="scripts/test-build.mjs" filename="scripts/test-build.mjs" />
+
 
 :::caution Un bouton qui prend deux minutes
 Un build Docusaurus complet n'est pas instantané. Pendant l'exécution, la notification se fait attendre et rien ne l'indique clairement : c'est le prix d'une vérification sérieuse. À réserver au moment de publier, pas à chaque sauvegarde.
@@ -451,10 +496,13 @@ Voici deux modes cohérents pour ce blog — un pour écrire, un pour tout maint
 
 La logique est simple : **`minimal`** ne garde que ce qu'on touche en rédigeant — le formulaire (`panel.contentType`), les métadonnées comme le statut brouillon (`panel.metadata`), les compteurs SEO (`panel.seo`), les actions de publication (`panel.actions` et `panel.otherActions`) et l'insertion de snippets (`dashboard.snippets.view`). **`complete`** rallume tout : les réglages globaux, les actions Git, les récemment modifiés, et surtout les surfaces de gestion du dashboard — gestion des snippets, fichiers de données et **taxonomie** (là où se font les fusions de tags).
 
-{/* 📸 IMAGE-03 — Le sélecteur de mode dans la barre d'état VS Code, montrant le passage de « minimal » à « complete ». */}
+
+
 
 Les douze `features` disponibles couvrent huit sections du panneau (`panel.globalSettings`, `panel.seo`, `panel.actions`, `panel.metadata`, `panel.contentType`, `panel.gitActions`, `panel.recentlyModified`, `panel.otherActions`) et quatre vues du dashboard (`dashboard.snippets.view`, `dashboard.snippets.manage`, `dashboard.data.view`, `dashboard.taxonomy.view`). Libre à vous d'inventer un troisième mode `review`, `seo`, ou ce que dicte votre flux.
+![Le sélecteur de mode dans la barre d'état de VS Code](/img/frontmattercms/post4/mode.png)
 
+![La liste des modes proposée au clic sur le sélecteur](/img/frontmattercms/post4/selectmode.png)
 :::tip Réglage plus fin, action par action
 Les modes raisonnent par **sections**. Pour masquer un **bouton précis** sans toucher au reste, `frontMatter.panel.actions.disabled` accepte les identifiants d'actions (`openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer`, `customActions`). Les deux se combinent.
 :::
@@ -505,10 +553,11 @@ Le premier ne demande aucune déclaration : il repose sur une **arborescence att
 
 Chaque fichier contient **une seule entrée** : un snippet, un content type, une action. Le nom du fichier reprend l'identifiant de l'élément — la clé du snippet, l'`id` de l'action, le `name` du content type. Résultat sur ce blog : `frontmatter.json` est passé de **450 à 78 lignes**.
 
-Deux pièges m'ont coûté du temps, et aucun n'est documenté.
+Deux pièges m'ont coûté du temps.
 
 :::caution `contentTypes`, pas `contenttypes`
-Le dossier des content types s'écrit en **camelCase** : `.frontmatter/config/taxonomy/contentTypes`. Avec `contenttypes` tout en minuscules, le fichier est ignoré — mon formulaire perdait ses 19 champs sans le moindre message d'erreur. C'est Elio Struyf, l'auteur de l'extension, qui m'a donné la bonne casse quand je lui ai posé la question. Notez aussi que la modification n'est pas toujours prise en compte à chaud : la commande **`Front Matter: Refresh Front Matter Settings`** force le rechargement complet.
+Le dossier des content types s'écrit en **camelCase** : `.frontmatter/config/taxonomy/contentTypes`. Avec `contenttypes` tout en minuscules, le fichier est ignoré — mon formulaire perdait ses 19 champs sans le moindre message d'erreur. C'est [Elio Struyf](https://discord.gg/JBVtNMsJFB),
+ l'auteur de l'extension, qui m'a donné la bonne casse quand je lui ai posé la question sur le Discord. Notez aussi que la modification n'est pas toujours prise en compte à chaud : la commande **`Front Matter: Refresh Front Matter Settings`** force le rechargement complet.
 :::
 
 :::caution Les chemins relatifs changent de sens
@@ -559,25 +608,10 @@ L'ordre de priorité est sans ambiguïté : le `frontmatter.json` local **écras
 
 C'est exactement le fondement du chapitre suivant : une configuration partageable est le prérequis du travail en équipe.
 
-## L'histoire du `draft: true` qui cassait le build
 
-Puisqu'on parle d'aller au fond de l'outillage, une anecdote de ce blog a toute sa place ici — parce qu'elle a failli me faire abandonner l'organisation en brouillons.
 
-Sur ce blog, les articles en cours vivent en `draft: true`. C'est la fonctionnalité native de Docusaurus : un brouillon est retiré de la production, mais reste visible en développement. Sauf que chez moi, **`draft: true` faisait planter le build**. Pas un avertissement — un échec net.
 
-La cause n'avait rien à voir avec Front Matter, et tout à voir avec un vieux réflexe : un composant maison qui listait les articles via le `require.context` de Webpack. Ce mécanisme embarque **tous** les fichiers correspondants dans le bundle client — y compris les brouillons — et court-circuitait la logique de `draft` de Docusaurus au passage.
-
-La solution a été de remplacer ce `require.context` par un petit plugin Docusaurus qui lit les métadonnées **à la compilation**, côté Node, en respectant la sémantique de `draft` :
-
-<Snippet source="plugins/docusaurus-plugin-blog-metadata/index.cjs" filename="plugins/docusaurus-plugin-blog-metadata/index.cjs" />
-
-Le passage décisif tient en une ligne : `if (isProduction && frontMatter.draft) return;`. En production, un brouillon est simplement ignoré ; en développement, il reste visible. Exactement le comportement natif de Docusaurus, enfin rétabli.
-
-Pourquoi raconter ça dans un article sur Front Matter ? Parce que sans ce correctif, toute la méthode de cette série — écrire en `draft: true`, relire, publier d'un `draft: false` — aurait été impossible. L'outil de contenu ne vaut que si le pipeline de build le laisse respirer.
-
----
-
-On a poussé Front Matter au bout de sa logique solo : pré-remplissage, insertion, boutons maison, configuration modulaire. Tout ce qu'on a construit tient sur une machine, un dépôt, un auteur.
+On a poussé Front Matter très loin dans une logique solo : pré-remplissage, insertion, boutons maison, configuration modulaire. Tout ce qu'on a construit tient sur une machine, un dépôt, un auteur.
 
 Reste la question qu'on a soigneusement évitée jusqu'ici : et à plusieurs ? Dans le prochain article, on ouvre le blog à une équipe — et on verra que Front Matter, dépourvu de comptes et de rôles, s'en remet entièrement à Git pour gérer qui écrit quoi.
 

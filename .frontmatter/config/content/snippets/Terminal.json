@@ -1,9 +1,9 @@
 {
   "description": "Bloc terminal avec un titre",
   "body": [
-    "<Terminal title=\"[[title]]\">",
+    "<Terminal title=\"[[&title]]\">",
     "",
-    "[[command]]",
+    "[[&command]]",
     "",
     "</Terminal>"
   ],

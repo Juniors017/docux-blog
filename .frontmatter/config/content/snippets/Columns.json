@@ -3,10 +3,10 @@
   "body": [
     "<Columns>",
     "<Column className=\"[[leftWidth]] [[leftMargin]] [[leftPadding]]\">",
-    "[[leftContent]]",
+    "[[&leftContent]]",
     "</Column>",
     "<Column className=\"[[rightWidth]] [[rightMargin]] [[rightPadding]]\">",
-    "[[rightContent]]",
+    "[[&rightContent]]",
     "</Column>",
     "</Columns>"
   ],
