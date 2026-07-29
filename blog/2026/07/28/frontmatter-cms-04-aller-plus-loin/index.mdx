@@ -38,7 +38,7 @@ fmContentType: article
 <div className="text--justify">
 Trois articles durant, on a pris Front Matter tel qu'il sort de la boîte : installé, configuré finement, utilisé au quotidien. Rien qu'on n'ait ajouté à l'outil lui-même.
 
-Cet article change de registre. On va **étendre** Front Matter : lui apprendre à pré-remplir des articles, à insérer des blocs tout faits, à exposer nos propres boutons dans le panneau, et à ranger sa configuration dans plusieurs fichiers plutôt qu'un seul `frontmatter.json` de 200 lignes. C'est le moment où l'extension cesse d'être un formulaire et devient une partie de l'outillage du dépôt.
+Cet article change de registre. On va **étendre** Front Matter : lui apprendre à pré-remplir des articles, à insérer des blocs tout faits, à exposer nos propres boutons dans le panneau, et à ranger sa configuration dans plusieurs fichiers plutôt qu'un seul `frontmatter.json` de 450 lignes. C'est le moment où l'extension cesse d'être un formulaire et devient une partie de l'outillage du dépôt.
 
 :::tip Ce que vous saurez faire à la fin
 Créer un article pré-rempli à partir d'un template, définir des snippets pour vos composants MDX récurrents, ajouter un bouton maison qui exécute un script Node sur l'article courant, et éclater `frontmatter.json` en fichiers thématiques sous `.frontmatter/config/`.
@@ -517,7 +517,19 @@ Le résultat est exactement ce qu'on veut en équipe : une configuration commune
 
 ## Éclater la configuration : la promesse de l'article 1
 
-Souvenez-vous : dès [le premier article](/blog/why-front-matter-cms-docusaurus/), j'avais promis qu'on reviendrait sur `frontMatter.extends` et le découpage de la config. Le moment est venu — et il tombe bien, parce que notre `frontmatter.json` a enflé au fil de la série : content type, filtres du dashboard, snippets, et bientôt les scripts. Un seul fichier de plus en plus long, où retrouver un réglage devient pénible.
+Souvenez-vous : dès [le premier article](/blog/why-front-matter-cms-docusaurus/), j'avais promis qu'on reviendrait sur `frontMatter.extends` et le découpage de la config. Le moment est venu — et il tombe particulièrement bien, parce que le besoin est né de ce chapitre même.
+
+En ouvrant cet article, mon `frontmatter.json` faisait **191 lignes**. Puis on y a ajouté les snippets, les actions de maintenance, les modes du panneau :
+
+| Étape                                        | Lignes  |
+| -------------------------------------------- | ------- |
+| Au début de cet article                      | 191     |
+| Après les snippets et le réglage du wrapper  | 249     |
+| Après les trois actions de maintenance       | 371     |
+| Après le `Columns` à huit champs et la lightbox | 419  |
+| Après les deux modes du panneau              | **450** |
+
+Plus du double, pour un seul fichier où retrouver un réglage devenait pénible. Ce n'est donc pas une coquetterie de rangement : c'est le prix de tout ce qu'on vient de construire.
 
 Front Matter offre deux mécanismes pour ranger ça, à ne pas confondre.
 
@@ -528,12 +540,14 @@ Le premier ne demande aucune déclaration : il repose sur une **arborescence att
 <Trees>
   <Folder label=".frontmatter" expanded={true}>
     <Folder label="config" expanded={true}>
+      <File label="frontmatter.json" icon="json" />
       <Folder label="content" expanded={true}>
         <Folder label="snippets" expanded={true}>
           <File label="Columns.json" icon="json" />
           <File label="Terminal.json" icon="json" />
           <File label="Admonition.json" icon="json" />
           <File label="Lightbox.json" icon="json" />
+          <File label="Image + colonnes.json" icon="json" />
         </Folder>
       </Folder>
       <Folder label="taxonomy" expanded={true}>
@@ -544,24 +558,30 @@ Le premier ne demande aucune déclaration : il repose sur une **arborescence att
       <Folder label="custom" expanded={true}>
         <Folder label="scripts" expanded={true}>
           <File label="maintenance-build.json" icon="json" />
+          <File label="maintenance-cache-docusaurus.json" icon="json" />
           <File label="maintenance-cache-npm.json" icon="json" />
         </Folder>
       </Folder>
     </Folder>
+    <Folder label="templates" />
+    <Folder label="database" />
   </Folder>
 </Trees>
 
-Chaque fichier contient **une seule entrée** : un snippet, un content type, une action. Le nom du fichier reprend l'identifiant de l'élément — la clé du snippet, l'`id` de l'action, le `name` du content type. Résultat sur ce blog : `frontmatter.json` est passé de **450 à 78 lignes**.
+Chaque fichier contient **une seule entrée** : un snippet, un content type, une action. Le nom du fichier reprend l'identifiant de l'élément — la clé du snippet, l'`id` de l'action, le `name` du content type.
 
-Deux pièges m'ont coûté du temps.
+Trois pièges m'ont coûté du temps.
 
 :::caution `contentTypes`, pas `contenttypes`
-Le dossier des content types s'écrit en **camelCase** : `.frontmatter/config/taxonomy/contentTypes`. Avec `contenttypes` tout en minuscules, le fichier est ignoré — mon formulaire perdait ses 19 champs sans le moindre message d'erreur. C'est [Elio Struyf](https://discord.gg/JBVtNMsJFB),
- l'auteur de l'extension, qui m'a donné la bonne casse quand je lui ai posé la question sur le Discord. Notez aussi que la modification n'est pas toujours prise en compte à chaud : la commande **`Front Matter: Refresh Front Matter Settings`** force le rechargement complet.
+Le dossier des content types s'écrit en **camelCase** : `.frontmatter/config/taxonomy/contentTypes`. Avec `contenttypes` tout en minuscules, le fichier est ignoré — mon formulaire perdait ses 19 champs sans le moindre message d'erreur. C'est [Elio Struyf](https://discord.gg/JBVtNMsJFB), l'auteur de l'extension, qui m'a donné la bonne casse quand je lui ai posé la question sur le Discord.
+:::
+
+:::caution Redémarrez VS Code, pas seulement la config
+La commande `Front Matter: Refresh Front Matter Settings` recharge les réglages, et c'est ce qu'il faut après avoir **édité** un fichier de configuration. Mais après en avoir **déplacé** un — a fortiori après avoir déménagé le fichier racine — elle ne suffit pas : il faut **redémarrer VS Code**. Sans ça, on croit à tort que le découpage a échoué, et on part chercher une erreur qui n'existe pas.
 :::
 
 :::caution Les chemins relatifs changent de sens
-Une action custom déclarée dans `frontmatter.json` peut pointer son script en relatif :
+Une action custom déclarée dans le fichier de configuration racine peut pointer son script en relatif :
 
 ```json
 { "script": "./scripts/clear-npm-cache.mjs" }
@@ -574,6 +594,39 @@ Déplacez la même déclaration dans un fichier éclaté, et le bouton apparaît
 ```
 
 À faire systématiquement dès qu'un chemin quitte le fichier principal.
+:::
+
+### Le dernier pas : vider la racine
+
+À ce stade, il reste un fichier à la racine du projet — `frontmatter.json`, réduit à ses réglages globaux. On peut s'arrêter là, ou aller au bout : Front Matter cherche sa configuration **aussi** dans `.frontmatter/config`. Rien n'empêche donc d'y déplacer ce dernier fichier, sous le même nom.
+
+<Trees>
+  <Folder label="mon-projet" expanded={true}>
+    <Folder label=".frontmatter" expanded={true}>
+      <Folder label="config" expanded={true}>
+        <File label="frontmatter.json" icon="json" />
+      </Folder>
+    </Folder>
+    <Folder label="blog" />
+    <Folder label="src" />
+    <Folder label="static" />
+  </Folder>
+</Trees>
+
+La racine du projet ne porte plus aucune trace de l'extension, et le dossier `.frontmatter/` contient l'intégralité du paramétrage : réglages, content type, snippets, actions, templates et bases de données.
+
+Le bilan de l'opération, sur ce blog :
+
+| | Avant | Après |
+| --- | --- | --- |
+| Fichier de config à la racine | 450 lignes | **aucun** |
+| Réglages globaux | mêlés au reste | `.frontmatter/config/frontmatter.json`, 79 lignes |
+| Content type | dans le même fichier | son fichier dédié |
+| Snippets | dans le même fichier | 5 fichiers |
+| Actions custom | dans le même fichier | 3 fichiers |
+
+:::caution Attention si vous embarquez ce fichier dans une page
+Ce blog affiche sa propre configuration dans [l'article précédent](/blog/install-front-matter-cms-docusaurus/), via un composant qui lit le fichier réel. Déplacer `frontmatter.json` a donc cassé ce lien, et le build s'est plaint aussitôt. Un bon rappel : une documentation qui pointe vers de vrais fichiers reste juste, mais elle suit les déménagements.
 :::
 
 ### `frontMatter.extends` : la liste explicite
