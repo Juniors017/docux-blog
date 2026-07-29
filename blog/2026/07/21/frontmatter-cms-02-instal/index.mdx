@@ -577,7 +577,14 @@ On this blog, I chose to **version everything**, including the database. The rea
 
 Here is this blog's configuration, exactly as it runs today — everything we've just built, gathered in a single file:
 
-<Snippet filename="frontmatter.json" source="frontmatter.json" />
+<Snippet
+  filename=".frontmatter/config/frontmatter.json"
+  source=".frontmatter/config/frontmatter.json"
+/>
+
+:::note Why that path?
+This file started life as `frontmatter.json` at the project root, which is where Front Matter expects it. It has since moved into `.frontmatter/config/`, along with the content type, the snippets and the custom actions — a later article in this series covers that reorganisation.
+:::
 
 ---
 
