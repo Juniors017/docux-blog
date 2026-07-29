@@ -473,44 +473,88 @@ Souvenez-vous : dès [le premier article](/blog/why-front-matter-cms-docusaurus/
 
 Front Matter offre deux mécanismes pour ranger ça, à ne pas confondre.
 
-### Le découpage automatique sous `.frontmatter/config/`
+### Le découpage par convention de dossiers
 
-Le premier ne demande aucune configuration : il repose sur une **convention de dossiers**. Chaque entrée de tableau peut sortir dans son propre fichier, dont le nom reprend l'`id` du réglage :
+Le premier ne demande aucune déclaration : il repose sur une **arborescence attendue** sous `.frontmatter/config/`. Voici celle de ce blog, après découpage :
 
 <Trees>
   <Folder label=".frontmatter" expanded={true}>
     <Folder label="config" expanded={true}>
       <Folder label="content" expanded={true}>
-        <Folder label="pagefolders" />
-        <Folder label="snippets" />
+        <Folder label="snippets" expanded={true}>
+          <File label="Columns.json" icon="json" />
+          <File label="Terminal.json" icon="json" />
+          <File label="Admonition.json" icon="json" />
+          <File label="Lightbox.json" icon="json" />
+        </Folder>
       </Folder>
       <Folder label="taxonomy" expanded={true}>
-        <Folder label="contenttypes" />
+        <Folder label="contentTypes" expanded={true}>
+          <File label="article.json" icon="json" />
+        </Folder>
       </Folder>
       <Folder label="custom" expanded={true}>
-        <Folder label="scripts" />
+        <Folder label="scripts" expanded={true}>
+          <File label="maintenance-build.json" icon="json" />
+          <File label="maintenance-cache-npm.json" icon="json" />
+        </Folder>
       </Folder>
     </Folder>
   </Folder>
 </Trees>
 
-Votre content type `article` vit alors dans `taxonomy/contenttypes/article.json`, chaque snippet dans son fichier sous `content/snippets/`, et ainsi de suite. `frontmatter.json` maigrit d'autant.
+Chaque fichier contient **une seule entrée** : un snippet, un content type, une action. Le nom du fichier reprend l'identifiant de l'élément — la clé du snippet, l'`id` de l'action, le `name` du content type. Résultat sur ce blog : `frontmatter.json` est passé de **450 à 78 lignes**.
 
-### `frontMatter.extends` : pointer ailleurs
+Deux pièges m'ont coûté du temps, et aucun n'est documenté.
 
-Le second est explicite : `frontMatter.extends` liste des fichiers — locaux **ou** distants — dont la configuration vient compléter la vôtre.
+:::caution `contentTypes`, pas `contenttypes`
+Le dossier des content types s'écrit en **camelCase** : `.frontmatter/config/taxonomy/contentTypes`. Avec `contenttypes` tout en minuscules, le fichier est ignoré — mon formulaire perdait ses 19 champs sans le moindre message d'erreur. C'est Elio Struyf, l'auteur de l'extension, qui m'a donné la bonne casse quand je lui ai posé la question. Notez aussi que la modification n'est pas toujours prise en compte à chaud : la commande **`Front Matter: Refresh Front Matter Settings`** force le rechargement complet.
+:::
+
+:::caution Les chemins relatifs changent de sens
+Une action custom déclarée dans `frontmatter.json` peut pointer son script en relatif :
+
+```json
+{ "script": "./scripts/clear-npm-cache.mjs" }
+```
+
+Déplacez la même déclaration dans un fichier éclaté, et le bouton apparaît… mais ne fait plus rien. Le chemin ne se résout plus depuis la racine du projet. Le jeton `[[workspace]]` lève l'ambiguïté :
+
+```json
+{ "script": "[[workspace]]/scripts/clear-npm-cache.mjs" }
+```
+
+À faire systématiquement dès qu'un chemin quitte le fichier principal.
+:::
+
+### `frontMatter.extends` : la liste explicite
+
+Le second mécanisme ne devine rien : `frontMatter.extends` énumère les fichiers de configuration à charger. C'est **l'approche que préfère l'auteur de l'extension**, et on comprend pourquoi — un fichier par domaine, tout est visible d'un coup d'œil :
 
 ```json title="frontmatter.json"
 "frontMatter.extends": [
-  "./.frontmatter/config/shared.json",
-  "https://exemple.com/frontmatter/preset.json"
+  ".frontmatter/configuration/contenttypes.json",
+  ".frontmatter/configuration/snippets.json",
+  ".frontmatter/configuration/scripts.json",
+  ".frontmatter/configuration/pagefolders.json"
 ]
 ```
 
-L'URL distante est ce qui rend le mécanisme intéressant à plusieurs : une équipe peut publier un preset commun — content types, snippets, conventions — que chaque dépôt étend. Chacun garde son `frontmatter.json` local pour ses spécificités.
+Plus de convention à respecter, plus de casse à deviner : vous nommez vos fichiers comme vous voulez, du moment qu'ils sont listés. Pour un projet qui grossit, c'est plus prévisible que l'arborescence implicite.
+
+Et surtout, `extends` accepte aussi des **URL** :
+
+```json title="frontmatter.json"
+"frontMatter.extends": [
+  "https://exemple.com/frontmatter/preset.json",
+  ".frontmatter/configuration/local.json"
+]
+```
+
+C'est ce qui ouvre le travail à plusieurs projets : une équipe publie un preset commun — content types, snippets, conventions — hébergé où elle veut, y compris dans un dépôt Git servi en brut. Chaque site l'étend et garde son `frontmatter.json` local pour ses spécificités.
 
 :::note Qui gagne en cas de conflit ?
-L'ordre de priorité est sans ambiguïté : le `frontmatter.json` local **écrase** le découpage `.frontmatter/config/`, qui lui-même **écrase** les configurations importées via `extends`. Autrement dit, votre fichier local a toujours le dernier mot — une base partagée ne peut jamais vous imposer un réglage que vous redéfinissez chez vous.
+L'ordre de priorité est sans ambiguïté : le `frontmatter.json` local **écrase** le découpage `.frontmatter/config/`, qui lui-même **écrase** les configurations importées via `extends`. Votre fichier local a toujours le dernier mot — une base partagée ne peut jamais vous imposer un réglage que vous redéfinissez chez vous.
 :::
 
 C'est exactement le fondement du chapitre suivant : une configuration partageable est le prérequis du travail en équipe.
