@@ -13,9 +13,9 @@ tags:
   - frontmatter-cms
   - scripts
   - vscode
-date: 2026-07-28
+date: 2026-07-30
 last_update:
-  date: 2026-07-28
+  date: 2026-07-30
   author: docux
 draft: true
 inLanguage: fr-FR
@@ -625,9 +625,6 @@ Le bilan de l'opération, sur ce blog :
 | Snippets | dans le même fichier | 5 fichiers |
 | Actions custom | dans le même fichier | 3 fichiers |
 
-:::caution Attention si vous embarquez ce fichier dans une page
-Ce blog affiche sa propre configuration dans [l'article précédent](/blog/install-front-matter-cms-docusaurus/), via un composant qui lit le fichier réel. Déplacer `frontmatter.json` a donc cassé ce lien, et le build s'est plaint aussitôt. Un bon rappel : une documentation qui pointe vers de vrais fichiers reste juste, mais elle suit les déménagements.
-:::
 
 ### `frontMatter.extends` : la liste explicite
 
@@ -658,6 +655,27 @@ C'est ce qui ouvre le travail à plusieurs projets : une équipe publie un prese
 :::note Qui gagne en cas de conflit ?
 L'ordre de priorité est sans ambiguïté : le `frontmatter.json` local **écrase** le découpage `.frontmatter/config/`, qui lui-même **écrase** les configurations importées via `extends`. Votre fichier local a toujours le dernier mot — une base partagée ne peut jamais vous imposer un réglage que vous redéfinissez chez vous.
 :::
+
+### Vérifier que tout est bien recomposé
+
+Une configuration éclatée pose une question légitime : **comment savoir ce que l'extension a réellement chargé ?** Front Matter répond avec une commande peu connue, et c'est le meilleur compagnon de ce chapitre :
+
+<Terminal title="VS Code — palette de commandes">
+
+Front Matter: Diagnostic logging
+
+</Terminal>
+
+Elle ouvre un document Markdown virtuel — rien n'est écrit sur le disque — qui dresse l'état des lieux :
+
+- les **dossiers de contenu** déclarés, avec leur titre et leur chemin complet ;
+- le chemin du **workspace** tel que l'extension le voit ;
+- le **nombre total de fichiers**, et le détail des fichiers découverts par type, avec les motifs de recherche employés ;
+- surtout : **la configuration complète, entièrement recomposée** — c'est-à-dire le résultat de la fusion de tous vos fichiers éclatés.
+
+C'est ce dernier point qui rend la commande précieuse ici. Après avoir dispersé sa configuration en dix fichiers, on n'a plus aucune vue d'ensemble ; ce rapport la reconstitue. Un content type absent, un snippet qui ne remonte pas, un dossier mal nommé — tout se voit immédiatement, sans deviner.
+
+C'est aussi le premier réflexe à avoir avant de demander de l'aide : le rapport contient exactement ce qu'un mainteneur vous demandera.
 
 C'est exactement le fondement du chapitre suivant : une configuration partageable est le prérequis du travail en équipe.
 
