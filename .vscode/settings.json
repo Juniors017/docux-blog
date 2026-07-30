@@ -25,5 +25,9 @@
     "**/build/**": true,
     "**/node_modules/**": true,
     "**/.docusaurus/**": true
-  }
+  },
+  "[markdown]": {
+  },
+  "frontMatter.dashboard.openOnStart": true,
+  "frontMatter.content.autoUpdateDate": false
 }
