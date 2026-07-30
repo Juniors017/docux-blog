@@ -666,16 +666,57 @@ Front Matter: Diagnostic logging
 
 </Terminal>
 
-Elle ouvre un document Markdown virtuel — rien n'est écrit sur le disque — qui dresse l'état des lieux :
+Elle ouvre un document Markdown virtuel — rien n'est écrit sur le disque. Voici le début du rapport de ce blog :
 
-- les **dossiers de contenu** déclarés, avec leur titre et leur chemin complet ;
-- le chemin du **workspace** tel que l'extension le voit ;
-- le **nombre total de fichiers**, et le détail des fichiers découverts par type, avec les motifs de recherche employés ;
-- surtout : **la configuration complète, entièrement recomposée** — c'est-à-dire le résultat de la fusion de tous vos fichiers éclatés.
+```markdown title="Front Matter: Diagnostic logging — en-tête"
+# Front Matter CMS - Diagnostics
 
-C'est ce dernier point qui rend la commande précieuse ici. Après avoir dispersé sa configuration en dix fichiers, on n'a plus aucune vue d'ensemble ; ce rapport la reconstitue. Un content type absent, un snippet qui ne remonte pas, un dossier mal nommé — tout se voit immédiatement, sans deviner.
+Beta: `false`
+Version: `10.11.0`
+OS: `win32`
+VSCode version: `1.130.0`
 
-C'est aussi le premier réflexe à avoir avant de demander de l'aide : le rapport contient exactement ce qu'un mainteneur vous demandera.
+## Project name
+
+docux-blog
+
+## Workspace folder
+
+`c:/…/dev/docux-blog`
+
+## Total files
+
+Total files found: 345
+
+## Folders
+
+| Title | Path |
+| ----- | ---- |
+| Blog | `c:/…/dev/docux-blog/blog` |
+
+### Files in folders
+
+| Project start length | Search in | md | mdx | markdown |
+| --- | --- | --- | --- | --- |
+| 4 | `blog\**\*.*` | 0 | 24 | 0 |
+```
+
+Déjà là, deux choses utiles. Les **versions** (extension, OS, VS Code) sont exactement ce qu'un mainteneur réclamera dans une issue — plus besoin d'aller les chercher. Et le tableau des fichiers montre le **motif de recherche réellement employé** (`blog\**\*.*`) avec le compte par extension : mes 24 articles en `.mdx` sont bien vus, sur 345 fichiers dans l'espace de travail.
+
+Suit la partie qui justifie à elle seule cette section : **la configuration complète, entièrement recomposée** à partir de tous les fichiers éclatés. Et chaque élément y gagne une annotation absente de vos fichiers :
+
+```json title="extrait — la configuration recomposée"
+"Columns": {
+  "description": "Deux colonnes — largeur, marge et padding réglables de chaque côté",
+  "body": [ "…" ],
+  "fields": [ "…" ],
+  "id": "Columns",
+  "title": "Columns",
+  "sourcePath": "c:/…/.frontmatter/config/content/snippets/Columns.json"
+}
+```
+
+Ce `sourcePath` **dit de quel fichier vient chaque snippet**. C'est l'outil de vérification qu'on cherchait : après avoir dispersé sa configuration en dix fichiers, on n'a plus de vue d'ensemble — ce rapport la reconstitue et trace l'origine de chaque morceau. Un snippet absent, un content type ignoré, un dossier mal nommé se voient immédiatement. Avec cette commande, mon `contentTypes` en camelCase aurait été repéré en dix secondes au lieu d'une session entière.
 
 C'est exactement le fondement du chapitre suivant : une configuration partageable est le prérequis du travail en équipe.
 
