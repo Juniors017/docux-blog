@@ -13,11 +13,11 @@ tags:
   - frontmatter-cms
   - scripts
   - vscode
-date: 2026-07-30
+date: 2026-07-31
 last_update:
-  date: 2026-07-30
+  date: 2026-07-31
   author: docux
-draft: true
+draft: false
 inLanguage: en
 hide_table_of_contents: false
 series: CMS UI
@@ -92,7 +92,7 @@ authors:
   - docux
 mainTag: ""
 date: ""
-draft: true
+draft: false
 inLanguage: en
 series: ""
 ---
@@ -170,6 +170,8 @@ Each string in `body` is one line; the **Insert snippet** button (or the dashboa
 
 So let's take that same `<Columns>` and push it all the way: **width, margin, padding and content, adjustable on each side**. Eight fields, and not a single class left to remember.
 
+<Columns>
+<Column className="col--6 padding--none">
 ```json title="frontmatter.json — full version"
 "Columns": {
   "description": "Two columns — width, margin and padding adjustable on each side",
@@ -195,6 +197,11 @@ So let's take that same `<Columns>` and push it all the way: **width, margin, pa
   ]
 }
 ```
+</Column>
+<Column className="col--6 margin-vert--md padding--none">
+![](/img/frontmattercms/post4/snippet-columns.png)
+</Column>
+</Columns>
 
 Three ideas can be read in that block:
 
@@ -218,10 +225,12 @@ The `&` prefix asks for the raw value: `[[&leftContent]]`. Apply it to **every p
 
 One limitation all the same: the selection is **single**, it feeds only one field. The right-hand content is therefore still to be written — and for code or an image, better to leave the field empty and type directly in the editor, where writing is more comfortable.
 
-{/* 📸 IMAGE — screenshot to add */}
+
 
 Let's put it all together. Here is the snippet I should have written at the very start of this series: it **wraps the selected text in an admonition**, whose type is picked from a list — including this blog's home-made `:::docu`. A `choice` field for the type, a free field for the title, and the selection pulled in automatically:
 
+<Columns>
+<Column className="col--7 margin--md text--justify">
 ```json title="frontmatter.json"
 "Admonition": {
   "description": "Wrap the selection in an admonition",
@@ -239,10 +248,16 @@ Let's put it all together. Here is the snippet I should have written at the very
   ]
 }
 ```
-
-{/* 📸 IMAGE — screenshot to add */}
-
 The gesture becomes: I select an already-written paragraph, fire the snippet, pick _caution_ from the list, type a title — and my paragraph ends up boxed, without my typing `:::` even once. Three kinds of value (closed list, free text, selection) in a single snippet: that's where you see the tool does more than insert dead text.
+
+</Column>
+<Column className="margin--md">
+![](/img/frontmattercms/post4/snippetadmonition.png)
+</Column>
+</Columns>
+
+
+
 
 ### The MDX trap to know about: turn off the _wrapper_
 
@@ -355,10 +370,12 @@ These two capabilities are separate, and that's exactly what the two _features_ 
 
 This is the most powerful extension point, and the least known. Front Matter lets you add **your own buttons** to the panel, each running a Node script, through the `@frontmatter/extensibility` package:
 
-```bash
-npm i -D @frontmatter/extensibility
-```
 
+<Terminal  title="Terminal">
+
+npm i -D @frontmatter/extensibility
+
+</Terminal >
 A script receives its context from `ContentScript.getArguments()` — `filePath` (the open file), `workspacePath` (the project root), the already-parsed `frontMatter`, and the `answers` to any questions asked of the user. It hands back control with `ContentScript.done()`, whose message shows up in the panel. Declaring the button takes four keys:
 
 ```json title="frontmatter.json"
@@ -410,6 +427,7 @@ The first two ideas from the accessible list are now in my configuration, along 
 :::note No real categories — a prefix is enough
 An action's schema exposes `id`, `title`, `script`, `command`, `output`, `outputType`, `type`, `bulk`, `hidden`, `nodeBin`, `environments` and `contentTypes` — but **no notion of a group**. The `Maintenance · ` prefix in the `title` is therefore a plain naming convention: the buttons line up visually one under the other, without the extension knowing anything about it. Effective, and free.
 :::
+
 </Column>
 <Column className="col--4 margin--none padding--none">
 ![The three Maintenance buttons grouped in the panel](/img/frontmattercms/post4/new-button.png)
