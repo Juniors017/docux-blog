@@ -1,6 +1,6 @@
 {
   "id": "maintenance-cache-npm",
-  "title": "Maintenance · Vider le cache npm",
+  "title": "Maintenance · Clear the npm cache",
   "script": "[[workspace]]/scripts/clear-npm-cache.mjs",
   "command": "node",
   "output": "notification"

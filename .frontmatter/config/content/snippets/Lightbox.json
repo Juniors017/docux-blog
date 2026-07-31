@@ -1,5 +1,5 @@
 {
-  "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
+  "description": "From a media card: insert the image into the ImageOnClick lightbox",
   "isMediaSnippet": true,
   "body": [
     "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[&alt]]\" buttonName=\"[[&buttonName]]\" className=\"[[imageClass]]\" />"
@@ -7,13 +7,13 @@
   "fields": [
     {
       "name": "buttonName",
-      "title": "Libellé du lien",
+      "title": "Link label",
       "type": "string",
-      "default": "Voir l'image"
+      "default": "View the image"
     },
     {
       "name": "imageClass",
-      "title": "Classe de l'image",
+      "title": "Image class",
       "type": "choice",
       "choices": [
         "",

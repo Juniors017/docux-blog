@@ -1,14 +1,15 @@
-// Action Front Matter maison : vide le cache de build Docusaurus (.docusaurus,
-// build, node_modules/.cache) sans quitter l'éditeur.
-// Déclarée dans frontmatter.json sous frontMatter.custom.scripts.
+// Front Matter custom action: clears the Docusaurus build cache
+// (.docusaurus, build, node_modules/.cache) without leaving the editor.
+// Declared in the config under frontMatter.custom.scripts.
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { ContentScript } from "@frontmatter/extensibility";
 
 const { workspacePath } = ContentScript.getArguments();
 
-// Appel direct du binaire Docusaurus avec le node courant : pas de shell,
-// donc pas de dépendance au PATH ni à cmd.exe.
+// Call the Docusaurus binary with the current node: no shell, so no reliance
+// on PATH or cmd.exe — essential when the extension launches the script
+// outside a terminal.
 const docusaurus = path.join(
   workspacePath,
   "node_modules",
@@ -23,7 +24,7 @@ try {
     cwd: workspacePath,
     stdio: "pipe",
   });
-  ContentScript.done("Cache Docusaurus vidé — relancez le serveur de dev.");
+  ContentScript.done("Docusaurus cache cleared — restart the dev server.");
 } catch (err) {
-  ContentScript.done(`Échec : ${err.message.split("\n")[0]}`);
+  ContentScript.done(`Failed: ${err.message.split("\n")[0]}`);
 }

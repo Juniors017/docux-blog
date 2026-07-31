@@ -1,16 +1,16 @@
-// Action Front Matter maison : lance un build Docusaurus complet et renvoie
-// OK / KO, en signalant au passage les avertissements SSG.
-// Attention : le build prend une à deux minutes.
-// Déclarée dans frontmatter.json sous frontMatter.custom.scripts.
+// Front Matter custom action: runs a full Docusaurus build and answers
+// OK / KO, flagging any SSG warnings along the way.
+// Careful: the build takes a minute or two.
+// Declared in the config under frontMatter.custom.scripts.
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { ContentScript } from "@frontmatter/extensibility";
 
 const { workspacePath } = ContentScript.getArguments();
 
-// On appelle le binaire Docusaurus avec le node courant : pas de shell, donc
-// pas de dépendance au PATH ni à cmd.exe — indispensable quand l'extension
-// lance le script hors d'un terminal.
+// Call the Docusaurus binary with the current node: no shell, so no reliance
+// on PATH or cmd.exe — essential when the extension launches the script
+// outside a terminal.
 const docusaurus = path.join(
   workspacePath,
   "node_modules",
@@ -29,8 +29,8 @@ try {
   const warnings = (out.match(/\[WARNING\]/g) || []).length;
   ContentScript.done(
     warnings
-      ? `OK — build réussi, mais ${warnings} avertissement(s)`
-      : "OK — build réussi, 0 avertissement"
+      ? `OK — build succeeded, but ${warnings} warning(s)`
+      : "OK — build succeeded, 0 warnings"
   );
 } catch (err) {
   const log = `${err.stdout || ""}${err.stderr || ""}${err.message || ""}`;
@@ -39,6 +39,6 @@ try {
       .split("\n")
       .find((l) => /error/i.test(l))
       ?.trim()
-      .slice(0, 120) || "voir le terminal";
-  ContentScript.done(`KO — build en échec : ${cause}`);
+      .slice(0, 120) || "see the terminal";
+  ContentScript.done(`KO — build failed: ${cause}`);
 }

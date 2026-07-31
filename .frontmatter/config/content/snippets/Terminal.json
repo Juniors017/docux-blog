@@ -1,5 +1,5 @@
 {
-  "description": "Bloc terminal avec un titre",
+  "description": "Terminal block with a title",
   "body": [
     "<Terminal title=\"[[&title]]\">",
     "",
@@ -10,12 +10,12 @@
   "fields": [
     {
       "name": "title",
-      "title": "Titre de la fenêtre",
+      "title": "Window title",
       "type": "string"
     },
     {
       "name": "command",
-      "title": "Commande",
+      "title": "Command",
       "type": "string"
     }
   ],

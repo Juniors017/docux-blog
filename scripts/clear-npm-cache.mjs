@@ -1,14 +1,14 @@
-// Action Front Matter maison : vide le cache npm global.
-// Utile quand une dépendance refuse de s'installer proprement.
-// Déclarée dans frontmatter.json sous frontMatter.custom.scripts.
+// Front Matter custom action: clears the global npm cache.
+// Useful the day a dependency refuses to install cleanly.
+// Declared in the config under frontMatter.custom.scripts.
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { ContentScript } from "@frontmatter/extensibility";
 
 const { workspacePath } = ContentScript.getArguments();
 
-// npm est un script Node : on l'appelle par son entrée JS, à côté de
-// l'exécutable node courant. Aucun shell, aucun PATH.
+// npm is a Node script: call its JS entry point, sitting next to the current
+// node executable. No shell, no PATH.
 const npmCli = path.join(
   path.dirname(process.execPath),
   "node_modules",
@@ -22,7 +22,7 @@ try {
     cwd: workspacePath,
     stdio: "pipe",
   });
-  ContentScript.done("Cache npm vidé.");
+  ContentScript.done("npm cache cleared.");
 } catch (err) {
-  ContentScript.done(`Échec : ${err.message.split("\n")[0]}`);
+  ContentScript.done(`Failed: ${err.message.split("\n")[0]}`);
 }

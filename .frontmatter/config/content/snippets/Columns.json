@@ -1,5 +1,5 @@
 {
-  "description": "Deux colonnes — largeur, marge et padding réglables de chaque côté",
+  "description": "Two columns — width, margin and padding adjustable on each side",
   "body": [
     "<Columns>",
     "<Column className=\"[[leftWidth]] [[leftMargin]] [[leftPadding]]\">",
@@ -13,14 +13,14 @@
   "fields": [
     {
       "name": "leftWidth",
-      "title": "Gauche — largeur",
+      "title": "Left — width",
       "type": "choice",
       "choices": ["col--6", "col--8", "col--4", "col--3", "col--9"],
       "default": "col--6"
     },
     {
       "name": "leftMargin",
-      "title": "Gauche — marge",
+      "title": "Left — margin",
       "type": "choice",
       "choices": [
         "margin--none",
@@ -35,7 +35,7 @@
     },
     {
       "name": "leftPadding",
-      "title": "Gauche — padding",
+      "title": "Left — padding",
       "type": "choice",
       "choices": [
         "padding--none",
@@ -49,20 +49,20 @@
     },
     {
       "name": "leftContent",
-      "title": "Gauche — contenu",
+      "title": "Left — content",
       "type": "string",
       "default": "FM_SELECTED_TEXT"
     },
     {
       "name": "rightWidth",
-      "title": "Droite — largeur",
+      "title": "Right — width",
       "type": "choice",
       "choices": ["col--6", "col--4", "col--8", "col--9", "col--3"],
       "default": "col--6"
     },
     {
       "name": "rightMargin",
-      "title": "Droite — marge",
+      "title": "Right — margin",
       "type": "choice",
       "choices": [
         "margin--none",
@@ -77,7 +77,7 @@
     },
     {
       "name": "rightPadding",
-      "title": "Droite — padding",
+      "title": "Right — padding",
       "type": "choice",
       "choices": [
         "padding--none",
@@ -91,7 +91,7 @@
     },
     {
       "name": "rightContent",
-      "title": "Droite — contenu",
+      "title": "Right — content",
       "type": "string"
     }
   ],

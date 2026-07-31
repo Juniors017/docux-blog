@@ -1,7 +1,7 @@
 ---
-title: "Front Matter CMS : templates, snippets et actions sur mesure"
-slug: front-matter-cms-aller-plus-loin-docusaurus
-description: "Pousser Front Matter au-delà de sa configuration : templates, snippets, boutons maison dans le panneau, et une config éclatée en plusieurs fichiers."
+title: "Front Matter CMS: templates, snippets and custom actions"
+slug: front-matter-cms-going-further-docusaurus
+description: "Push Front Matter beyond its configuration: templates, snippets, your own buttons in the panel, and a config split across several files."
 image: /img/boosfrontmatter.webp
 authors:
   - docux
@@ -18,13 +18,11 @@ last_update:
   date: 2026-07-30
   author: docux
 draft: true
-inLanguage: fr-FR
+inLanguage: en
 hide_table_of_contents: false
 series: CMS UI
 fmContentType: article
 ---
-
-
 
 <div>
 <center>
@@ -32,39 +30,38 @@ fmContentType: article
 [![Development](https://img.shields.io/badge/Development-passed-green.svg)](https://github.com/Juniors017)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </center>
-![illustration de El Dino poussant Front Matter CMS au-delà de sa configuration](/img/boosfrontmatter.webp)
+![illustration of El Dino pushing Front Matter CMS beyond its configuration](/img/boosfrontmatter.webp)
 </div>
 
 <div className="text--justify">
-Trois articles durant, on a pris Front Matter tel qu'il sort de la boîte : installé, configuré finement, utilisé au quotidien. Rien qu'on n'ait ajouté à l'outil lui-même.
+For three articles, we took Front Matter as it comes out of the box: installed, finely configured, used day to day. Nothing we added to the tool itself.
 
-Cet article change de registre. On va **étendre** Front Matter : lui apprendre à pré-remplir des articles, à insérer des blocs tout faits, à exposer nos propres boutons dans le panneau, et à ranger sa configuration dans plusieurs fichiers plutôt qu'un seul `frontmatter.json` de 450 lignes. C'est le moment où l'extension cesse d'être un formulaire et devient une partie de l'outillage du dépôt.
+This article changes register. We are going to **extend** Front Matter: teach it to pre-fill articles, to insert ready-made blocks, to expose our own buttons in the panel, and to store its configuration across several files rather than one 450-line `frontmatter.json`. This is the moment the extension stops being a form and becomes part of the repository's tooling.
 
-:::tip Ce que vous saurez faire à la fin
-Créer un article pré-rempli à partir d'un template, définir des snippets pour vos composants MDX récurrents, ajouter un bouton maison qui exécute un script Node, et éclater `frontmatter.json` en fichiers thématiques sous `.frontmatter/config/`.
+:::tip What you'll be able to do by the end
+Create a pre-filled article from a template, define snippets for your recurring MDX components, add a home-made button that runs a Node script, and split `frontmatter.json` into thematic files under `.frontmatter/config/`.
 :::
 
 </div>
 {/* truncate */}
 
-## Les templates : ne plus partir d'une page blanche
+## Templates: never start from a blank page
+
 <Columns className="text--justify">
 <Column>
-Dans [l'article 2](/blog/install-front-matter-cms-docusaurus/), **Create content** générait un article vide  juste le frontmatter déduit du content type, et un corps désespérément blanc.
+In [article 2](/blog/install-front-matter-cms-docusaurus/), **Create content** generated an empty article — just the front matter derived from the content type, and a hopelessly blank body. So for every new article I pasted back the same pieces: the badge block, the `<div className="text--justify">`, the `{/* truncate */}`. Copied from the previous article, every single time.
 
-À chaque nouvel article, je recollais donc les mêmes éléments : le bloc de badges, le `<div className="text--justify">`, le `{/* truncate */}`. Copié depuis le dernier article, à chaque fois.
+A **template** removes that gesture. It's a complete Markdown file — front matter **and** body — that Front Matter copies at creation time.
 
-Un **template** supprime ce geste. C'est un fichier Markdown complet, frontmatter **et** corps que Front Matter recopie à la création.
+First practical point: at initialization, Front Matter **does not create** the `.frontmatter/templates/` folder. If you'd rather start from scratch, run `Front Matter: Initialize the template folder` first, or create the folder by hand.
 
-Premier point pratique : à l'initialisation, Front Matter **ne crée pas** le dossier `.frontmatter/templates/`. Si vous préférez partir de zéro, lancez d'abord `Front Matter: Initialize the template folder`, ou créez le dossier à la main.
-
-Le plus simple, cependant, est de partir d'un article existant qui vous plaît, puis de cliquer sur **Create template**, dans la section **Other actions** du panneau, avec l'article ouvert l'action crée le dossier au passage et y dépose le fichier.
+The simplest route, though, is to start from an existing article you like, then click **Create template**, in the panel's **Other actions** section, with the article open — the action creates the folder along the way and drops the file in it.
 </Column>
 <Column className="margin-vert--lg">
-![Le bouton Create template dans la section Other actions du panneau](/img/frontmattercms/post4/create-template.png)
-Le bouton peut apparaître grisé selon le fichier au premier plan : ouvrez l'article que vous voulez transformer en template avant de cliquer. La même action existe à la palette de commandes, si vous préférez le clavier.
+![The Create template button in the panel's Other actions section](/img/frontmattercms/post4/create-template.png)
+The button may appear greyed out depending on which file is in the foreground: open the article you want to turn into a template before clicking. The same action exists in the command palette, if you prefer the keyboard:
 
-<Terminal title="VS Code  palette de commandes">
+<Terminal title="VS Code — command palette">
 
 Front Matter: Create a template from the current file
 
@@ -72,9 +69,7 @@ Front Matter: Create a template from the current file
 </Column>
 </Columns>
 
-
-
-Le fichier atterrit dans `.frontmatter/templates/`, aux côtés de la configuration :
+The file lands in `.frontmatter/templates/`, alongside the configuration:
 
 <Trees>
   <Folder label=".frontmatter" expanded={true}>
@@ -86,7 +81,7 @@ Le fichier atterrit dans `.frontmatter/templates/`, aux côtés de la configurat
   </Folder>
 </Trees>
 
-On peut ensuite l'épurer pour ne garder que le squelette réutilisable :
+You can then trim it down to the reusable skeleton:
 
 ```markdown title=".frontmatter/templates/article.md"
 ---
@@ -115,44 +110,45 @@ series: ""
 </div>
 ```
 
-Un seul réglage active le mécanisme, la fonctionnalité est éteinte par défaut :
+A single setting switches the mechanism on — the feature is off by default:
 
 ```json title="frontmatter.json"
 "frontMatter.templates.enabled": true
 ```
 
-Inutile de préciser le dossier : `frontMatter.templates.folder` vaut déjà `.frontmatter/templates` par défaut, on ne le déclare que pour ranger les templates ailleurs.
+No need to name the folder: `frontMatter.templates.folder` already defaults to `.frontmatter/templates`; you only declare it to keep your templates somewhere else.
 
-À partir de là, **Create content** propose de choisir un template au lieu de partir de zéro. Le lien peut même être rendu permanent : la propriété `template` posée sur un content type force chaque nouvel article de ce type à démarrer du template désigné.
+From then on, **Create content** offers to pick a template instead of starting from nothing. The link can even be made permanent: the `template` property set on a content type forces every new article of that type to start from the designated template.
 
-```json title="frontmatter.json  dans le content type"
+```json title="frontmatter.json — inside the content type"
 {
   "name": "article",
   "template": ".frontmatter/templates/article.md",
   "fields": [ "..." ]
 }
 ```
-### Nouvel article à partir d'un template 
 
-A la création d'un nouvel article choisissez à partir du template 
-![](/img/frontmattercms/post4/create-template2.png)
- 
-![](/img/frontmattercms/post4/create-template3.png)
+### A new article from a template
 
-:::note Template vs content type  ne pas confondre
-Le **content type** décrit le *formulaire* (quels champs, quels types). Le **template** fournit le *contenu de départ* (valeurs par défaut **et** corps du fichier). L'un remplit le panneau, l'autre remplit la page. Ils sont complémentaires, pas concurrents.
+When creating a new article, pick the template you want to start from.
+
+![Choosing a template when creating content](/img/frontmattercms/post4/create-template2.png)
+
+![The new article, pre-filled from the template](/img/frontmattercms/post4/create-template3.png)
+
+:::note Template vs content type — don't confuse them
+The **content type** describes the _form_ (which fields, which types). The **template** provides the _starting content_ (default values **and** the body of the file). One fills the panel, the other fills the page. They complement each other; they don't compete.
 :::
 
-## Les snippets : vos composants MDX à portée de clic
+## Snippets: your MDX components one click away
 
-Un blog Docusaurus, c'est du MDX truffé de composants maison. Sur ce blog, je réutilise sans arrêt `<Columns>`, `<Terminal>`, `<Trees>`… et j'ai la flemme de tout écrire  voire, parfois, je ne me souviens plus de la structure exacte des balises imbriquées, alors que la majorité sont des composants que j'ai moi-même créés. Résultat : je rouvre un ancien article pour copier le motif. Encore du copier-coller.
+A Docusaurus blog is MDX stuffed with home-made components. On this blog I keep reusing `<Columns>`, `<Terminal>`, `<Trees>`… and I can't be bothered to type it all out — sometimes I don't even remember the exact structure of the nested tags, even though most of these are components I wrote myself. The result: I reopen an old article to copy the pattern. More copy-paste.
 
+**Snippets** (the scissors icon in the interface) answer exactly that. They are defined in `frontMatter.content.snippets`, and — pleasant surprise — we've had one since article 2, quietly slipped in to make my writing easier.
 
-Les **snippets** (l'icône ciseaux dans l'interface) répondent exactement à ça. Ils se définissent dans `frontMatter.content.snippets`, et  bonne surprise  on en a **déjà un** depuis l'article 2, glissé secrètement pour me faciliter la rédaction.
+![The panel's scissors icon, which opens the snippets](/img/frontmattercms/post4/snippets.png)
 
-![L'icône ciseaux du panneau, qui donne accès aux snippets](/img/frontmattercms/post4/snippets.png)
-
-Chaque chaîne de `body` est une ligne ; le bouton **Insert snippet** (ou la vue Snippets du dashboard) colle le bloc au curseur. Tel quel, c'est du texte fixe  pratique, mais un snippet donne sa pleine mesure dès qu'on lui ajoute des **champs**.
+Each string in `body` is one line; the **Insert snippet** button (or the dashboard's Snippets view) drops the block at the cursor. As it stands, that's fixed text — handy, but a snippet shows its true worth as soon as you add **fields**.
 
 ```json title="frontmatter.json"
 "frontMatter.content.snippets": {
@@ -172,13 +168,11 @@ Chaque chaîne de `body` est une ligne ; le bouton **Insert snippet** (ou la vue
 }
 ```
 
+So let's take that same `<Columns>` and push it all the way: **width, margin, padding and content, adjustable on each side**. Eight fields, and not a single class left to remember.
 
-
-Reprenons donc ce même `<Columns>` et poussons-le jusqu'au bout : **largeur, marge, padding et contenu, réglables de chaque côté**. Huit champs, et plus une seule classe à se rappeler.
-
-```json title="frontmatter.json  version complète"
+```json title="frontmatter.json — full version"
 "Columns": {
-  "description": "Deux colonnes  largeur, marge et padding réglables de chaque côté",
+  "description": "Two columns — width, margin and padding adjustable on each side",
   "body": [
     "<Columns>",
     "<Column className=\"[[leftWidth]] [[leftMargin]] [[leftPadding]]\">",
@@ -190,121 +184,123 @@ Reprenons donc ce même `<Columns>` et poussons-le jusqu'au bout : **largeur, ma
     "</Columns>"
   ],
   "fields": [
-    { "name": "leftWidth", "title": "Gauche  largeur", "type": "choice", "choices": ["col--6", "col--8", "col--4", "col--3", "col--9"], "default": "col--6" },
-    { "name": "leftMargin", "title": "Gauche  marge", "type": "choice", "choices": ["margin--none", "margin--sm", "margin--md", "margin--lg", "margin-vert--md"], "default": "margin--none" },
-    { "name": "leftPadding", "title": "Gauche  padding", "type": "choice", "choices": ["padding--none", "padding--sm", "padding--md", "padding--lg"], "default": "padding--none" },
-    { "name": "leftContent", "title": "Gauche  contenu", "type": "string", "default": "FM_SELECTED_TEXT" },
-    { "name": "rightWidth", "title": "Droite  largeur", "type": "choice", "choices": ["col--6", "col--4", "col--8", "col--9", "col--3"], "default": "col--6" },
-    { "name": "rightMargin", "title": "Droite  marge", "type": "choice", "choices": ["margin--none", "margin--sm", "margin--md", "margin--lg", "margin-vert--md"], "default": "margin--none" },
-    { "name": "rightPadding", "title": "Droite  padding", "type": "choice", "choices": ["padding--none", "padding--sm", "padding--md", "padding--lg"], "default": "padding--none" },
-    { "name": "rightContent", "title": "Droite  contenu", "type": "string" }
+    { "name": "leftWidth", "title": "Left — width", "type": "choice", "choices": ["col--6", "col--8", "col--4", "col--3", "col--9"], "default": "col--6" },
+    { "name": "leftMargin", "title": "Left — margin", "type": "choice", "choices": ["margin--none", "margin--sm", "margin--md", "margin--lg", "margin-vert--md"], "default": "margin--none" },
+    { "name": "leftPadding", "title": "Left — padding", "type": "choice", "choices": ["padding--none", "padding--sm", "padding--md", "padding--lg"], "default": "padding--none" },
+    { "name": "leftContent", "title": "Left — content", "type": "string", "default": "FM_SELECTED_TEXT" },
+    { "name": "rightWidth", "title": "Right — width", "type": "choice", "choices": ["col--6", "col--4", "col--8", "col--9", "col--3"], "default": "col--6" },
+    { "name": "rightMargin", "title": "Right — margin", "type": "choice", "choices": ["margin--none", "margin--sm", "margin--md", "margin--lg", "margin-vert--md"], "default": "margin--none" },
+    { "name": "rightPadding", "title": "Right — padding", "type": "choice", "choices": ["padding--none", "padding--sm", "padding--md", "padding--lg"], "default": "padding--none" },
+    { "name": "rightContent", "title": "Right — content", "type": "string" }
   ]
 }
 ```
 
-Trois idées se lisent dans ce bloc :
+Three ideas can be read in that block:
 
-- **Les placeholders** reçoivent les valeurs saisies, et rien n'empêche d'en concaténer plusieurs dans un même attribut : `className="[[leftWidth]] [[leftMargin]] [[leftPadding]]"` compose la classe finale à partir de trois menus. Les délimiteurs `[[ ]]` sont d'ailleurs réglables (`openingTags` / `closingTags`).
-- **Un champ `choice`** impose une liste fermée  ici les classes de grille et d'espacement d'Infima, que notre composant `<Column>` transmet tel quel. Fini le `col--7` tapé de travers : on choisit dans une liste. Les variantes `--none` servent d'option « rien », pour ne pas laisser de classe vide.
-- **`FM_SELECTED_TEXT`** est la valeur magique : un champ qui l'a pour défaut se pré-remplit avec le **texte sélectionné**, et le placeholder du corps de même `name` le reçoit. Sélectionnez un paragraphe, insérez le snippet, choisissez `col--8` puis `col--4` : votre texte remplit une large colonne de gauche, une étroite l'attend à droite.
-- **L'esperluette devant le nom**  `[[&leftContent]]` et non `[[leftContent]]`  n'est pas décorative, et c'est le sujet du prochain encadré.
+- **Placeholders** receive the values you type, and nothing stops you concatenating several inside one attribute: `className="[[leftWidth]] [[leftMargin]] [[leftPadding]]"` composes the final class from three dropdowns. The `[[ ]]` delimiters are configurable too (`openingTags` / `closingTags`).
+- **A `choice` field** enforces a closed list — here Infima's grid and spacing classes, which our `<Column>` component passes straight through. No more mistyped `col--7`: you pick from a list. The `--none` variants serve as the "nothing" option, so you never leave an empty class.
+- **`FM_SELECTED_TEXT`** is the magic value: a field with that default pre-fills itself with the **selected text**, and the body placeholder sharing its `name` receives it. Select a paragraph, insert the snippet, choose `col--8` then `col--4`: your text fills a wide left column, a narrow one waits on the right.
+- **The ampersand before the name** — `[[&leftContent]]` rather than `[[leftContent]]` — is not decorative, and it's the subject of the next callout.
 
-:::caution Mettez une esperluette dès qu'il y a du texte libre
-Front Matter **échappe en entités HTML** tout ce qu'un placeholder insère. Mon premier `Columns` écrivait `[[leftContent]]` : j'ai sélectionné un paragraphe de cet article même, inséré le snippet, et récupéré ceci dans mon MDX 
+:::caution Add an ampersand wherever free text goes
+Front Matter **escapes into HTML entities** everything a placeholder inserts. My first `Columns` used `[[leftContent]]`: I selected a paragraph from this very article, inserted the snippet, and got this back in my MDX —
 
 ```text
-Un blog Docusaurus, c&#39;est du MDX truffé de composants maison…
+A Docusaurus blog is MDX stuffed with home-made components. I can&#39;t be…
 &#x60;&lt;Columns&gt;&#x60;, &#x60;&lt;Terminal&gt;&#x60;…
 ```
 
-Chaque apostrophe, chaque backtick, chaque chevron transformé. Le paragraphe s'affichait tel quel sur la page, entités comprises.
+Every apostrophe, every backtick, every angle bracket transformed. The paragraph rendered exactly like that on the page, entities included.
 
-Le préfixe `&` réclame la valeur brute : `[[&leftContent]]`. À poser sur **tout placeholder qui transporte du texte libre, un chemin ou du balisage**  en pratique, tous vos champs `string`. Les champs `choice` qui ne servent qu'à des noms de classes n'en ont pas besoin.
+The `&` prefix asks for the raw value: `[[&leftContent]]`. Apply it to **every placeholder carrying free text, a path or markup** — in practice, all your `string` fields. `choice` fields that only hold class names don't need it.
 :::
 
-Une limite quand même : la sélection est **unique**, elle n'alimente qu'un seul champ. Le contenu de droite reste donc à saisir  et pour du code ou une image, mieux vaut laisser le champ vide et écrire directement dans l'éditeur, où l'on est plus à l'aise pour rédiger.
-:::danger image
-:::
-Mettons tout ça ensemble. Voici le snippet que j'aurais dû écrire dès le début de la série : il **enveloppe le texte sélectionné dans une admonition**, dont le type se choisit dans une liste  y compris le `:::docu` maison de ce blog. Un champ `choice` pour le type, un champ libre pour le titre, et la sélection récupérée automatiquement :
+One limitation all the same: the selection is **single**, it feeds only one field. The right-hand content is therefore still to be written — and for code or an image, better to leave the field empty and type directly in the editor, where writing is more comfortable.
+
+{/* 📸 IMAGE — screenshot to add */}
+
+Let's put it all together. Here is the snippet I should have written at the very start of this series: it **wraps the selected text in an admonition**, whose type is picked from a list — including this blog's home-made `:::docu`. A `choice` field for the type, a free field for the title, and the selection pulled in automatically:
 
 ```json title="frontmatter.json"
 "Admonition": {
-  "description": "Envelopper la sélection dans une admonition",
+  "description": "Wrap the selection in an admonition",
   "body": ["\n:::[[type]] [[&title]]", "[[&selection]]", ":::\n"],
   "fields": [
     {
       "name": "type",
-      "title": "Type d'encadré",
+      "title": "Admonition type",
       "type": "choice",
       "choices": ["tip", "info", "caution", "danger", "note", "docu"],
       "default": "tip"
     },
-    { "name": "title", "title": "Titre (optionnel)", "type": "string" },
-    { "name": "selection", "title": "Contenu", "type": "string", "default": "FM_SELECTED_TEXT" }
+    { "name": "title", "title": "Title (optional)", "type": "string" },
+    { "name": "selection", "title": "Content", "type": "string", "default": "FM_SELECTED_TEXT" }
   ]
 }
 ```
-:::danger image
-:::
-Le geste devient : je sélectionne un paragraphe déjà écrit, je lance le snippet, je choisis _caution_ dans la liste, je tape un titre  et mon paragraphe se retrouve encadré, sans que j'aie tapé une seule fois `:::`. Trois types de valeurs (liste fermée, texte libre, sélection) dans un seul snippet : c'est là qu'on mesure que l'outil ne se contente pas d'insérer du texte mort.
 
-### Le piège à connaître en MDX : couper le _wrapper_
+{/* 📸 IMAGE — screenshot to add */}
 
-Si vous ne deviez retenir qu'une chose de cette section, ce serait celle-ci  à régler **avant** d'insérer votre premier snippet. Par défaut, Front Matter entoure chaque snippet inséré de commentaires qui mémorisent son `id` et les valeurs de ses champs, pour pouvoir le **rééditer** plus tard. Votre belle admonition arrive donc emballée ainsi :
+The gesture becomes: I select an already-written paragraph, fire the snippet, pick _caution_ from the list, type a title — and my paragraph ends up boxed, without my typing `:::` even once. Three kinds of value (closed list, free text, selection) in a single snippet: that's where you see the tool does more than insert dead text.
 
-```markdown title="ce que le wrapper insère… et qui s'affiche en MDX"
+### The MDX trap to know about: turn off the _wrapper_
+
+If you take only one thing away from this section, make it this one — and settle it **before** inserting your first snippet. By default, Front Matter surrounds every inserted snippet with comments recording its `id` and its field values, so it can **re-edit** it later. Your fine admonition therefore arrives wrapped like this:
+
+```markdown title="what the wrapper inserts… and what shows up in MDX"
 <!-- FM:Snippet:Start data:{"id":"Admonition","fields":[…]} -->
 
-:::tip Astuce
-Votre contenu.
+:::tip Tip
+Your content.
 :::
 
 <!-- FM:Snippet:End -->
 ```
 
-Sur un générateur en **Markdown pur**, ces commentaires HTML sont invisibles au rendu  le mécanisme est même astucieux. Mais Docusaurus **dans mon contexte** lit du **MDX**, où `<!-- -->` n'est pas un commentaire valide : les deux lignes `FM:Snippet` **s'affichent telles quelles sur la page publiée**. J'y suis tombé en testant les snippets de cet article.
+On a **pure Markdown** generator, those HTML comments are invisible in the output — the mechanism is even rather clever. But Docusaurus, **in my setup**, reads **MDX**, where `<!-- -->` is not a valid comment: the two `FM:Snippet` lines **display as-is on the published page**. I walked into it while testing the snippets for this article.
 
-La parade tient en une ligne :
+The fix is one line:
 
 ```json title="frontmatter.json"
 "frontMatter.snippets.wrapper.enabled": false
 ```
 
-Le seul prix : Front Matter ne saura plus retrouver un snippet déjà inséré pour le modifier en place. Sur ce blog, où un snippet sert de tremplin puis vit sa vie en MDX, c'est un échange gagnant.
+The only cost: Front Matter can no longer find an already-inserted snippet to modify it in place. On this blog, where a snippet is a springboard and then lives its life as MDX, that's a trade worth making.
 
-### Les snippets pour vos médias
+### Snippets for your media
 
-En créant un snippet depuis le dashboard, une option intrigue : **« Is a media snippet? »**, décrite par _« Use the current snippet for inserting media files into your content »_. C'est le champ `isMediaSnippet` du JSON. Cochée, elle change complètement le point d'entrée du snippet : au lieu d'apparaître dans l'éditeur pour envelopper du texte, le snippet **s'attache aux cartes de la médiathèque**  on l'applique à une image plutôt qu'à une sélection.
+While creating a snippet from the dashboard, one option intrigues: **"Is a media snippet?"**, described as _"Use the current snippet for inserting media files into your content"_. That's the `isMediaSnippet` field in the JSON. Ticked, it completely changes the snippet's entry point: instead of appearing in the editor to wrap text, the snippet **attaches itself to the media library cards** — you apply it to an image rather than to a selection.
 
-Ses placeholders ne sont donc plus les vôtres, mais ceux fournis par le média : `mediaUrl`, `alt`, `caption`, `filename`, `title`, `mediaWidth`, `mediaHeight`. De quoi brancher directement notre lightbox maison, `<ImageOnClick>`, sur une image de la médiathèque  sans jamais recopier un chemin à la main :
+Its placeholders are therefore no longer yours, but those supplied by the media: `mediaUrl`, `alt`, `caption`, `filename`, `title`, `mediaWidth`, `mediaHeight`. Enough to wire our home-made lightbox, `<ImageOnClick>`, straight onto an image from the library — without ever copying a path by hand:
 
 ```json title="frontmatter.json"
 "Lightbox": {
-  "description": "Depuis une carte média : insère l'image dans la lightbox ImageOnClick",
+  "description": "From a media card: insert the image into the ImageOnClick lightbox",
   "isMediaSnippet": true,
   "body": [
-    "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[&alt]]\" buttonName=\"[[&buttonName]]\" />"
+    "<ImageOnClick imageUrl=\"[[&mediaUrl]]\" altText=\"[[&alt]]\" buttonName=\"[[&buttonName]]\" className=\"[[imageClass]]\" />"
   ],
   "fields": [
-    { "name": "altText", "title": "Texte alternatif", "type": "string" },
-    { "name": "buttonName", "title": "Libellé du lien", "type": "string", "default": "Voir l'image" }
+    { "name": "buttonName", "title": "Link label", "type": "string", "default": "View the image" },
+    { "name": "imageClass", "title": "Image class", "type": "choice", "choices": ["", "margin-vert--md", "margin-vert--lg", "shadow--lw", "shadow--md", "shadow--tl"], "default": "" }
   ]
 }
 ```
 
-Ici encore, **l'esperluette est indispensable** : sans elle, `[[mediaUrl]]` produit un chemin inutilisable, chaque `/` transformé en `&#x2F;`.
+Here too, **the ampersand is essential**: without it, `[[mediaUrl]]` produces an unusable path, every `/` turned into `&#x2F;`.
 
 ```jsx
 <ImageOnClick imageUrl="&#x2F;img&#x2F;post3&#x2F;menucard.png" />
 ```
 
-Autre détail à connaître : **les champs média ne remplissent que ce qui existe**. `alt` et `caption` puisent dans les métadonnées de l'image (`mediaDb.json`)  le mien étant vide, ils arrivent vides. D'où le `buttonName` déclaré ici comme **champ à saisir**, avec un défaut. Seul `mediaUrl` est toujours automatique : c'est de toute façon le seul qu'on ne veut jamais taper.
+Another detail worth knowing: **media fields only fill what exists**. `alt` and `caption` draw from the image's metadata (`mediaDb.json`) — mine being empty, they arrive empty. Hence `buttonName` declared here as a **field to fill in**, with a default. Only `mediaUrl` is always automatic: it's the one you never want to type anyway.
 
-Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à une balise : **son corps peut être une mise en page entière**. Le motif que j'utilise sans arrêt dans cette série  une capture d'un côté, du texte ou du code de l'autre  devient alors un seul clic depuis la carte de l'image :
+The real click comes when you realise a media snippet isn't limited to a single tag: **its body can be a whole layout**. The pattern I use constantly throughout this series — a screenshot on one side, text or code on the other — then becomes a single click from the image's card:
 
 ```json title="frontmatter.json"
-"Image + colonnes": {
-  "description": "Depuis une carte média : insère l'image dans une colonne, texte à droite",
+"Image + columns": {
+  "description": "From a media card: insert the image into a column, text on the right",
   "isMediaSnippet": true,
   "body": [
     "<Columns>",
@@ -317,56 +313,58 @@ Le vrai déclic vient quand on comprend qu'un media snippet n'est pas limité à
     "</Columns>"
   ],
   "fields": [
-    { "name": "imageWidth", "title": "Largeur de la colonne image", "type": "choice", "choices": ["col--6", "col--4", "col--8"], "default": "col--6" },
-    { "name": "altText", "title": "Texte alternatif", "type": "string" }
+    { "name": "imageWidth", "title": "Image column width", "type": "choice", "choices": ["col--6", "col--4", "col--8"], "default": "col--6" },
+    { "name": "altText", "title": "Alternative text", "type": "string" }
   ]
 }
 ```
 
-:::tip Où est passé mon snippet ? Le mode d'emploi
-Premier réflexe après l'avoir déclaré : ouvrir un article, chercher **Insert snippet**… et ne rien trouver. C'est normal, et la documentation est formelle : _« You cannot insert media snippets into your content like you can with content snippets. Instead, you will find them on the media cards. »_ Un media snippet vit **sur les cartes de la médiathèque**, jamais dans la liste de l'éditeur.
+:::tip Where did my snippet go? The instructions
+First reflex after declaring it: open an article, look for **Insert snippet**… and find nothing. That's normal, and the documentation is explicit: _"You cannot insert media snippets into your content like you can with content snippets. Instead, you will find them on the media cards."_ A media snippet lives **on the media library cards**, never in the editor's list.
 
-Le geste, dans l'ordre :
+The gesture, in order:
 
-1. **Ouvrez l'article** et placez le curseur là où l'image doit atterrir.
-2. Passez au **dashboard → onglet Media**.
-3. Sur la **carte de l'image** voulue, déclenchez le snippet.
-4. Renseignez vos champs  ici la largeur de colonne.
+1. **Open the article** and place the cursor where the image should land.
+2. Go to the **dashboard → Media tab**.
+3. On the **card of the image** you want, trigger the snippet.
+4. Fill in your fields — here the column width.
 
-La structure à deux colonnes s'insère alors au curseur de l'article resté ouvert, **image en place, chemin jamais tapé**. Il ne reste qu'à écrire à droite.
+The two-column structure is then inserted at the cursor of the article you left open, **image in place, path never typed**. All that's left is writing on the right.
 :::
 
-Notez que `mediaUrl` et `alt` ne sont pas déclarés dans `fields` : ils viennent du média lui-même. L'`alt` puise dans les métadonnées de l'image (`mediaDb.json`)  si, comme moi, vous ne les remplissez pas, il arrivera vide et restera à compléter à la main. Une bonne raison de s'y mettre.
+Note that `mediaUrl` and `alt` are not declared in `fields`: they come from the media itself. `alt` draws from the image's metadata (`mediaDb.json`) — if, like me, you don't fill those in, it will arrive empty and still need completing by hand. A good reason to start.
+
 <Columns>
 <Column className="col--9 margin--none padding--none">
-![Le formulaire de création d'un snippet, avec l'option « Is a media snippet? »](/img/frontmattercms/post4/media-snippet.png)
+![The snippet creation form, with the "Is a media snippet?" option](/img/frontmattercms/post4/media-snippet.png)
 
 
 </Column>
 <Column className="col--2 margin--none padding--none">
-![Le media snippet proposé sur la carte d'une image de la médiathèque](/img/frontmattercms/post4/insert-snippets.png)
+![The media snippet offered on a media library image card](/img/frontmattercms/post4/insert-snippets.png)
 </Column>
 </Columns>
-La liste complète des placeholders vit dans la [documentation des snippets](https://frontmatter.codes/docs/snippets)  elle évolue avec les versions.
 
-:::note Créer des snippets ≠ les utiliser
-Ces deux capacités sont séparées, et c'est précisément à quoi servent les deux _features_ de la section modes : `dashboard.snippets.view` **utilise** les snippets (les insérer), `dashboard.snippets.manage` permet de les **créer et éditer**. Un mode qui garde `view` sans `manage`  comme notre mode `minimal` plus haut  laisse toute l'équipe insérer les snippets validés, mais **empêche d'en créer de nouveaux à la volée**. La bibliothèque reste maîtrisée, versionnée dans `frontmatter.json`.
+The full list of placeholders lives in the [snippets documentation](https://frontmatter.codes/docs/snippets) — it changes with the versions.
+
+:::note Creating snippets ≠ using them
+These two capabilities are separate, and that's exactly what the two _features_ from the modes section are for: `dashboard.snippets.view` **uses** snippets (inserting them), `dashboard.snippets.manage` allows **creating and editing** them. A mode that keeps `view` without `manage` — like our `minimal` mode further down — lets the whole team insert the approved snippets, but **prevents creating new ones on the fly**. The library stays curated, versioned in the configuration.
 :::
 
-## Les actions sur mesure : vos boutons dans le panneau
+## Custom actions: your own buttons in the panel
 
-C'est l'extension la plus puissante, et la moins connue. Front Matter permet d'ajouter **vos propres boutons** dans le panneau, chacun exécutant un script Node, via le paquet `@frontmatter/extensibility` :
+This is the most powerful extension point, and the least known. Front Matter lets you add **your own buttons** to the panel, each running a Node script, through the `@frontmatter/extensibility` package:
 
 ```bash
 npm i -D @frontmatter/extensibility
 ```
 
-Un script reçoit son contexte de `ContentScript.getArguments()`  `filePath` (le fichier ouvert), `workspacePath` (la racine du projet), le `frontMatter` déjà parsé, et les `answers` d'éventuelles questions posées à l'utilisateur. Il rend la main avec `ContentScript.done()`, dont le message s'affiche dans le panneau. La déclaration du bouton tient en quatre clés :
+A script receives its context from `ContentScript.getArguments()` — `filePath` (the open file), `workspacePath` (the project root), the already-parsed `frontMatter`, and the `answers` to any questions asked of the user. It hands back control with `ContentScript.done()`, whose message shows up in the panel. Declaring the button takes four keys:
 
 ```json title="frontmatter.json"
 "frontMatter.custom.scripts": [
   {
-    "title": "Vider le cache Docusaurus",
+    "title": "Clear the Docusaurus cache",
     "script": "./scripts/clear-cache.mjs",
     "command": "node",
     "output": "notification"
@@ -374,84 +372,80 @@ Un script reçoit son contexte de `ContentScript.getArguments()`  `filePath` (le
 ]
 ```
 
-Les propriétés utiles : `output` vaut `editor` ou `notification` selon qu'on veut réinjecter du texte ou juste afficher un message ; `type` (`content`, `mediaFolder`, `mediaFile`) décide où le bouton apparaît ; `bulk` autorise l'exécution sur plusieurs fichiers d'un coup.
+The useful properties: `output` is either `editor` or `notification`, depending on whether you want to inject text back or merely show a message; `type` (`content`, `mediaFolder`, `mediaFile`) decides where the button appears; `bulk` allows running it over several files at once.
 
-Avant d'aller plus loin, un garde-fou : **ne réinventez pas ce que Front Matter fait déjà.** Exemple : le panneau SEO compte les mots de l'article  `frontMatter.taxonomy.seoContentLengh` permet même de fixer la longueur visée  ainsi que les caractères du titre et de la description. L'extension valide aussi le frontmatter contre le content type, et son panneau _Content Health_ mesure la lisibilité, repère les liens morts et signale les articles qui vieillissent. Elle sait même vider son propre cache.
+Before going further, a guardrail: **don't reinvent what Front Matter already does.** For example: the SEO panel counts the article's words — `frontMatter.taxonomy.seoContentLengh` even lets you set the target length — as well as the characters in the title and description. The extension also validates the front matter against the content type, and its _Content Health_ panel measures readability, spots broken links and flags articles that are ageing. It even knows how to clear its own cache.
 
-Une action maison n'a donc de valeur que pour ce que l'extension **ne peut pas** connaître : votre outillage, vos services, vos conventions.
+A home-made action is therefore only worth it for what the extension **cannot** know: your tooling, your services, your conventions.
 
-**Exemples rapides à mettre en place.** Quelques lignes suffisent pour rapatrier dans le panneau les commandes qu'on tape sans arrêt au terminal :
+**Quick examples to set up.** A few lines are enough to bring into the panel the commands you type at the terminal all day long:
 
-- **Vider le cache Docusaurus**  le fameux `npm run clear`, réflexe obligatoire après avoir ajouté un article ou touché à un plugin. Le script l'exécute dans le dossier du projet et renvoie une notification.
-- **Vider le cache npm**  `npm cache clean --force`, pour le jour où une dépendance refuse de s'installer proprement.
-- **Copier l'URL de production**  reconstruire `https://votre-site/blog/<slug>/` à partir du frontmatter, pour la coller ailleurs sans la retaper.
-- **Vérifier les textes alternatifs**  une regex sur le corps qui compte les images sans `alt`. Content Health ne couvre pas ce point, et c'est une convention à laquelle je tiens.
+- **Clear the Docusaurus cache** — the well-known `npm run clear`, a mandatory reflex after adding an article or touching a plugin. The script runs it in the project folder and returns a notification.
+- **Clear the npm cache** — `npm cache clean --force`, for the day a dependency refuses to install cleanly.
+- **Copy the production URL** — rebuild `https://your-site/blog/<slug>/` from the front matter, to paste elsewhere without retyping it.
+- **Check the alternative texts** — a regex over the body counting images with no `alt`. Content Health doesn't cover that, and it's a convention I care about.
 
-**Plus ambitieux, pour un week-end tranquille.** Là, on branche des services externes  et on sort définitivement du périmètre de l'extension :
+**More ambitious, for a quiet weekend.** Here we plug in external services — and leave the extension's scope for good:
 
-- **Rédiger le post BlueSky.** À chaque publication, j'écris à la main une accroche de 300 caractères qui pointe vers l'article. Un script part du `title` et de la `description`, assemble le texte et vérifie la limite.
-- **Publier sur BlueSky, puis réinjecter le `blueSkyRecordKey`.** Le prolongement logique : poster via l'API, récupérer l'identifiant du post et l'écrire dans le frontmatter (`output: "editor"`). C'est précisément le geste manuel qui clôt chaque article de cette série.
-- **Fabriquer la carte sociale.** Générer l'image Open Graph  titre incrusté sur un gabarit  avec le même `sharp` que [le plugin d'images du blog](/blog/image-optimizer-docusaurus-plugin/), l'enregistrer dans `static/`, et poser le champ `image`.
+- **Draft the BlueSky post.** For every publication, I write by hand a 300-character hook pointing at the article. A script starts from the `title` and the `description`, assembles the text and checks the limit.
+- **Publish to BlueSky, then write back the `blueSkyRecordKey`.** The logical extension: post through the API, retrieve the post's identifier and write it into the front matter (`output: "editor"`). That's precisely the manual gesture that closes every article in this series.
+- **Build the social card.** Generate the Open Graph image — title composited onto a template — with the same `sharp` as [this blog's image plugin](/blog/image-optimizer-docusaurus-plugin/), save it into `static/`, and set the `image` field.
 
+None of these ideas exist in the extension, and the last ones cannot: they speak to _your_ social host, _your_ image pipeline, _your_ bilingual setup. The extension supplies the button; you supply the domain knowledge.
 
-Aucune de ces idées n'existe dans l'extension, et les dernières ne peuvent pas y exister : elles parlent à _votre_ hébergeur social, _votre_ chaîne d'images, _votre_ organisation bilingue. L'extension fournit le bouton ; vous fournissez le métier.
+### A "Maintenance" area in the panel
 
-### Un espace « Maintenance » dans le panneau
+The first two ideas from the accessible list are now in my configuration, along with a build test, grouped under a common prefix:
 
-Les deux premières idées de la liste accessible sont maintenant dans ma configuration, avec un test de build, regroupées sous un même préfixe :
 <Columns>
 <Column className="col--8 margin--none padding--none">
 ```json title="frontmatter.json"
 "frontMatter.custom.scripts": [
-  { "id": "maintenance-build", "title": "Maintenance · Tester le build", "script": "./scripts/test-build.mjs", "command": "node", "output": "notification" },
-  { "id": "maintenance-cache-docusaurus", "title": "Maintenance · Vider le cache Docusaurus", "script": "./scripts/clear-cache.mjs", "command": "node", "output": "notification" },
-  { "id": "maintenance-cache-npm", "title": "Maintenance · Vider le cache npm", "script": "./scripts/clear-npm-cache.mjs", "command": "node", "output": "notification" }
+  { "id": "maintenance-build", "title": "Maintenance · Test the build", "script": "./scripts/test-build.mjs", "command": "node", "output": "notification" },
+  { "id": "maintenance-cache-docusaurus", "title": "Maintenance · Clear the Docusaurus cache", "script": "./scripts/clear-cache.mjs", "command": "node", "output": "notification" },
+  { "id": "maintenance-cache-npm", "title": "Maintenance · Clear the npm cache", "script": "./scripts/clear-npm-cache.mjs", "command": "node", "output": "notification" }
 ]
 ```
 
-:::note Pas de vraies catégories  un préfixe suffit
-Le schéma d'une action expose `id`, `title`, `script`, `command`, `output`, `outputType`, `type`, `bulk`, `hidden`, `nodeBin`, `environments` et `contentTypes`  mais **aucune notion de groupe**. Le préfixe `Maintenance · ` dans le `title` est donc une simple convention de nommage : les boutons se rangent visuellement les uns sous les autres, sans que l'extension n'en sache rien. Efficace, et gratuit.
+:::note No real categories — a prefix is enough
+An action's schema exposes `id`, `title`, `script`, `command`, `output`, `outputType`, `type`, `bulk`, `hidden`, `nodeBin`, `environments` and `contentTypes` — but **no notion of a group**. The `Maintenance · ` prefix in the `title` is therefore a plain naming convention: the buttons line up visually one under the other, without the extension knowing anything about it. Effective, and free.
 :::
 </Column>
 <Column className="col--4 margin--none padding--none">
-:::danger image fr
-:::
-![Les trois boutons Maintenance regroupés dans le panneau](/img/frontmattercms/post4/new-button.png)
+![The three Maintenance buttons grouped in the panel](/img/frontmattercms/post4/new-button.png)
 </Column>
 </Columns>
 
+Clearing the Docusaurus cache takes three useful lines — the gesture you repeat after every new article:
 
-Vider le cache Docusaurus tient en trois lignes utiles  le geste qu'on répète après chaque ajout d'article :
+<Snippet source="scripts/clear-cache.mjs" filename="scripts/clear-cache.mjs" />
 
-<Snippet source="scripts/clear-cache.mjs"   filename="scripts/clear-cache.mjs" />
+The `workspacePath` handed over by `getArguments()` serves as the working directory: the script runs at the project root, whatever file is open. The `try/catch` returns the error as a notification rather than failing silently. Its npm twin is identical, give or take the command.
 
-Le `workspacePath` livré par `getArguments()` sert de répertoire de travail : le script s'exécute à la racine du projet, quel que soit le fichier ouvert. Le `try/catch` renvoie l'erreur en notification plutôt que d'échouer en silence. Le jumeau pour npm est identique, à la commande près.
-
-:::caution N'appelez pas `npm` depuis le script
-Ma première version faisait un `execSync("npm run clear")`. Au terminal, impeccable ; depuis le bouton, échec sec :
+:::caution Don't call `npm` from the script
+My first version did `execSync("npm run clear")`. In a terminal, flawless; from the button, a flat failure:
 
 <Terminal title="Terminal">
 Command failed: node "…\scripts\test-build.mjs"
 La syntaxe du nom de fichier, de répertoire ou de volume est incorrecte.
 </Terminal>
 
-La raison : `execSync` passe par un shell  `cmd.exe` sous Windows  et le script n'est pas lancé depuis un terminal mais par l'extension, avec un environnement réduit où `npm` n'est plus résolu de la même façon.
+The reason: `execSync` goes through a shell — `cmd.exe` on Windows — and the script isn't launched from a terminal but by the extension, with a reduced environment where `npm` no longer resolves the same way.
 
-La parade est plus robuste **et** plus rapide : appeler le binaire directement avec le node courant, sans shell du tout. `execFileSync` au lieu de `execSync`, `process.execPath` pour node, et le chemin du binaire reconstruit depuis `workspacePath`. Plus de PATH, plus de `cmd.exe`, plus de guillemets à échapper. Même logique pour npm, dont l'entrée JS se trouve à côté de l'exécutable node (`node_modules/npm/bin/npm-cli.js`).
+The fix is both more robust **and** faster: call the binary directly with the current node, with no shell at all. `execFileSync` instead of `execSync`, `process.execPath` for node, and the binary's path rebuilt from `workspacePath`. No more PATH, no more `cmd.exe`, no more quotes to escape. Same logic for npm, whose JS entry point sits next to the node executable (`node_modules/npm/bin/npm-cli.js`).
 :::
 
-Le bouton de test de build va un cran plus loin : il lance la compilation complète et répond **OK** ou **KO**, en comptant au passage les avertissements  la règle des zéro warning de ce blog devient vérifiable d'un clic.
+The build-test button goes one step further: it runs the full compilation and answers **OK** or **KO**, counting the warnings along the way — this blog's zero-warning rule becomes verifiable in one click.
 
 <Snippet source="scripts/test-build.mjs" filename="scripts/test-build.mjs" />
 
-
-:::caution Un bouton qui prend deux minutes
-Un build Docusaurus complet n'est pas instantané. Pendant l'exécution, la notification se fait attendre et rien ne l'indique clairement : c'est le prix d'une vérification sérieuse. À réserver au moment de publier, pas à chaque sauvegarde.
+:::caution A button that takes two minutes
+A full Docusaurus build isn't instant. While it runs, the notification keeps you waiting and nothing clearly says so: that's the price of a serious check. Save it for publishing time, not for every save.
 :::
 
-Manque un quatrième bouton à cet ensemble : vider le cache de Front Matter lui-même. Il n'existera pas, et pour une raison instructive  **une action custom est un script Node, exécuté hors de VS Code**. Elle peut lancer une commande système, lire et écrire des fichiers du projet… mais pas déclencher une commande de l'éditeur. Or ce cache-là ne vit pas dans le dépôt, mais dans le stockage de l'extension.
+A fourth button is missing from this set: clearing Front Matter's own cache. It won't exist, and for an instructive reason — **a custom action is a Node script, running outside VS Code**. It can launch a system command, read and write project files… but not trigger an editor command. And that particular cache doesn't live in the repository, but in the extension's storage.
 
-La bonne réponse n'est donc pas un bouton, c'est un **raccourci clavier**  plus rapide encore. La commande s'appelle `frontMatter.cache.clear` ; il suffit de la lier dans `keybindings.json` :
+The right answer isn't a button, then, it's a **keyboard shortcut** — faster still. The command is called `frontMatter.cache.clear`; you just bind it in `keybindings.json`:
 
 ```json title="keybindings.json (VS Code)"
 {
@@ -460,19 +454,19 @@ La bonne réponse n'est donc pas un bouton, c'est un **raccourci clavier**  plus
 }
 ```
 
-C'est un réflexe qui vaut pour toutes les commandes de l'extension : ce que le panneau n'expose pas en bouton, la palette le connaît  et tout ce que la palette connaît peut recevoir un raccourci.
+It's a reflex worth having for every command in the extension: what the panel doesn't expose as a button, the palette knows — and anything the palette knows can be given a shortcut.
 
-:::caution Un script, pas un jouet
-Ces scripts s'exécutent avec Node sur votre machine, avec vos droits. C'est un atout  accès disque, réseau, `node_modules`  mais un script partagé dans un dépôt public s'exécute chez qui clone le projet. À traiter avec la même prudence qu'un hook Git ou un script npm.
+:::caution A script, not a toy
+These scripts run with Node on your machine, with your permissions. That's an asset — disk, network, `node_modules` — but a script shared in a public repository runs on the machine of whoever clones the project. Treat it with the same caution as a Git hook or an npm script.
 :::
 
-## Des modes : un panneau qui s'adapte à ce que vous faites
+## Modes: a panel that adapts to what you're doing
 
-À force d'ajouter templates, snippets et boutons, le panneau se remplit. Or, selon le moment, on n'a pas besoin de tout : quand j'**écris**, je veux le formulaire, les compteurs SEO et les boutons de publication  pas la gestion des taxonomies ni les actions Git. Quand je fais du **ménage** (comme les fusions de tags de l'article précédent), c'est l'inverse.
+As templates, snippets and buttons pile up, the panel fills out. Yet depending on the moment, you don't need all of it: when I'm **writing**, I want the form, the SEO counters and the publishing buttons — not taxonomy management or Git actions. When I'm doing **housekeeping** (like the tag merges from the previous article), it's the opposite.
 
-Les **modes** répondent exactement à ça. Un mode porte un `id` et une liste de `features`  les seules parties de l'interface qui resteront visibles. On les déclare dans `frontMatter.global.modes`, et un sélecteur dans la **barre d'état** (en bas de la fenêtre) bascule de l'un à l'autre en un clic.
+**Modes** answer exactly that. A mode carries an `id` and a list of `features` — the only parts of the interface that will stay visible. You declare them in `frontMatter.global.modes`, and a picker in the **status bar** (at the bottom of the window) switches between them in one click.
 
-Voici deux modes cohérents pour ce blog  un pour écrire, un pour tout maintenir :
+Here are two coherent modes for this blog — one for writing, one for maintaining everything:
 
 ```json title="frontmatter.json"
 "frontMatter.global.modes": [
@@ -508,48 +502,47 @@ Voici deux modes cohérents pour ce blog  un pour écrire, un pour tout mainteni
 "frontMatter.global.activeMode": "complete"
 ```
 
-La logique est simple : **`minimal`** ne garde que ce qu'on touche en rédigeant  le formulaire (`panel.contentType`), les métadonnées comme le statut brouillon (`panel.metadata`), les compteurs SEO (`panel.seo`), les actions de publication (`panel.actions` et `panel.otherActions`) et l'insertion de snippets (`dashboard.snippets.view`). **`complete`** rallume tout : les réglages globaux, les actions Git, les récemment modifiés, et surtout les surfaces de gestion du dashboard  gestion des snippets, fichiers de données et **taxonomie** (là où se font les fusions de tags).
+The logic is simple: **`minimal`** keeps only what you touch while writing — the form (`panel.contentType`), metadata such as the draft status (`panel.metadata`), the SEO counters (`panel.seo`), the publishing actions (`panel.actions` and `panel.otherActions`) and snippet insertion (`dashboard.snippets.view`). **`complete`** switches everything back on: global settings, Git actions, recently modified, and above all the dashboard's management surfaces — snippet management, data files and **taxonomy** (where the tag merges happen).
 
+The twelve available `features` cover eight panel sections (`panel.globalSettings`, `panel.seo`, `panel.actions`, `panel.metadata`, `panel.contentType`, `panel.gitActions`, `panel.recentlyModified`, `panel.otherActions`) and four dashboard views (`dashboard.snippets.view`, `dashboard.snippets.manage`, `dashboard.data.view`, `dashboard.taxonomy.view`). Feel free to invent a third `review` or `seo` mode, or whatever your workflow calls for.
 
+![The mode picker in the VS Code status bar](/img/frontmattercms/post4/mode.png)
 
+![The list of modes offered when clicking the picker](/img/frontmattercms/post4/selectmode.png)
 
-Les douze `features` disponibles couvrent huit sections du panneau (`panel.globalSettings`, `panel.seo`, `panel.actions`, `panel.metadata`, `panel.contentType`, `panel.gitActions`, `panel.recentlyModified`, `panel.otherActions`) et quatre vues du dashboard (`dashboard.snippets.view`, `dashboard.snippets.manage`, `dashboard.data.view`, `dashboard.taxonomy.view`). Libre à vous d'inventer un troisième mode `review`, `seo`, ou ce que dicte votre flux.
-![Le sélecteur de mode dans la barre d'état de VS Code](/img/frontmattercms/post4/mode.png)
-
-![La liste des modes proposée au clic sur le sélecteur](/img/frontmattercms/post4/selectmode.png)
-:::tip Réglage plus fin, action par action
-Les modes raisonnent par **sections**. Pour masquer un **bouton précis** sans toucher au reste, `frontMatter.panel.actions.disabled` accepte les identifiants d'actions (`openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer`, `customActions`). Les deux se combinent.
+:::tip Finer control, action by action
+Modes reason in terms of **sections**. To hide a **specific button** without touching the rest, `frontMatter.panel.actions.disabled` accepts action identifiers (`openDashboard`, `createContent`, `optimizeSlug`, `preview`, `openOnWebsite`, `startStopServer`, `customActions`). The two combine.
 :::
 
-:::tip Pas de bouton ? C'est normal
-Tant qu'aucun mode n'est déclaré, l'extension n'a rien à proposer : **le sélecteur n'apparaît pas**. Ajoutez les deux modes ci-dessus, rechargez la fenêtre, et il se montre en bas à gauche.
+:::tip No button? That's normal
+As long as no mode is declared, the extension has nothing to offer: **the picker doesn't appear**. Add the two modes above, reload the window, and it shows up at the bottom left.
 :::
 
-Le partage des rôles est bien pensé, et je l'ai vérifié en basculant : **la définition des modes est versionnée, le mode actif ne l'est pas**. Les modes vivent dans `frontmatter.json` et voyagent donc avec le dépôt  arriver sur le projet, c'est hériter d'un `minimal` et d'un `complete` déjà pensés. Mais quand vous cliquez sur le sélecteur, aucun fichier suivi ne bouge : le choix atterrit dans le stockage local de VS Code (`workspaceStorage`). `frontMatter.global.activeMode` ne fixe que le mode **par défaut**, pour qui ouvre le projet sans avoir jamais choisi.
+The division of roles is well thought out, and I checked it by switching: **the mode definitions are versioned, the active mode is not**. Modes live in the configuration and therefore travel with the repository — arriving on the project means inheriting a `minimal` and a `complete` already thought through. But when you click the picker, no tracked file moves: the choice lands in VS Code's local storage (`workspaceStorage`). `frontMatter.global.activeMode` only sets the **default** mode, for whoever opens the project without ever having chosen.
 
-Le résultat est exactement ce qu'on veut en équipe : une configuration commune, un panneau volontairement épuré pour le flux éditorial validé  et chacun libre de basculer quand il veut, **sans polluer les diffs Git** de ses préférences d'affichage.
+The result is exactly what you want in a team: a shared configuration, a deliberately stripped-down panel for the approved editorial flow — and everyone free to switch whenever they like, **without polluting Git diffs** with their display preferences.
 
-## Éclater la configuration : la promesse de l'article 1
+## Splitting the configuration: the promise from article 1
 
-Souvenez-vous : dès [le premier article](/blog/why-front-matter-cms-docusaurus/), j'avais promis qu'on reviendrait sur `frontMatter.extends` et le découpage de la config. Le moment est venu  et il tombe particulièrement bien, parce que le besoin est né de ce chapitre même.
+Remember: right from [the first article](/blog/why-front-matter-cms-docusaurus/), I promised we'd come back to `frontMatter.extends` and splitting up the config. The moment has come — and it lands particularly well, because the need was born from this very chapter.
 
-En ouvrant cet article, mon `frontmatter.json` faisait **191 lignes**. Puis on y a ajouté les snippets, les actions de maintenance, les modes du panneau :
+When I opened this article, my `frontmatter.json` was **191 lines**. Then we added the snippets, the maintenance actions, the panel modes:
 
-| Étape                                        | Lignes  |
-| -------------------------------------------- | ------- |
-| Au début de cet article                      | 191     |
-| Après les snippets et le réglage du wrapper  | 249     |
-| Après les trois actions de maintenance       | 371     |
-| Après le `Columns` à huit champs et la lightbox | 419  |
-| Après les deux modes du panneau              | **450** |
+| Step                                          | Lines   |
+| --------------------------------------------- | ------- |
+| At the start of this article                  | 191     |
+| After the snippets and the wrapper setting    | 249     |
+| After the three maintenance actions           | 371     |
+| After the eight-field `Columns` and the lightbox | 419  |
+| After the two panel modes                     | **450** |
 
-Plus du double, pour un seul fichier où retrouver un réglage devenait pénible. Ce n'est donc pas une coquetterie de rangement : c'est le prix de tout ce qu'on vient de construire.
+More than double, for a single file in which finding a setting was becoming a chore. So this isn't tidiness for its own sake: it's the price of everything we've just built.
 
-Front Matter offre deux mécanismes pour ranger ça, à ne pas confondre.
+Front Matter offers two mechanisms for sorting that out, not to be confused with each other.
 
-### Le découpage par convention de dossiers
+### Splitting by folder convention
 
-Le premier ne demande aucune déclaration : il repose sur une **arborescence attendue** sous `.frontmatter/config/`. Voici celle de ce blog, après découpage :
+The first requires no declaration at all: it rests on an **expected tree** under `.frontmatter/config/`. Here is this blog's, after splitting:
 
 <Trees>
   <Folder label=".frontmatter" expanded={true}>
@@ -561,7 +554,7 @@ Le premier ne demande aucune déclaration : il repose sur une **arborescence att
           <File label="Terminal.json" icon="json" />
           <File label="Admonition.json" icon="json" />
           <File label="Lightbox.json" icon="json" />
-          <File label="Image + colonnes.json" icon="json" />
+          <File label="Image + columns.json" icon="json" />
         </Folder>
       </Folder>
       <Folder label="taxonomy" expanded={true}>
@@ -582,40 +575,40 @@ Le premier ne demande aucune déclaration : il repose sur une **arborescence att
   </Folder>
 </Trees>
 
-Chaque fichier contient **une seule entrée** : un snippet, un content type, une action. Le nom du fichier reprend l'identifiant de l'élément  la clé du snippet, l'`id` de l'action, le `name` du content type.
+Each file holds **a single entry**: one snippet, one content type, one action. The file name repeats the element's identifier — the snippet's key, the action's `id`, the content type's `name`.
 
-Trois pièges m'ont coûté du temps.
+Three traps cost me time.
 
-:::caution `contentTypes`, pas `contenttypes`
-Le dossier des content types s'écrit en **camelCase** : `.frontmatter/config/taxonomy/contentTypes`. Avec `contenttypes` tout en minuscules, le fichier est ignoré  mon formulaire perdait ses 19 champs sans le moindre message d'erreur. C'est [Elio Struyf](https://discord.gg/JBVtNMsJFB), l'auteur de l'extension, qui m'a donné la bonne casse quand je lui ai posé la question sur le Discord.
+:::caution `contentTypes`, not `contenttypes`
+The content types folder is spelled in **camelCase**: `.frontmatter/config/taxonomy/contentTypes`. With `contenttypes` all in lowercase, the file is ignored — my form lost its 19 fields without the slightest error message. It was [Elio Struyf](https://discord.gg/JBVtNMsJFB), the extension's author, who gave me the right casing when I asked him on Discord.
 :::
 
-:::tip Redémarrez VS Code, pas seulement la config
-La commande `Front Matter: Refresh Front Matter Settings` recharge les réglages, et c'est ce qu'il faut après avoir **édité** un fichier de configuration. Mais après en avoir **déplacé** un  a fortiori après avoir déménagé le fichier racine  elle ne suffit pas : il faut **redémarrer VS Code**. Sans ça, on croit à tort que le découpage a échoué, et on part chercher une erreur qui n'existe pas.
+:::tip Restart VS Code, not just the config
+The `Front Matter: Refresh Front Matter Settings` command reloads the settings, and that's what you need after **editing** a configuration file. But after **moving** one — all the more so after relocating the root file — it isn't enough: you have to **restart VS Code**. Without that, you wrongly conclude the split failed, and go hunting for an error that doesn't exist.
 :::
 
-:::caution Les chemins relatifs changent de sens
-Une action custom déclarée dans le fichier de configuration racine peut pointer son script en relatif :
+:::caution Relative paths change meaning
+A custom action declared in the root configuration file can point at its script relatively:
 
 ```json
 { "script": "./scripts/clear-npm-cache.mjs" }
 ```
 
-Déplacez la même déclaration dans un fichier éclaté, et le bouton apparaît… mais ne fait plus rien. Le chemin ne se résout plus depuis la racine du projet. Le jeton `[[workspace]]` lève l'ambiguïté :
+Move the same declaration into a split file, and the button appears… but does nothing. The path no longer resolves from the project root. The `[[workspace]]` token removes the ambiguity:
 
 ```json
 { "script": "[[workspace]]/scripts/clear-npm-cache.mjs" }
 ```
 
-À faire systématiquement dès qu'un chemin quitte le fichier principal.
+To be done systematically as soon as a path leaves the main file.
 :::
 
-### Le dernier pas : vider la racine
+### The last step: emptying the root
 
-À ce stade, il reste un fichier à la racine du projet  `frontmatter.json`, réduit à ses réglages globaux. On peut s'arrêter là, ou aller au bout : Front Matter cherche sa configuration **aussi** dans `.frontmatter/config`. Rien n'empêche donc d'y déplacer ce dernier fichier, sous le même nom.
+At this stage, one file remains at the project root — `frontmatter.json`, cut back to its global settings. You can stop there, or go all the way: Front Matter looks for its configuration **also** in `.frontmatter/config`. Nothing stops you moving that last file there, under the same name.
 
 <Trees>
-  <Folder label="mon-projet" expanded={true}>
+  <Folder label="my-project" expanded={true}>
     <Folder label=".frontmatter" expanded={true}>
       <Folder label="config" expanded={true}>
         <File label="frontmatter.json" icon="json" />
@@ -627,22 +620,21 @@ Déplacez la même déclaration dans un fichier éclaté, et le bouton apparaît
   </Folder>
 </Trees>
 
-La racine du projet ne porte plus aucune trace de l'extension, et le dossier `.frontmatter/` contient l'intégralité du paramétrage : réglages, content type, snippets, actions, templates et bases de données.
+The project root no longer carries any trace of the extension, and the `.frontmatter/` folder holds the entire setup: settings, content type, snippets, actions, templates and databases.
 
-Le bilan de l'opération, sur ce blog :
+The outcome of the operation, on this blog:
 
-| | Avant | Après |
+| | Before | After |
 | --- | --- | --- |
-| Fichier de config à la racine | 450 lignes | **aucun** |
-| Réglages globaux | mêlés au reste | `.frontmatter/config/frontmatter.json`, 79 lignes |
-| Content type | dans le même fichier | son fichier dédié |
-| Snippets | dans le même fichier | 5 fichiers |
-| Actions custom | dans le même fichier | 3 fichiers |
+| Config file at the root | 450 lines | **none** |
+| Global settings | mixed in with the rest | `.frontmatter/config/frontmatter.json`, 79 lines |
+| Content type | in the same file | its own dedicated file |
+| Snippets | in the same file | 5 files |
+| Custom actions | in the same file | 3 files |
 
+### `frontMatter.extends`: the explicit list
 
-### `frontMatter.extends` : la liste explicite
-
-Le second mécanisme ne devine rien : `frontMatter.extends` énumère les fichiers de configuration à charger. C'est **l'approche que préfère l'auteur de l'extension**, et on comprend pourquoi  un fichier par domaine, tout est visible d'un coup d'œil :
+The second mechanism guesses nothing: `frontMatter.extends` enumerates the configuration files to load. It's **the approach the extension's author prefers**, and you can see why — one file per domain, everything visible at a glance:
 
 ```json title="frontmatter.json"
 "frontMatter.extends": [
@@ -653,36 +645,36 @@ Le second mécanisme ne devine rien : `frontMatter.extends` énumère les fichie
 ]
 ```
 
-Plus de convention à respecter, plus de casse à deviner : vous nommez vos fichiers comme vous voulez, du moment qu'ils sont listés. Pour un projet qui grossit, c'est plus prévisible que l'arborescence implicite.
+No convention to respect, no casing to guess: you name your files however you like, as long as they're listed. For a project that keeps growing, that's more predictable than the implicit tree.
 
-Et surtout, `extends` accepte aussi des **URL** :
+And above all, `extends` also accepts **URLs**:
 
 ```json title="frontmatter.json"
 "frontMatter.extends": [
-  "https://exemple.com/frontmatter/preset.json",
+  "https://example.com/frontmatter/preset.json",
   ".frontmatter/configuration/local.json"
 ]
 ```
 
-C'est ce qui ouvre le travail à plusieurs projets : une équipe publie un preset commun  content types, snippets, conventions  hébergé où elle veut, y compris dans un dépôt Git servi en brut. Chaque site l'étend et garde son `frontmatter.json` local pour ses spécificités.
+That's what opens the door to working across several projects: a team publishes a shared preset — content types, snippets, conventions — hosted wherever it likes, including in a Git repository served raw. Each site extends it and keeps its local configuration for its own specifics.
 
-:::note Qui gagne en cas de conflit ?
-L'ordre de priorité est sans ambiguïté : le `frontmatter.json` local **écrase** le découpage `.frontmatter/config/`, qui lui-même **écrase** les configurations importées via `extends`. Votre fichier local a toujours le dernier mot  une base partagée ne peut jamais vous imposer un réglage que vous redéfinissez chez vous.
+:::note Who wins in case of conflict?
+The order of precedence is unambiguous: the local `frontmatter.json` **overrides** the `.frontmatter/config/` split, which itself **overrides** configurations imported through `extends`. Your local file always has the last word — a shared base can never impose a setting you redefine at home.
 :::
 
-### Vérifier que tout est bien recomposé
+### Checking everything was recomposed properly
 
-Une configuration éclatée pose une question légitime : **comment savoir ce que l'extension a réellement chargé ?** Front Matter répond avec une commande peu connue, et c'est le meilleur compagnon de ce chapitre :
+A split configuration raises a fair question: **how do you know what the extension actually loaded?** Front Matter answers with a little-known command, and it's this chapter's best companion:
 
-<Terminal title="VS Code  palette de commandes">
+<Terminal title="VS Code — command palette">
 
 Front Matter: Diagnostic logging
 
 </Terminal>
 
-Elle ouvre un document Markdown virtuel  rien n'est écrit sur le disque. Voici le début du rapport de ce blog :
+It opens a virtual Markdown document — nothing is written to disk. Here is the start of this blog's report:
 
-```markdown title="Front Matter: Diagnostic logging  en-tête"
+```markdown title="Front Matter: Diagnostic logging — header"
 # Front Matter CMS - Diagnostics
 
 Beta: `false`
@@ -715,13 +707,13 @@ Total files found: 345
 | 4 | `blog\**\*.*` | 0 | 24 | 0 |
 ```
 
-Déjà là, deux choses utiles. Les **versions** (extension, OS, VS Code) sont exactement ce qu'un mainteneur réclamera dans une issue  plus besoin d'aller les chercher. Et le tableau des fichiers montre le **motif de recherche réellement employé** (`blog\**\*.*`) avec le compte par extension : mes 24 articles en `.mdx` sont bien vus, sur 345 fichiers dans l'espace de travail.
+Already there, two useful things. The **versions** (extension, OS, VS Code) are exactly what a maintainer will ask for in an issue — no more hunting for them. And the file table shows the **search pattern actually used** (`blog\**\*.*`) with the count per extension: my 24 `.mdx` articles are indeed seen, out of 345 files in the workspace.
 
-Suit la partie qui justifie à elle seule cette section : **la configuration complète, entièrement recomposée** à partir de tous les fichiers éclatés. Et chaque élément y gagne une annotation absente de vos fichiers :
+Then comes the part that justifies this section on its own: **the complete configuration, fully recomposed** from all the split files. And every element gains an annotation absent from your own files:
 
-```json title="extrait  la configuration recomposée"
+```json title="excerpt — the recomposed configuration"
 "Columns": {
-  "description": "Deux colonnes  largeur, marge et padding réglables de chaque côté",
+  "description": "Two columns — width, margin and padding adjustable on each side",
   "body": [ "…" ],
   "fields": [ "…" ],
   "id": "Columns",
@@ -730,14 +722,10 @@ Suit la partie qui justifie à elle seule cette section : **la configuration com
 }
 ```
 
-Ce `sourcePath` **dit de quel fichier vient chaque snippet**. C'est l'outil de vérification qu'on cherchait : après avoir dispersé sa configuration en dix fichiers, on n'a plus de vue d'ensemble  ce rapport la reconstitue et trace l'origine de chaque morceau. Un snippet absent, un content type ignoré, un dossier mal nommé se voient immédiatement. Avec cette commande, mon `contentTypes` en camelCase aurait été repéré en dix secondes au lieu d'une session entière.
+That `sourcePath` **tells you which file each snippet came from**. It's the verification tool we were after: once your configuration is scattered across ten files, you no longer have an overview — this report rebuilds it and traces the origin of every piece. A missing snippet, an ignored content type, a badly named folder show up immediately. With this command, my camelCase `contentTypes` would have been spotted in ten seconds instead of a whole session.
 
-C'est exactement le fondement du chapitre suivant : une configuration partageable est le prérequis du travail en équipe.
+That is exactly the foundation of the next chapter: a shareable configuration is the prerequisite for teamwork.
 
+We've pushed Front Matter a long way within a solo logic: pre-filling, insertion, home-made buttons, modular configuration. Everything we've built sits on one machine, one repository, one author.
 
-
-
-On a poussé Front Matter très loin dans une logique solo : pré-remplissage, insertion, boutons maison, configuration modulaire. Tout ce qu'on a construit tient sur une machine, un dépôt, un auteur.
-
-Reste la question qu'on a soigneusement évitée jusqu'ici : et à plusieurs ? Dans le prochain article, on ouvre le blog à une équipe  et on verra que Front Matter, dépourvu de comptes et de rôles, s'en remet entièrement à Git pour gérer qui écrit quoi.
-
+That leaves the question we've carefully avoided so far: what about several people? In the next article, we open the blog up to a team — and we'll see that Front Matter, having neither accounts nor roles, relies entirely on Git to manage who writes what.

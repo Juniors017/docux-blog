@@ -1,5 +1,5 @@
 {
-  "description": "Depuis une carte média : insère l'image dans une colonne, texte à droite",
+  "description": "From a media card: insert the image into a column, text on the right",
   "isMediaSnippet": true,
   "body": [
     "<Columns>",
@@ -14,17 +14,17 @@
   "fields": [
     {
       "name": "imageWidth",
-      "title": "Largeur de la colonne image",
+      "title": "Image column width",
       "type": "choice",
       "choices": ["col--6", "col--4", "col--8"],
       "default": "col--6"
     },
     {
       "name": "altText",
-      "title": "Texte alternatif",
+      "title": "Alternative text",
       "type": "string"
     }
   ],
-  "id": "Image + colonnes",
-  "title": "Image + colonnes"
+  "id": "Image + columns",
+  "title": "Image + columns"
 }
