@@ -9,6 +9,12 @@
 # dossiers commençant par un point). Sauvegardés par OneDrive, pas par Git.
 /blog/.draft/
 
+# Cadrage Claude Code — personnel, hors du dépôt public. Le dossier entier (skills, sous-agent,
+# gabarit, contextes de chantier, archive) et la charte racine restent sur le disque, sauvegardés
+# par OneDrive. Rien n'en a jamais été publié : à ne pas remettre dans Git.
+/.claude/
+/CLAUDE.md
+
 # Generated files
 .docusaurus
 .cache-loader
