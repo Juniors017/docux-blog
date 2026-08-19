@@ -23,6 +23,7 @@
         "panel.gitActions",
         "panel.recentlyModified",
         "panel.otherActions",
+        "panel.contentHealth",
         "dashboard.snippets.view",
         "dashboard.snippets.manage",
         "dashboard.data.view",
