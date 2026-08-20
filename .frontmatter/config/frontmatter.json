@@ -1,5 +1,6 @@
 {
   "$schema": "https://frontmatter.codes/frontmatter.schema.json",
+  "frontMatter.git.enabled": true,
   "frontMatter.framework.id": "docusaurus",
   "frontMatter.content.publicFolder": "static",
   "frontMatter.preview.host": "http://localhost:3000",
@@ -44,5 +45,13 @@
     }
   ],
   "frontMatter.snippets.wrapper.enabled": false,
-  "frontMatter.templates.enabled": true
+  "frontMatter.templates.enabled": true,
+  "frontMatter.site.baseURL": "https://docuxlab.com",
+  "frontMatter.git.commitMessage": "Synced by DocuxLab",
+  "frontMatter.media.defaultSorting": "LastModifiedDesc",
+  "frontMatter.contentHealth.checkExternalLinks": true,
+  "frontMatter.copilot.enabled": false,
+  "frontMatter.dashboard.openOnStart": true,
+  "frontMatter.content.autoUpdateDate": false,
+  "frontMatter.panel.openOnSupportedFile": true
 }
