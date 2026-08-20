@@ -53,5 +53,6 @@
   "frontMatter.copilot.enabled": false,
   "frontMatter.dashboard.openOnStart": true,
   "frontMatter.content.autoUpdateDate": false,
-  "frontMatter.panel.openOnSupportedFile": true
+  "frontMatter.panel.openOnSupportedFile": true,
+  "frontMatter.website.host": "https://docuxlab.com"
 }
