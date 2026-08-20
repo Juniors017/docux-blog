@@ -15,6 +15,12 @@
 /.claude/
 /CLAUDE.md
 
+# Épingles du dashboard Front Matter : personnelles, pas partagées.
+# Sur les trois bases de .frontmatter/database/, c'est la seule qui n'a pas à voyager
+# avec le dépôt — taxonomyDb et mediaDb portent du contexte commun, celle-ci non.
+# Source : Elio Struyf, auteur de l'extension (échange du 2026-08-20).
+/.frontmatter/database/pinnedItemsDb.json
+
 # Generated files
 .docusaurus
 .cache-loader
