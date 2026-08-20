@@ -15,7 +15,7 @@ tags:
   - vscode
 date: 2026-07-31
 last_update:
-  date: 2026-07-31
+  date: 2026-08-20
   author: docux
 draft: false
 inLanguage: en
@@ -640,6 +640,10 @@ At this stage, one file remains at the project root — `frontmatter.json`, cut 
 </Trees>
 
 The project root no longer carries any trace of the extension, and the `.frontmatter/` folder holds the entire setup: settings, content type, snippets, actions, templates and databases.
+
+:::note Splitting has a price: the dashboard form
+Once a snippet lives in its own file, the dashboard stops editing it through a form. Clicking it opens `.frontmatter/config/content/snippets/<name>.json` instead, for you to edit by hand. It is deliberate: when saving, the extension filters out every snippet carrying a `sourcePath`, so a split entry is never duplicated back into `frontmatter.json`. The same holds for custom actions and content types. You gain files that never collide; you give up the form.
+:::
 
 The outcome of the operation, on this blog:
 
