@@ -1,0 +1,15 @@
+# robots.txt for https://docuxlab.com/
+User-agent: *
+Allow: /
+Disallow: /search
+Disallow: /404
+
+# Crawl delay for heavy crawlers
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://docuxlab.com/sitemap.xml
