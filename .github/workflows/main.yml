@@ -17,6 +17,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Full history, required by `showLastUpdateTime`. The default depth
+          # of 1 leaves `git log <file>` empty for every article the tip commit
+          # did not touch, so Docusaurus would emit no `dateModified` at all —
+          # silently, and only in production, since a local clone has the whole
+          # history.
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

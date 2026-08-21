@@ -212,6 +212,15 @@ const config = {
         docs: false,
         blog: {
           showReadingTime: true,
+          // Feeds `dateModified` in the BlogPosting structured data, which
+          // Google lists as recommended for articles. Without it Docusaurus
+          // drops the property — and ignores the `last_update` front matter
+          // entirely, whatever an article declares.
+          //
+          // The date comes from git by default. A `last_update` in front
+          // matter takes precedence over it, article by article, and spares
+          // the git call for that file.
+          showLastUpdateTime: true,
           blogSidebarTitle: "All posts",
           blogSidebarCount: "ALL",
           // Please change this to your repo. Remove this to remove the "edit this page"
