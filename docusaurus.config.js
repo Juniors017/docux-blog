@@ -20,9 +20,17 @@ import remarkSnippetLoader from "./plugins/remark-snippet-loader/index.cjs";
 const SITE_DESCRIPTION =
   "Explore Docusaurus with me. Find here my developments, research, and notes about Docusaurus";
 
+// Single source of truth for the site name, reused by the page titles, the
+// navbar, the social cards and the structured data. These used to be seven
+// separate literals spelling the name four different ways (DOCUX, Docux,
+// DOCUXLAB, DocuxLab), so search engines and social cards were given
+// conflicting names for one site. Not to be confused with the author name in
+// the `author` meta tag: the site is DocuxLab, the person is Docux.
+const SITE_NAME = "DocuxLab";
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "DOCUX",
+  title: SITE_NAME,
   tagline: SITE_DESCRIPTION,
   favicon: "img/docux.webp",
   organizationName: "DocuxLab", // Usually your GitHub org/user name.
@@ -148,12 +156,18 @@ const config = {
       attributes: {
         type: "application/ld+json",
       },
+      // The `@id` values are what let the two blocks below reference each
+      // other, and what the per-page structured data points back to, instead
+      // of three unrelated descriptions of the same site.
       innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "DOCUX",
+        "@id": "https://docuxlab.com/#website",
+        name: SITE_NAME,
         url: "https://docuxlab.com/",
         description: SITE_DESCRIPTION,
+        inLanguage: "en",
+        publisher: { "@id": "https://docuxlab.com/#organization" },
         potentialAction: {
           "@type": "SearchAction",
           target: "https://docuxlab.com/search?q={search_term_string}",
@@ -170,10 +184,22 @@ const config = {
       innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Organization",
-        name: "DOCUX",
+        "@id": "https://docuxlab.com/#organization",
+        name: SITE_NAME,
         url: "https://docuxlab.com/",
-        logo: "https://docuxlab.com/img/docux.webp",
-        sameAs: ["https://github.com/Juniors017/docux-blog"],
+        description: SITE_DESCRIPTION,
+        // Dimensions given because `docux.webp` really is 737×689; an
+        // ImageObject without them says less than a bare URL.
+        logo: {
+          "@type": "ImageObject",
+          url: "https://docuxlab.com/img/docux.webp",
+          width: 737,
+          height: 689,
+        },
+        sameAs: [
+          "https://github.com/Juniors017/docux-blog",
+          "https://bsky.app/profile/docuxlab.com",
+        ],
       }),
     },
   ],
@@ -284,7 +310,7 @@ const config = {
         },
         {
           name: "twitter:title",
-          content: "DOCUXLAB",
+          content: SITE_NAME,
         },
         {
           name: "twitter:description",
@@ -296,7 +322,7 @@ const config = {
         },
         {
           property: "og:title",
-          content: "DOCUXLAB",
+          content: SITE_NAME,
         },
         {
           property: "og:type",
@@ -316,7 +342,7 @@ const config = {
         },
         {
           property: "og:site_name",
-          content: "DOCUX",
+          content: SITE_NAME,
         },
         {
           property: "og:locale",
@@ -333,10 +359,12 @@ const config = {
       },
 
       navbar: {
-        title: "Docux",
+        title: SITE_NAME,
         style: "dark",
         logo: {
-          alt: "Docux Blog Logo",
+          // A logo that links home is named after the site, not after itself:
+          // "Logo" adds nothing for someone listening to the page.
+          alt: SITE_NAME,
           src: "img/docux.webp",
         },
         items: [
@@ -406,7 +434,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} DocuxLab Blog, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} ${SITE_NAME}. Built with Docusaurus.`,
       },
       prism: {
         theme: prismThemes.github,
