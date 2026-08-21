@@ -1,356 +1,592 @@
-.heroBanner {
-  background-color: #aab121;
-  padding: 4rem 0;
-  text-align: center;
-  color: var(--ifm-font-color-base);
-  box-shadow: 0 0 20px var(--ifm-color-primary);
+/**
+ * Homepage styles.
+ *
+ * Two rules the rest of the site imposes and that this page works around:
+ *
+ * 1. `custom.css` forces `.container` to 1600–1800px and redefines
+ *    `.col--2` to 20%. Both are tuned for article pages, and neither suits a
+ *    landing page, so the layout below uses its own `.wrap` width and CSS grid
+ *    instead of the Infima grid.
+ * 2. `--ifm-color-primary` is a green (#4e9a06) in light mode and a yellow
+ *    (#d7de4d) in dark mode. The same colour cannot serve as text in both:
+ *    the green only reaches 3.5:1 on white. Hence the token pairs below —
+ *    every theme redefines them rather than each rule guessing.
+ */
+
+.home {
+  --home-accent-text: var(--ifm-color-primary-darkest);
+  --home-accent-strong: var(--ifm-color-primary-darkest);
+  --home-accent-strong-hover: var(--ifm-color-primary-darker);
+  --home-on-accent: #ffffff;
+  --home-accent-soft: rgba(78, 154, 6, 0.09);
+  --home-accent-soft-strong: rgba(78, 154, 6, 0.18);
+  --home-border: rgba(78, 154, 6, 0.22);
+  --home-border-strong: rgba(78, 154, 6, 0.45);
+  --home-alt-bg: rgba(78, 154, 6, 0.04);
+  --home-surface: var(--ifm-background-surface-color);
+  --home-muted: var(--ifm-color-emphasis-700);
+  --home-radius: 14px;
 }
 
-/* Dark mode for heroBanner */
-[data-theme="dark"] .heroBanner {
-  background-color: rgb(22, 22, 17);
-  color: #fff;
+[data-theme="dark"] .home {
+  /* The yellow reads at ~11:1 on the dark background: no darker step needed,
+     but buttons filled with it need dark text rather than white. */
+  --home-accent-text: var(--ifm-color-primary);
+  --home-accent-strong: var(--ifm-color-primary);
+  --home-accent-strong-hover: var(--ifm-color-primary-light);
+  --home-on-accent: #14150f;
+  --home-accent-soft: rgba(215, 222, 77, 0.1);
+  --home-accent-soft-strong: rgba(215, 222, 77, 0.2);
+  --home-border: rgba(215, 222, 77, 0.2);
+  --home-border-strong: rgba(215, 222, 77, 0.42);
+  --home-alt-bg: rgba(255, 255, 255, 0.03);
 }
 
-.title {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 10px var(--ifm-link-hover-color);
-}
-
-.subtitle {
-  font-size: 1.5rem;
-  color: var(--ifm-font-color-secondary);
-}
-
-.buttons .button {
-  box-shadow: 0 0 10px var(--ifm-link-hover-color);
-  transition: all 0.3s ease;
-}
-
-.buttons .button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 20px var(--ifm-link-hover-color);
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
 }
 
 /* =========================
-   Hero et Body Homepage 
+   Hero
    ========================= */
-.homehero {
-  background-color: rgb(215, 222, 77) !important;
-  color: rgba(0, 0, 0, 0.747);
-  padding: 2rem 0;
+
+.hero {
   position: relative;
-  overflow: hidden;
+  padding: 4rem 0 3.25rem;
+  border-bottom: 1px solid var(--home-border);
+  background:
+    radial-gradient(
+      55% 110% at 10% 0%,
+      var(--home-accent-soft-strong),
+      transparent 62%
+    ),
+    radial-gradient(
+      45% 90% at 95% 15%,
+      var(--home-accent-soft),
+      transparent 58%
+    );
 }
 
-/* Dark mode for homehero */
-[data-theme="dark"] .homehero {
-  background-color: rgb(215, 222, 77) !important;
-  color: rgba(0, 0, 0, 0.8);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+.heroInner {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: center;
+  gap: 3rem;
 }
 
-.homebody {
-  background-color: rgb(142, 198, 83);
-  padding: 2rem 0;
-  position: relative;
-  overflow: hidden;
-  border-top: 2px solid rgba(215, 222, 77, 0.8);
+.heroText {
+  min-width: 0;
 }
 
-/* Effet graphique subtil */
-.homebody::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at top right,
-    rgba(215, 222, 77, 0.5) 0%,
-    rgba(215, 222, 77, 0) 50%
-  );
-  pointer-events: none;
-}
-
-/* Dark mode for homebody */
-[data-theme="dark"] .homebody {
-  background-color: rgb(142, 198, 83);
-  color: rgba(0, 0, 0, 0.85);
-  border-top: 2px solid rgba(170, 177, 33, 0.8);
-}
-
-/* Animation pour la hero section */
-.homehero::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  box-shadow: 0 0 20px rgba(78, 154, 6, 0.5);
-  animation: glow 3s infinite alternate;
-}
-
-/* Animation pour le contenu */
-.animatedContent {
-  animation: fadeIn 1s ease-in-out;
-}
-
-/* Animation pour l'image circulaire - Nouvelle méthode avec div imbriquées */
-.circleImage {
-  position: relative;
-  display: inline-block;
-  width: 250px; /* Définir une taille fixe */
-  height: 250px; /* Définir une taille fixe */
-  margin: 10px auto;
-}
-
-/* Bordure rotative extérieure - Même pour les deux modes */
-.circleImage::before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
+/**
+ * The illustration, in a disc.
+ *
+ * `docux4.webp` is a 1621×608 scene, so a circle can only ever show a square
+ * slice of it. `object-position` picks which one: 54% lands on the mascot at
+ * the desk rather than on the default centre, which cut through the chair.
+ * Vertically the image fills exactly, so only the horizontal value matters.
+ */
+.portrait {
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
-  background: conic-gradient(
-    rgb(229, 240, 20),
-    /* On utilise les couleurs fixes au lieu des variables pour garantir la cohérence */
-    rgb(132, 175, 15),
-    rgb(152, 204, 10),
-    rgb(185, 245, 21),
-    rgb(226, 238, 8)
-  );
-  animation: spin 4s linear infinite;
-  z-index: 1;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 6px var(--home-accent-soft),
+    0 0 0 7px var(--home-border),
+    0 18px 40px rgba(0, 0, 0, 0.14);
 }
 
-/* Effet de halo - Même pour les deux modes */
-.circleImage::after {
-  content: "";
-  position: absolute;
-  inset: -12px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at center,
-    rgba(215, 222, 77, 0.4),
-    transparent 70%
-  );
-  filter: blur(5px);
-  animation: pulse 3s ease-in-out infinite alternate;
-  z-index: 0;
-}
-
-.circleImage img {
-  position: relative;
+.portrait img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid white;
-  z-index: 2;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  object-position: 54% 50%;
 }
 
-/* Mode sombre - exactement les mêmes styles que le mode clair */
-[data-theme="dark"] .circleImage::before {
-  background: conic-gradient(#aab121, #4e9a06, #d7de4d, #4e9a06, #aab121);
+.heroSearch {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  margin-top: 1.5rem;
 }
 
-[data-theme="dark"] .circleImage::after {
-  background: radial-gradient(
-    circle at center,
-    rgba(215, 222, 77, 0.4),
-    transparent 70%
-  );
-}
-
-[data-theme="dark"] .circleImage img {
-  border: 4px solid white;
-}
-
-@keyframes glow {
-  from {
-    opacity: 0.5;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes border-flow {
-  0% {
-    width: 0;
-    left: 0;
-  }
-  50% {
-    width: 100%;
-  }
-  100% {
-    width: 0;
-    left: 100%;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-}
-
-/* Bouton caractéristique */
-.featureButton {
-  transition: all 0.3s ease;
-  border: 2px solid var(--ifm-color-primary);
-  position: relative;
-  overflow: hidden;
-}
-
-.featureButton::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
+/**
+ * The search field is the navbar component reused as-is. Two of its own rules
+ * have to be answered here: Infima sizes the input for a navbar (2rem tall),
+ * and the search plugin collapses it to `width: 2rem` below 576px when it is
+ * not focused — which would leave a tiny pill in the middle of the hero. The
+ * `:not(:focus)` selector is what outranks that one.
+ */
+.heroSearch :global(.navbar__search-input),
+.heroSearch :global(.navbar__search-input):not(:focus) {
   width: 100%;
-  height: 0;
-  background-color: var(--ifm-color-primary-lightest);
-  opacity: 0.2;
-  transition: height 0.3s ease;
-  z-index: -1;
+  max-width: 24rem;
+  height: 2.75rem;
+  font-size: 1rem;
 }
 
-.featureButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(78, 154, 6, 0.3);
+.heroSearchHint {
+  font-size: 0.82rem;
+  color: var(--home-muted);
 }
 
-.featureButton:hover::after {
-  height: 100%;
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--home-accent-text);
 }
 
-/* Style de bouton cohérent entre mode clair et sombre */
-.docsButton {
-  background-color: rgb(132, 175, 15) !important;
-  color: white !important;
-  border: none !important;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  position: relative;
-  overflow: hidden;
+.title {
+  margin: 0;
+  font-size: clamp(2.1rem, 1.3rem + 2.6vw, 3.1rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-.docsButton:hover {
-  transform: translateY(-3px);
-  background-color: rgb(152, 204, 10) !important;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-}
-
-.docsButton::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  transition: 0.5s;
-}
-
-.docsButton:hover::after {
-  left: 100%;
-}
-
-/* Style pour le bouton blog - Version outline du bouton Documentation */
-.blogButton {
-  background-color: transparent !important;
-  color: rgb(132, 175, 15) !important;
-  border: 2px solid rgb(132, 175, 15) !important;
-  transition: all 0.3s ease;
+.tagline {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem);
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  position: relative;
+  color: var(--home-accent-text);
+}
+
+.lead {
+  margin: 1rem 0 0;
+  max-width: 60ch;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--home-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.home .primaryAction {
+  background-color: var(--home-accent-strong);
+  color: var(--home-on-accent);
+  border: 1px solid transparent;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.home .primaryAction:hover {
+  background-color: var(--home-accent-strong-hover);
+  color: var(--home-on-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--home-accent-soft-strong);
+}
+
+.home .secondaryAction {
+  background-color: transparent;
+  color: var(--home-accent-text);
+  border: 1px solid var(--home-border-strong);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.home .secondaryAction:hover {
+  background-color: var(--home-accent-soft);
+  color: var(--home-accent-text);
+  transform: translateY(-2px);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  gap: 2.5rem;
+  margin: 2.25rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--home-border);
+}
+
+.stat {
+  margin: 0;
+}
+
+.statLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--home-muted);
+}
+
+.statValue {
+  margin: 0.15rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ifm-heading-color);
+}
+
+/* =========================
+   Sections
+   ========================= */
+
+.section {
+  padding: 3.5rem 0;
+}
+
+.sectionAlt {
+  background-color: var(--home-alt-bg);
+  border-top: 1px solid var(--home-border);
+  border-bottom: 1px solid var(--home-border);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: clamp(1.55rem, 1.2rem + 1.1vw, 2.05rem);
+  line-height: 1.2;
+}
+
+.sectionLink {
+  font-weight: 600;
+  color: var(--home-accent-text);
+  white-space: nowrap;
+}
+
+.sectionLink:hover {
+  color: var(--home-accent-text);
+  text-decoration: underline;
+}
+
+/* =========================
+   Cards, shared shell
+   ========================= */
+
+.topicCard,
+.postCard,
+.seriesCard,
+.linkCard {
+  background-color: var(--home-surface);
+  border: 1px solid var(--home-border);
+  border-radius: var(--home-radius);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.topicCard:hover,
+.postCard:hover,
+.seriesCard:hover,
+.linkCard:hover {
+  border-color: var(--home-border-strong);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   What you will find here
+   ========================= */
+
+.topicGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+  gap: 1.25rem;
+}
+
+.topicCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+.topicTitle {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.topicDescription {
+  flex: 1;
+  margin: 0;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--home-muted);
+}
+
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--home-border);
+  border-radius: 999px;
+  background-color: var(--home-accent-soft);
+  color: var(--home-accent-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.badge:hover {
+  background-color: var(--home-accent-soft-strong);
+  border-color: var(--home-border-strong);
+  color: var(--home-accent-text);
+  text-decoration: none;
+}
+
+/* =========================
+   Latest articles
+   ========================= */
+
+.postGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  gap: 1.5rem;
+}
+
+.postCard {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
-.blogButton:hover {
-  transform: translateY(-3px);
-  color: rgb(152, 204, 10) !important;
-  border-color: rgb(152, 204, 10) !important;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+.postMedia {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--home-accent-soft);
 }
 
-.blogButton::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
+.postMedia img {
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(132, 175, 15, 0.2),
-    transparent
-  );
-  transition: 0.5s;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
 }
 
-.blogButton:hover::after {
-  left: 100%;
+.postCard:hover .postMedia img {
+  transform: scale(1.04);
 }
 
-/* Même style en mode sombre */
-[data-theme="dark"] .docsButton {
-  background-color: rgb(132, 175, 15) !important;
-  color: white !important;
+.postBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.15rem 1.3rem 1.4rem;
 }
 
-[data-theme="dark"] .docsButton:hover {
-  background-color: rgb(152, 204, 10) !important;
+.postTitle {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.35;
 }
 
-[data-theme="dark"] .blogButton {
-  background-color: transparent !important;
-  color: rgb(132, 175, 15) !important;
-  border: 2px solid rgb(132, 175, 15) !important;
+.postTitle a {
+  color: var(--ifm-heading-color);
 }
 
-[data-theme="dark"] .blogButton:hover {
-  color: rgb(152, 204, 10) !important;
-  border-color: rgb(152, 204, 10) !important;
+.postTitle a:hover {
+  color: var(--home-accent-text);
+  text-decoration: none;
+}
+
+.postDescription {
+  flex: 1;
+  margin: 0;
+  font-size: 0.89rem;
+  line-height: 1.6;
+  color: var(--home-muted);
+}
+
+.postMeta {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--home-muted);
+}
+
+/* =========================
+   Series
+   ========================= */
+
+.seriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 1rem;
+}
+
+.seriesCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.3rem;
+}
+
+.seriesCard:hover {
+  text-decoration: none;
+}
+
+.seriesCount {
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--home-accent-text);
+}
+
+.seriesCountUnit {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--home-muted);
+}
+
+.seriesName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ifm-heading-color);
+}
+
+.seriesMeta {
+  font-size: 0.76rem;
+  color: var(--home-muted);
+}
+
+/* =========================
+   Elsewhere
+   ========================= */
+
+.linkGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 1rem;
+}
+
+.linkCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem;
+}
+
+.linkCard:hover {
+  text-decoration: none;
+}
+
+.linkLabel {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--home-accent-text);
+}
+
+.linkLabel::after {
+  content: " →";
+}
+
+.linkDescription {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--home-muted);
+}
+
+.signature {
+  margin: 2.25rem 0 0;
+  text-align: right;
+  font-style: italic;
+  color: var(--home-muted);
+}
+
+/* =========================
+   Focus, motion, responsive
+   ========================= */
+
+.badge:focus-visible,
+.seriesCard:focus-visible,
+.linkCard:focus-visible,
+.postMedia:focus-visible {
+  outline: 2px solid var(--home-accent-text);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topicCard,
+  .postCard,
+  .seriesCard,
+  .linkCard,
+  .postMedia img,
+  .home .primaryAction,
+  .home .secondaryAction {
+    transition: none;
+  }
+
+  .topicCard:hover,
+  .postCard:hover,
+  .seriesCard:hover,
+  .linkCard:hover,
+  .home .primaryAction:hover,
+  .home .secondaryAction:hover {
+    transform: none;
+  }
+
+  .postCard:hover .postMedia img {
+    transform: none;
+  }
+}
+
+@media (max-width: 996px) {
+  .hero {
+    padding: 3rem 0 2.5rem;
+  }
+
+  .heroInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.25rem;
+  }
+
+  .portrait {
+    width: 210px;
+    height: 210px;
+    justify-self: center;
+  }
+
+  .stats {
+    gap: 1.75rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    padding: 2.75rem 0;
+  }
+
+  .sectionHeader {
+    align-items: flex-start;
+  }
+
+  .stats {
+    gap: 1.25rem;
+  }
 }
