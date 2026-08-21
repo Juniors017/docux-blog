@@ -26,7 +26,7 @@ Docux-blog is a technical and community blog platform built with [Docusaurus](ht
 - **Blog/PostCard**: Article preview cards.
 - **Timeline**: Chronological timeline.
 - **Tooltip**: Interactive tooltips.
-- **Button, Card, Columns, Contributor, Hero, Highlight, HomeCard, HomepageFeatures, ImageOnClick, LogoIcon, MyRepositories, ReplaceWords, ScrollToTopButton, Skill, Fourhomecards, GithubProjects, DocusaurusButton**: Full UI component palette.
+- **Button, Card, Columns, Contributor, Hero, Highlight, ImageOnClick, LogoIcon, MyRepositories, ReplaceWords, ScrollToTopButton, Skill, GithubProjects, DocusaurusButton**: Full UI component palette.
 
 ## 📚 Featured Articles Summary
 
