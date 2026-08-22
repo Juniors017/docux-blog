@@ -280,7 +280,16 @@ const config = {
         sitemap: {
           changefreq: "weekly",
           priority: 0.5,
-          ignorePatterns: ["/tags/**", "/search/**", "/404", "/404.html"],
+          // `/blog/tags/**` and not `/tags/**`: the blog lives under `/blog/`,
+          // so the shorter pattern matched nothing and the sitemap advertised
+          // 79 tag pages — two thirds of its 122 URLs — for 23 articles.
+          ignorePatterns: [
+            "/blog/tags/**",
+            "/blog/authors/**",
+            "/search/**",
+            "/404",
+            "/404.html",
+          ],
           filename: "sitemap.xml",
         },
       }),
