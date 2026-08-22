@@ -225,6 +225,42 @@ const config = {
           feedOptions: {
             type: ["rss", "atom"],
             xslt: true,
+
+            /**
+             * Summaries in the feed, not whole articles.
+             *
+             * `defaultCreateFeedItems` puts the article's full rendered HTML in
+             * `content`. On this blog that meant 2.91 MB per feed, and both
+             * feeds are generated: 5.8 MB of the build. The weight is the
+             * articles themselves — the component tutorials reach 506, 350 and
+             * 326 KB on their own, mostly Prism's syntax-highlighting markup,
+             * one span per token. Inlined base64 images accounted for 0.10 MB
+             * of the 2.91, so they were never the problem.
+             *
+             * Feed readers strip or mangle that markup anyway, and a reader
+             * polling the feed re-downloads all of it every cycle. So the item
+             * keeps its description and a link back, and the article is read on
+             * the site where its code blocks actually work.
+             *
+             * To go back to full-text feeds, drop this function: everything
+             * else here is Docusaurus' own default.
+             */
+            createFeedItems: async ({ defaultCreateFeedItems, ...params }) => {
+              const escape = (text) =>
+                String(text ?? "")
+                  .replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;");
+
+              const items = await defaultCreateFeedItems(params);
+
+              return items.map((item) => ({
+                ...item,
+                content:
+                  `<p>${escape(item.description)}</p>` +
+                  `<p><a href="${item.link}">Read the full article on ${SITE_NAME}</a></p>`,
+              }));
+            },
           },
           remarkPlugins: [remarkSnippetLoader, [remarkReplaceWords, "blog"]],
           // Custom admonition types swizzled in src/theme/Admonition/Types.js.
