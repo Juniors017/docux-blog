@@ -78,9 +78,21 @@ html[data-theme="dark"] .alert--docu {
 }
 
 /* Dark mode for h2 */
+/**
+ * The background here was never the problem: in dark mode
+ * `--ifm-color-primary-darkest` resolves to the same yellow-green #aab121 as
+ * the light rule above. The white text was — it measured 2.33:1 against that
+ * band, well under the 4.5:1 AA asks for text this size (h2 is set to 18px
+ * further down).
+ *
+ * So the heading now carries the same dark text as in light mode, which puts
+ * it at 6.88:1. Both themes render this band identically on purpose: the
+ * yellow-green is the site's signature and it holds on either ground. Only the
+ * glow stays theme-specific — a black shadow would be invisible here.
+ */
 [data-theme="dark"] .markdown h2 {
   background-color: var(--ifm-color-primary-darkest);
-  color: #fff;
+  color: rgba(0, 0, 0, 0.8);
   box-shadow: 0 2px 10px rgba(215, 222, 77, 0.3);
 }
 
