@@ -64,24 +64,21 @@ const config = {
     [
       "@docusaurus/plugin-client-redirects",
       {
-        redirects: [
-          // Add your redirects here, for example: {   from: '/old-page',   to:
-          // '/new-page', },
-        ],
-        // Automatic redirects based on common taxonomy
-        /**
-         * @param {string} existingPath
-         */
-        createRedirects: (existingPath) => {
-          // Redirect old URLs to new ones
-          if (existingPath.includes("/blog/")) {
-            return [
-              existingPath.replace("/blog/", "/articles/"),
-              existingPath.replace("/blog/", "/posts/"),
-            ].filter((redirect) => redirect !== existingPath);
-          }
-          return undefined;
-        },
+        // The place to declare a redirect when a published article's slug
+        // changes — the one case where this plugin earns its keep, since a
+        // slug that has been indexed cannot simply move.
+        //
+        // Example: { from: "/blog/old-slug/", to: "/blog/new-slug/" }
+        redirects: [],
+
+        // `createRedirects` used to mirror every /blog/ URL under /articles/
+        // and /posts/. That generated 220 of the build's 344 pages — 64 % of
+        // what was deployed — to redirect from paths this blog never served.
+        // GoatCounter records no traffic on either prefix, so they were
+        // aliases for a past that did not happen. Removed 2026-08-22.
+        //
+        // Worth remembering if it is ever reinstated: the plugin emits
+        // client-side stubs that answer HTTP 200 with a meta refresh, not 301s.
       },
     ],
   ],
