@@ -40,9 +40,41 @@ export default {
   // Réutilise la correspondance par défaut
   ...MDXComponents,
 
+  /**
+   * Responsive candidates for images in article bodies.
+   *
+   * `docusaurus-plugin-image-optimizer` writes `<name>-400w.<ext>` and so on
+   * during `postBuild` — after this markup is rendered, but into the same
+   * build. Deterministic naming is what makes referencing them safe.
+   *
+   * The plugin writes a candidate **only when it is genuinely narrower than the
+   * source**, so a consumer must not ask for one that does not exist. This one
+   * can hold to that: since dimensions are forwarded (see below), the real
+   * width is known here, and only narrower rungs are listed.
+   *
+   * `sizes` describes the article column: 65% of a container capped at 1600px
+   * in `custom.css`, less 2rem of padding on each side — about 976px — and the
+   * full viewport on a phone.
+   */
   img: (props) => {
     const { loading, decoding, className, style, height, width, ...rest } =
       props;
+
+    const intrinsicWidth = Number(width);
+    let srcSet;
+    let sizes;
+
+    if (rest.src && !rest.srcSet && Number.isFinite(intrinsicWidth)) {
+      const dot = String(rest.src).lastIndexOf(".");
+      const rungs = [400, 800, 1200, 1600].filter((w) => w < intrinsicWidth);
+
+      if (dot > 0 && rungs.length) {
+        const base = String(rest.src).slice(0, dot);
+        const ext = String(rest.src).slice(dot);
+        srcSet = rungs.map((w) => `${base}-${w}w${ext} ${w}w`).join(", ");
+        sizes = "(max-width: 996px) 100vw, 976px";
+      }
+    }
 
     return (
       <img
@@ -59,6 +91,8 @@ export default {
         // give the aspect ratio, CSS does the sizing.
         height={height}
         width={width}
+        srcSet={srcSet}
+        sizes={sizes}
         loading={loading || "lazy"}
         decoding={decoding || "async"}
         className={`${className || ""}`}

@@ -20,6 +20,40 @@ const FALLBACK_IMAGE = "/img/docux.webp";
 
 const RECENT_POSTS_COUNT = 3;
 
+/**
+ * Responsive candidates for the article cards.
+ *
+ * The cards show a 16/9 crop about 360px wide on a desktop grid, and the full
+ * viewport width on a phone — while the covers themselves are 1760px. Without
+ * this, a phone downloads roughly five times the pixels it can display.
+ *
+ * `docusaurus-plugin-image-optimizer` writes `<name>-400w.<ext>` and
+ * `-800w` next to each image during `postBuild`, so these files do not exist
+ * yet when this markup is rendered — they are written moments later, into the
+ * same build. The naming is deterministic, which is what makes that safe.
+ *
+ * Only 400 and 800: the plugin writes a candidate **only when it is genuinely
+ * narrower than the source**, and the narrowest cover on this blog is 1760px,
+ * so both always exist. Wider rungs would be pointless for a 360px slot.
+ *
+ * Nothing is emitted for the fallback image: `docux.webp` is 737px wide, so it
+ * has no 800w candidate and referencing one would 404.
+ */
+const CARD_WIDTHS = [400, 800];
+const CARD_SIZES = "(max-width: 600px) 100vw, 380px";
+
+function cardSrcSet(image) {
+  if (!image) {
+    return undefined;
+  }
+  const dot = image.lastIndexOf(".");
+  if (dot < 0) {
+    return undefined;
+  }
+  const [base, ext] = [image.slice(0, dot), image.slice(dot)];
+  return CARD_WIDTHS.map((w) => `${base}-${w}w${ext} ${w}w`).join(", ");
+}
+
 const REPOSITORY_URL = "https://github.com/Juniors017/docux-blog";
 const FORUM_URL = "https://forum.docuxlab.com";
 const FEED_URL = "/blog/rss.xml";
@@ -239,8 +273,15 @@ function Hero({ postCount, seriesCount, latestDate }) {
       <div className={styles.wrap}>
         <div className={styles.heroInner}>
           <div className={styles.portrait}>
+            {/* `sizes` is not the 280px of the circle. With `object-fit:
+                cover` on a 1621×608 image in a square box, it is the *height*
+                that fills: the image is scaled by 280/608, so it renders about
+                747px wide — 560px inside the 210px circle used below 996px.
+                Asking for 280px here would have served a blurry crop. */}
             <img
               src="/img/docux4.webp"
+              srcSet="/img/docux4-800w.webp 800w, /img/docux4-1600w.webp 1600w"
+              sizes="(max-width: 996px) 560px, 747px"
               alt="Docux, the mascot of this blog, sitting at a desk in front of screens full of code"
               width="1621"
               height="608"
@@ -382,6 +423,8 @@ function LatestPosts({ posts, seriesBySlug }) {
                 >
                   <img
                     src={post.image || FALLBACK_IMAGE}
+                    srcSet={cardSrcSet(post.image)}
+                    sizes={post.image ? CARD_SIZES : undefined}
                     alt=""
                     loading="lazy"
                     decoding="async"

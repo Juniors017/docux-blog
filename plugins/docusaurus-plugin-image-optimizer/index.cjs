@@ -22,9 +22,29 @@
  * JPEG → JPEG) so every existing reference keeps working. If optimizing doesn't
  * actually shrink the file, the original is kept.
  *
+ * Width variants (`widths`): alongside each image, the plugin writes
+ * `<name>-400w.<ext>`, `-800w` and so on, for use in a `srcset`. Two rules make
+ * them safe to reference:
+ *
+ * 1. **Deterministic naming.** This runs in `postBuild`, so the HTML is already
+ *    written by the time the variants appear. A component can therefore emit a
+ *    `srcset` pointing at files that do not exist yet — they land moments later,
+ *    in the same build, at exactly the expected paths.
+ * 2. **A variant is written only when it is genuinely narrower than the source.**
+ *    An earlier version wrote one regardless, re-encoding the source under the
+ *    candidate's name so no `srcset` entry could ever 404. That produced 297
+ *    redundant copies out of 644 and 24 MB of build. The obligation moved to the
+ *    consumer instead: only reference a rung narrower than the image. See
+ *    `src/theme/MDXComponents.js`, which knows each image's real width, and
+ *    `src/pages/index.jsx`, whose covers are all at least 1760px wide.
+ *
+ * Animated images get no variants at all: resizing frames is the one thing this
+ * plugin has always refused to risk.
+ *
  * Options (all optional):
  * - quality     {number}   Encoder quality, 1–100. Default 80.
  * - maxWidth    {number}   Max width in px; wider images are downscaled. Default 1920.
+ * - widths      {number[]} Widths to emit as `srcset` candidates. Default [400,800,1200,1600]; `[]` disables.
  * - extensions  {string[]} File extensions to process. Default [".png",".jpg",".jpeg",".webp"].
  * - cacheDir    {string}   Cache location. Default node_modules/.cache/docusaurus-plugin-image-optimizer.
  * - concurrency {number}   Parallel workers. Default 8.
@@ -39,10 +59,22 @@ const crypto = require("crypto");
 const DEFAULT_OPTIONS = {
   quality: 80,
   maxWidth: 1920,
+  widths: [400, 800, 1200, 1600],
   extensions: [".png", ".jpg", ".jpeg", ".webp"],
   cacheDir: null,
   concurrency: 8,
 };
+
+/** `photo.webp` + 400 → `photo-400w.webp`. Deterministic, and that matters. */
+function variantPath(file, width) {
+  const ext = path.extname(file);
+  return `${file.slice(0, -ext.length)}-${width}w${ext}`;
+}
+
+/** True for a file this plugin generated, so a rerun never treats one as a source. */
+function isVariant(file) {
+  return /-\d+w\.[a-z]+$/i.test(file);
+}
 
 // Bump when the optimization logic changes, to invalidate stale cache entries.
 const CACHE_VERSION = "v1";
@@ -62,7 +94,10 @@ async function collectImages(dir, extensions) {
       const full = path.join(current, entry.name);
       if (entry.isDirectory()) {
         await walk(full);
-      } else if (extensions.includes(path.extname(entry.name).toLowerCase())) {
+      } else if (
+        extensions.includes(path.extname(entry.name).toLowerCase()) &&
+        !isVariant(entry.name)
+      ) {
         found.push(full);
       }
     }
@@ -97,6 +132,48 @@ async function optimizeBuffer(sharp, buffer, ext, { quality, maxWidth }) {
       return null;
   }
   return pipeline.toBuffer();
+}
+
+/**
+ * Re-encode a buffer at a given width, for a `srcset` candidate.
+ *
+ * Returns `null` for an animated image: resizing frames is the one case this
+ * plugin has always refused to risk, and a missing candidate is handled by the
+ * caller rather than produced badly here.
+ *
+ * Returns `null` when the source is already narrower than the target, so no
+ * file is written. A first version wrote one anyway — a re-encoded copy under
+ * the candidate's name — to guarantee no `srcset` entry could ever 404. It
+ * guaranteed 297 redundant copies out of 644 instead, and 24 MB on the build.
+ *
+ * The contract moved to the caller: only reference a candidate narrower than
+ * the image. `MDXComponents` knows each image's real width (Docusaurus hands
+ * it over), and every article cover here is at least 1760px wide, so both
+ * consumers can hold to it.
+ */
+async function resizeBuffer(sharp, buffer, ext, width, { quality }) {
+  const pipeline = sharp(buffer);
+  const meta = await pipeline.metadata();
+  if (meta.pages) return null;
+  if (!meta.width || meta.width <= width) return null;
+
+  let out = pipeline.resize({ width, withoutEnlargement: true });
+
+  switch (ext) {
+    case ".webp":
+      out = out.webp({ quality });
+      break;
+    case ".png":
+      out = out.png({ compressionLevel: 9, palette: true, quality });
+      break;
+    case ".jpg":
+    case ".jpeg":
+      out = out.jpeg({ quality, mozjpeg: true });
+      break;
+    default:
+      return null;
+  }
+  return out.toBuffer();
 }
 
 /** Run `worker` over `items` with at most `limit` in flight at once. */
@@ -148,6 +225,9 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         failed: 0,
         before: 0,
         after: 0,
+        variantsMade: 0,
+        variantsFromCache: 0,
+        variantBytes: 0,
       };
 
       await mapLimit(images, opts.concurrency, async (file) => {
@@ -188,6 +268,33 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
           } else {
             stats.after += original.length;
           }
+
+          // Width variants, so a card of 360px stops downloading a 1760px file.
+          // Derived from `best` rather than from the original: the ladder then
+          // inherits the same resize and quality decisions.
+          for (const width of opts.widths) {
+            const target = variantPath(file, width);
+            const variantCache = path.join(
+              cacheDir,
+              `${hash}-${paramsSignature}-${width}w${ext}`
+            );
+
+            let bytes;
+            try {
+              bytes = await fsp.readFile(variantCache);
+              stats.variantsFromCache++;
+            } catch {
+              bytes = await resizeBuffer(sharp, best, ext, width, opts);
+              // Animated, or already narrower than this rung: nothing to write,
+              // and nothing wider up the ladder either.
+              if (!bytes) break;
+              await fsp.writeFile(variantCache, bytes);
+              stats.variantsMade++;
+            }
+
+            await fsp.writeFile(target, bytes);
+            stats.variantBytes += bytes.length;
+          }
         } catch (err) {
           stats.failed++;
           console.warn(
@@ -208,6 +315,11 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
       console.log(
         `Total: ${formatBytes(stats.before)} → ${formatBytes(stats.after)}  (saved ${formatBytes(saved)}, -${percent}%)`
       );
+      if (opts.widths.length) {
+        console.log(
+          `Variants: ${stats.variantsMade + stats.variantsFromCache}  (made: ${stats.variantsMade}, from cache: ${stats.variantsFromCache}, ${formatBytes(stats.variantBytes)} added)`
+        );
+      }
       console.log("=======================\n");
     },
   };
