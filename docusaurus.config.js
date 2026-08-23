@@ -366,42 +366,31 @@ const config = {
           content: "index, follow",
         },
 
-        // Twitter Card data
+        /**
+         * Only what is genuinely true of every page belongs here.
+         *
+         * `twitter:title`, `twitter:description`, `twitter:image`, `og:title`,
+         * `og:description`, `og:image` and `og:url` used to sit in this list
+         * with site-wide values, and they were the reason a shared article
+         * showed the site's tagline instead of its own text.
+         *
+         * Docusaurus emits `og:title`, `og:description`, `og:image` and
+         * `twitter:image` per page, from the front matter, and those override
+         * whatever is declared here — which is why the *image* of a share was
+         * always right. But it emits no `twitter:title`, no
+         * `twitter:description` and no `og:url`, so those three static values
+         * survived on all 124 pages. `og:url` was the worst of them: every
+         * article declared the homepage as the identity of the shared object.
+         *
+         * The per-page `og:url` now comes from `src/theme/BlogPostPage`.
+         */
         {
           name: "twitter:card",
           content: "summary_large_image",
         },
         {
-          name: "twitter:title",
-          content: SITE_NAME,
-        },
-        {
-          name: "twitter:description",
-          content: SITE_DESCRIPTION,
-        },
-        {
-          name: "twitter:image",
-          content: "https://docuxlab.com/img/docux.webp",
-        },
-        {
-          property: "og:title",
-          content: SITE_NAME,
-        },
-        {
           property: "og:type",
           content: "website",
-        },
-        {
-          property: "og:url",
-          content: "https://docuxlab.com/",
-        },
-        {
-          property: "og:image",
-          content: "https://docuxlab.com/img/docux.webp",
-        },
-        {
-          property: "og:description",
-          content: SITE_DESCRIPTION,
         },
         {
           property: "og:site_name",
