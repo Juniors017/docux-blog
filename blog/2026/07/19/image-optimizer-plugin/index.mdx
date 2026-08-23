@@ -313,16 +313,6 @@ That 104 is not the 161 the report prints, and the gap is worth explaining. The 
 
 The contrast between the three PNGs and the WebP is not an accident. A palette re-encode bites hard on a screenshot and much less on an already-compressed WebP.
 
-:::note Where the gains come from has changed
-The first version of this article said the biggest wins came from **resizing** over-sized images, and named a 2473px background as the example. That was true when it was written; it no longer is.
-
-Checked again on 2026-08-23: of the 104 source images, **not one exceeds `maxWidth`** — the widest is 1857px against a 1920px threshold. The resize step never fires any more, and every gain above comes from the re-encode alone.
-
-The cause has nothing to do with the plugin: a later commit standardised the blog's screenshots to a single format. A tidy-up made a published explanation obsolete, with nothing to signal it.
-
-Which is worth knowing in itself: the plugin has two levers, and on an already-clean corpus only one of them works.
-:::
-
 A second build is basically instant for images — everything comes from the cache:
 
 ```text
