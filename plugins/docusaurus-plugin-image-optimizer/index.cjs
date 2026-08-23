@@ -62,7 +62,11 @@
  * - concurrency {number}   Parallel workers. Default 8.
  * - pruneUnreferenced {boolean} Delete variants no page references. Default true.
  *
- * See readme.md for more details.
+ * Environment: `IMAGE_OPTIMIZER_FORCE=1 npm run build` re-encodes everything,
+ * ignoring the cache for one run without deleting it.
+ *
+ * Written up in full, with the measurements and the mistakes, at
+ * https://docuxlab.com/blog/image-optimizer-docusaurus-plugin/
  */
 
 const fsp = require("fs/promises");
@@ -98,6 +102,24 @@ function isVariant(file) {
 
 // Bump when the optimization logic changes, to invalidate stale cache entries.
 const CACHE_VERSION = "v1";
+
+/**
+ * Set `IMAGE_OPTIMIZER_FORCE=1` to re-encode everything, ignoring the cache.
+ *
+ * Useful when the encoding code changed but `CACHE_VERSION` did not, or simply
+ * to confirm from scratch what the cache has been replaying. Results are still
+ * written back, so the next build is incremental again.
+ */
+const FORCE_ENV = "IMAGE_OPTIMIZER_FORCE";
+
+/** Read a file, or `null` when it isn't there. */
+async function readIfExists(file) {
+  try {
+    return await fsp.readFile(file);
+  } catch {
+    return null;
+  }
+}
 
 function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
@@ -163,8 +185,7 @@ async function optimizeBuffer(sharp, buffer, ext, { quality, maxWidth }) {
  * would only add weight.
  *
  * The second case is why a caller must reference only rungs narrower than the
- * image. See the header for who holds to that, and `readme.md` for why the
- * rule ended up here rather than in the plugin.
+ * image. See the header for who holds to that.
  */
 async function resizeBuffer(sharp, buffer, ext, width, { quality }) {
   const pipeline = sharp(buffer);
@@ -291,6 +312,11 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         return;
       }
 
+      const force = Boolean(process.env[FORCE_ENV]);
+      if (force) {
+        console.log(`[image-optimizer] ${FORCE_ENV} set — ignoring the cache.`);
+      }
+
       await fsp.mkdir(cacheDir, { recursive: true });
       const images = await collectImages(outDir, opts.extensions);
 
@@ -328,11 +354,10 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
 
           // The cache stores the "best" bytes we decided to keep for this
           // source image (either the optimized version or the original).
-          let best;
-          try {
-            best = await fsp.readFile(cacheFile);
+          let best = force ? null : await readIfExists(cacheFile);
+          if (best) {
             stats.fromCache++;
-          } catch {
+          } else {
             const optimized = await optimizeBuffer(sharp, original, ext, opts);
             best =
               optimized && optimized.length < original.length
@@ -360,11 +385,10 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
               `${hash}-${paramsSignature}-${width}w${ext}`
             );
 
-            let bytes;
-            try {
-              bytes = await fsp.readFile(variantCache);
+            let bytes = force ? null : await readIfExists(variantCache);
+            if (bytes) {
               stats.variantsFromCache++;
-            } catch {
+            } else {
               bytes = await resizeBuffer(sharp, best, ext, width, opts);
               // Animated, or already narrower than this rung: nothing to write,
               // and nothing wider up the ladder either.

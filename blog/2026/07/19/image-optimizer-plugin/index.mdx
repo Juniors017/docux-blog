@@ -86,7 +86,6 @@ The plugin lives in `plugins/`, like my other local plugins.
   <Folder label="plugins" expanded={true}>
     <Folder label="docusaurus-plugin-image-optimizer" expanded={true}>
       <File label="index.cjs" icon="javascript" />
-      <File label="readme.md" icon="markdown" />
     </Folder>
   </Folder>
 </Trees>
@@ -121,6 +120,14 @@ On the next build, an image whose hash is already in the cache is **restored fro
 - **Later builds:** only new or changed images are processed; everything else is a cache hit.
 
 A nice side effect: two byte-identical images (say, the same picture referenced from `static/` and from a blog post) share a hash, so the encoding work is done once even within a single build. Note that this deduplicates the _work_, not the bytes — both copies are still written to `build/`, each with its own ladder of variants.
+
+One escape hatch, because a cache you cannot bypass is a cache you end up distrusting:
+
+```bash
+IMAGE_OPTIMIZER_FORCE=1 npm run build
+```
+
+That ignores the cache for a single run and re-encodes everything, without deleting anything — the results are written back, so the next build is incremental again. It is also how you check the cache has not been replaying stale bytes: a forced run should print the same totals as a cached one. On this build it does, down to the byte.
 
 :::note The cache is the "artifact"
 Because the cache lives under `node_modules/.cache`, it's git-ignored. In CI we persist it with `actions/cache` (below), which is exactly what makes the already-optimized images a build artifact reused across runs.
@@ -333,5 +340,5 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 :::tip Takeaway
 A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds.
 
-It stands at about 420 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
+It stands at about 450 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
 :::
