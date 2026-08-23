@@ -207,6 +207,35 @@ function isReferenced(outDir, file, refs) {
 }
 
 /**
+ * Group the files by their bytes, so identical images are handled once.
+ *
+ * Docusaurus re-emits every image a post references under a hashed name in
+ * `assets/images/`, beside the original in `img/`, so a sizeable share of the
+ * build is duplicates. Grouping up front means each distinct image is encoded
+ * exactly once and its result written to every path that carries it — and it
+ * leaves `from cache` meaning what a reader expects: restored from an earlier
+ * build, not met twice in this one.
+ */
+async function groupByContent(files) {
+  const groups = new Map();
+  for (const file of files) {
+    const buffer = await fsp.readFile(file);
+    const hash = crypto.createHash("sha256").update(buffer).digest("hex");
+    const existing = groups.get(hash);
+    if (existing) existing.paths.push(file);
+    else {
+      groups.set(hash, {
+        hash,
+        buffer,
+        ext: path.extname(file).toLowerCase(),
+        paths: [file],
+      });
+    }
+  }
+  return [...groups.values()];
+}
+
+/**
  * Drop cache entries this run did not use.
  *
  * A full build touches every entry that still matters, so the rest is dead: a
@@ -278,6 +307,8 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         ? await collectReferences(outDir)
         : null;
 
+      const groups = await groupByContent(images);
+
       const stats = {
         optimized: 0,
         fromCache: 0,
@@ -285,26 +316,21 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         failed: 0,
         before: 0,
         after: 0,
-        variantsMade: 0,
+        variantsEncoded: 0,
         variantsFromCache: 0,
+        variantsWritten: 0,
         variantBytes: 0,
-        variantsSkipped: 0,
         cacheRemoved: 0,
         cacheBytes: 0,
       };
 
       const usedCacheFiles = new Set();
 
-      await mapLimit(images, opts.concurrency, async (file) => {
+      await mapLimit(groups, opts.concurrency, async (group) => {
+        const { hash, buffer: original, ext, paths } = group;
         try {
-          const original = await fsp.readFile(file);
-          stats.before += original.length;
+          stats.before += original.length * paths.length;
 
-          const hash = crypto
-            .createHash("sha256")
-            .update(original)
-            .digest("hex");
-          const ext = path.extname(file).toLowerCase();
           const cacheFile = path.join(
             cacheDir,
             `${hash}-${paramsSignature}${ext}`
@@ -325,23 +351,23 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
           }
           usedCacheFiles.add(cacheFile);
 
-          if (best.length < original.length) {
-            await writeAtomic(file, best);
-            stats.after += best.length;
-          } else {
-            stats.after += original.length;
+          const keep = best.length < original.length;
+          if (keep) {
+            for (const file of paths) await writeAtomic(file, best);
           }
+          stats.after += (keep ? best.length : original.length) * paths.length;
 
           // Derived from `best`, so the ladder inherits the same resize and
           // quality decisions as the image it belongs to.
           for (const width of opts.widths) {
-            const target = variantPath(file, width);
+            // The rung is decided per path: a copy under `img/` can go
+            // unreferenced while its twin under `assets/images/` is wanted.
+            const targets = paths
+              .map((file) => variantPath(file, width))
+              .filter((target) => !refs || isReferenced(outDir, target, refs));
 
             // `continue`, not `break`: a wider rung may still be referenced.
-            if (refs && !isReferenced(outDir, target, refs)) {
-              stats.variantsSkipped++;
-              continue;
-            }
+            if (!targets.length) continue;
 
             const variantCache = path.join(
               cacheDir,
@@ -355,17 +381,20 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
               bytes = await resizeBuffer(sharp, best, ext, width, opts);
               if (!bytes) break;
               await writeAtomic(variantCache, bytes);
-              stats.variantsMade++;
+              stats.variantsEncoded++;
             }
             usedCacheFiles.add(variantCache);
 
-            await writeAtomic(target, bytes);
-            stats.variantBytes += bytes.length;
+            for (const target of targets) {
+              await writeAtomic(target, bytes);
+              stats.variantsWritten++;
+              stats.variantBytes += bytes.length;
+            }
           }
         } catch (err) {
-          stats.failed++;
+          stats.failed += paths.length;
           console.warn(
-            `[image-optimizer] Skipped ${path.basename(file)}: ${err.message}`
+            `[image-optimizer] Skipped ${path.basename(paths[0])}: ${err.message}`
           );
         }
       });
@@ -383,15 +412,15 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
 
       console.log("\n=== Image optimizer ===");
       console.log(
-        `Images: ${images.length}  (optimized: ${stats.optimized}, from cache: ${stats.fromCache}, no gain: ${stats.noGain}, failed: ${stats.failed})`
+        `Images: ${images.length} files, ${groups.length} distinct  (optimized: ${stats.optimized}, from cache: ${stats.fromCache}, no gain: ${stats.noGain}, failed: ${stats.failed})`
       );
       console.log(
         `Total: ${formatBytes(stats.before)} → ${formatBytes(stats.after)}  (saved ${formatBytes(saved)}, -${percent}%)`
       );
       if (opts.widths.length) {
-        const built = stats.variantsMade + stats.variantsFromCache;
+        const rungs = images.length * opts.widths.length;
         console.log(
-          `Variants: ${built} of ${built + stats.variantsSkipped} rungs  (made: ${stats.variantsMade}, from cache: ${stats.variantsFromCache}, ${formatBytes(stats.variantBytes)} added)`
+          `Variants: ${stats.variantsWritten} of ${rungs} rungs  (encoded: ${stats.variantsEncoded}, from cache: ${stats.variantsFromCache}, ${formatBytes(stats.variantBytes)} added)`
         );
       }
       if (stats.cacheRemoved) {

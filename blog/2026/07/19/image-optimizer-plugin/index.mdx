@@ -254,7 +254,7 @@ The fix leans on the naming rule's premise, read the other way round.
 Deterministic naming works because the HTML is written _before_ `postBuild` runs — that is what lets a component name a file that does not exist yet. But the same fact means the finished HTML is sitting there, readable, before the plugin encodes a single byte. So instead of producing a full ladder and cleaning up afterwards, the plugin collects every variant URL the built site names, then skips any rung nobody asked for. Nothing is written, so nothing has to be deleted.
 
 ```text
-Variants: 151 of 644 rungs  (made: 145, from cache: 6, 8.36 MB added)
+Variants: 151 of 644 rungs  (encoded: 145, from cache: 0, 8.36 MB added)
 ```
 
 644 is four rungs for each of the 161 images; 151 is what the site actually references. There is no list to keep in sync — it is derived from the site itself, so it stays correct when the homepage changes its rungs.
@@ -290,13 +290,13 @@ After one `npm run build`, the plugin prints a report:
 
 ```text
 === Image optimizer ===
-Images: 161  (optimized: 102, from cache: 59, no gain: 0, failed: 0)
+Images: 161 files, 101 distinct  (optimized: 101, from cache: 0, no gain: 0, failed: 0)
 Total: 24.69 MB → 12.22 MB  (saved 12.47 MB, -50.5%)
-Variants: 151 of 644 rungs  (made: 145, from cache: 6, 8.36 MB added)
+Variants: 151 of 644 rungs  (encoded: 145, from cache: 0, 8.36 MB added)
 =======================
 ```
 
-The cache hits on a first run are not a contradiction: they are duplicates met later in the same build, where an image already encoded under `img/` turns up again as a hashed copy under `assets/images/`.
+161 files, 101 distinct: Docusaurus re-emits every image a post references under a hashed name in `assets/images/`, beside the original in `img/`, so 60 of them are byte-identical twins. The plugin groups by content before encoding anything, so each distinct image is encoded once and the result written to every path that carries it. That also keeps `from cache` honest — it means restored from an earlier build, never met twice in this one, which is why it reads 0 here.
 
 A few representative files, comparing what sits in `static/img/` to what the plugin produced in `build/`:
 
@@ -316,8 +316,8 @@ The contrast between the three PNGs and the WebP is not an accident. A palette r
 A second build is basically instant for images — everything comes from the cache:
 
 ```text
-Images: 161  (optimized: 0, from cache: 161, no gain: 0, failed: 0)
-Variants: 151 of 644 rungs  (made: 0, from cache: 151, 8.36 MB added)
+Images: 161 files, 101 distinct  (optimized: 0, from cache: 101, no gain: 0, failed: 0)
+Variants: 151 of 644 rungs  (encoded: 0, from cache: 145, 8.36 MB added)
 ```
 
 ## Caching in CI
@@ -348,5 +348,5 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 :::tip Takeaway
 A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds.
 
-It stands at about 400 lines today. The comments have been cut back to a short header and a handful of notes on the parts that are genuinely counter-intuitive — the timing of `postBuild`, and the contract it imposes on whoever writes a `srcset`. Explaining the rest is this article's job, not the file's.
+It stands at about 430 lines today. The comments have been cut back to a short header and a handful of notes on the parts that are genuinely counter-intuitive — the timing of `postBuild`, and the contract it imposes on whoever writes a `srcset`. Explaining the rest is this article's job, not the file's.
 :::
