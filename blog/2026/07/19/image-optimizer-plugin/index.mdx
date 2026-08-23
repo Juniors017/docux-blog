@@ -350,6 +350,7 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 
 - **`quality` / `maxWidth` / `widths`** are the options you will actually reach for. Lower quality or a smaller max width means smaller files; a shorter `widths` ladder means fewer variants on disk. `extensions`, `cacheDir`, `concurrency` (8 workers by default — that is where the speed comes from), `pruneUnreferenced` and `pruneCache` round out the eight.
 - **`widths` must be given in ascending order.** The loop stops at the first rung that is not narrower than the source, so `[1600, 400]` would quietly produce nothing.
+- **A source named like a variant is left alone.** The plugin recognises its own output by the `-400w` suffix, so a source image genuinely called `banner-1920w.jpg` would be skipped. It now says so in the build log rather than passing over it in silence — none of mine trip it, but the warning is there because nothing else would tell you.
 - **PNG uses a palette (lossy) re-encode** for much smaller files. It's great for screenshots and illustrations; if you have PNGs where exact pixels matter, raise the quality or exclude them via `extensions`.
 - **Animated WebP** is left un-resized and gets no variants at all, to stay safe. GIF never reaches that check: it is not in the default `extensions` list, so the plugin does not touch it in the first place.
 - The plugin only runs in `build`, so your dev server stays fast — at the price of the trap described above: no variant exists in development, so any `srcset` must be guarded.
@@ -357,5 +358,5 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 :::tip Takeaway
 A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds.
 
-It stands at about 480 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
+It stands at about 400 lines today. The comments have been cut back to a short header and a handful of notes on the parts that are genuinely counter-intuitive — the timing of `postBuild`, and the contract it imposes on whoever writes a `srcset`. Explaining the rest is this article's job, not the file's.
 :::

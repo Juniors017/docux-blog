@@ -49,7 +49,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules/.cache/docusaurus-plugin-image-optimizer
-          key: image-optimizer-${{ github.run_id }}
+          # Keyed on what the cache actually depends on: the source images and
+          # the encoding code. When neither changed the key hits exactly and
+          # nothing is re-saved; when one did, restore-keys still seeds from the
+          # previous cache so only the new work is done.
+          key: image-optimizer-${{ hashFiles('static/**', 'src/**/*.png', 'src/**/*.jpg', 'src/**/*.jpeg', 'src/**/*.webp', 'plugins/docusaurus-plugin-image-optimizer/index.cjs') }}
           restore-keys: |
             image-optimizer-
 
