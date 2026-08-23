@@ -324,6 +324,18 @@ const config = {
             "/404.html",
           ],
           filename: "sitemap.xml",
+
+          // The plugin defaults to `lastmod: null`, so the sitemap carried no
+          // freshness signal at all — 39 URLs, not one `<lastmod>`. Upstream
+          // intends to flip this default in v4; the TODO sits right above the
+          // option in its own source.
+          //
+          // It is worth turning on now because the dates behind it became
+          // trustworthy: `showLastUpdateTime` reads git, and the CI checks out
+          // the full history. `date` rather than `datetime` — the day is the
+          // useful granularity here, and it avoids advertising a new timestamp
+          // on every rebuild.
+          lastmod: "date",
         },
       }),
     ],
