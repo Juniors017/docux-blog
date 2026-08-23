@@ -38,16 +38,15 @@
  *    metadata and names rungs by hand — checked against 1760px+ card covers
  *    and the 1621px hero.
  *
- * 3. **Unreferenced variants are deleted again** (`pruneUnreferenced`). Writing
- *    a full ladder for every image is only worth it where something consumes
- *    it; elsewhere it is deployment weight nobody fetches. Since the HTML
- *    already exists by `postBuild`, the plugin can read it back, see which
- *    variant URLs the site actually names, and drop the rest. It only ever
- *    deletes paths it wrote during this same run, so a source file that merely
- *    looks like a variant is never at risk.
+ * 3. **A rung nothing references is never made** (`pruneUnreferenced`). A full
+ *    ladder for every image is only worth it where something consumes it;
+ *    elsewhere it is deployment weight nobody fetches. The HTML already exists
+ *    when `postBuild` starts — rule 1's premise, read the other way — so the
+ *    plugin asks the built site which rungs it names *before* encoding any,
+ *    and skips the rest. Nothing is written, so nothing has to be cleaned up.
  *
- *    The scan covers HTML, JS and CSS. A variant referenced only from a JSON
- *    file, or through a URL assembled at runtime, would be pruned — set
+ *    The scan covers HTML, JS and CSS. A rung referenced only from a JSON file,
+ *    or through a URL assembled at runtime, would be skipped — set
  *    `pruneUnreferenced: false` if you build URLs that way.
  *
  * Animated images get no variants at all: resizing frames is the one thing this
@@ -60,7 +59,8 @@
  * - extensions  {string[]} File extensions to process. Default [".png",".jpg",".jpeg",".webp"].
  * - cacheDir    {string}   Cache location. Default node_modules/.cache/docusaurus-plugin-image-optimizer.
  * - concurrency {number}   Parallel workers. Default 8.
- * - pruneUnreferenced {boolean} Delete variants no page references. Default true.
+ * - pruneUnreferenced {boolean} Skip rungs no page references. Default true.
+ * - pruneCache  {boolean}  Delete cache entries this build did not use. Default true.
  *
  * Environment: `IMAGE_OPTIMIZER_FORCE=1 npm run build` re-encodes everything,
  * ignoring the cache for one run without deleting it.
@@ -81,6 +81,7 @@ const DEFAULT_OPTIONS = {
   cacheDir: null,
   concurrency: 8,
   pruneUnreferenced: true,
+  pruneCache: true,
 };
 
 /** Files that can carry a URL a browser will actually fetch. */
@@ -256,30 +257,43 @@ async function collectReferences(dir) {
 }
 
 /**
- * Delete the variants nothing points at.
+ * Does the built site point at this variant?
  *
- * Only ever considers paths this run wrote, so it cannot touch a source file
- * that happens to look like a variant. A reference counts when it ends with
- * the variant's path relative to the build root, which tolerates a `baseUrl`
- * prefix without matching a same-named file in another folder.
+ * A reference counts when it ends with the variant's path relative to the build
+ * root, which tolerates a `baseUrl` prefix without matching a same-named file
+ * in another folder. Bare filenames — a name quoted inside a code block, say —
+ * do not match, since they carry no leading slash.
  */
-async function pruneVariants(outDir, writtenPaths, refs) {
-  const result = { pruned: 0, bytes: 0 };
-  for (const file of writtenPaths) {
-    const rel = path.relative(outDir, file).split(path.sep).join("/");
-    const suffix = `/${rel}`;
-    let referenced = false;
-    for (const ref of refs) {
-      if (ref === rel || ref.endsWith(suffix)) {
-        referenced = true;
-        break;
-      }
-    }
-    if (referenced) continue;
+function isReferenced(outDir, file, refs) {
+  const rel = path.relative(outDir, file).split(path.sep).join("/");
+  const suffix = `/${rel}`;
+  for (const ref of refs) {
+    if (ref === rel || ref.endsWith(suffix)) return true;
+  }
+  return false;
+}
+
+/**
+ * Delete cache entries this run did not use.
+ *
+ * Without it the cache only ever grows: a bumped `CACHE_VERSION`, a changed
+ * `quality`, or an image removed from the site all leave their old entries
+ * behind under names nothing will ask for again. Since a full build touches
+ * every entry that still matters, whatever it did not touch is dead.
+ *
+ * Losing an entry that turns out to be needed costs one re-encode, never
+ * correctness — which is why this can be left on by default.
+ */
+async function pruneCacheDir(cacheDir, used) {
+  const result = { removed: 0, bytes: 0 };
+  for (const entry of await fsp.readdir(cacheDir, { withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    const full = path.join(cacheDir, entry.name);
+    if (used.has(full)) continue;
     try {
-      const { size } = await fsp.stat(file);
-      await fsp.unlink(file);
-      result.pruned++;
+      const { size } = await fsp.stat(full);
+      await fsp.unlink(full);
+      result.removed++;
       result.bytes += size;
     } catch {
       // Already gone; nothing to account for.
@@ -320,6 +334,13 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
       await fsp.mkdir(cacheDir, { recursive: true });
       const images = await collectImages(outDir, opts.extensions);
 
+      // Collected before a single byte is encoded. The HTML is already written
+      // when `postBuild` starts — the same fact deterministic naming rests on —
+      // so the site can be asked which rungs it wants before we make any.
+      const refs = opts.pruneUnreferenced
+        ? await collectReferences(outDir)
+        : null;
+
       const stats = {
         optimized: 0,
         fromCache: 0,
@@ -330,12 +351,13 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         variantsMade: 0,
         variantsFromCache: 0,
         variantBytes: 0,
-        variantsPruned: 0,
-        prunedBytes: 0,
+        variantsSkipped: 0,
+        cacheRemoved: 0,
+        cacheBytes: 0,
       };
 
-      // Paths written this run, and the only ones pruning may consider.
-      const writtenVariants = [];
+      // Cache entries this run relied on. Anything else in the folder is dead.
+      const usedCacheFiles = new Set();
 
       await mapLimit(images, opts.concurrency, async (file) => {
         try {
@@ -367,6 +389,7 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
             if (best.length < original.length) stats.optimized++;
             else stats.noGain++;
           }
+          usedCacheFiles.add(cacheFile);
 
           if (best.length < original.length) {
             await fsp.writeFile(file, best);
@@ -380,6 +403,15 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
           // inherits the same resize and quality decisions.
           for (const width of opts.widths) {
             const target = variantPath(file, width);
+
+            // Nothing on the site asks for this rung: skip it before spending
+            // an encode on it. `continue`, not `break` — a wider rung further
+            // up the ladder may well be referenced.
+            if (refs && !isReferenced(outDir, target, refs)) {
+              stats.variantsSkipped++;
+              continue;
+            }
+
             const variantCache = path.join(
               cacheDir,
               `${hash}-${paramsSignature}-${width}w${ext}`
@@ -396,9 +428,11 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
               await fsp.writeFile(variantCache, bytes);
               stats.variantsMade++;
             }
+            // After the `break` above, so a rung that writes nothing is not
+            // counted as a live cache entry.
+            usedCacheFiles.add(variantCache);
 
             await fsp.writeFile(target, bytes);
-            writtenVariants.push(target);
             stats.variantBytes += bytes.length;
           }
         } catch (err) {
@@ -409,12 +443,10 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         }
       });
 
-      if (opts.pruneUnreferenced && writtenVariants.length) {
-        const refs = await collectReferences(outDir);
-        const pruned = await pruneVariants(outDir, writtenVariants, refs);
-        stats.variantsPruned = pruned.pruned;
-        stats.prunedBytes = pruned.bytes;
-        stats.variantBytes -= pruned.bytes;
+      if (opts.pruneCache && !stats.failed) {
+        const swept = await pruneCacheDir(cacheDir, usedCacheFiles);
+        stats.cacheRemoved = swept.removed;
+        stats.cacheBytes = swept.bytes;
       }
 
       const saved = stats.before - stats.after;
@@ -430,16 +462,15 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         `Total: ${formatBytes(stats.before)} → ${formatBytes(stats.after)}  (saved ${formatBytes(saved)}, -${percent}%)`
       );
       if (opts.widths.length) {
-        const kept =
-          stats.variantsMade + stats.variantsFromCache - stats.variantsPruned;
+        const built = stats.variantsMade + stats.variantsFromCache;
         console.log(
-          `Variants: ${kept} kept  (made: ${stats.variantsMade}, from cache: ${stats.variantsFromCache}, ${formatBytes(stats.variantBytes)} added)`
+          `Variants: ${built} of ${built + stats.variantsSkipped} rungs  (made: ${stats.variantsMade}, from cache: ${stats.variantsFromCache}, ${formatBytes(stats.variantBytes)} added)`
         );
-        if (opts.pruneUnreferenced) {
-          console.log(
-            `Pruned: ${stats.variantsPruned} unreferenced  (${formatBytes(stats.prunedBytes)} freed)`
-          );
-        }
+      }
+      if (stats.cacheRemoved) {
+        console.log(
+          `Cache: ${stats.cacheRemoved} stale entries removed  (${formatBytes(stats.cacheBytes)} freed)`
+        );
       }
       console.log("=======================\n");
     },

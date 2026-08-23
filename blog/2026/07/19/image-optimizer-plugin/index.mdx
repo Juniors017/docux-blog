@@ -129,6 +129,16 @@ IMAGE_OPTIMIZER_FORCE=1 npm run build
 
 That ignores the cache for a single run and re-encodes everything, without deleting anything — the results are written back, so the next build is incremental again. It is also how you check the cache has not been replaying stale bytes: a forced run should print the same totals as a cached one. On this build it does, down to the byte.
 
+The cache also has to forget. Nothing in the key changes when the encoding code does, so there is a constant, `CACHE_VERSION`, to bump when it does — every key changes, and everything is re-encoded. It travels with the commit, which matters: deleting your local cache does nothing to the one CI restores on the next run.
+
+Bumping it used to leave the old entries on disk forever, and so did deleting an image from the site. A full build touches every entry that still matters, so whatever it did not touch is dead — the plugin now sweeps those at the end:
+
+```text
+Cache: 297 stale entries removed  (16.91 MB freed)
+```
+
+That line is from a `v1` → `v2` bump. Without the sweep the folder would have gone from 18 MB to about 36, carrying both sets; with it, it stayed at 18 with no `v1` entry left. Losing an entry that turns out to be needed costs one re-encode and never correctness, which is why it can be left on.
+
 :::note The cache is the "artifact"
 Because the cache lives under `node_modules/.cache`, it's git-ignored. In CI we persist it with `actions/cache` (below), which is exactly what makes the already-optimized images a build artifact reused across runs.
 :::
@@ -237,18 +247,27 @@ But "nobody downloads them all" is not the same as "each one is useful", and I o
 
 The first row is the arrangement working as designed: those images pass through the `img` mapper, which reads each real width and asks for exactly the rungs that exist. The second row is the hand-named one — 194 files, **9.6 MB**, sitting in the deployed build with nothing that would ever request them. A `widths` ladder pays for itself where a component picks rungs from real widths, and writes dead weight where nothing consumes it.
 
-### Pruning what nothing points at
+### Asking the site before making anything
 
-The fix leans on the same quirk of timing as the naming rule. By `postBuild` the HTML already exists, so the plugin can read the built site back, collect every variant URL it actually names, and delete the ones nobody mentions. There is no list to keep in sync: it is derived from the site itself, so it stays correct when the homepage changes its rungs.
+The fix leans on the naming rule's premise, read the other way round.
+
+Deterministic naming works because the HTML is written _before_ `postBuild` runs — that is what lets a component name a file that does not exist yet. But the same fact means the finished HTML is sitting there, readable, before the plugin encodes a single byte. So instead of producing a full ladder and cleaning up afterwards, the plugin collects every variant URL the built site names, then skips any rung nobody asked for. Nothing is written, so nothing has to be deleted.
 
 ```text
-Variants: 151 kept  (made: 0, from cache: 346, 8.36 MB added)
-Pruned: 195 unreferenced  (9.67 MB freed)
+Variants: 151 of 644 rungs  (made: 145, from cache: 6, 8.36 MB added)
 ```
 
-The build dropped from 41.9 MB to 32.3 MB. I then checked all 151 survivors against the HTML rather than trusting the count: every referenced variant resolves, none was deleted by mistake.
+644 is four rungs for each of the 161 images; 151 is what the site actually references. There is no list to keep in sync — it is derived from the site itself, so it stays correct when the homepage changes its rungs.
 
-Two limits are worth stating plainly. The scan reads HTML, JS and CSS, so a variant referenced only from JSON, or through a URL assembled at runtime, would be pruned — that is what `pruneUnreferenced: false` is for. And the pruner only ever deletes paths it wrote during the same run, so a source file that merely looks like a variant, say `chart-2024w.png`, is never at risk.
+The build went from 41.9 MB to 32.3 MB. I then checked all 151 against the HTML rather than trusting the count: every referenced variant resolves, and nothing the site asks for is missing.
+
+:::note I built this backwards first
+The first version of this did produce all 346, write them to disk, then delete 195 of them — a tidy-up pass at the end of the build. It gave the right output by the wrong route: on a cold cache it spent 199 encodes to keep 151.
+
+Reversing it took moving one function call above the loop. The information had been available all along; I had simply written the cleanup before asking whether the work needed doing.
+:::
+
+One limit worth stating plainly: the scan reads HTML, JS and CSS. A rung referenced only from JSON, or through a URL assembled at runtime, would be skipped — that is what `pruneUnreferenced: false` is for.
 
 ## Registering the plugin
 
@@ -273,8 +292,7 @@ After one `npm run build`, the plugin prints a report:
 === Image optimizer ===
 Images: 161  (optimized: 102, from cache: 59, no gain: 0, failed: 0)
 Total: 24.69 MB → 12.22 MB  (saved 12.47 MB, -50.5%)
-Variants: 151 kept  (made: 199, from cache: 147, 8.36 MB added)
-Pruned: 195 unreferenced  (9.67 MB freed)
+Variants: 151 of 644 rungs  (made: 145, from cache: 6, 8.36 MB added)
 =======================
 ```
 
@@ -309,8 +327,7 @@ A second build is basically instant for images — everything comes from the cac
 
 ```text
 Images: 161  (optimized: 0, from cache: 161, no gain: 0, failed: 0)
-Variants: 151 kept  (made: 0, from cache: 346, 8.36 MB added)
-Pruned: 195 unreferenced  (9.67 MB freed)
+Variants: 151 of 644 rungs  (made: 0, from cache: 151, 8.36 MB added)
 ```
 
 ## Caching in CI
@@ -331,7 +348,7 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 
 ## Tuning and trade-offs
 
-- **`quality` / `maxWidth` / `widths`** are the options you will actually reach for. Lower quality or a smaller max width means smaller files; a shorter `widths` ladder means fewer variants on disk. `extensions`, `cacheDir`, `concurrency` (8 workers by default — that is where the speed comes from) and `pruneUnreferenced` round out the seven.
+- **`quality` / `maxWidth` / `widths`** are the options you will actually reach for. Lower quality or a smaller max width means smaller files; a shorter `widths` ladder means fewer variants on disk. `extensions`, `cacheDir`, `concurrency` (8 workers by default — that is where the speed comes from), `pruneUnreferenced` and `pruneCache` round out the eight.
 - **`widths` must be given in ascending order.** The loop stops at the first rung that is not narrower than the source, so `[1600, 400]` would quietly produce nothing.
 - **PNG uses a palette (lossy) re-encode** for much smaller files. It's great for screenshots and illustrations; if you have PNGs where exact pixels matter, raise the quality or exclude them via `extensions`.
 - **Animated WebP** is left un-resized and gets no variants at all, to stay safe. GIF never reaches that check: it is not in the default `extensions` list, so the plugin does not touch it in the first place.
@@ -340,5 +357,5 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 :::tip Takeaway
 A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds.
 
-It stands at about 450 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
+It stands at about 480 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
 :::
