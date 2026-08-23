@@ -64,7 +64,16 @@ export default {
     let srcSet;
     let sizes;
 
-    if (rest.src && !rest.srcSet && Number.isFinite(intrinsicWidth)) {
+    // ⚠️ Production only: the optimizer runs in `postBuild`, which
+    // `docusaurus start` never triggers, so no variant exists while
+    // developing. Pointing a `srcset` at them made images vanish from the dev
+    // server — the browser had no candidate it could actually fetch.
+    if (
+      process.env.NODE_ENV === "production" &&
+      rest.src &&
+      !rest.srcSet &&
+      Number.isFinite(intrinsicWidth)
+    ) {
       const dot = String(rest.src).lastIndexOf(".");
       const rungs = [400, 800, 1200, 1600].filter((w) => w < intrinsicWidth);
 

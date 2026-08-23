@@ -42,8 +42,16 @@ const RECENT_POSTS_COUNT = 3;
 const CARD_WIDTHS = [400, 800];
 const CARD_SIZES = "(max-width: 600px) 100vw, 380px";
 
+/**
+ * ⚠️ Production only. The plugin runs in `postBuild`, which `docusaurus start`
+ * never triggers, so none of these files exist while developing. A `srcset`
+ * pointing at them leaves the browser with nothing to load and the image
+ * disappears from the dev server — which is exactly what happened once.
+ */
+const HAS_VARIANTS = process.env.NODE_ENV === "production";
+
 function cardSrcSet(image) {
-  if (!image) {
+  if (!image || !HAS_VARIANTS) {
     return undefined;
   }
   const dot = image.lastIndexOf(".");
@@ -280,8 +288,14 @@ function Hero({ postCount, seriesCount, latestDate }) {
                 Asking for 280px here would have served a blurry crop. */}
             <img
               src="/img/docux4.webp"
-              srcSet="/img/docux4-800w.webp 800w, /img/docux4-1600w.webp 1600w"
-              sizes="(max-width: 996px) 560px, 747px"
+              srcSet={
+                HAS_VARIANTS
+                  ? "/img/docux4-800w.webp 800w, /img/docux4-1600w.webp 1600w"
+                  : undefined
+              }
+              sizes={
+                HAS_VARIANTS ? "(max-width: 996px) 560px, 747px" : undefined
+              }
               alt="Docux, the mascot of this blog, sitting at a desk in front of screens full of code"
               width="1621"
               height="608"
