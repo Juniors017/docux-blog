@@ -18,12 +18,12 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@docusaurus/core": "^3.10.1",
-    "@docusaurus/faster": "^3.10.1",
-    "@docusaurus/plugin-client-redirects": "^3.10.1",
-    "@docusaurus/plugin-sitemap": "^3.10.1",
-    "@docusaurus/preset-classic": "^3.10.1",
-    "@docusaurus/theme-live-codeblock": "^3.10.1",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/faster": "^3.10.2",
+    "@docusaurus/plugin-client-redirects": "^3.10.2",
+    "@docusaurus/plugin-sitemap": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
+    "@docusaurus/theme-live-codeblock": "^3.10.2",
     "@easyops-cn/docusaurus-search-local": "^0.52.1",
     "@floating-ui/react": "^0.27.16",
     "@iconify/react": "^6.0.1",
@@ -37,8 +37,8 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.10.1",
-    "@docusaurus/types": "^3.10.1",
+    "@docusaurus/module-type-aliases": "^3.10.2",
+    "@docusaurus/types": "^3.10.2",
     "@eslint/js": "^9.18.0",
     "@frontmatter/extensibility": "^0.0.18",
     "eslint": "^9.18.0",
