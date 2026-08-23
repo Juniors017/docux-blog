@@ -46,6 +46,13 @@ series: "Docusaurus Plugins"
 </div>
 </center>
 
+:::warning Rewrite in progress
+The plugin this article describes is still changing, and the article is being reworked to keep
+up. Every figure here has been re-measured on a real build, but sections written at different
+moments may not yet agree with each other. The known gap: the `srcset` work covers article
+bodies and the homepage, not the card components used on tag and series listings.
+:::
+
 <div className="text--justify">
 My blog was quietly shipping **13.7 MB of images**. A few PNGs weighed over a megabyte, and several WebP files were surprisingly heavy — over-sized dimensions and default encoder quality. Heavy images hurt load time, Core Web Vitals, and ultimately SEO. So I built a small local Docusaurus plugin that optimizes every image **at build time**, and it cut the deployed images almost in half (**-49%** on the corpus I had then) — without touching a single source file. It has since learned to emit `srcset` variants too, which took another two thirds off what my homepage sends to a phone.
 
