@@ -18,7 +18,7 @@ tags:
   ]
 date: 2026-07-19
 last_update:
-  date: 2026-08-23
+  date: 2026-08-24
   author: docux
 inLanguage: "en"
 keywords:
@@ -219,18 +219,29 @@ What a phone downloads, at 390px wide and device pixel ratio 2:
 
 The homepage gains most, because that is where the gap between displayed size and downloaded size was widest. Articles gain less: their screenshots are already close to the width they are shown at.
 
-The cost sits on the other side: **346 variants add 18 MB to the build**, taking it from 24 MB to 42 MB. That is deployment weight, not visitor weight — GitHub Pages stores them, nobody downloads them all.
+The cost sits on the other side: writing a full ladder for every image added **18 MB** to the build, taking it from 24 MB to 42 MB. That is deployment weight, not visitor weight — GitHub Pages stores them, nobody downloads them all.
 
-But "nobody downloads them all" is not the same as "each one is useful", and I only checked the difference while writing this section. The result is uncomfortable enough to be worth printing:
+But "nobody downloads them all" is not the same as "each one is useful", and I only checked the difference while writing this section. The answer was bad enough to send me back to the plugin:
 
 | Where                             | Variants written | Referenced by a page |
 | --------------------------------- | ---------------- | -------------------- |
 | `assets/images/` (article bodies) | 144              | 142                  |
 | `img/` (static, homepage)         | 202              | 8                    |
 
-The first row is the arrangement working as designed: those images pass through the `img` mapper, which reads each real width and asks for exactly the rungs that exist. The second row is the hand-named one, and 194 files — about **9.6 MB, more than half the 18** — sit in the deployed build with nothing that will ever request them.
+The first row is the arrangement working as designed: those images pass through the `img` mapper, which reads each real width and asks for exactly the rungs that exist. The second row is the hand-named one — 194 files, **9.6 MB**, sitting in the deployed build with nothing that would ever request them. A `widths` ladder pays for itself where a component picks rungs from real widths, and writes dead weight where nothing consumes it.
 
-The plugin cannot know this. It walks the build output and writes a ladder for every image it finds; which of them a page actually renders is a question only the site can answer. So the honest version of the trade-off is narrower than "each one exists so a reader can fetch less": a `widths` ladder pays for itself where a component picks rungs from real widths, and mostly writes dead weight where nothing consumes it. Trimming that is on my list, not in this article.
+### Pruning what nothing points at
+
+The fix leans on the same quirk of timing as the naming rule. By `postBuild` the HTML already exists, so the plugin can read the built site back, collect every variant URL it actually names, and delete the ones nobody mentions. There is no list to keep in sync: it is derived from the site itself, so it stays correct when the homepage changes its rungs.
+
+```text
+Variants: 151 kept  (made: 0, from cache: 346, 8.36 MB added)
+Pruned: 195 unreferenced  (9.67 MB freed)
+```
+
+The build dropped from 41.9 MB to 32.3 MB. I then checked all 151 survivors against the HTML rather than trusting the count: every referenced variant resolves, none was deleted by mistake.
+
+Two limits are worth stating plainly. The scan reads HTML, JS and CSS, so a variant referenced only from JSON, or through a URL assembled at runtime, would be pruned — that is what `pruneUnreferenced: false` is for. And the pruner only ever deletes paths it wrote during the same run, so a source file that merely looks like a variant, say `chart-2024w.png`, is never at risk.
 
 ## Registering the plugin
 
@@ -255,9 +266,12 @@ After one `npm run build`, the plugin prints a report:
 === Image optimizer ===
 Images: 161  (optimized: 102, from cache: 59, no gain: 0, failed: 0)
 Total: 24.69 MB → 12.22 MB  (saved 12.47 MB, -50.5%)
-Variants: 346  (made: 198, from cache: 148, 18.03 MB added)
+Variants: 151 kept  (made: 199, from cache: 147, 8.36 MB added)
+Pruned: 195 unreferenced  (9.67 MB freed)
 =======================
 ```
+
+The cache hits on a first run are not a contradiction: they are duplicates met later in the same build, where an image already encoded under `img/` turns up again as a hashed copy under `assets/images/`.
 
 A few representative files, comparing what sits in `static/img/` to what the plugin produced in `build/`:
 
@@ -288,7 +302,8 @@ A second build is basically instant for images — everything comes from the cac
 
 ```text
 Images: 161  (optimized: 0, from cache: 161, no gain: 0, failed: 0)
-Variants: 346  (made: 0, from cache: 346, 18.03 MB added)
+Variants: 151 kept  (made: 0, from cache: 346, 8.36 MB added)
+Pruned: 195 unreferenced  (9.67 MB freed)
 ```
 
 ## Caching in CI
@@ -309,7 +324,7 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 
 ## Tuning and trade-offs
 
-- **`quality` / `maxWidth` / `widths`** are the options you will actually reach for. Lower quality or a smaller max width means smaller files; a shorter `widths` ladder means fewer variants on disk. `extensions`, `cacheDir` and `concurrency` (8 workers by default — that is where the speed comes from) round out the six.
+- **`quality` / `maxWidth` / `widths`** are the options you will actually reach for. Lower quality or a smaller max width means smaller files; a shorter `widths` ladder means fewer variants on disk. `extensions`, `cacheDir`, `concurrency` (8 workers by default — that is where the speed comes from) and `pruneUnreferenced` round out the seven.
 - **`widths` must be given in ascending order.** The loop stops at the first rung that is not narrower than the source, so `[1600, 400]` would quietly produce nothing.
 - **PNG uses a palette (lossy) re-encode** for much smaller files. It's great for screenshots and illustrations; if you have PNGs where exact pixels matter, raise the quality or exclude them via `extensions`.
 - **Animated WebP** is left un-resized and gets no variants at all, to stay safe. GIF never reaches that check: it is not in the default `extensions` list, so the plugin does not touch it in the first place.
@@ -318,5 +333,5 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 :::tip Takeaway
 A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds.
 
-It stands at about 320 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
+It stands at about 420 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
 :::

@@ -32,8 +32,8 @@ downloading a 1760px file.
 ## Width variants and `srcset`
 
 Variants are derived from the already-optimized bytes, so they inherit the same
-resize and quality decisions. Two rules govern them, and both matter to whoever
-writes the `srcset`.
+resize and quality decisions. Three rules govern them, and the first two matter
+to whoever writes the `srcset`.
 
 **1. Naming is deterministic.** `photo.webp` becomes `photo-400w.webp`. Because
 this runs in `postBuild`, the HTML is already written by the time the variants
@@ -49,13 +49,30 @@ consumer instead:
 
 > Only reference a candidate narrower than the image itself.
 
-Two consumers hold to that in this repository. `src/theme/MDXComponents.js`
-knows each image's real width, because Docusaurus forwards it, and lists only
-the narrower rungs. `src/pages/index.jsx` asks for 400w and 800w only, its
-covers being at least 1760px wide.
+Two consumers hold to that in this repository, in two different ways.
+`src/theme/MDXComponents.js` knows each image's real width, because Docusaurus
+forwards it, and derives the narrower rungs from it. `src/pages/index.jsx` has
+no such metadata and names its rungs by hand: 400w and 800w for the article
+cards, whose covers are all at least 1760px wide, and 800w and 1600w for the
+1621px hero portrait. Hand-naming only works because those widths were checked;
+it is the weaker of the two arrangements.
 
-**Animated images get no variants at all**, since resizing frames is the one
-thing this plugin refuses to risk.
+**3. Variants nothing references are deleted again** (`pruneUnreferenced`,
+default `true`). A full ladder for every image is only worth writing where
+something consumes it. Since the HTML exists by `postBuild`, the plugin reads
+the built site back, collects the variant URLs it actually names, and drops the
+rest. On this blog that removed 195 of 346 variants and 9.67 MB, with every one
+of the 151 survivors still resolving.
+
+The scan covers HTML, JS and CSS. A variant referenced only from JSON, or via a
+URL assembled at runtime, would be pruned — set `pruneUnreferenced: false` if
+you build URLs that way. Pruning only ever deletes paths written during the same
+run, so a source file that merely looks like a variant (`chart-2024w.png`) is
+never at risk.
+
+**Animated WebP gets no variants at all**, since resizing frames is the one
+thing this plugin refuses to risk. GIF never reaches that check: it is not in
+the default `extensions`, so it is not processed at all.
 
 ### ⚠️ `srcset` must be emitted in production builds only
 
@@ -95,14 +112,15 @@ Requires `sharp` as a dependency (`npm install sharp`).
 
 ## Options
 
-| Option        | Type       | Default                                                 | Description                                             |
-| ------------- | ---------- | ------------------------------------------------------- | ------------------------------------------------------- |
-| `quality`     | `number`   | `80`                                                    | Encoder quality (1–100).                                |
-| `maxWidth`    | `number`   | `1920`                                                  | Max width in px; wider images are downscaled.           |
-| `widths`      | `number[]` | `[400, 800, 1200, 1600]`                                | Widths emitted as `srcset` candidates. `[]` to disable. |
-| `extensions`  | `string[]` | `[".png", ".jpg", ".jpeg", ".webp"]`                    | Extensions to process.                                  |
-| `cacheDir`    | `string`   | `node_modules/.cache/docusaurus-plugin-image-optimizer` | Persistent cache location.                              |
-| `concurrency` | `number`   | `8`                                                     | Parallel workers.                                       |
+| Option              | Type       | Default                                                 | Description                                             |
+| ------------------- | ---------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| `quality`           | `number`   | `80`                                                    | Encoder quality (1–100).                                |
+| `maxWidth`          | `number`   | `1920`                                                  | Max width in px; wider images are downscaled.           |
+| `widths`            | `number[]` | `[400, 800, 1200, 1600]`                                | Widths emitted as `srcset` candidates. `[]` to disable. |
+| `extensions`        | `string[]` | `[".png", ".jpg", ".jpeg", ".webp"]`                    | Extensions to process.                                  |
+| `cacheDir`          | `string`   | `node_modules/.cache/docusaurus-plugin-image-optimizer` | Persistent cache location.                              |
+| `concurrency`       | `number`   | `8`                                                     | Parallel workers.                                       |
+| `pruneUnreferenced` | `boolean`  | `true`                                                  | Delete variants no page references.                     |
 
 ## Report
 
@@ -112,14 +130,19 @@ The plugin prints what it did at the end of a build:
 === Image optimizer ===
 Images: 161  (optimized: 102, from cache: 59, no gain: 0, failed: 0)
 Total: 24.69 MB → 12.22 MB  (saved 12.47 MB, -50.5%)
-Variants: 346  (made: 198, from cache: 148, 18.03 MB added)
+Variants: 151 kept  (made: 199, from cache: 147, 8.36 MB added)
+Pruned: 195 unreferenced  (9.67 MB freed)
 =======================
 ```
 
+The cache hits on a first run are duplicates met later in the same build: an
+image already encoded under `img/` reappears as a hashed copy under
+`assets/images/`.
+
 Variants add weight to the **deployment**, not to what a reader downloads: they
-exist so the browser can fetch a smaller file. On this blog, they take the build
-from 25 MB to 42 MB, and cut what a phone loads on the homepage from 672 KB to
-234 KB.
+exist so the browser can fetch a smaller file. On this blog the kept ones take
+the build from 24 MB to 32 MB, and cut what a phone loads on the homepage from
+672 KB to 234 KB. Before pruning was added, the same ladder cost 18 MB.
 
 ## CI caching
 

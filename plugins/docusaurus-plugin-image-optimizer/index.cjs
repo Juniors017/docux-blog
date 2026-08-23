@@ -23,8 +23,8 @@
  * actually shrink the file, the original is kept.
  *
  * Width variants (`widths`): alongside each image, the plugin writes
- * `<name>-400w.<ext>`, `-800w` and so on, for use in a `srcset`. Two rules make
- * them safe to reference:
+ * `<name>-400w.<ext>`, `-800w` and so on, for use in a `srcset`. Three rules
+ * make them safe to reference, and cheap to keep:
  *
  * 1. **Deterministic naming.** This runs in `postBuild`, so the HTML is already
  *    written by the time the variants appear. A component can therefore emit a
@@ -38,6 +38,18 @@
  *    metadata and names rungs by hand — checked against 1760px+ card covers
  *    and the 1621px hero.
  *
+ * 3. **Unreferenced variants are deleted again** (`pruneUnreferenced`). Writing
+ *    a full ladder for every image is only worth it where something consumes
+ *    it; elsewhere it is deployment weight nobody fetches. Since the HTML
+ *    already exists by `postBuild`, the plugin can read it back, see which
+ *    variant URLs the site actually names, and drop the rest. It only ever
+ *    deletes paths it wrote during this same run, so a source file that merely
+ *    looks like a variant is never at risk.
+ *
+ *    The scan covers HTML, JS and CSS. A variant referenced only from a JSON
+ *    file, or through a URL assembled at runtime, would be pruned — set
+ *    `pruneUnreferenced: false` if you build URLs that way.
+ *
  * Animated images get no variants at all: resizing frames is the one thing this
  * plugin has always refused to risk.
  *
@@ -48,6 +60,7 @@
  * - extensions  {string[]} File extensions to process. Default [".png",".jpg",".jpeg",".webp"].
  * - cacheDir    {string}   Cache location. Default node_modules/.cache/docusaurus-plugin-image-optimizer.
  * - concurrency {number}   Parallel workers. Default 8.
+ * - pruneUnreferenced {boolean} Delete variants no page references. Default true.
  *
  * See readme.md for more details.
  */
@@ -63,7 +76,14 @@ const DEFAULT_OPTIONS = {
   extensions: [".png", ".jpg", ".jpeg", ".webp"],
   cacheDir: null,
   concurrency: 8,
+  pruneUnreferenced: true,
 };
+
+/** Files that can carry a URL a browser will actually fetch. */
+const REFERENCING_EXTENSIONS = [".html", ".js", ".css"];
+
+/** Matches a variant URL as it appears in `src`, `srcset` or `url()`. */
+const VARIANT_REFERENCE = /[\w./@-]+-\d+w\.(?:webp|png|jpe?g)/gi;
 
 /** `photo.webp` + 400 → `photo-400w.webp`. Deterministic, and that matters. */
 function variantPath(file, width) {
@@ -186,6 +206,67 @@ async function mapLimit(items, limit, worker) {
   await Promise.all(runners);
 }
 
+/**
+ * Every variant URL the built site actually references.
+ *
+ * This is only knowable in `postBuild`, once the HTML exists — the same quirk
+ * of timing that lets a component name a variant before it is written. Scans
+ * HTML, JS and CSS, the three places a URL a browser fetches can live.
+ */
+async function collectReferences(dir) {
+  const refs = new Set();
+  async function walk(current) {
+    for (const entry of await fsp.readdir(current, { withFileTypes: true })) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        await walk(full);
+      } else if (
+        REFERENCING_EXTENSIONS.includes(path.extname(entry.name).toLowerCase())
+      ) {
+        const text = await fsp.readFile(full, "utf8");
+        for (const match of text.match(VARIANT_REFERENCE) || []) {
+          refs.add(match);
+        }
+      }
+    }
+  }
+  await walk(dir);
+  return refs;
+}
+
+/**
+ * Delete the variants nothing points at.
+ *
+ * Only ever considers paths this run wrote, so it cannot touch a source file
+ * that happens to look like a variant. A reference counts when it ends with
+ * the variant's path relative to the build root, which tolerates a `baseUrl`
+ * prefix without matching a same-named file in another folder.
+ */
+async function pruneVariants(outDir, writtenPaths, refs) {
+  const result = { pruned: 0, bytes: 0 };
+  for (const file of writtenPaths) {
+    const rel = path.relative(outDir, file).split(path.sep).join("/");
+    const suffix = `/${rel}`;
+    let referenced = false;
+    for (const ref of refs) {
+      if (ref === rel || ref.endsWith(suffix)) {
+        referenced = true;
+        break;
+      }
+    }
+    if (referenced) continue;
+    try {
+      const { size } = await fsp.stat(file);
+      await fsp.unlink(file);
+      result.pruned++;
+      result.bytes += size;
+    } catch {
+      // Already gone; nothing to account for.
+    }
+  }
+  return result;
+}
+
 module.exports = function pluginImageOptimizer(context, options = {}) {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   const cacheDir =
@@ -223,7 +304,12 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         variantsMade: 0,
         variantsFromCache: 0,
         variantBytes: 0,
+        variantsPruned: 0,
+        prunedBytes: 0,
       };
+
+      // Paths written this run, and the only ones pruning may consider.
+      const writtenVariants = [];
 
       await mapLimit(images, opts.concurrency, async (file) => {
         try {
@@ -288,6 +374,7 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
             }
 
             await fsp.writeFile(target, bytes);
+            writtenVariants.push(target);
             stats.variantBytes += bytes.length;
           }
         } catch (err) {
@@ -297,6 +384,14 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
           );
         }
       });
+
+      if (opts.pruneUnreferenced && writtenVariants.length) {
+        const refs = await collectReferences(outDir);
+        const pruned = await pruneVariants(outDir, writtenVariants, refs);
+        stats.variantsPruned = pruned.pruned;
+        stats.prunedBytes = pruned.bytes;
+        stats.variantBytes -= pruned.bytes;
+      }
 
       const saved = stats.before - stats.after;
       const percent = stats.before
@@ -311,9 +406,16 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
         `Total: ${formatBytes(stats.before)} → ${formatBytes(stats.after)}  (saved ${formatBytes(saved)}, -${percent}%)`
       );
       if (opts.widths.length) {
+        const kept =
+          stats.variantsMade + stats.variantsFromCache - stats.variantsPruned;
         console.log(
-          `Variants: ${stats.variantsMade + stats.variantsFromCache}  (made: ${stats.variantsMade}, from cache: ${stats.variantsFromCache}, ${formatBytes(stats.variantBytes)} added)`
+          `Variants: ${kept} kept  (made: ${stats.variantsMade}, from cache: ${stats.variantsFromCache}, ${formatBytes(stats.variantBytes)} added)`
         );
+        if (opts.pruneUnreferenced) {
+          console.log(
+            `Pruned: ${stats.variantsPruned} unreferenced  (${formatBytes(stats.prunedBytes)} freed)`
+          );
+        }
       }
       console.log("=======================\n");
     },
