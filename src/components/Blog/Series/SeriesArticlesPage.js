@@ -54,9 +54,28 @@ function SeriesStructuredData({ seriesName, slug, posts, siteUrl }) {
     },
   };
 
+  // Same trail as the articles below it, minus the last step. Google asks for
+  // "breadcrumbs that represent a typical user path to a page", and a series
+  // page is reached from the blog.
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { name: "DocuxLab", url: `${siteUrl}/` },
+      { name: "Blog", url: `${siteUrl}/blog/` },
+      { name: seriesName, url: pageUrl },
+    ].map((step, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: step.name,
+      item: step.url,
+    })),
+  };
+
   return (
     <Head>
       <script type="application/ld+json">{JSON.stringify(data)}</script>
+      <script type="application/ld+json">{JSON.stringify(breadcrumb)}</script>
     </Head>
   );
 }
