@@ -1,7 +1,7 @@
 ---
 title: "A Docusaurus Plugin to Optimize Images at Build Time"
 slug: image-optimizer-docusaurus-plugin
-description: "A local Docusaurus plugin that compresses and resizes images at build time with sharp: non-destructive, cached, and -49% on the deployed site."
+description: "A local Docusaurus plugin that compresses images at build time with sharp and emits srcset variants: non-destructive, cached, and -50% on the deployed site."
 image: "/img/photo-optimizer.webp"
 authors: ["docux"]
 mainTag: performance
@@ -18,7 +18,7 @@ tags:
   ]
 date: 2026-07-19
 last_update:
-  date: 2026-07-19
+  date: 2026-08-23
   author: docux
 inLanguage: "en"
 keywords:
@@ -47,9 +47,9 @@ series: "Docusaurus Plugins"
 </center>
 
 <div className="text--justify">
-My blog was quietly shipping **13.7 MB of images**. A few PNGs weighed over a megabyte, and several WebP files were surprisingly heavy — over-sized dimensions and default encoder quality. Heavy images hurt load time, Core Web Vitals, and ultimately SEO. So I built a small local Docusaurus plugin that optimizes every image **at build time**, and it cut the deployed images almost in half (**-49%**) — without touching a single source file.
+My blog was quietly shipping **13.7 MB of images**. A few PNGs weighed over a megabyte, and several WebP files were surprisingly heavy — over-sized dimensions and default encoder quality. Heavy images hurt load time, Core Web Vitals, and ultimately SEO. So I built a small local Docusaurus plugin that optimizes every image **at build time**, and it cut the deployed images almost in half (**-49%** on the corpus I had then) — without touching a single source file. It has since learned to emit `srcset` variants too, which took another two thirds off what my homepage sends to a phone.
 
-This article walks through the plugin: how it hooks into the build, how a content-hash cache makes it incremental (already-optimized images become a reusable artifact), and the real numbers it produced.
+This article walks through the plugin: how it hooks into the build, how a content-hash cache makes it incremental (already-optimized images become a reusable artifact), how the width variants work, and the real numbers it produced.
 
 :::tip Design goals
 Non-destructive (never modify sources), incremental (process new images only), and reference-safe (formats are preserved, so no URL ever breaks).
@@ -105,6 +105,7 @@ For each image, `sharp`:
 1. Downscales it to `maxWidth` (default **1920px**), never enlarging.
 2. Re-encodes it at `quality` (default **80**), keeping the original format.
 3. Keeps the original if the "optimized" version isn't actually smaller — so we never inflate a file.
+4. Writes narrower copies of it for `srcset` — see [Width variants](#width-variants) below.
 
 ### The cache = the incremental part
 
@@ -119,11 +120,117 @@ On the next build, an image whose hash is already in the cache is **restored fro
 - **First build:** every image is processed.
 - **Later builds:** only new or changed images are processed; everything else is a cache hit.
 
-A nice side effect: two byte-identical images (say, the same picture referenced from `static/` and from a blog post) share a hash, so the work is done once and deduplicated automatically.
+A nice side effect: two byte-identical images (say, the same picture referenced from `static/` and from a blog post) share a hash, so the encoding work is done once even within a single build. Note that this deduplicates the _work_, not the bytes — both copies are still written to `build/`, each with its own ladder of variants.
 
 :::note The cache is the "artifact"
 Because the cache lives under `node_modules/.cache`, it's git-ignored. In CI we persist it with `actions/cache` (below), which is exactly what makes the already-optimized images a build artifact reused across runs.
 :::
+
+## Width variants
+
+Compressing an image achieves nothing if the browser downloads it at 1760px to display it in a card a few hundred pixels wide. That was happening on my homepage: a row of article thumbnails, each loading a full-size cover. The cards are fluid, so there is no single number to quote — the layout declares 380px as their widest realistic size, which is what the `sizes` attribute below is built on.
+
+So the plugin also writes narrower copies next to every image:
+
+```text
+photo-optimizer.webp        ← the original, optimized
+photo-optimizer-400w.webp
+photo-optimizer-800w.webp
+photo-optimizer-1200w.webp
+photo-optimizer-1600w.webp
+```
+
+The ladder is the `widths` option, defaulting to `[400, 800, 1200, 1600]`. An empty array turns the feature off. Variants are derived from the **already-optimized** bytes rather than the source, so they inherit the same resize and quality decisions.
+
+### Deterministic naming, and why everything rests on it
+
+This is the piece that makes the rest possible, and it comes down to a quirk of timing.
+
+`postBuild` runs **after** the HTML is generated. At the moment a React component writes its `srcset`, no variant exists yet — they are written moments later, in the same build. Because the name is predictable, `photo.webp` always yielding `photo-400w.webp`, a component can point at files that do not exist when it names them.
+
+Without that, the alternative was **rewriting the generated HTML from the outside**: opening all 124 pages, finding every `<img>`, injecting a `srcset`. A far more fragile operation, on files I don't control.
+
+### Only when genuinely narrower — and the mistake that produced the rule
+
+My first version wrote a variant for **every** declared width. When the source was narrower than the target, it re-encoded it anyway under the candidate's name, so that no `srcset` entry could ever 404.
+
+The intent was sound. The result was not:
+
+```text
+644 variants written
+297 of them were mere copies of their source   (46%)
+ 24 MB added to the build
+```
+
+So I reversed the rule: **a variant is only written when it is genuinely narrower than the source**. The obligation then moves to the consumer, and it fits in one line:
+
+> Only reference a candidate narrower than the image itself.
+
+Both of my consumers can honour it, in two different ways. The `img` mapper in `MDXComponents.js` knows each image's real width, because Docusaurus hands it over, and lists only the narrower rungs. My homepage cannot — it has no such metadata — so it names its rungs by hand: 400w and 800w for the article cards, whose covers are all at least 1760px wide, and 800w and 1600w for the hero portrait, which is 1621px. Hand-naming works here only because I checked those widths; it is the weaker of the two arrangements.
+
+After the reversal, the same corpus produced **346 variants for 18 MB** instead of 644 for 24. The two counts come from two separate builds, so read them as orders of magnitude rather than a subtraction that has to reconcile.
+
+:::danger The srcset must exist in production only
+This is the trap, and it cost me a broken development environment.
+
+The plugin runs in `postBuild`, so **never under `docusaurus start`**. In development the variants do not exist — and the dev server does not answer 404 on those URLs. It serves its fallback page:
+
+```text
+/img/docux4-400w.webp   →  Content-Type: text/html    3,354 bytes
+/img/docux4.webp        →  Content-Type: image/webp  145,156 bytes
+```
+
+The browser receives an HTML page where it expected an image, and **displays nothing at all**. No build error, no warning: the images simply vanish.
+
+The guard is one constant:
+
+```js
+const HAS_VARIANTS = process.env.NODE_ENV === "production";
+```
+
+Docusaurus sets that variable itself: `bin/docusaurus.mjs` defaults every command to `development`, and `build` forces `production`.
+
+What makes it galling is that the constraint sits on the second line of the plugin's own header — _never during `docusaurus start`_. I quoted it while designing the `srcset`, without drawing the consequence.
+:::
+
+### `sizes` cannot come from the plugin
+
+A `srcset` lists the files available; it is `sizes` that tells the browser **how wide the image will be** once displayed. That depends on the layout, which the plugin knows nothing about. So the attribute is written where the layout is known — in the component.
+
+Mine uses three:
+
+```text
+homepage card    (max-width: 600px) 100vw, 380px
+article body     (max-width: 996px) 100vw, 976px
+hero portrait    (max-width: 996px) 560px, 747px
+```
+
+One case deserves attention. My hero illustration sits in a 280px circle, but with `object-fit: cover` on a 1621 × 608 image, **it is the height that fills**: the image is scaled by 280/608 and rendered about 747px wide. Declaring it at 280px would have served a blurry crop on the most visible element of the page.
+
+### What it gives
+
+What a phone downloads, at 390px wide and device pixel ratio 2:
+
+| Page                           | Before  | After   |          |
+| ------------------------------ | ------- | ------- | -------- |
+| Homepage                       | 672 KB  | 234 KB  | **-65%** |
+| A component article            | 560 KB  | 459 KB  | -18%     |
+| An article full of screenshots | 1321 KB | 1137 KB | -14%     |
+
+The homepage gains most, because that is where the gap between displayed size and downloaded size was widest. Articles gain less: their screenshots are already close to the width they are shown at.
+
+The cost sits on the other side: **346 variants add 18 MB to the build**, taking it from 24 MB to 42 MB. That is deployment weight, not visitor weight — GitHub Pages stores them, nobody downloads them all.
+
+But "nobody downloads them all" is not the same as "each one is useful", and I only checked the difference while writing this section. The result is uncomfortable enough to be worth printing:
+
+| Where                             | Variants written | Referenced by a page |
+| --------------------------------- | ---------------- | -------------------- |
+| `assets/images/` (article bodies) | 144              | 142                  |
+| `img/` (static, homepage)         | 202              | 8                    |
+
+The first row is the arrangement working as designed: those images pass through the `img` mapper, which reads each real width and asks for exactly the rungs that exist. The second row is the hand-named one, and 194 files — about **9.6 MB, more than half the 18** — sit in the deployed build with nothing that will ever request them.
+
+The plugin cannot know this. It walks the build output and writes a ladder for every image it finds; which of them a page actually renders is a question only the site can answer. So the honest version of the trade-off is narrower than "each one exists so a reader can fetch less": a `widths` ladder pays for itself where a component picks rungs from real widths, and mostly writes dead weight where nothing consumes it. Trimming that is on my list, not in this article.
 
 ## Registering the plugin
 
@@ -146,23 +253,42 @@ After one `npm run build`, the plugin prints a report:
 
 ```text
 === Image optimizer ===
-Images: 69  (optimized: 46, from cache: 22, no gain: 1, failed: 0)
-Total: 13.34 MB → 6.76 MB  (saved 6.58 MB, -49.3%)
+Images: 161  (optimized: 102, from cache: 59, no gain: 0, failed: 0)
+Total: 24.69 MB → 12.22 MB  (saved 12.47 MB, -50.5%)
+Variants: 346  (made: 198, from cache: 148, 18.03 MB added)
 =======================
 ```
 
-A few representative files:
+A few representative files, comparing what sits in `static/img/` to what the plugin produced in `build/`:
 
-| Image           | Before          | After          | Saved    |
-| --------------- | --------------- | -------------- | -------- |
-| `404bg.webp`    | 855 KB @ 2473px | 73 KB @ 1920px | **-91%** |
-| `api.png`       | 1729 KB         | 414 KB         | **-76%** |
-| `icon/css.webp` | 904 KB          | 513 KB         | **-43%** |
+| Image                                            | Before  | After  | Saved    |
+| ------------------------------------------------ | ------- | ------ | -------- |
+| `frontmattercms/post2/frontmatterparameters.png` | 1691 KB | 531 KB | **-69%** |
+| `api.png`                                        | 1546 KB | 415 KB | **-73%** |
+| `frontmattercms/post4/snippetcolone.png`         | 902 KB  | 153 KB | **-83%** |
+| `icon/css.webp`                                  | 904 KB  | 513 KB | **-43%** |
 
-The biggest wins come from **resizing** over-sized images (that 2473px background didn't need to be wider than the layout) combined with a sane re-encode. And a second build is basically instant for images — everything comes from the cache:
+Across the whole set: **104 files with a gain, 14.6 MB → 7.4 MB.**
+
+That 104 is not the 161 the report prints, and the gap is worth explaining. The report counts what the plugin walks — the whole `build/` folder, which holds 104 images under `img/` and 57 more under `assets/images/`, where Docusaurus re-emits every image a post references under a hashed name. The table above counts source files in `static/img/` instead, each compared to its counterpart in the build. Same plugin, two different populations, and the second one double-counts anything a post cites.
+
+The contrast between the three PNGs and the WebP is not an accident. A palette re-encode bites hard on a screenshot and much less on an already-compressed WebP.
+
+:::note Where the gains come from has changed
+The first version of this article said the biggest wins came from **resizing** over-sized images, and named a 2473px background as the example. That was true when it was written; it no longer is.
+
+Checked again on 2026-08-23: of the 104 source images, **not one exceeds `maxWidth`** — the widest is 1857px against a 1920px threshold. The resize step never fires any more, and every gain above comes from the re-encode alone.
+
+The cause has nothing to do with the plugin: a later commit standardised the blog's screenshots to a single format. A tidy-up made a published explanation obsolete, with nothing to signal it.
+
+Which is worth knowing in itself: the plugin has two levers, and on an already-clean corpus only one of them works.
+:::
+
+A second build is basically instant for images — everything comes from the cache:
 
 ```text
-Images: 69  (optimized: 0, from cache: 69, no gain: 0, failed: 0)
+Images: 161  (optimized: 0, from cache: 161, no gain: 0, failed: 0)
+Variants: 346  (made: 0, from cache: 346, 18.03 MB added)
 ```
 
 ## Caching in CI
@@ -183,11 +309,14 @@ The `restore-keys` prefix restores the most recent cache, and a run-specific `ke
 
 ## Tuning and trade-offs
 
-- **`quality` / `maxWidth`** are plugin options. Lower quality or a smaller max width means smaller files; tune to taste.
+- **`quality` / `maxWidth` / `widths`** are the options you will actually reach for. Lower quality or a smaller max width means smaller files; a shorter `widths` ladder means fewer variants on disk. `extensions`, `cacheDir` and `concurrency` (8 workers by default — that is where the speed comes from) round out the six.
+- **`widths` must be given in ascending order.** The loop stops at the first rung that is not narrower than the source, so `[1600, 400]` would quietly produce nothing.
 - **PNG uses a palette (lossy) re-encode** for much smaller files. It's great for screenshots and illustrations; if you have PNGs where exact pixels matter, raise the quality or exclude them via `extensions`.
-- **Animated images** are left un-resized to stay safe.
-- The plugin only runs in `build`, so your dev server stays fast.
+- **Animated WebP** is left un-resized and gets no variants at all, to stay safe. GIF never reaches that check: it is not in the default `extensions` list, so the plugin does not touch it in the first place.
+- The plugin only runs in `build`, so your dev server stays fast — at the price of the trap described above: no variant exists in development, so any `srcset` must be guarded.
 
 :::tip Takeaway
-A ~130-line `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy.
+A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds.
+
+It stands at about 320 lines today, a quarter of which is comment: the non-obvious parts are the timing of `postBuild` and the contract it imposes on whoever writes a `srcset`, and neither survives being left to memory.
 :::

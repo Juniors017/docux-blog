@@ -31,12 +31,12 @@
  *    `srcset` pointing at files that do not exist yet — they land moments later,
  *    in the same build, at exactly the expected paths.
  * 2. **A variant is written only when it is genuinely narrower than the source.**
- *    An earlier version wrote one regardless, re-encoding the source under the
- *    candidate's name so no `srcset` entry could ever 404. That produced 297
- *    redundant copies out of 644 and 24 MB of build. The obligation moved to the
- *    consumer instead: only reference a rung narrower than the image. See
- *    `src/theme/MDXComponents.js`, which knows each image's real width, and
- *    `src/pages/index.jsx`, whose covers are all at least 1760px wide.
+ *    Nothing is written otherwise, so the obligation sits with the consumer:
+ *    only reference a rung narrower than the image. See
+ *    `src/theme/MDXComponents.js`, which knows each image's real width and
+ *    derives its rungs from it, and `src/pages/index.jsx`, which has no such
+ *    metadata and names rungs by hand — checked against 1760px+ card covers
+ *    and the 1621px hero.
  *
  * Animated images get no variants at all: resizing frames is the one thing this
  * plugin has always refused to risk.
@@ -137,19 +137,14 @@ async function optimizeBuffer(sharp, buffer, ext, { quality, maxWidth }) {
 /**
  * Re-encode a buffer at a given width, for a `srcset` candidate.
  *
- * Returns `null` for an animated image: resizing frames is the one case this
- * plugin has always refused to risk, and a missing candidate is handled by the
- * caller rather than produced badly here.
+ * Returns `null` — writing nothing — in two cases: an animated image, since
+ * resizing frames is the one thing this plugin refuses to risk, and a source
+ * already narrower than the target, since a copy under the candidate's name
+ * would only add weight.
  *
- * Returns `null` when the source is already narrower than the target, so no
- * file is written. A first version wrote one anyway — a re-encoded copy under
- * the candidate's name — to guarantee no `srcset` entry could ever 404. It
- * guaranteed 297 redundant copies out of 644 instead, and 24 MB on the build.
- *
- * The contract moved to the caller: only reference a candidate narrower than
- * the image. `MDXComponents` knows each image's real width (Docusaurus hands
- * it over), and every article cover here is at least 1760px wide, so both
- * consumers can hold to it.
+ * The second case is why a caller must reference only rungs narrower than the
+ * image. See the header for who holds to that, and `readme.md` for why the
+ * rule ended up here rather than in the plugin.
  */
 async function resizeBuffer(sharp, buffer, ext, width, { quality }) {
   const pipeline = sharp(buffer);
