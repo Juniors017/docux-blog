@@ -48,9 +48,9 @@ series: "Docusaurus Plugins"
 
 :::warning Rewrite in progress
 The plugin this article describes is still changing, and the article is being reworked to keep
-up. Every figure here has been re-measured on a real build, but sections written at different
-moments may not yet agree with each other. The known gap: the `srcset` work covers article
-bodies and the homepage, not the card components used on tag and series listings.
+up. Every figure here has been re-measured on a real build, and the sections have been brought
+back into agreement — but the code below is embedded live from the repository, so it can move
+ahead of the prose again between two readings.
 :::
 
 <div className="text--justify">
@@ -261,12 +261,12 @@ The fix leans on the naming rule's premise, read the other way round.
 Deterministic naming works because the HTML is written _before_ `postBuild` runs — that is what lets a component name a file that does not exist yet. But the same fact means the finished HTML is sitting there, readable, before the plugin encodes a single byte. So instead of producing a full ladder and cleaning up afterwards, the plugin collects every variant URL the built site names, then skips any rung nobody asked for. Nothing is written, so nothing has to be deleted.
 
 ```text
-Variants: 151 of 644 rungs  (encoded: 145, from cache: 0, 8.36 MB added)
+Variants: 238 of 644 rungs  (encoded: 146, from cache: 0, 14.62 MB added)
 ```
 
-644 is four rungs for each of the 161 images; 151 is what the site actually references. There is no list to keep in sync — it is derived from the site itself, so it stays correct when the homepage changes its rungs.
+644 is four rungs for each of the 161 images; 238 is what the site actually references. The other 406 are never encoded and never written. There is no list to keep in sync — it is derived from the site itself, so it stays correct the day a component changes its rungs.
 
-The build went from 41.9 MB to 32.3 MB. I then checked all 151 against the HTML rather than trusting the count: every referenced variant resolves, and nothing the site asks for is missing.
+I then checked all 238 against the HTML rather than trusting the count: every referenced variant resolves, and nothing the site asks for is missing.
 
 :::note I built this backwards first
 The first version of this did produce all 346, write them to disk, then delete 195 of them — a tidy-up pass at the end of the build. It gave the right output by the wrong route: on a cold cache it spent 199 encodes to keep 151.
@@ -275,6 +275,83 @@ Reversing it took moving one function call above the loop. The information had b
 :::
 
 One limit worth stating plainly: the scan reads HTML, JS and CSS. A rung referenced only from JSON, or through a URL assembled at runtime, would be skipped — that is what `pruneUnreferenced: false` is for.
+
+## Telling components what exists
+
+Everything above assumes a component knows which rungs to ask for. Mine did not, and that turned out to be where most of the weight still was.
+
+The `img` mapper in `MDXComponents.js` is fine: Docusaurus hands it each image's real width, so it lists exactly the narrower rungs. But that only covers images inside an article's body. Every listing on the site — tag pages, series pages, related posts — goes through a card component that receives a URL from front matter and nothing else. No width, no `srcset`, so the full-size cover downloads into a card a few hundred pixels wide.
+
+Measured on the built HTML, it was worse than I expected:
+
+| Page                     | Weight of images without `srcset` |
+| ------------------------ | --------------------------------- |
+| `/blog/tags/docusaurus/` | 1900 KB                           |
+| `/blog/tags/react/`      | 1381 KB                           |
+| `/series/`               | 1358 KB                           |
+
+Median across the site: **211 KB per page**. Card images accounted for 92% of it, from a single component.
+
+### The tempting fix, and why it is the wrong one
+
+The obvious move is to write the rungs into the component:
+
+```jsx
+srcSet = "/img/cover-400w.webp 400w, /img/cover-800w.webp 800w";
+```
+
+That works, and it is what my homepage did for weeks. It is also a dependency in its worst form: silent, and wrong the day a cover is replaced by a narrower image. The component asserts that files exist; nothing checks the claim, and nothing fails at build time if it is false. Multiply that across every component that shows a cover and you have a rule nobody can keep.
+
+It matters more than usual here, because these components get copied. Someone taking the card component into their own site would inherit a `srcset` pointing at files their build never produces.
+
+### Asking instead of asserting
+
+`postBuild` is too late to help a component — the HTML is already written. But Docusaurus has an earlier hook, `contentLoaded`, which runs _before_ anything renders. So the plugin measures the source images there and publishes what it found:
+
+```js
+actions.setGlobalData({
+  widths: opts.widths,
+  images: { "/img/cover.webp": 1760 },
+});
+```
+
+A component reads it back through `usePluginData`, and the contract inverts: it asks whether anything is known about this image, instead of asserting that a file exists.
+
+The property that makes this safe is in Docusaurus's own implementation — `usePluginData` returns `undefined` for a plugin that is not installed, and only throws if you pass `failfast: true`. So a helper built on it degrades to nothing:
+
+```js
+const { srcSet, sizes } = useImageSrcSet(
+  image,
+  "(max-width: 996px) 100vw, 300px"
+);
+// plugin present → candidates that are known to exist
+// plugin absent  → {} → a plain <img> that works
+```
+
+Three things fall out of that. The rung list stops being duplicated in every component. The `NODE_ENV` guard moves into the plugin, which is the only place that knows whether it wrote anything — the map is simply empty outside a production build. And the widths come from measurement rather than from a comment claiming someone checked.
+
+I verified the dev case rather than trusting it, because this is exactly where a hand-written `srcset` broke my local environment once: delete `.docusaurus/globalData.json`, run `docusaurus start`, and the file comes back with **0 entries** against 104 after a build.
+
+### One more thing the layout knows
+
+A card 380px wide will never choose a 1600w candidate — the widest it can ask for is its own width times the device pixel ratio. Listing wider rungs costs build weight for a file no browser will pick.
+
+That ceiling is derivable from the `sizes` attribute the component already writes, so it is not another number to tune. Every `px` length counts, media-query bounds included: `(max-width: 600px) 100vw` means the image can span a 600px viewport, so 1200 is genuinely reachable on a dense screen. It over-estimates when a bound is wider than the slot it governs, which is the safe direction — a candidate too many, never one too few.
+
+That last point corrected my own hand-tuning: the homepage cards had been pinned to `[400, 800]`, which under-served a 600px phone at device pixel ratio 2.
+
+### What it gave
+
+|                                      | Before  | After     |
+| ------------------------------------ | ------- | --------- |
+| Images with `srcset`                 | 50      | **70**    |
+| Images without                       | 39      | **17**    |
+| Median page, images without `srcset` | 211 KB  | **25 KB** |
+| Heaviest tag page                    | 1900 KB | **25 KB** |
+
+The 25 KB that remain are the navbar logo, which the browser caches for the whole visit.
+
+The cost is on the deployment side: 238 rungs instead of 151, and 14.6 MB of variants instead of 8.4. That is the honest trade — correct coverage of dense screens, paid in storage nobody downloads.
 
 ## Registering the plugin
 
@@ -299,7 +376,7 @@ After one `npm run build`, the plugin prints a report:
 === Image optimizer ===
 Images: 161 files, 101 distinct  (optimized: 101, from cache: 0, no gain: 0, failed: 0)
 Total: 24.69 MB → 12.22 MB  (saved 12.47 MB, -50.5%)
-Variants: 151 of 644 rungs  (encoded: 145, from cache: 0, 8.36 MB added)
+Variants: 238 of 644 rungs  (encoded: 146, from cache: 0, 14.62 MB added)
 =======================
 ```
 
@@ -324,7 +401,7 @@ A second build is basically instant for images — everything comes from the cac
 
 ```text
 Images: 161 files, 101 distinct  (optimized: 0, from cache: 101, no gain: 0, failed: 0)
-Variants: 151 of 644 rungs  (encoded: 0, from cache: 145, 8.36 MB added)
+Variants: 238 of 644 rungs  (encoded: 0, from cache: 146, 14.62 MB added)
 ```
 
 ## Caching in CI
@@ -336,24 +413,45 @@ My GitHub Actions workflow builds on every push. To reuse the optimized images a
   uses: actions/cache@v4
   with:
     path: node_modules/.cache/docusaurus-plugin-image-optimizer
-    key: image-optimizer-${{ github.run_id }}
+    key: image-optimizer-${{ hashFiles('static/**', 'src/**/*.png', 'src/**/*.webp', 'plugins/docusaurus-plugin-image-optimizer/index.cjs') }}
     restore-keys: |
       image-optimizer-
 ```
 
-The `restore-keys` prefix restores the most recent cache, and a run-specific `key` saves an updated one — so the cache keeps growing with each new image.
+The key is what the cache actually depends on: the source images and the encoding code. When neither changed it hits exactly, and `actions/cache` skips saving — confirmed in a real run, `Cache hit for: image-optimizer-b95ce43c…` with no upload afterwards. When one did change, the `restore-keys` prefix still seeds from the previous cache, so only the new work is done.
+
+It started as `key: image-optimizer-${{ github.run_id }}`, which is unique per run and therefore never hits — so every push re-uploaded 18 MB whether anything had changed or not.
+
+:::tip Forcing a rebuild without a commit
+Two levers, and they are not interchangeable. `CACHE_VERSION` is a constant in the plugin: bump it when the encoding code changes, because that invalidation has to travel with the commit and reach CI too.
+
+For a one-off check that the cache is not replaying stale bytes, a commit would be noise. So `workflow_dispatch` carries a checkbox that sets `IMAGE_OPTIMIZER_FORCE=1` for that run only:
+
+```yaml
+on:
+  workflow_dispatch:
+    inputs:
+      force_images:
+        description: "Re-encode every image, ignoring the cache"
+        type: boolean
+        default: false
+```
+
+Ticked, the run prints `IMAGE_OPTIMIZER_FORCE set — ignoring the cache` and reports `optimized: 101, from cache: 0`. Unticked, the next run reports `optimized: 0, from cache: 101` — with identical totals, which is the point of the exercise.
+:::
 
 ## Tuning and trade-offs
 
 - **`quality` / `maxWidth` / `widths`** are the options you will actually reach for. Lower quality or a smaller max width means smaller files; a shorter `widths` ladder means fewer variants on disk. `extensions`, `cacheDir`, `concurrency` (8 workers by default — that is where the speed comes from), `pruneUnreferenced` and `pruneCache` round out the eight.
 - **`widths` must be given in ascending order.** The loop stops at the first rung that is not narrower than the source, so `[1600, 400]` would quietly produce nothing.
 - **A source named like a variant is left alone.** The plugin recognises its own output by the `-400w` suffix, so a source image genuinely called `banner-1920w.jpg` would be skipped. It now says so in the build log rather than passing over it in silence — none of mine trip it, but the warning is there because nothing else would tell you.
+- **Every write goes through a temp file and a rename.** A build interrupted mid-write would otherwise leave a truncated image in `build/`, or a half-written cache entry that the next build would happily restore.
 - **PNG uses a palette (lossy) re-encode** for much smaller files. It's great for screenshots and illustrations; if you have PNGs where exact pixels matter, raise the quality or exclude them via `extensions`.
 - **Animated WebP** is left un-resized and gets no variants at all, to stay safe. GIF never reaches that check: it is not in the default `extensions` list, so the plugin does not touch it in the first place.
 - The plugin only runs in `build`, so your dev server stays fast — at the price of the trap described above: no variant exists in development, so any `srcset` must be guarded.
 
 :::tip Takeaway
-A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds.
+A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds, and wiring the card components to the widths the plugin publishes took the median page from 211 KB of oversized images down to 25.
 
-It stands at about 430 lines today. The comments have been cut back to a short header and a handful of notes on the parts that are genuinely counter-intuitive — the timing of `postBuild`, and the contract it imposes on whoever writes a `srcset`. Explaining the rest is this article's job, not the file's.
+It stands at about 490 lines today. The comments have been cut back to a short header and a handful of notes on the parts that are genuinely counter-intuitive — the timing of `postBuild`, and the contract it imposes on whoever writes a `srcset`. Explaining the rest is this article's job, not the file's.
 :::
