@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import styles from "../styles.module.css";
 const CardBody = ({
-  className, // classNamees for the container card
+  className, // className for the container card
   style, // Custom styles for the container card
   children, // Content to be included within the card
   textAlign,

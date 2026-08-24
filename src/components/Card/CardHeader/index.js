@@ -3,7 +3,7 @@ import clsx from "clsx"; // clsx helps manage conditional className names in a c
 import styles from "../styles.module.css";
 
 const CardHeader = ({
-  className, // classNamees for the container card
+  className, // className for the container card
   style, // Custom styles for the container card
   children, // Content to be included within the card
   textAlign,
