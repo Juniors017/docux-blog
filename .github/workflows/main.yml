@@ -6,6 +6,11 @@ on:
   # schedule:
   #   cron: "*/30 * * * *"   # optional: every 30 minutes
   workflow_dispatch:
+    inputs:
+      force_images:
+        description: "Re-encode every image, ignoring the cache"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -59,6 +64,14 @@ jobs:
 
       - name: Build Docusaurus site
         run: npm run build
+        env:
+          # Empty on a push, so the cache is used as usual. Set to 1 by the
+          # "Run workflow" button when the box is ticked, which makes the
+          # optimizer ignore the cache for that run and re-encode everything.
+          # Use it to check the cache is not replaying stale bytes; use
+          # CACHE_VERSION instead when the encoding itself changed, since that
+          # has to invalidate for everyone and not just once.
+          IMAGE_OPTIMIZER_FORCE: ${{ inputs.force_images && '1' || '' }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
