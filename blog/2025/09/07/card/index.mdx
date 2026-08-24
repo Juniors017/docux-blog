@@ -442,13 +442,11 @@ This component is optionnal, you can use image html and add `className={clsx("ca
   <TabItem value="js" label={<><LogoIcon name="javascript" size='24' /> </>}>
 
 ```javascript title='\src\components\Card\CardImage\index.js'
-import React, { CSSProperties } from "react";
+import React from "react";
 import clsx from "clsx";
 import useBaseUrl from "@docusaurus/useBaseUrl"; // Import the useBaseUrl function from Docusaurus
-
 const CardImage = ({ className, style, cardImageUrl, alt, title }) => {
   const generatedCardImageUrl = useBaseUrl(cardImageUrl);
-
   return (
     <img
       className={clsx("card__image", className)}
@@ -459,7 +457,6 @@ const CardImage = ({ className, style, cardImageUrl, alt, title }) => {
     />
   );
 };
-
 export default CardImage;
 ```
 
