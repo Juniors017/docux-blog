@@ -279,7 +279,6 @@ const CardHeader: React.FC<CardHeaderProps> = ({
       )}
       style={style}
     >
-      {" "}
       {children}
     </div>
   );
@@ -409,7 +408,6 @@ const CardBody: React.FC<CardBodyProps> = ({
       )}
       style={style}
     >
-      {" "}
       {children}
     </div>
   );
@@ -624,7 +622,6 @@ const CardFooter: React.FC<CardFooterProps> = ({
       )}
       style={style}
     >
-      {" "}
       {children}
     </div>
   );
@@ -1360,11 +1357,9 @@ The selector specifically targets **paragraphs `<p>`** inside elements with the 
 
 ```jsx
 <CardBody truncate>
-  {" "}
   {/* = <true> */}
   <h3>Complete Title</h3> {/* ← Not truncated */}
   <p>
-    {" "}
     {/* ← Will be truncated */}
     Very long text that will be automatically truncated after 3 lines with
     ellipsis at the end...
