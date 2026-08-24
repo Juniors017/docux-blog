@@ -20,7 +20,16 @@ import CardBody from "@site/src/components/Card/CardBody";
 import CardImage from "@site/src/components/Card/CardImage";
 import Link from "@docusaurus/Link";
 import PropTypes from "prop-types";
+import useImageSrcSet from "@site/src/utils/imageSrcSet";
 import styles from "./styles.module.css";
+
+// What the card image really occupies, from the Infima grid it sits in:
+// `col--4` is a third of the 1600px container, `col--2` a sixth. Below the
+// 996px breakpoint the columns stack, so the image spans the viewport.
+const CARD_SIZES = {
+  small: "(max-width: 996px) 100vw, 600px",
+  big: "(max-width: 996px) 100vw, 300px",
+};
 
 /**
  * Renders a formatted date string.
@@ -66,6 +75,13 @@ export default function PostCard({
   defaultImage = "/img/default.jpg",
 }) {
   const { permalink, image, title, description, date } = post;
+  const imageUrl = image || defaultImage;
+  // One call, before the branch: hooks cannot be conditional. Returns `{}`
+  // when no variant exists, so both layouts fall back to a plain `<img>`.
+  const responsive = useImageSrcSet(
+    imageUrl,
+    CARD_SIZES[layout] ?? CARD_SIZES.big
+  );
 
   if (layout === "small") {
     return (
@@ -84,7 +100,8 @@ export default function PostCard({
         >
           <div className="card__image">
             <img
-              src={image || defaultImage}
+              src={imageUrl}
+              {...responsive}
               alt={title}
               style={{
                 width: "100%",
@@ -127,7 +144,8 @@ export default function PostCard({
     <div className="col col--2 margin-bottom--lg">
       <Card shadow="md">
         <CardImage
-          cardImageUrl={image || defaultImage}
+          cardImageUrl={imageUrl}
+          {...responsive}
           alt={title}
           title={title}
         />

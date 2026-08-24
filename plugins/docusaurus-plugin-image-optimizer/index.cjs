@@ -273,6 +273,58 @@ module.exports = function pluginImageOptimizer(context, options = {}) {
   return {
     name: "docusaurus-plugin-image-optimizer",
 
+    /**
+     * Publish the real width of every static image, before anything renders.
+     *
+     * A component cannot guess which rungs exist for `/img/cover.webp`, and
+     * hard-coding them couples it to this plugin in the worst way: silently,
+     * and wrongly the day an image is replaced by a narrower one. So the plugin
+     * measures the sources here — `contentLoaded` runs before the HTML is
+     * generated — and hands the widths to the client.
+     *
+     * The map stays empty outside a production build, because variants are
+     * written in `postBuild` and `docusaurus start` never reaches it. That
+     * keeps the guard in the one place that knows the answer, instead of in
+     * every component.
+     */
+    async contentLoaded({ actions }) {
+      const payload = { widths: opts.widths, images: {} };
+      if (process.env.NODE_ENV !== "production" || !opts.widths.length) {
+        actions.setGlobalData(payload);
+        return;
+      }
+
+      let sharp;
+      try {
+        sharp = require("sharp");
+      } catch {
+        actions.setGlobalData(payload);
+        return;
+      }
+
+      const staticDir = path.join(context.siteDir, "static");
+      let files;
+      try {
+        files = (await collectImages(staticDir, opts.extensions)).found;
+      } catch {
+        actions.setGlobalData(payload);
+        return;
+      }
+
+      await mapLimit(files, opts.concurrency, async (file) => {
+        try {
+          const { width } = await sharp(file).metadata();
+          if (!width) return;
+          const rel = path.relative(staticDir, file).split(path.sep).join("/");
+          payload.images[`${context.baseUrl}${rel}`] = width;
+        } catch {
+          // Unreadable: simply absent from the map, so no `srcset` is emitted.
+        }
+      });
+
+      actions.setGlobalData(payload);
+    },
+
     async postBuild({ outDir }) {
       let sharp;
       try {
