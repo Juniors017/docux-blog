@@ -1,0 +1,56 @@
+# robots.txt for https://docuxlab.com/
+User-agent: *
+Allow: /
+Disallow: /search
+Disallow: /404
+
+# ---------------------------------------------------------------------------
+# AI crawlers
+#
+# The position: this blog declines to feed model training, and stays open to
+# the crawlers that let it be found and cited. OpenAI and Anthropic split those
+# two jobs across separate user agents, so the distinction is enforceable.
+#
+# Verified in each provider's own documentation on 2026-08-23, not inferred.
+# ---------------------------------------------------------------------------
+
+# Training. Declined.
+User-agent: GPTBot
+User-agent: ClaudeBot
+Disallow: /
+
+# Search and user-initiated retrieval. Welcome — these are what put an article
+# in an answer with a link back to it.
+#
+# Each group repeats the two Disallow lines on purpose: a crawler obeys only
+# the most specific group that matches it, so without them these bots would no
+# longer be covered by the rules under `User-agent: *` above.
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+Allow: /
+Disallow: /search
+Disallow: /404
+
+# Google-Extended is deliberately absent, so the rules above apply to it and it
+# stays allowed. Unlike OpenAI and Anthropic, Google covers training *and*
+# grounding with a single token — "for training future generations of Gemini
+# models [...] and for grounding" — so blocking it would remove this site from
+# Gemini and AI Overview answers without any way to keep only the citation.
+#
+# It costs nothing in classic search either way: "Google-Extended does not
+# impact a site's inclusion in Google Search nor is it used as a ranking signal
+# in Google Search."
+
+# Crawl delay for heavy crawlers
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://docuxlab.com/sitemap.xml

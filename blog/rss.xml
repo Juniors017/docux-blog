@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="rss.xsl"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>DocuxLab Blog</title>
+        <link>https://docuxlab.com/blog/</link>
+        <description>DocuxLab Blog</description>
+        <lastBuildDate>Fri, 31 Jul 2026 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[Front Matter CMS: templates, snippets and custom actions]]></title>
+            <link>https://docuxlab.com/blog/front-matter-cms-going-further-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/front-matter-cms-going-further-docusaurus/</guid>
+            <pubDate>Fri, 31 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Push Front Matter beyond its configuration: templates, snippets, your own buttons in the panel, and a config split across several files.]]></description>
+            <content:encoded><![CDATA[<p>Push Front Matter beyond its configuration: templates, snippets, your own buttons in the panel, and a config split across several files.</p><p><a href="https://docuxlab.com/blog/front-matter-cms-going-further-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>cms</category>
+            <category>customization</category>
+            <category>docusaurus</category>
+            <category>frontmatter-cms</category>
+            <category>scripts</category>
+            <category>vscode</category>
+        </item>
+        <item>
+            <title><![CDATA[Front Matter CMS day to day: dashboard, filters and media]]></title>
+            <link>https://docuxlab.com/blog/front-matter-cms-daily-use-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/front-matter-cms-daily-use-docusaurus/</guid>
+            <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Front Matter's dashboard in real use: find any article, filter by series, merge duplicate tags across the blog and manage media without leaving VS Code.]]></description>
+            <content:encoded><![CDATA[<p>Front Matter's dashboard in real use: find any article, filter by series, merge duplicate tags across the blog and manage media without leaving VS Code.</p><p><a href="https://docuxlab.com/blog/front-matter-cms-daily-use-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>cms</category>
+            <category>docusaurus</category>
+            <category>frontmatter-cms</category>
+            <category>productivity</category>
+            <category>vscode</category>
+            <category>workflow</category>
+        </item>
+        <item>
+            <title><![CDATA[Install and configure Front Matter CMS on Docusaurus]]></title>
+            <link>https://docuxlab.com/blog/install-front-matter-cms-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/install-front-matter-cms-docusaurus/</guid>
+            <pubDate>Wed, 22 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Wire Front Matter CMS into an existing Docusaurus project: configuration, and above all a content type modelled on your own front matter.]]></description>
+            <content:encoded><![CDATA[<p>Wire Front Matter CMS into an existing Docusaurus project: configuration, and above all a content type modelled on your own front matter.</p><p><a href="https://docuxlab.com/blog/install-front-matter-cms-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>cms</category>
+            <category>configuration</category>
+            <category>content-types</category>
+            <category>docusaurus</category>
+            <category>frontmatter-cms</category>
+            <category>vscode</category>
+        </item>
+        <item>
+            <title><![CDATA[Why Front Matter CMS with Docusaurus]]></title>
+            <link>https://docuxlab.com/blog/why-front-matter-cms-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/why-front-matter-cms-docusaurus/</guid>
+            <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Front Matter CMS, the VS Code extension that transforms content management in a Docusaurus project: dashboard, content types, preview and media.]]></description>
+            <content:encoded><![CDATA[<p>Front Matter CMS, the VS Code extension that transforms content management in a Docusaurus project: dashboard, content types, preview and media.</p><p><a href="https://docuxlab.com/blog/why-front-matter-cms-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>docusaurus</category>
+            <category>frontmatter-cms</category>
+            <category>cms</category>
+            <category>vscode</category>
+            <category>content</category>
+            <category>productivity</category>
+        </item>
+        <item>
+            <title><![CDATA[A Docusaurus Plugin to Optimize Images at Build Time]]></title>
+            <link>https://docuxlab.com/blog/image-optimizer-docusaurus-plugin/</link>
+            <guid>https://docuxlab.com/blog/image-optimizer-docusaurus-plugin/</guid>
+            <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[A local Docusaurus plugin that compresses images at build time with sharp and emits srcset variants: non-destructive, cached, and -50% on the deployed site.]]></description>
+            <content:encoded><![CDATA[<p>A local Docusaurus plugin that compresses images at build time with sharp and emits srcset variants: non-destructive, cached, and -50% on the deployed site.</p><p><a href="https://docuxlab.com/blog/image-optimizer-docusaurus-plugin/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>docusaurus</category>
+            <category>plugin</category>
+            <category>images</category>
+            <category>performance</category>
+            <category>sharp</category>
+            <category>webp</category>
+            <category>optimization</category>
+            <category>build</category>
+        </item>
+        <item>
+            <title><![CDATA[ESLint and Prettier in a Docusaurus Blog]]></title>
+            <link>https://docuxlab.com/blog/eslint-prettier-docusaurus-blog/</link>
+            <guid>https://docuxlab.com/blog/eslint-prettier-docusaurus-blog/</guid>
+            <pubDate>Sat, 18 Jul 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Adding ESLint and Prettier to a Docusaurus blog: flat config for JS and TypeScript, npm scripts, and the real bugs the linter caught.]]></description>
+            <content:encoded><![CDATA[<p>Adding ESLint and Prettier to a Docusaurus blog: flat config for JS and TypeScript, npm scripts, and the real bugs the linter caught.</p><p><a href="https://docuxlab.com/blog/eslint-prettier-docusaurus-blog/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>eslint</category>
+            <category>prettier</category>
+            <category>linting</category>
+            <category>tooling</category>
+            <category>code-quality</category>
+            <category>developer-experience</category>
+            <category>docusaurus</category>
+        </item>
+        <item>
+            <title><![CDATA[API at build time with github Action]]></title>
+            <link>https://docuxlab.com/blog/api-build-docusaurus-github-action/</link>
+            <guid>https://docuxlab.com/blog/api-build-docusaurus-github-action/</guid>
+            <pubDate>Mon, 04 May 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[Fetch API data at build time, handle errors, generate a static JSON file and display photos in Docusaurus with a smart fallback.]]></description>
+            <content:encoded><![CDATA[<p>Fetch API data at build time, handle errors, generate a static JSON file and display photos in Docusaurus with a smart fallback.</p><p><a href="https://docuxlab.com/blog/api-build-docusaurus-github-action/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>docusaurus</category>
+            <category>api</category>
+            <category>build</category>
+            <category>react</category>
+            <category>static</category>
+            <category>photos</category>
+            <category>github-actions</category>
+            <category>cloudflare</category>
+        </item>
+        <item>
+            <title><![CDATA[Component TimeTimer]]></title>
+            <link>https://docuxlab.com/blog/docusaurus-timetimer-component/</link>
+            <guid>https://docuxlab.com/blog/docusaurus-timetimer-component/</guid>
+            <pubDate>Sun, 02 Nov 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Time-based conditional rendering in Docusaurus: display content on fixed dates or time ranges, with UTC support and custom fallbacks.]]></description>
+            <content:encoded><![CDATA[<p>Time-based conditional rendering in Docusaurus: display content on fixed dates or time ranges, with UTC support and custom fallbacks.</p><p><a href="https://docuxlab.com/blog/docusaurus-timetimer-component/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>react</category>
+            <category>component</category>
+            <category>date</category>
+            <category>time</category>
+            <category>conditional-rendering</category>
+        </item>
+        <item>
+            <title><![CDATA[Creating Custom 404 Page]]></title>
+            <link>https://docuxlab.com/blog/404-custom-page-tutorial/</link>
+            <guid>https://docuxlab.com/blog/404-custom-page-tutorial/</guid>
+            <pubDate>Wed, 29 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Learn how to build a stylish, responsive custom 404 error page in Docusaurus using swizzle, modern CSS, and optimized WebP images.]]></description>
+            <content:encoded><![CDATA[<p>Learn how to build a stylish, responsive custom 404 error page in Docusaurus using swizzle, modern CSS, and optimized WebP images.</p><p><a href="https://docuxlab.com/blog/404-custom-page-tutorial/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>404</category>
+            <category>custom-page</category>
+            <category>swizzle</category>
+            <category>react</category>
+            <category>responsive-design</category>
+        </item>
+        <item>
+            <title><![CDATA[GoatCountViews Component]]></title>
+            <link>https://docuxlab.com/blog/goatcounter-json-views/</link>
+            <guid>https://docuxlab.com/blog/goatcounter-json-views/</guid>
+            <pubDate>Sun, 26 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Add a clean view counter in Docusaurus with GoatCounter, the JSON API, and an explicit per-post path (path={metadata.permalink}).]]></description>
+            <content:encoded><![CDATA[<p>Add a clean view counter in Docusaurus with GoatCounter, the JSON API, and an explicit per-post path (path={metadata.permalink}).</p><p><a href="https://docuxlab.com/blog/goatcounter-json-views/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>goatcounter</category>
+            <category>analytics</category>
+            <category>SEO</category>
+            <category>views</category>
+        </item>
+        <item>
+            <title><![CDATA[GoatCounter analytics]]></title>
+            <link>https://docuxlab.com/blog/goatcounter/</link>
+            <guid>https://docuxlab.com/blog/goatcounter/</guid>
+            <pubDate>Fri, 24 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Discover GoatCounter (open‑source, cookieless) and 3 ways to integrate it with Docusaurus, including SPA route change tracking.]]></description>
+            <content:encoded><![CDATA[<p>Discover GoatCounter (open‑source, cookieless) and 3 ways to integrate it with Docusaurus, including SPA route change tracking.</p><p><a href="https://docuxlab.com/blog/goatcounter/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>analytics</category>
+            <category>goatcounter</category>
+            <category>docusaurus</category>
+            <category>privacy</category>
+            <category>spa</category>
+        </item>
+        <item>
+            <title><![CDATA[Component Trees]]></title>
+            <link>https://docuxlab.com/blog/trees-component-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/trees-component-docusaurus/</guid>
+            <pubDate>Wed, 22 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Create interactive file and folder trees in your Docusaurus pages with the Trees component. Works with or without custom icons.]]></description>
+            <content:encoded><![CDATA[<p>Create interactive file and folder trees in your Docusaurus pages with the Trees component. Works with or without custom icons.</p><p><a href="https://docuxlab.com/blog/trees-component-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>react</category>
+            <category>mdx</category>
+            <category>component</category>
+            <category>tree</category>
+            <category>file-structure</category>
+            <category>Iconify</category>
+        </item>
+        <item>
+            <title><![CDATA[Plugin Remark Replace Words]]></title>
+            <link>https://docuxlab.com/blog/remark-replace-words-plugin/</link>
+            <guid>https://docuxlab.com/blog/remark-replace-words-plugin/</guid>
+            <pubDate>Tue, 07 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Automatically replace words with text, icons, or MDX components (Tooltip, buttons…) in your pages/blog/docs with a configurable Remark plugin.]]></description>
+            <content:encoded><![CDATA[<p>Automatically replace words with text, icons, or MDX components (Tooltip, buttons…) in your pages/blog/docs with a configurable Remark plugin.</p><p><a href="https://docuxlab.com/blog/remark-replace-words-plugin/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>remark</category>
+            <category>mdx</category>
+            <category>plugin</category>
+            <category>glossary</category>
+            <category>tooltip</category>
+            <category>icon</category>
+            <category>replacement</category>
+        </item>
+        <item>
+            <title><![CDATA[ScrollToTopButton Component]]></title>
+            <link>https://docuxlab.com/blog/docusaurus-scroll-to-top-button/</link>
+            <guid>https://docuxlab.com/blog/docusaurus-scroll-to-top-button/</guid>
+            <pubDate>Mon, 06 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[A floating 'back to top' button for Docusaurus: delayed appearance after 300px, click animation and smooth scroll behavior.]]></description>
+            <content:encoded><![CDATA[<p>A floating 'back to top' button for Docusaurus: delayed appearance after 300px, click animation and smooth scroll behavior.</p><p><a href="https://docuxlab.com/blog/docusaurus-scroll-to-top-button/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>react</category>
+            <category>scroll</category>
+            <category>component</category>
+        </item>
+        <item>
+            <title><![CDATA[Tutorial Docusaurus React Live]]></title>
+            <link>https://docuxlab.com/blog/docusaurus-react-live-guide/</link>
+            <guid>https://docuxlab.com/blog/docusaurus-react-live-guide/</guid>
+            <pubDate>Wed, 01 Oct 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Add interactive react-live code playgrounds to Docusaurus: theme installation, configuration, ReactLiveScope swizzle and example patterns.]]></description>
+            <content:encoded><![CDATA[<p>Add interactive react-live code playgrounds to Docusaurus: theme installation, configuration, ReactLiveScope swizzle and example patterns.</p><p><a href="https://docuxlab.com/blog/docusaurus-react-live-guide/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>react</category>
+            <category>live-code</category>
+            <category>playground</category>
+            <category>swizzle</category>
+            <category>mdx</category>
+        </item>
+        <item>
+            <title><![CDATA[Component Tooltip]]></title>
+            <link>https://docuxlab.com/blog/Tooltip-tools-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/Tooltip-tools-docusaurus/</guid>
+            <pubDate>Sun, 21 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[A comprehensive guide to creating a dynamic and accessible Tooltip component in React and Docusaurus, featuring smart positioning and custom styling.]]></description>
+            <content:encoded><![CDATA[<p>A comprehensive guide to creating a dynamic and accessible Tooltip component in React and Docusaurus, featuring smart positioning and custom styling.</p><p><a href="https://docuxlab.com/blog/Tooltip-tools-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>react</category>
+            <category>component</category>
+            <category>tooltip</category>
+            <category>accessibility</category>
+        </item>
+        <item>
+            <title><![CDATA[Component Skill Bars and Circles]]></title>
+            <link>https://docuxlab.com/blog/skill-component-animated-progress-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/skill-component-animated-progress-docusaurus/</guid>
+            <pubDate>Tue, 16 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[A comprehensive React component for displaying skills as animated progress bars or circles with scroll animations, gradients, and theme support in Docusaurus.]]></description>
+            <content:encoded><![CDATA[<p>A comprehensive React component for displaying skills as animated progress bars or circles with scroll animations, gradients, and theme support in Docusaurus.</p><p><a href="https://docuxlab.com/blog/skill-component-animated-progress-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>react</category>
+            <category>components</category>
+            <category>animations</category>
+            <category>progress</category>
+            <category>skills</category>
+            <category>svg</category>
+            <category>css</category>
+        </item>
+        <item>
+            <title><![CDATA[Component LogoIcon]]></title>
+            <link>https://docuxlab.com/blog/logoicon-component-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/logoicon-component-docusaurus/</guid>
+            <pubDate>Mon, 15 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[A React component tutorial to easily display Iconify logos in Docusaurus MDX pages without individual imports.]]></description>
+            <content:encoded><![CDATA[<p>A React component tutorial to easily display Iconify logos in Docusaurus MDX pages without individual imports.</p><p><a href="https://docuxlab.com/blog/logoicon-component-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>iconify</category>
+            <category>design</category>
+            <category>logos</category>
+            <category>icons</category>
+        </item>
+        <item>
+            <title><![CDATA[Plugin Simple Analytics]]></title>
+            <link>https://docuxlab.com/blog/simple-analytics-plugin-docusaurus/</link>
+            <guid>https://docuxlab.com/blog/simple-analytics-plugin-docusaurus/</guid>
+            <pubDate>Sun, 14 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[A complete tutorial to integrate Simple Analytics into your Docusaurus site with a custom local plugin.]]></description>
+            <content:encoded><![CDATA[<p>A complete tutorial to integrate Simple Analytics into your Docusaurus site with a custom local plugin.</p><p><a href="https://docuxlab.com/blog/simple-analytics-plugin-docusaurus/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>simple-analytics</category>
+            <category>plugin</category>
+            <category>navigation</category>
+            <category>analytics</category>
+            <category>tutorial</category>
+        </item>
+        <item>
+            <title><![CDATA[Component Card]]></title>
+            <link>https://docuxlab.com/blog/card-component-docusaurus-infima/</link>
+            <guid>https://docuxlab.com/blog/card-component-docusaurus-infima/</guid>
+            <pubDate>Sun, 07 Sep 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Create customizable card components in Docusaurus with Infima: React implementation, multiple card variants and responsive design.]]></description>
+            <content:encoded><![CDATA[<p>Create customizable card components in Docusaurus with Infima: React implementation, multiple card variants and responsive design.</p><p><a href="https://docuxlab.com/blog/card-component-docusaurus-infima/">Read the full article on DocuxLab</a></p>]]></content:encoded>
+            <category>card</category>
+            <category>infima</category>
+            <category>component</category>
+            <category>tutorial</category>
+            <category>front-end</category>
+            <category>css</category>
+            <category>design</category>
+        </item>
+    </channel>
+</rss>
