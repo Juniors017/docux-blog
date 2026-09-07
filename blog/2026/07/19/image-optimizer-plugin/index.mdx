@@ -444,3 +444,5 @@ Ticked, the run prints `IMAGE_OPTIMIZER_FORCE set — ignoring the cache` and re
 - **PNG uses a palette (lossy) re-encode** for much smaller files. It's great for screenshots and illustrations; if you have PNGs where exact pixels matter, raise the quality or exclude them via `extensions`.
 - **Animated WebP** is left un-resized and gets no variants at all, to stay safe. GIF never reaches that check: it is not in the default `extensions` list, so the plugin does not touch it in the first place.
 - The plugin only runs in `build`, so your dev server stays fast — at the price of the trap described above: no variant exists in development, so any `srcset` must be guarded.
+
+Most of what is above was rewritten at least twice, usually because a measurement contradicted something I had been confident about. What survived every pass is the shape: a lifecycle hook, a hash, and a rule about who is allowed to name a file that does not exist yet.
