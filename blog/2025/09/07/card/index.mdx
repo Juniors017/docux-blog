@@ -8,7 +8,7 @@ mainTag: infima
 tags: ["card", "infima", "component", "tutorial", "front-end", "css", "design"]
 date: 2025-09-07
 last_update:
-  date: 2026-08-24
+  date: 2026-09-07
   author: docux
 inLanguage: "en"
 keywords:
@@ -432,26 +432,13 @@ This component is optionnal, you can use image html and add `className={clsx("ca
 import React from "react";
 import clsx from "clsx";
 import useBaseUrl from "@docusaurus/useBaseUrl"; // Import the useBaseUrl function from Docusaurus
-// `srcSet` and `sizes` are optional passthroughs: the caller decides whether
-// responsive candidates exist, so this component keeps knowing nothing about
-// where they come from.
-const CardImage = ({
-  className,
-  style,
-  cardImageUrl,
-  alt,
-  title,
-  srcSet,
-  sizes,
-}) => {
+const CardImage = ({ className, style, cardImageUrl, alt, title }) => {
   const generatedCardImageUrl = useBaseUrl(cardImageUrl);
   return (
     <img
       className={clsx("card__image", className)}
       style={style}
       src={generatedCardImageUrl}
-      srcSet={srcSet}
-      sizes={sizes}
       alt={alt}
       title={title}
     />
