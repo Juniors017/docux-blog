@@ -130,9 +130,11 @@ A nice side effect: two byte-identical images (say, the same picture referenced 
 
 One escape hatch, because a cache you cannot bypass is a cache you end up distrusting:
 
-```bash
+<Terminal title="user@machine: ~/yourproject">
+
 IMAGE_OPTIMIZER_FORCE=1 npm run build
-```
+
+</Terminal>
 
 That ignores the cache for a single run and re-encodes everything, without deleting anything — the results are written back, so the next build is incremental again. It is also how you check the cache has not been replaying stale bytes: a forced run should print the same totals as a cached one. On this build it does, down to the byte.
 
@@ -453,5 +455,5 @@ Ticked, the run prints `IMAGE_OPTIMIZER_FORCE set — ignoring the cache` and re
 :::tip Takeaway
 A `postBuild` plugin, `sharp`, and a content-hash cache were enough to halve my deployed image weight — safely, incrementally, and automatically on every deploy. Adding width variants then cut what a phone loads on my homepage by another two thirds, and wiring the card components to the widths the plugin publishes took the median page from 211 KB of oversized images down to 25.
 
-It stands at about 490 lines today. The comments have been cut back to a short header and a handful of notes on the parts that are genuinely counter-intuitive — the timing of `postBuild`, and the contract it imposes on whoever writes a `srcset`. Explaining the rest is this article's job, not the file's.
+It stands at about 470 lines today. The comments have been cut back to a short header and a handful of notes on the parts that are genuinely counter-intuitive — the timing of `postBuild`, and the contract it imposes on whoever writes a `srcset`. Explaining the rest is this article's job, not the file's.
 :::
